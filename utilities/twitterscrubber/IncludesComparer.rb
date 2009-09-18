@@ -3,7 +3,7 @@ class IncludesComparer
 		@includedText = includedText
 	end
 	
-	def Valid?(value)
+	def valid?(value)
 		return value.include?(@includedText)
 	end
 end

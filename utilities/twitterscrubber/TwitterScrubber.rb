@@ -1,8 +1,3 @@
-require "rubygems"
-require "twitter"
-require "IncludesComparer"
-require "TextileFormatter"
-
 class TwitterScrubber
 	attr_accessor :formattedValues
 	
@@ -11,18 +6,17 @@ class TwitterScrubber
 		@formattedValues = "Data not found"
 	end
 	
-	def Scrub(config)
-		client = Twitter::Client.new(:login => config["username"], :password => config["password"])
-		timeline = client.timeline_for(:user) do |status|
-			if( config["comparer"].Valid?(status.text)  )
-				@values << { :user => config["username"], :message => status.text, :date => status.created_at }
+	def scrub(client, comparer)
+		client.timeline_for(:user) do |status|
+			if( comparer.valid?(status.text)  )
+				@values << { :user => status.user.screen_name, :message => status.text, :date => status.created_at }
 			end
 		end
 		
 		return self
 	end
 	
-	def Format(formatter)		
+	def format(formatter)		
 		@formattedValues = formatter.format(@values)
 		return self
 	end
