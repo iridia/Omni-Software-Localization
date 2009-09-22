@@ -1,13 +1,17 @@
 h1. projectosl
 
 | Date Posted | Message | Time |
-|Sat, 12 Sep 2009 22:19:41 -0400|@projectosl testing something|0|
+|Sat, 12 Sep 2009 22:19:41 -0400|@projectosl testing something|0 hours, 0 minutes|
 
 h1. hammerdr
 
 | Date Posted | Message | Time |
-|Sun, 13 Sep 2009 13:16:28 -0400|@projectosl  Testing time now t:1|1|
-|Sun, 13 Sep 2009 13:05:15 -0400|@allencw @projectosl You would need to branch. Which is the preferred method of developing on Git anyway. Then you will merge when needed.|0|
-|Sun, 13 Sep 2009 13:04:09 -0400|@projectosl Finished writing a basic Twitter scrubber. Just need to add time entry feature and then we are good to go!|0|
-|Thu, 10 Sep 2009 10:37:41 -0400|@projectosl Link to Hudson server: http://home.derekhammer.com|0|
-|Thu, 10 Sep 2009 02:06:06 -0400|@projectosl Finally got external links to work, sort of.|0|
+|Fri, 18 Sep 2009 13:52:37 -0400|@projectosl Testing new time function t:1h15m|1 hours, 15 minutes|
+|Fri, 18 Sep 2009 13:36:38 -0400|@projectosl Writing final tests and update to the TwitterScrubber. Woot!|0 hours, 0 minutes|
+|Fri, 18 Sep 2009 13:24:11 -0400|@projectosl Writing a client update message / action item list.|0 hours, 0 minutes|
+|Thu, 17 Sep 2009 12:12:52 -0400|@projectosl Apparently Cappuccino is not compatible with Windows-style line endings (out of the box, that is).|0 hours, 0 minutes|
+|Thu, 17 Sep 2009 09:57:16 -0400|@allencw @projectosl No. You should just be able to open it up on the browser. You may need to set environment variables, though..|0 hours, 0 minutes|
+|Wed, 16 Sep 2009 16:51:44 -0400|@projectosl Code Dojo on a "Todo" Cappuccino application. ObjJ is a blast! t:2|0 hours, 0 minutes|
+|Tue, 15 Sep 2009 15:23:32 -0400|@projectosl Agenda is up on the wiki|0 hours, 0 minutes|
+|Mon, 14 Sep 2009 16:50:03 -0400|@allencw Yep. @projectosl Also, ojunit and ojspec should probably be our test tools. ojspec may need some work though.|0 hours, 0 minutes|
+|Mon, 14 Sep 2009 16:35:59 -0400|@projectosl Finished a draft of metrics writeups for the project.|0 hours, 0 minutes|
