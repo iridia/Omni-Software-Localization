@@ -53,6 +53,7 @@
 		<string>CPAnimation.j</string>
 		<string>CPApplication.j</string>
 		<string>CPBezierPath.j</string>
+		<string>CPBox.j</string>
 		<string>CPButton.j</string>
 		<string>CPButtonBar.j</string>
 		<string>CPCheckBox.j</string>

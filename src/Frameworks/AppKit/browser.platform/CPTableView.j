@@ -1,4 +1,4 @@
-I;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;42730;
+I;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;44248;
 CPTableViewColumnDidMoveNotification="CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification="CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification="CPTableViewSelectionDidChangeNotification";
@@ -1056,18 +1056,43 @@ objj_exception_throw(new objj_exception(OBJJClassNotFoundException,"*** Could no
 var _1c=_1b.isa;
 class_addMethods(_1b,[new objj_method(sel_getUid("initWithCoder:"),function(self,_cmd,_1a3){
 with(self){
-objj_msgSend(self,"init");
 self=objj_msgSendSuper({receiver:self,super_class:objj_getClass("CPControl")},"initWithCoder:",_1a3);
 if(self){
-_dataSource=objj_msgSend(_1a3,"decodeObjectForKey:",_199);
-_delegate=objj_msgSend(_1a3,"decodeObjectForKey:",_19a);
-_rowHeight=objj_msgSend(_1a3,"decodeFloatForKey:",_19d);
-_intercellSpacing=objj_msgSend(_1a3,"decodeSizeForKey:",_19e);
+_allowsColumnReordering=YES;
+_allowsColumnResizing=YES;
 _allowsMultipleSelection=objj_msgSend(_1a3,"decodeBoolForKey:",_19f);
 _allowsEmptySelection=objj_msgSend(_1a3,"decodeBoolForKey:",_1a0);
+_allowsColumnSelection=NO;
+_tableViewFlags=0;
+_selectionHighlightMask=CPTableViewSelectionHighlightStyleRegular;
+objj_msgSend(self,"setUsesAlternatingRowBackgroundColors:",NO);
+objj_msgSend(self,"setAlternatingRowBackgroundColors:",[objj_msgSend(CPColor,"whiteColor"),objj_msgSend(CPColor,"colorWithHexString:","e4e7ff")]);
 _tableColumns=objj_msgSend(_1a3,"decodeObjectForKey:",_19c);
 objj_msgSend(_tableColumns,"makeObjectsPerformSelector:withObject:",sel_getUid("setTableView:"),self);
+_tableColumnRanges=[];
 _dirtyTableColumnRangeIndex=0;
+_numberOfHiddenColumns=0;
+_objectValues={};
+_dataViewsForTableColumns={};
+_dataViews=[];
+_numberOfRows=0;
+_exposedRows=objj_msgSend(CPIndexSet,"indexSet");
+_exposedColumns=objj_msgSend(CPIndexSet,"indexSet");
+_cachedDataViews={};
+_rowHeight=objj_msgSend(_1a3,"decodeFloatForKey:",_19d);
+_intercellSpacing=objj_msgSend(_1a3,"decodeSizeForKey:",_19e);
+objj_msgSend(self,"setGridColor:",objj_msgSend(CPColor,"grayColor"));
+objj_msgSend(self,"setGridStyleMask:",CPTableViewGridNone);
+_headerView=objj_msgSend(objj_msgSend(CPTableHeaderView,"alloc"),"initWithFrame:",CGRectMake(0,0,objj_msgSend(self,"bounds").size.width,_rowHeight));
+objj_msgSend(_headerView,"setTableView:",self);
+_cornerView=objj_msgSend(objj_msgSend(_CPCornerView,"alloc"),"initWithFrame:",CGRectMake(0,0,objj_msgSend(CPScroller,"scrollerWidth"),CGRectGetHeight(objj_msgSend(_headerView,"frame"))));
+_selectedColumnIndexes=objj_msgSend(CPIndexSet,"indexSet");
+_selectedRowIndexes=objj_msgSend(CPIndexSet,"indexSet");
+objj_msgSend(self,"setDataSource:",objj_msgSend(_1a3,"decodeObjectForKey:",_199));
+objj_msgSend(self,"setDelegate:",objj_msgSend(_1a3,"decodeObjectForKey:",_19a));
+_tableDrawView=objj_msgSend(objj_msgSend(_CPTableDrawView,"alloc"),"initWithTableView:",self);
+objj_msgSend(_tableDrawView,"setBackgroundColor:",objj_msgSend(CPColor,"clearColor"));
+objj_msgSend(self,"addSubview:",_tableDrawView);
 objj_msgSend(self,"viewWillMoveToSuperview:",objj_msgSend(self,"superview"));
 }
 return self;

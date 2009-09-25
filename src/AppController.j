@@ -1,8 +1,8 @@
 /*
  * AppController.j
- * src
+ * Project OSL
  *
- * Created by Chandler Kent on September 22, 2009.
+ * Created by Chandler Kent on September 25, 2009.
  * Copyright 2009, Your Company All rights reserved.
  */
 

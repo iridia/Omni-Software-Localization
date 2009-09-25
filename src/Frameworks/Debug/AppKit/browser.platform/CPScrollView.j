@@ -1,4 +1,4 @@
-i;8;CPView.ji;12;CPClipView.ji;12;CPScroller.jc;25841;
+i;8;CPView.ji;12;CPClipView.ji;12;CPScroller.jc;25917;
 {var the_class = objj_allocateClassPair(CPView, "CPScrollView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_contentView"), new objj_ivar("_headerClipView"), new objj_ivar("_cornerView"), new objj_ivar("_hasVerticalScroller"), new objj_ivar("_hasHorizontalScroller"), new objj_ivar("_autohidesScrollers"), new objj_ivar("_verticalScroller"), new objj_ivar("_horizontalScroller"), new objj_ivar("_recursionCount"), new objj_ivar("_verticalLineScroll"), new objj_ivar("_verticalPageScroll"), new objj_ivar("_horizontalLineScroll"), new objj_ivar("_horizontalPageScroll")]);
 objj_registerClassPair(the_class);
@@ -305,7 +305,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
                                         break;
         case CPScrollerKnobSlot:
         case CPScrollerKnob:
-        default: contentBounds.origin.y = value * ((documentFrame.size.height) - (contentBounds.size.height));
+        default: contentBounds.origin.y = ROUND(value * ((documentFrame.size.height) - (contentBounds.size.height)));
     }
     objj_msgSend(_contentView, "scrollToPoint:", contentBounds.origin);
 }
@@ -327,7 +327,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
                                         break;
         case CPScrollerKnobSlot:
         case CPScrollerKnob:
-        default: contentBounds.origin.x = value * ((documentFrame.size.width) - (contentBounds.size.width));
+        default: contentBounds.origin.x = ROUND(value * ((documentFrame.size.width) - (contentBounds.size.width)));
     }
     objj_msgSend(_contentView, "scrollToPoint:", contentBounds.origin);
     objj_msgSend(_headerClipView, "scrollToPoint:", CGPointMake(contentBounds.origin.x, 0.0));
@@ -408,8 +408,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 {
    var documentFrame = objj_msgSend(objj_msgSend(self, "documentView"), "frame"),
        contentBounds = objj_msgSend(_contentView, "bounds");
-    contentBounds.origin.x += objj_msgSend(anEvent, "deltaX") * _horizontalLineScroll;
-    contentBounds.origin.y += objj_msgSend(anEvent, "deltaY") * _verticalLineScroll;
+    contentBounds.origin.x = ROUND(contentBounds.origin.x + objj_msgSend(anEvent, "deltaX") * _horizontalLineScroll);
+    contentBounds.origin.y = ROUND(contentBounds.origin.y + objj_msgSend(anEvent, "deltaY") * _verticalLineScroll);
     objj_msgSend(_contentView, "scrollToPoint:", contentBounds.origin);
     objj_msgSend(_headerClipView, "scrollToPoint:", CGPointMake(contentBounds.origin.x, 0.0));
 }

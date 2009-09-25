@@ -6,20 +6,20 @@ if !ENV['CONFIG']
     ENV['CONFIG'] = 'Debug'
 end
 
-ObjectiveJ::BundleTask.new(:src) do |t|
-    t.name          = 'src'
-    t.identifier    = 'com.yourcompany.src'
+ObjectiveJ::BundleTask.new(:ProjectOSL) do |t|
+    t.name          = 'Project OSL'
+    t.identifier    = 'com.yourcompany.ProjectOSL'
     t.version       = '1.0'
     t.author        = 'Your Company'
     t.email         = 'feedback @nospam@ yourcompany.com'
-    t.summary       = 'src'
+    t.summary       = 'Project OSL'
     t.sources       = FileList['*.j']
     t.resources     = FileList['Resources/*']
     t.index_file    = 'index.html'
     t.info_plist    = 'Info.plist'
-    t.build_path    = File.join('Build', ENV['CONFIG'], 'src')
+    t.build_path    = File.join('Build', ENV['CONFIG'], 'ProjectOSL')
     t.flag          = '-DDEBUG' if ENV['CONFIG'] == 'Debug'
     t.flag          = '-O' if ENV['CONFIG'] == 'Release'
 end
 
-task :default => [:src]
+task :default => [:ProjectOSL]

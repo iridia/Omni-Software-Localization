@@ -1,4 +1,4 @@
-I;21;Foundation/CPObject.ji;23;CAMediaTimingFunction.jc;6066;
+I;21;Foundation/CPObject.ji;23;CAMediaTimingFunction.jc;6067;
 CPAnimationEaseInOut = 0;
 CPAnimationEaseIn = 1;
 CPAnimationEaseOut = 2;
@@ -82,7 +82,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithDuration:animat
 },["void","id"]), new objj_method(sel_getUid("startAnimation"), function $CPAnimation__startAnimation(self, _cmd)
 { with(self)
 {
-    if (_timer || _delegate && objj_msgSend(_delegate, "respondsToSelector:", sel_getUid("animationShouldStart")) && !objj_msgSend(_delegate, "animationShouldStart:", self))
+    if (_timer || _delegate && objj_msgSend(_delegate, "respondsToSelector:", sel_getUid("animationShouldStart:")) && !objj_msgSend(_delegate, "animationShouldStart:", self))
         return;
     if (_progress === 1.0)
         _progress = 0.0;

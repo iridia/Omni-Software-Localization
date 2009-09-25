@@ -1,4 +1,4 @@
-i;8;CPView.ji;12;CPClipView.ji;12;CPScroller.jc;17083;
+i;8;CPView.ji;12;CPClipView.ji;12;CPScroller.jc;17135;
 var _1=objj_allocateClassPair(CPView,"CPScrollView"),_2=_1.isa;
 class_addIvars(_1,[new objj_ivar("_contentView"),new objj_ivar("_headerClipView"),new objj_ivar("_cornerView"),new objj_ivar("_hasVerticalScroller"),new objj_ivar("_hasHorizontalScroller"),new objj_ivar("_autohidesScrollers"),new objj_ivar("_verticalScroller"),new objj_ivar("_horizontalScroller"),new objj_ivar("_recursionCount"),new objj_ivar("_verticalLineScroll"),new objj_ivar("_verticalPageScroll"),new objj_ivar("_horizontalLineScroll"),new objj_ivar("_horizontalPageScroll")]);
 objj_registerClassPair(_1);
@@ -277,7 +277,7 @@ break;
 case CPScrollerKnobSlot:
 case CPScrollerKnob:
 default:
-contentBounds.origin.y=_54*((_55.size.height)-(contentBounds.size.height));
+contentBounds.origin.y=ROUND(_54*((_55.size.height)-(contentBounds.size.height)));
 }
 objj_msgSend(_contentView,"scrollToPoint:",contentBounds.origin);
 }
@@ -300,7 +300,7 @@ break;
 case CPScrollerKnobSlot:
 case CPScrollerKnob:
 default:
-_5b.origin.x=_59*((_5a.size.width)-(_5b.size.width));
+_5b.origin.x=ROUND(_59*((_5a.size.width)-(_5b.size.width)));
 }
 objj_msgSend(_contentView,"scrollToPoint:",_5b.origin);
 objj_msgSend(_headerClipView,"scrollToPoint:",CGPointMake(_5b.origin.x,0));
@@ -365,8 +365,8 @@ return _verticalPageScroll;
 }),new objj_method(sel_getUid("scrollWheel:"),function(_7f,_80,_81){
 with(_7f){
 var _82=objj_msgSend(objj_msgSend(_7f,"documentView"),"frame"),_83=objj_msgSend(_contentView,"bounds");
-_83.origin.x+=objj_msgSend(_81,"deltaX")*_horizontalLineScroll;
-_83.origin.y+=objj_msgSend(_81,"deltaY")*_verticalLineScroll;
+_83.origin.x=ROUND(_83.origin.x+objj_msgSend(_81,"deltaX")*_horizontalLineScroll);
+_83.origin.y=ROUND(_83.origin.y+objj_msgSend(_81,"deltaY")*_verticalLineScroll);
 objj_msgSend(_contentView,"scrollToPoint:",_83.origin);
 objj_msgSend(_headerClipView,"scrollToPoint:",CGPointMake(_83.origin.x,0));
 }

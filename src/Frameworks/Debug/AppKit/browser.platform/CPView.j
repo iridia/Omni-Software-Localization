@@ -1,4 +1,4 @@
-I;20;Foundation/CPArray.jI;26;Foundation/CPObjJRuntime.ji;19;CGAffineTransform.ji;12;CGGeometry.ji;9;CPColor.ji;12;CPGeometry.ji;19;CPGraphicsContext.ji;13;CPResponder.ji;9;CPTheme.ji;18;_CPDisplayServer.jc;78339;
+I;20;Foundation/CPArray.jI;26;Foundation/CPObjJRuntime.ji;19;CGAffineTransform.ji;12;CGGeometry.ji;9;CPColor.ji;12;CPGeometry.ji;19;CPGraphicsContext.ji;13;CPResponder.ji;9;CPTheme.ji;18;_CPDisplayServer.jc;78142;
 CPViewNotSizable = 0;
 CPViewMinXMargin = 1;
 CPViewWidthSizable = 2;
@@ -306,7 +306,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("setupViewFlags"), funct
     origin.y = aPoint.y;
     if (_postsFrameChangedNotifications && !_inhibitFrameAndBoundsChangedNotifications)
         objj_msgSend(CachedNotificationCenter, "postNotificationName:object:", CPViewFrameDidChangeNotification, self);
-    if (_superview ? _superview._boundsTransform : NULL) var ____p = { x:CGPointMake(origin.x, origin.y).x * _superview ? _superview._boundsTransform : NULL.a + CGPointMake(origin.x, origin.y).y * _superview ? _superview._boundsTransform : NULL.c + _superview ? _superview._boundsTransform : NULL.tx, y:CGPointMake(origin.x, origin.y).x * _superview ? _superview._boundsTransform : NULL.b + CGPointMake(origin.x, origin.y).y * _superview ? _superview._boundsTransform : NULL.d + _superview ? _superview._boundsTransform : NULL.ty }; else var ____p = { x:origin.x, y:origin.y }; _DOMElement.style.left = ROUND(____p.x) + "px";_DOMElement.style.top = ROUND(____p.y) + "px";;
+    var transform = _superview ? _superview._boundsTransform : NULL;
+    if (transform) var ____p = { x:CGPointMake(origin.x, origin.y).x * transform.a + CGPointMake(origin.x, origin.y).y * transform.c + transform.tx, y:CGPointMake(origin.x, origin.y).x * transform.b + CGPointMake(origin.x, origin.y).y * transform.d + transform.ty }; else var ____p = { x:origin.x, y:origin.y }; _DOMElement.style.left = ROUND(____p.x) + "px";_DOMElement.style.top = ROUND(____p.y) + "px";;
 }
 },["void","CGPoint"]), new objj_method(sel_getUid("setFrameSize:"), function $CPView__setFrameSize_(self, _cmd, aSize)
 { with(self)

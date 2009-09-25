@@ -1,4 +1,4 @@
-I;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;62991;
+I;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;64794;
 CPTableViewColumnDidMoveNotification = "CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification = "CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification = "CPTableViewSelectionDidChangeNotification";
@@ -1152,19 +1152,44 @@ if(!the_class) objj_exception_throw(new objj_exception(OBJJClassNotFoundExceptio
 var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $CPTableView__initWithCoder_(self, _cmd, aCoder)
 { with(self)
 {
-    objj_msgSend(self, "init");
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPControl") }, "initWithCoder:", aCoder);
     if (self)
     {
-        _dataSource = objj_msgSend(aCoder, "decodeObjectForKey:", CPTableViewDataSourceKey);
-        _delegate = objj_msgSend(aCoder, "decodeObjectForKey:", CPTableViewDelegateKey);
-        _rowHeight = objj_msgSend(aCoder, "decodeFloatForKey:", CPTableViewRowHeightKey);
-        _intercellSpacing = objj_msgSend(aCoder, "decodeSizeForKey:", CPTableViewIntercellSpacingKey);
+        _allowsColumnReordering = YES;
+        _allowsColumnResizing = YES;
         _allowsMultipleSelection = objj_msgSend(aCoder, "decodeBoolForKey:", CPTableViewMultipleSelectionKey);
         _allowsEmptySelection = objj_msgSend(aCoder, "decodeBoolForKey:", CPTableViewEmptySelectionKey);
+        _allowsColumnSelection = NO;
+        _tableViewFlags = 0;
+        _selectionHighlightMask = CPTableViewSelectionHighlightStyleRegular;
+        objj_msgSend(self, "setUsesAlternatingRowBackgroundColors:", NO);
+        objj_msgSend(self, "setAlternatingRowBackgroundColors:", [objj_msgSend(CPColor, "whiteColor"), objj_msgSend(CPColor, "colorWithHexString:", "e4e7ff")]);
         _tableColumns = objj_msgSend(aCoder, "decodeObjectForKey:", CPTableViewTableColumnsKey);
         objj_msgSend(_tableColumns, "makeObjectsPerformSelector:withObject:", sel_getUid("setTableView:"), self);
+        _tableColumnRanges = [];
         _dirtyTableColumnRangeIndex = 0;
+        _numberOfHiddenColumns = 0;
+        _objectValues = { };
+        _dataViewsForTableColumns = { };
+        _dataViews= [];
+        _numberOfRows = 0;
+        _exposedRows = objj_msgSend(CPIndexSet, "indexSet");
+        _exposedColumns = objj_msgSend(CPIndexSet, "indexSet");
+        _cachedDataViews = { };
+        _rowHeight = objj_msgSend(aCoder, "decodeFloatForKey:", CPTableViewRowHeightKey);
+        _intercellSpacing = objj_msgSend(aCoder, "decodeSizeForKey:", CPTableViewIntercellSpacingKey);
+        objj_msgSend(self, "setGridColor:", objj_msgSend(CPColor, "grayColor"));
+        objj_msgSend(self, "setGridStyleMask:", CPTableViewGridNone);
+        _headerView = objj_msgSend(objj_msgSend(CPTableHeaderView, "alloc"), "initWithFrame:", CGRectMake(0, 0, objj_msgSend(self, "bounds").size.width, _rowHeight));
+        objj_msgSend(_headerView, "setTableView:", self);
+        _cornerView = objj_msgSend(objj_msgSend(_CPCornerView, "alloc"), "initWithFrame:", CGRectMake(0, 0, objj_msgSend(CPScroller, "scrollerWidth"), CGRectGetHeight(objj_msgSend(_headerView, "frame"))));
+        _selectedColumnIndexes = objj_msgSend(CPIndexSet, "indexSet");
+        _selectedRowIndexes = objj_msgSend(CPIndexSet, "indexSet");
+        objj_msgSend(self, "setDataSource:", objj_msgSend(aCoder, "decodeObjectForKey:", CPTableViewDataSourceKey));
+        objj_msgSend(self, "setDelegate:", objj_msgSend(aCoder, "decodeObjectForKey:", CPTableViewDelegateKey));
+        _tableDrawView = objj_msgSend(objj_msgSend(_CPTableDrawView, "alloc"), "initWithTableView:", self);
+        objj_msgSend(_tableDrawView, "setBackgroundColor:", objj_msgSend(CPColor, "clearColor"));
+        objj_msgSend(self, "addSubview:", _tableDrawView);
         objj_msgSend(self, "viewWillMoveToSuperview:", objj_msgSend(self, "superview"));
     }
     return self;
