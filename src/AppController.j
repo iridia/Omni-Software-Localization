@@ -17,6 +17,8 @@
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
     // This is called when the application is done loading.
+    
+    console.log("This is an uninteresting test");
 }
 
 - (void)awakeFromCib
