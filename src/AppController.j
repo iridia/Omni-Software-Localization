@@ -18,7 +18,7 @@
 {
     // This is called when the application is done loading.
     
-    console.log("This is an uninteresting test");
+    console.log("This is a more interesting test");
 }
 
 - (void)awakeFromCib
