@@ -4,10 +4,11 @@
 @implementation User : CPObject
 {
     CPDictionary handles @accessors;
+    CPString name @accessors;
     CPArray data @accessors(readonly);
 }
 
-- (id)initWithHandles:(CPDictionary)someHandles
+- (id)initWithName:(CPString)aName handles:(CPDictionary)someHandles
 {
     self = [super init];
     
@@ -15,6 +16,7 @@
     {
         data = [];
         [self setHandles:someHandles];
+        [self setName:aName];
     }
     
     return self;
@@ -23,8 +25,6 @@
 - (void)addData:(UserData)moreData
 {
     [data addObject:moreData];
-    
-    console.log("Adding message:", [moreData text], "for user:", [[self handles] objectForKey:@"github"]);
 }
 
 @end

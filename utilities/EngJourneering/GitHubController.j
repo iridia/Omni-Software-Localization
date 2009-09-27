@@ -26,12 +26,16 @@
     for (var j = 0; j < [[self users] count]; j++) {
         var user = [[self users] objectAtIndex:j];
         var gitHubHandle = [[user handles] objectForKey:[self key]];
+        
         for (var i = 0; i < commits.length; i++) {
             if (commits[i].author.name === gitHubHandle) {
-                var text = commits[i].message;
-                var time = 100;
-
-                [user addData:[[UserData alloc] initWithText:text andTime:time]];
+                var message = commits[i].message;
+                
+                var time = [message findTimeInString];
+                
+                var date = [commits[i].authored_date convertToDate];
+                
+                [user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"GitHub" user:[user name]]];
             }
         }
     }

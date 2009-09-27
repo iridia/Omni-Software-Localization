@@ -8,6 +8,7 @@
 
 @import <Foundation/CPObject.j>
 
+@import "OSL+CPString.j"
 @import "User.j"
 @import "TwitterController.j"
 @import "GitHubController.j"
@@ -24,10 +25,10 @@
     var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask],
         contentView = [theWindow contentView];
         
-    var chandler = [[User alloc] initWithHandles:[[CPDictionary alloc] initWithObjects:[@"chandlerkent", @"Chandler Kent"] forKeys:[@"twitter", @"github"]]];
-    var derek = [[User alloc] initWithHandles:[[CPDictionary alloc] initWithObjects:[@"hammerdr", @"Derek Hammer"] forKeys:[@"twitter", @"github"]]];
+    var chandler = [[User alloc] initWithName:@"Chandler" handles:[[CPDictionary alloc] initWithObjects:[@"chandlerkent", @"Chandler Kent"] forKeys:[@"twitter", @"github"]]];
+    var derek = [[User alloc] initWithName:@"Derek" handles:[[CPDictionary alloc] initWithObjects:[@"hammerdr", @"Derek Hammer"] forKeys:[@"twitter", @"github"]]];
     //var kyle = [[User alloc] initWithHandles:[[CPDictionary alloc] initWithObjects:[@"rhodesk", @"rhodeska"] forKeys:[@"twitter", @"github"]]];
-    var caleb = [[User alloc] initWithHandles:[[CPDictionary alloc] initWithObjects:[@"allencw", @"Caleb Allen"] forKeys:[@"twitter", @"github"]]];
+    var caleb = [[User alloc] initWithName:@"Caleb" handles:[[CPDictionary alloc] initWithObjects:[@"allencw", @"Caleb Allen"] forKeys:[@"twitter", @"github"]]];
 
     users = [chandler, derek, caleb];
     
@@ -38,7 +39,7 @@
     [splitView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [splitView setVertical:YES];
     
-    var sourceView = [[CKSourceView alloc] initWithFrame:CGRectMakeZero() users:users key:@"github"];
+    var sourceView = [[CKSourceView alloc] initWithFrame:CGRectMakeZero() users:users];
     [sourceView setAutoresizingMask:CPViewWidthSizable];
     [splitView addSubview:sourceView];
     

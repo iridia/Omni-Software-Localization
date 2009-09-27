@@ -1,7 +1,6 @@
 @import "DataController.j"
 
 var ProjectOSL = "projectosl";
-var timeRegEx = new RegExp(".*t:(\d+)h(\d+)m", "i");
 
 @implementation TwitterController : DataController
 {
@@ -15,6 +14,7 @@ var timeRegEx = new RegExp(".*t:(\d+)h(\d+)m", "i");
     if (self)
     {
         connections = [];
+        
         for (var i = 0; i < users.length; i++) {
             var url = [[CPURL alloc] initWithString:@"http://twitter.com/status/user_timeline/" + [[users[i] handles] objectForKey:[self key]] + ".json"];
             var request = [CPURLRequest requestWithURL:url];
@@ -28,18 +28,17 @@ var timeRegEx = new RegExp(".*t:(\d+)h(\d+)m", "i");
 
 - (void)connection:(CPJSONPConnection)connection didReceiveData:(CPJSObject)data
 {
-    var pos = [connections indexOfObject:connection];
-    var user = [[self users] objectAtIndex:pos];
+    var user = [[self users] objectAtIndex:[connections indexOfObject:connection]];
 
     for (var i = 0; i < data.length; i++) {
         if (data[i].in_reply_to_screen_name === ProjectOSL) {
-            var text = data[i].text;
-            //var matches = timeRegEx.exec(text);
-//            var hours = 60 * matches[0];
-//            var minutes = matches[1];
-            //var time = hours + minutes;
+            var message = [data[i].text removeOccurencesOfString:"@" + ProjectOSL]
             
-            [user addData:[[UserData alloc] initWithText:text andTime:100]];
+            var time = [message findTimeInString];
+            
+            var date = [[CPDate alloc] initWithString:data[i].created_at];
+            
+            [user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"Twitter" user:[user name]]];
         }
     }
 }

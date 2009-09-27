@@ -2,18 +2,24 @@
 
 @implementation UserData : CPObject
 {
-    CPString text @accessors(readonly);
+    CPString message @accessors(readonly);
     CPNumber time @accessors(readonly);
+    CPDate date @accessors(readonly);
+    CPString source @accessors(readonly);
+    CPString user @accessors(readonly);
 }
 
-- (id)initWithText:(CPString)aText andTime:(CPNumber)aTime
+- (id)initWithMessage:(CPString)aMessage time:(CPNumber)aTime date:(CPDate)aDate source:(CPString)theSource user:(CPString)theUser
 {
     self = [super init];
     
     if (self)
     {
-        text = aText;
+        message = aMessage;
         time = aTime;
+        date = aDate;
+        source = theSource;
+        user = theUser;
     }
     
     return self;

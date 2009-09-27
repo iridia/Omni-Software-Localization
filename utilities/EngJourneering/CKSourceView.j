@@ -5,18 +5,16 @@
 @implementation CKSourceView : CPCollectionView
 {
     CPArray users @accessors(readonly);
-    CPString key @accessors(readonly);
     CKDetailView detailView @accessors;
 }
 
-- (id)initWithFrame:(CGRect)rect users:someUsers key:aKey
+- (id)initWithFrame:(CGRect)rect users:someUsers
 {
     self = [super initWithFrame:rect];
     
     if (self)
     {
         users = someUsers;
-        key = aKey;
         
         var userListView = [[CPCollectionViewItem alloc] init];
         [userListView setView:[[UserListView alloc] initWithFrame:CGRectMakeZero()]];
@@ -25,8 +23,8 @@
         [self setMaxNumberOfColumns:1];
         [self setVerticalMargin:0.0];
         
-        [self setMinItemSize:CGSizeMake(100.0, 32.0)];
-        [self setMaxItemSize:CGSizeMake(1000000.0, 32.0)];
+        [self setMinItemSize:CGSizeMake(100.0, 40.0)];
+        [self setMaxItemSize:CGSizeMake(1000000.0, 40.0)];
         
         [self setContent:users];
         [self setDelegate:self];
@@ -40,12 +38,8 @@
     var listIndex = [[aCollectionView selectionIndexes] firstIndex];
     
     var user = [[self users] objectAtIndex:listIndex];
-    console.log("CHANGING SELECTION TO:", user);
     
-    var user_text = [user data];
-    console.log(user_text);
-    
-    [[self detailView] setContent:user_text];
+    [[self detailView] setUser:user];
 }
 
 @end
@@ -69,7 +63,7 @@
         [self addSubview:label];
     }
  
-    [label setStringValue:[[anObject handles] objectForKey:@"github"]];
+    [label setStringValue:[anObject name]];
     [label sizeToFit];
  
     [label setFrameOrigin:CGPointMake(10,CGRectGetHeight([label bounds]) / 2.0)];
