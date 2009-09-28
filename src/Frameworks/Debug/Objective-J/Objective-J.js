@@ -2448,7 +2448,8 @@ function fragment_evaluate_code(aFragment)
     OBJJ_CURRENT_BUNDLE = aFragment.bundle;
     try
     {
-        compiled = new Function(aFragment.info);
+            var functionText = aFragment.info+"/**/\n//@ sourceURL="+aFragment.file.path;
+            compiled = new Function(functionText);
         compiled.displayName = aFragment.file.path;
     }
     catch(anException)

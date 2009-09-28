@@ -2449,20 +2449,17 @@ function fragment_evaluate_code(aFragment)
     OBJJ_CURRENT_BUNDLE = aFragment.bundle;
     try
     {
-        compiled = eval("function(){"+aFragment.info+"}");
+        var functionText = "function(){"+aFragment.info+"/**/\n}";
+        if (window.isRhino)
+            compiled = Packages.org.mozilla.javascript.Context.getCurrentContext().compileFunction(window, functionText, aFragment.file.path, 0, null);
+        else
+            compiled = eval(functionText);
     }
     catch(anException)
     {
         objj_exception_report(anException, aFragment.file);
     }
-    try
-    {
-        compiled();
-    }
-    catch(anException)
-    {
-        objj_exception_report(anException, aFragment.file);
-    }
+    compiled();
     return NO;
 }
 function fragment_evaluate_file(aFragment)

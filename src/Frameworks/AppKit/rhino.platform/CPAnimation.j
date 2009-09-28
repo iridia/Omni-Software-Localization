@@ -1,4 +1,4 @@
-I;21;Foundation/CPObject.ji;23;CAMediaTimingFunction.jc;4269;
+I;21;Foundation/CPObject.ji;23;CAMediaTimingFunction.jc;4270;
 CPAnimationEaseInOut=0;
 CPAnimationEaseIn=1;
 CPAnimationEaseOut=2;
@@ -77,7 +77,7 @@ _delegate=_1a;
 }
 }),new objj_method(sel_getUid("startAnimation"),function(_1b,_1c){
 with(_1b){
-if(_timer||_delegate&&objj_msgSend(_delegate,"respondsToSelector:",sel_getUid("animationShouldStart"))&&!objj_msgSend(_delegate,"animationShouldStart:",_1b)){
+if(_timer||_delegate&&objj_msgSend(_delegate,"respondsToSelector:",sel_getUid("animationShouldStart:"))&&!objj_msgSend(_delegate,"animationShouldStart:",_1b)){
 return;
 }
 if(_progress===1){

@@ -1,4 +1,4 @@
-i;11;CPControl.jc;16155;
+i;11;CPControl.jc;16337;
 CPLinearSlider = 0;
 CPCircularSlider = 1;
 {var the_class = objj_allocateClassPair(CPControl, "CPSlider"),
@@ -28,6 +28,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
     var doubleValue = objj_msgSend(self, "doubleValue");
     if (doubleValue < _minValue)
         objj_msgSend(self, "setDoubleValue:", _minValue);
+    objj_msgSend(self, "setNeedsLayout");
+    objj_msgSend(self, "setNeedsDisplay:", YES);
 }
 },["void","float"]), new objj_method(sel_getUid("minValue"), function $CPSlider__minValue(self, _cmd)
 { with(self)
@@ -43,6 +45,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
     var doubleValue = objj_msgSend(self, "doubleValue");
     if (doubleValue > _maxValue)
         objj_msgSend(self, "setDoubleValue:", _maxValue);
+    objj_msgSend(self, "setNeedsLayout");
+    objj_msgSend(self, "setNeedsDisplay:", YES);
 }
 },["void","float"]), new objj_method(sel_getUid("maxValue"), function $CPSlider__maxValue(self, _cmd)
 { with(self)
