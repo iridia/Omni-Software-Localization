@@ -12,6 +12,7 @@
 @import "User.j"
 @import "TwitterController.j"
 @import "GitHubController.j"
+@import "RssController.j"
 
 @import "CKSourceView.j"
 
@@ -39,6 +40,7 @@
     
     var twitterController = [[TwitterController alloc] initWithUsers:users andKey:@"twitter"];
     var gitHubController = [[GitHubController alloc] initWithUsers:users andKey:@"github"];
+    var rssController = [[RssController alloc] initWithFeed:@"http://blog.derekhammer.com/?tag=osl&feed=json" andUser:derek];
     
     var splitView = [[CPSplitView alloc] initWithFrame:[contentView bounds]];
     [splitView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
