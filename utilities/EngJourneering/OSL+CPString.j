@@ -27,7 +27,7 @@
     
     if (components)
     {
-        var date = new Date(components[0], components[1], components[2].substring(0, 2));
+        var date = new Date(components[0], components[1] - 1, components[2].substring(0, 2));
         return date;
     }
     

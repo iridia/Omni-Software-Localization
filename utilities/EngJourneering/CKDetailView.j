@@ -4,7 +4,6 @@
 {
     CPArray users;
     CPCollectionView details;
-    CPView titleView;
 }
 
 - (id)initWithFrame:(CGRect)rect users:someUsers
@@ -15,26 +14,25 @@
     {
         users = someUsers;
         
-        titleView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([self frame]), 100)];
-        [titleView setBackgroundColor:[CPColor grayColor]];
-        [self addSubview:titleView];
-        
         var dataView = [[CPCollectionViewItem alloc] init];
         [dataView setView:[[UserDataView alloc] initWithFrame:CGRectMakeZero()]];
         
-        details = [[CPCollectionView alloc] initWithFrame:CGRectMake(0, 0, 1000, 1000)];
+        details = [[CPCollectionView alloc] initWithFrame:rect];
         [details setItemPrototype:dataView];
         [details setMaxNumberOfColumns:1];
         [details setVerticalMargin:10.0];
-        [details setMinItemSize:CGSizeMake(100.0, 42.0)];
-        [details setMaxItemSize:CGSizeMake(1000000.0, 42.0)];
+        [details setMinItemSize:CGSizeMake(500.0, 42.0)];
+        [details setMaxItemSize:CGSizeMake(10000.0, 42.0)];
+        [details setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [details setDelegate:self];
         
-        var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0, 0, 1000, 1000)];
+        var scrollView = [[CPScrollView alloc] initWithFrame:rect];
         [scrollView setAutohidesScrollers:YES];
         [scrollView setDocumentView:details];
+        [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
         [self addSubview:scrollView];
-        [self setBackgroundColor:[CPColor lightGrayColor]];
+        [self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.656 alpha:1.000]];
     }
     
     return self;
@@ -42,9 +40,18 @@
 
 - (void)setUser:(User)user
 {
-    console.log("setting user", [user name]);
+    var data = [user data];
+    [data sortUsingFunction:function(i, j) {return ([i date] < [j date]) ? CPOrderedDescending : CPOrderedAscending} context:nil]
     [details setContent:[user data]];
-    [self setNeedsDisplay:YES];
+}
+
+- (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
+{
+    var listIndex = [[aCollectionView selectionIndexes] firstIndex];
+    
+    var link = [[[aCollectionView content] objectAtIndex:listIndex] link];
+    
+    window.open([link absoluteString]);
 }
 
 @end
@@ -62,8 +69,8 @@
     
     if (self)
     {
-        // Do some initialization?
-        [self setBackgroundColor:[CPColor whiteColor]];
+        [self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
+        [self setAutoresizingMask:CPViewWidthSizable];
     }
     
     return self;
