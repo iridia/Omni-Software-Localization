@@ -26,19 +26,20 @@ var ProjectOSL = "projectosl";
     return self;
 }
 
-- (void)connection:(CPJSONPConnection)connection didReceiveData:(CPJSObject)data
+- (void)connection:(CPJSONPConnection)connection didReceiveData:(CPJSObject)tweets
 {
     var user = [[self users] objectAtIndex:[connections indexOfObject:connection]];
     
-    for (var i = 0; i < data.length; i++) {
-        if (data[i].in_reply_to_screen_name === ProjectOSL) {
-            var message = [data[i].text removeOccurencesOfString:"@" + ProjectOSL]
+    for (var i = 0; i < tweets.length; i++) {
+        var tweet = tweets[i];
+        if (tweet.in_reply_to_screen_name === ProjectOSL) {
+            var message = [[tweet.text removeOccurencesOfString:"@" + ProjectOSL] removeTime];
             
-            var time = [message findTimeInString];
+            var time = [tweet.text findTime];
             
-            var date = [[CPDate alloc] initWithString:data[i].created_at];
+            var date = [[CPDate alloc] initWithString:tweet.created_at];
             
-            var link = [CPURL URLWithString:@"http://www.twitter.com/" + [[user handles] objectForKey:[self key]] + "/status/" + data[i].id];
+            var link = [CPURL URLWithString:@"http://www.twitter.com/" + [[user handles] objectForKey:[self key]] + "/status/" + tweet.id];
             
             [user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"Twitter" user:[user name] link:link]];
         }
