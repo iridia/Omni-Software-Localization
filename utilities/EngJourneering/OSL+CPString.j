@@ -1,11 +1,11 @@
 @import <Foundation/CPString.j>
 
+var timeRegEx = new RegExp(".*t:(\\d+)h(\\d+)m", "gi");
+
 @implementation CPString (OSL)
 
-- (CPNumber)findTimeInString
-{
-    var timeRegEx = new RegExp(".*t:(\\d+)h(\\d+)m", "gi");
-    
+- (CPNumber)findTime
+{    
     var time = 0;
     
     var matches = timeRegEx.exec(self);
@@ -16,22 +16,31 @@
     return time;
 }
 
+- (CPString)removeTime
+{
+    // Can't get this to work yet
+    return self;
+}
+
 - (CPString)removeOccurencesOfString:(CPString)removeString
 {
     return [self stringByReplacingOccurrencesOfString:removeString withString:""];
 }
 
-- (CPDate)convertToDate
+- (CPDate)convertFromGitHubDateToCPDate
 {
-    var components = [self componentsSeparatedByString:@"-"];
+    var dayThenTime = [self componentsSeparatedByString:@"T"];
     
-    if (components)
-    {
-        var date = new Date(components[0], components[1] - 1, components[2].substring(0, 2));
-        return date;
+    if (dayThenTime) {
+        var date = [dayThenTime[0] componentsSeparatedByString:@"-"];
+        var time = [dayThenTime[1] componentsSeparatedByString:@":"];
+        
+        if (date && time) {
+            return new Date(date[0], date[1] - 1, date[2], time[0], time[1], time[2].substring(0, 2));
+        }
     }
     
-    return nil;
+    return 0;
 }
 
 @end

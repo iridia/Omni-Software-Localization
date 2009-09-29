@@ -28,14 +28,15 @@
         var gitHubHandle = [[user handles] objectForKey:[self key]];
         
         for (var i = 0; i < commits.length; i++) {
-            if (commits[i].author.name === gitHubHandle) {
-                var message = commits[i].message;
+            var commit = commits[i];
+            if (commit.author.name === gitHubHandle) {
+                var message = [commit.message removeTime];
                 
-                var time = [message findTimeInString];
+                var time = [commit.message findTime];
                 
-                var date = [commits[i].authored_date convertToDate];
+                var date = [commit.authored_date convertFromGitHubDateToCPDate];
                 
-                var link = [CPURL URLWithString:commits[i].url];
+                var link = [CPURL URLWithString:commit.url];
                 
                 [user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"GitHub" user:[user name] link:link]];
             }
