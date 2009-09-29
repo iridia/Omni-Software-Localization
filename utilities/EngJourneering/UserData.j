@@ -27,4 +27,16 @@
     return self;
 }
 
+- (unsigned)compare:(UserData)other
+{
+    if ([self date] < [other date])
+    {
+        return CPOrderedDescending;
+    } else if ([self date] > [other date]) {
+        return CPOrderedAscending;
+    } else {
+        return CPOrderedSame;
+    }
+}
+
 @end
