@@ -2,7 +2,7 @@
 
 @import "CKDetailView.j"
 
-@implementation CKSourceView : CPCollectionView
+@implementation CKSourceView : CPView
 {
     CPArray users @accessors(readonly);
     CKDetailView detailView @accessors;
@@ -18,16 +18,18 @@
         
         var userListView = [[CPCollectionViewItem alloc] init];
         [userListView setView:[[UserListView alloc] initWithFrame:CGRectMakeZero()]];
-        [self setItemPrototype:userListView];
         
-        [self setMaxNumberOfColumns:1];
-        [self setVerticalMargin:0.0];
+        var collectionView = [[CPCollectionView alloc] initWithFrame:rect];
+        [collectionView setItemPrototype:userListView];
+        [collectionView setMaxNumberOfColumns:1];
+        [collectionView setVerticalMargin:0.0];
+        [collectionView setMinItemSize:CGSizeMake(100.0, 40.0)];
+        [collectionView setMaxItemSize:CGSizeMake(1000000.0, 40.0)];
+        [collectionView setContent:users];
+        [collectionView setDelegate:self];
         
-        [self setMinItemSize:CGSizeMake(100.0, 40.0)];
-        [self setMaxItemSize:CGSizeMake(1000000.0, 40.0)];
-        
-        [self setContent:users];
-        [self setDelegate:self];
+        [self addSubview:collectionView];
+        [self setBackgroundColor:[CPColor colorWithCalibratedRed:0.840 green:0.868 blue:0.899 alpha:1.000]];
     }
     
     return self;
@@ -74,7 +76,7 @@
     if (!highlightView)
     {
         highlightView = [[CPView alloc] initWithFrame:CGRectCreateCopy([self bounds])];
-        [highlightView setBackgroundColor:[CPColor blueColor]];
+        [highlightView setBackgroundColor:[CPColor colorWithCalibratedRed:0.561 green:0.631 blue:0.761 alpha:1.000]];
     }
  
     if (flag)

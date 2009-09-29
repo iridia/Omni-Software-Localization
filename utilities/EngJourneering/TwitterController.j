@@ -29,7 +29,7 @@ var ProjectOSL = "projectosl";
 - (void)connection:(CPJSONPConnection)connection didReceiveData:(CPJSObject)data
 {
     var user = [[self users] objectAtIndex:[connections indexOfObject:connection]];
-
+    
     for (var i = 0; i < data.length; i++) {
         if (data[i].in_reply_to_screen_name === ProjectOSL) {
             var message = [data[i].text removeOccurencesOfString:"@" + ProjectOSL]
@@ -38,7 +38,9 @@ var ProjectOSL = "projectosl";
             
             var date = [[CPDate alloc] initWithString:data[i].created_at];
             
-            [user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"Twitter" user:[user name]]];
+            var link = [CPURL URLWithString:@"http://www.twitter.com/" + [[user handles] objectForKey:[self key]] + "/status/" + data[i].id];
+            
+            [user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"Twitter" user:[user name] link:link]];
         }
     }
 }

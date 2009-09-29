@@ -35,7 +35,9 @@
                 
                 var date = [commits[i].authored_date convertToDate];
                 
-                [user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"GitHub" user:[user name]]];
+                var link = [CPURL URLWithString:commits[i].url];
+                
+                [user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"GitHub" user:[user name] link:link]];
             }
         }
     }

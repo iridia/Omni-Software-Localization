@@ -7,9 +7,10 @@
     CPDate date @accessors(readonly);
     CPString source @accessors(readonly);
     CPString user @accessors(readonly);
+    CPURL link @accessors(readonly);
 }
 
-- (id)initWithMessage:(CPString)aMessage time:(CPNumber)aTime date:(CPDate)aDate source:(CPString)theSource user:(CPString)theUser
+- (id)initWithMessage:(CPString)aMessage time:(CPNumber)aTime date:(CPDate)aDate source:(CPString)theSource user:(CPString)theUser link:(CPURL)aLink
 {
     self = [super init];
     
@@ -20,6 +21,7 @@
         date = aDate;
         source = theSource;
         user = theUser;
+        link = aLink;
     }
     
     return self;
