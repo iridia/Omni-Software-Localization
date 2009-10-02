@@ -1,5 +1,9 @@
 @import <AppKit/CPView.j>
+@import "CPUploadButton.j"
 
+// OLWelcomeScreen
+//
+// The screen that is displayed to first-time visitors.
 @implementation OLWelcomeScreen : CPView
 {
 }
@@ -11,7 +15,7 @@
 		var welcomeText = [CPTextField labelWithTitle:@"Welcome to Omni Software Localization!"];
 		var importText = [CPTextField labelWithTitle:@"Import localizable files in order for them to be translated!"];
 		var localizeText = [CPTextField labelWithTitle:@"Start localizing applications from one language to another!"];
-		var importButton = [CPButton buttonWithTitle:@"Import"];
+		var importButton = [[UploadButton alloc] initWithFrame:CGRectMakeZero()];
 		var localizeButton = [CPButton buttonWithTitle:@"Localize"];
 		var awesomeImage = [[CPImage alloc] initByReferencingFile:@"http://www.gstatic.com/hostedimg/dbf8ffc7c45dee79_large" size:CGSizeMake(200,100)];
 		var imageView = [[CPImageView alloc] initWithFrame:CPMakeRect(250,60,75,100)];
@@ -30,6 +34,10 @@
 		[welcomeText sizeToFit];
 		[welcomeText setCenter:CGPointMake([self center].x, 40)];
 		
+		[importButton setTitle:@"Import"];
+		[importButton sizeToFit];
+		[importButton setDelegate:self];
+				
 		var point = [welcomeText center];
 		point.y = point.y + 25;
 		[importButton setFrameOrigin:point];
@@ -53,20 +61,30 @@
 	return self;
 }
 
-- (void)uploadFile:(id)sender
+- (void)startLocalizing:(id)sender
 {
-	alert("Uploaded!");
+	// TODO: Go to localizing screen
 }
 
-- (void)startLocalizing:(id)sender
-{	
-	alert("Localized!");
+- (void)uploadButton:(id)sender didChangeSelection:(CPString)selection
+{
+	[sender submit];
+}
+
+- (void)uploadButtonDidBeginUpload:(id)sender
+{
+	// TODO: Begin Upload Stuff
+}
+
+- (void)uploadDidFinishWithResponse:(id)sender
+{
+	// TODO: Upload finished stuff
 }
 
 - (void)drawRect:(CPRect)rect
 {
 	var bPath = [CPBezierPath bezierPathWithRect:rect];
-			
+	
 	[bPath setLineWidth:5];
 	[bPath stroke];
 }
