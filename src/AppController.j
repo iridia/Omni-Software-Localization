@@ -7,28 +7,41 @@
  */
 
 @import <Foundation/CPObject.j>
+@import "OLWelcomeView.j"
+@import "OLResourceView.j"
 
 
 @implementation AppController : CPObject
 {
-    CPWindow    theWindow; //this "outlet" is connected automatically by the Cib
+	CPView _contentView;
+	OLWelcomeView _welcomeView;
+	OLResourceView _resourceView;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-    // This is called when the application is done loading.
-    
-    console.log("This is a more interesting test");
+	var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask];
+	
+	_contentView = [theWindow contentView];
+	
+	_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,200) withController:self];
+	[_welcomeView setCenter:[_contentView center]];
+	
+	[_welcomeView setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin | CPViewMinYMargin]
+	
+	[_contentView addSubview:_welcomeView];
+	[_contentView setBackgroundColor: [CPColor colorWithHexString:@"AAAAAA"]];
+	
+	[theWindow orderFront:self];
 }
 
-- (void)awakeFromCib
+- (void)transitionToResourceView:(id)sender
 {
-    // This is called when the cib is done loading.
-    // You can implement this method on any object instantiated from a Cib.
-    // It's a useful hook for setting up current UI values, and other things. 
-    
-    // In this case, we want the window from Cib to become our full browser window
-    [theWindow setFullBridge:YES];
+	[_welcomeView removeFromSuperview];
+	
+	_resourceView = [[OLResourceView alloc] initWithFrame:[_contentView bounds]];
+	
+	[_contentView addSubview:_resourceView];
 }
 
 @end
