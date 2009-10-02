@@ -7,28 +7,41 @@
  */
 
 @import <Foundation/CPObject.j>
-@import "OLWelcomeScreen.j"
+@import "OLWelcomeView.j"
+@import "OLResourceView.j"
 
 
 @implementation AppController : CPObject
 {
+	CPView _contentView;
+	OLWelcomeView _welcomeView;
+	OLResourceView _resourceView;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
 	var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask];
 	
-	var contentView = [theWindow contentView];
+	_contentView = [theWindow contentView];
 	
-	var welcomeScreen = [[OLWelcomeScreen alloc] initWithFrame:CPRectMake(0,0,700,200)];
-	[welcomeScreen setCenter:[contentView center]];
+	_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,200) withController:self];
+	[_welcomeView setCenter:[_contentView center]];
 	
-	[welcomeScreen setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin | CPViewMinYMargin]
+	[_welcomeView setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin | CPViewMinYMargin]
 	
-	[contentView addSubview:welcomeScreen];
-	[contentView setBackgroundColor: [CPColor colorWithHexString:@"AAAAAA"]];
+	[_contentView addSubview:_welcomeView];
+	[_contentView setBackgroundColor: [CPColor colorWithHexString:@"AAAAAA"]];
 	
 	[theWindow orderFront:self];
+}
+
+- (void)transitionToResourceView:(id)sender
+{
+	[_welcomeView removeFromSuperview];
+	
+	_resourceView = [[OLResourceView alloc] initWithFrame:[_contentView bounds]];
+	
+	[_contentView addSubview:_resourceView];
 }
 
 @end

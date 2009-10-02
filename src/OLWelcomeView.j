@@ -4,11 +4,11 @@
 // OLWelcomeScreen
 //
 // The screen that is displayed to first-time visitors.
-@implementation OLWelcomeScreen : CPView
+@implementation OLWelcomeView : CPView
 {
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame withController:(AppController)controller
 {
 	if(self = [super initWithFrame:frame])
 	{
@@ -55,15 +55,10 @@
 		[importButton setTarget:self];
 		[importButton setAction:@selector(uploadFile:)];
 		
-		[localizeButton setTarget:self];
-		[localizeButton setAction:@selector(startLocalizing:)];		
+		[localizeButton setTarget:controller];
+		[localizeButton setAction:@selector(transitionToResourceView:)];		
 	}
 	return self;
-}
-
-- (void)startLocalizing:(id)sender
-{
-	// TODO: Go to localizing screen
 }
 
 - (void)uploadButton:(id)sender didChangeSelection:(CPString)selection
