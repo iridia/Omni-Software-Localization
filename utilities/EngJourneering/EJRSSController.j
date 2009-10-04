@@ -33,10 +33,11 @@
     for (var i = 0; i < [posts count]; i++)
     {
         var post = [posts objectAtIndex:i];
+        
+        var message = post.title;
         var link = [CPURL URLWithString:post.link];
         var date = [[CPDate alloc] initWithString:post.date];
-        
-        var dictionary = [[CPDictionary alloc] initWithObjects:[post, 0, date, link, @"Blog", [user displayName]]
+        var dictionary = [[CPDictionary alloc] initWithObjects:[message, 0, date, link, @"Blog", [user displayName]]
                                                        forKeys:[@"message", @"time", @"date", @"link", @"source", @"user"]];
         [user addData:[[EJUserData alloc] initWithDictionary:dictionary]];
     }
