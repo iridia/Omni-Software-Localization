@@ -1,5 +1,8 @@
 @import <AppKit/CPTableView.j>
 
+/*!
+ * A view for displaying line items.
+ */
 @implementation OLLineItemTableView : CPTableView
 {
 }

@@ -1,5 +1,8 @@
 @import <AppKit/CPTableView.j>
 
+/*!
+ * A view for displaying the available filter options based on structure.
+ */
 @implementation OLStructureTableView : CPTableView
 {
 }

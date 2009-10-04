@@ -1,5 +1,8 @@
 @import <AppKit/CPTableView.j>
 
+/*!
+ * A view for displaying available localizable resource files.
+ */
 @implementation OLFileTableView : CPTableView
 {
 }

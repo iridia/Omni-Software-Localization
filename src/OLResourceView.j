@@ -4,6 +4,9 @@
 @import "OLFileTableView.j"
 @import "OLLineItemTableView.j"
 
+/*!
+ * The view for displaying relevant resource information.
+ */
 @implementation OLResourceView : OLView
 {
 }
