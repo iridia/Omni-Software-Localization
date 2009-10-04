@@ -1,6 +1,6 @@
-@import "DataController.j"
+@import "EJSourceController.j"
 
-@implementation GitHubController : DataController
+@implementation EJGitHubController : EJSourceController
 {
     CPJSONPConnection connection;
 }
@@ -31,14 +31,13 @@
             var commit = commits[i];
             if (commit.author.name === gitHubHandle) {
                 var message = [commit.message removeTime];
-                
                 var time = [commit.message findTime];
-                
                 var date = [commit.authored_date convertFromGitHubDateToCPDate];
-                
                 var link = [CPURL URLWithString:commit.url];
                 
-                [user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"GitHub" user:[user name] link:link]];
+                var dictionary = [[CPDictionary alloc] initWithObjects:[message, time, date, link, @"Github", [user displayName]]
+                                                               forKeys:[@"message", @"time", @"date", @"link", @"source", @"user"]];
+                [user addData:[[EJUserData alloc] initWithDictionary:dictionary]];
             }
         }
     }

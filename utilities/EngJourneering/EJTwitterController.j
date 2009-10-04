@@ -1,8 +1,8 @@
-@import "DataController.j"
+@import "EJSourceController.j"
 
 var ProjectOSL = "projectosl";
 
-@implementation TwitterController : DataController
+@implementation EJTwitterController : EJSourceController
 {
     CPArray connections;
 }
@@ -15,7 +15,7 @@ var ProjectOSL = "projectosl";
     {
         connections = [];
         
-        for (var i = 0; i < users.length; i++) {
+        for (var i = 0; i < [users count]; i++) {
             var url = [[CPURL alloc] initWithString:@"http://twitter.com/status/user_timeline/" + [[users[i] handles] objectForKey:[self key]] + ".json"];
             var request = [CPURLRequest requestWithURL:url];
             var connection = [CPJSONPConnection sendRequest:request callback:@"callback" delegate:self];
@@ -31,17 +31,16 @@ var ProjectOSL = "projectosl";
     var user = [[self users] objectAtIndex:[connections indexOfObject:connection]];
     
     for (var i = 0; i < tweets.length; i++) {
-        var tweet = tweets[i];
+        var tweet = [tweets objectAtIndex:i];
         if (tweet.in_reply_to_screen_name === ProjectOSL) {
             var message = [[tweet.text removeOccurencesOfString:"@" + ProjectOSL] removeTime];
-            
             var time = [tweet.text findTime];
-            
             var date = [[CPDate alloc] initWithString:tweet.created_at];
-            
             var link = [CPURL URLWithString:@"http://www.twitter.com/" + [[user handles] objectForKey:[self key]] + "/status/" + tweet.id];
             
-            [user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"Twitter" user:[user name] link:link]];
+            var dictionary = [[CPDictionary alloc] initWithObjects:[message, time, date, link, @"Twitter", [user displayName]]
+                                                           forKeys:[@"message", @"time", @"date", @"link", @"source", @"user"]];
+            [user addData:[[EJUserData alloc] initWithDictionary:dictionary]];
         }
     }
 }

@@ -1,6 +1,6 @@
 @import <AppKit/CPCollectionView.j>
 
-@implementation CKDetailView : CPView
+@implementation EJDetailView : CPView
 {
     CPArray users;
     CPCollectionView details;
@@ -38,11 +38,24 @@
     return self;
 }
 
+- (void)setAllUsers:(CPArray)users
+{
+    var data = [];
+    
+    for (var i = 0; i < [users count]; i++)
+    {
+        [data addObjectsFromArray:[users[i] data]];
+    }
+    
+    [data sortUsingSelector:@selector(compare:)];
+    [details setContent:data];
+}
+
 - (void)setUser:(User)user
 {
     var data = [user data];
-    [data sortUsingFunction:function(i, j) {return ([i date] < [j date]) ? CPOrderedDescending : CPOrderedAscending} context:nil]
-    [details setContent:[user data]];
+    [data sortUsingSelector:@selector(compare:)];
+    [details setContent:data];
 }
 
 - (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView

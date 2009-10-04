@@ -2,7 +2,7 @@
 
 var timeRegEx = new RegExp(".*t:(\\d+)h(\\d+)m", "gi");
 
-@implementation CPString (OSL)
+@implementation CPString (EJ)
 
 - (CPNumber)findTime
 {    
