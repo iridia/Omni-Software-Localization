@@ -1,16 +1,18 @@
-@import <AppKit/CPView.j>
+@import "OLView.j"
 @import "CPUploadButton.j"
 
-// OLWelcomeScreen
-//
-// The screen that is displayed to first-time visitors.
-@implementation OLWelcomeView : CPView
+/*!
+ * OLWelcomeScreen
+ *
+ * The screen that is displayed to first-time visitors.
+ */
+@implementation OLWelcomeView : OLView
 {
 }
 
 - (id)initWithFrame:(CGRect)frame withController:(AppController)controller
 {
-	if(self = [super initWithFrame:frame])
+	if(self = [super initWithFrame:frame withController:controller])
 	{
 		var welcomeText = [CPTextField labelWithTitle:@"Welcome to Omni Software Localization!"];
 		var importText = [CPTextField labelWithTitle:@"Import localizable files in order for them to be translated!"];
