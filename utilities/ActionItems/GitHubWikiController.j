@@ -2,16 +2,26 @@
 
 @implementation GitHubWikiController : DataController
 {
-	CPJSONPConnection connection;
+	CPArray connections;
 }
 	
-- (id)init
+- (id)initWithPages:(CPArray)somePages
 {
 	self = [super init];
 	
 	if (self)
 	{
-		var url = [[CPURL alloc] initWithString:@"http://wiki.github.com/hammerdr/Omni-Software-Localization/"];
+		connections = [];
+		
+		var baseUrl = [[CPURL alloc] initWithString:@"http://wiki.github.com/hammerdr/Omni-Software-Localization/"];
+		
+		for (var i=0; i < [somePages count]; i++)
+		{
+			var url = [[CPURL alloc] initWithString:baseUrl + [[somePages objectAtIndex:i] path]];
+			var request = [CPURLRequest requestWithURL:url];
+			var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+			[connections addObject:connection];
+		}
 	}
 	
 	return self;
@@ -22,10 +32,35 @@
 
 
 - (void)connection:(CPJSONPConnection)connection didReceiveData:(CPJSObject)data
-{
-
-	console.log(data);
-
+{	
+	var regEx = new RegExp(".*<b>Action Item<\\/b>(.*)<\\/(li|td|p)>", "gi");
+	
+	var nextMatch = regEx.exec(data);
+	
+	var allMatches = [[CPArray init] alloc];
+	[allMatches addObject:nextMatch];
+	
+	while (nextMatch)
+	{
+		[allMatches addObject:nextMatch];
+		nextMatch = regEx.exec(data);
+	}
+	console.log([allMatches count]);
+	console.log(allMatches);
+	
+	var goodMatches = [[CPArray init] alloc];
+	
+	for (var i=0; i<[allMatches count]; i++)
+	{
+		var match = [[allMatches objectAtIndex:i] objectAtIndex:1];
+		if (match.indexOf("</del>") < 0)
+		{
+			[goodMatches addObject:match];
+		}
+	}
+	
+	console.log(goodMatches);
+	
 //	var commits = data.commits;
 //	
 //	for (var j = 0; j < [[self users] count]; j++) {

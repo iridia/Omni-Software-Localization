@@ -35,7 +35,10 @@
 	pages = [advisorMeetings, clientMeetings];
 	
 	
-	var gitHubWikiController = [[GitHubWikiController alloc] init];
+	var gitHubWikiController = [[GitHubWikiController alloc] initWithPages:pages];
+	
+	
+	
 	
 	var splitView = [[CPSplitView alloc] initWithFrame:[contentView bounds]];
 	[splitView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
