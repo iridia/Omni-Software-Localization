@@ -21,13 +21,7 @@
 		var imageView = [[CPImageView alloc] initWithFrame:CPMakeRect(250,60,75,100)];
 		
 		[imageView setImage:awesomeImage];
-		
-		[self addSubview:welcomeText];
-		[self addSubview:importText];
-		[self addSubview:localizeText];
-		[self addSubview:importButton];
-		[self addSubview:localizeButton];
-		[self addSubview:imageView];
+
 		[self setBackgroundColor: [CPColor whiteColor]];
 		
 		[welcomeText setFont:[CPFont boldSystemFontOfSize:18]];
@@ -37,6 +31,8 @@
 		[importButton setTitle:@"Import"];
 		[importButton sizeToFit];
 		[importButton setDelegate:self];
+		
+		[self addViews:new Array(welcomeText, importText, localizeText, importButton, localizeButton, imageView)];
 				
 		var point = [welcomeText center];
 		point.y = point.y + 25;
@@ -59,6 +55,14 @@
 		[localizeButton setAction:@selector(transitionToResourceView:)];		
 	}
 	return self;
+}
+
+- (void)addViews:(CPArray)views
+{
+	for(var i = 0; i < [views count]; i++)
+	{
+		[self addSubview:views[i]];
+	}
 }
 
 - (void)uploadButton:(id)sender didChangeSelection:(CPString)selection
