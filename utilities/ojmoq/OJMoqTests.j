@@ -2,7 +2,7 @@
 @import "OJMoq.j"
 
 @implementation OJMoqTests : OJTestCase
- 
+
 - (void)testThatBaseObjectIsSet
 {
 	var testString = @"Test";
