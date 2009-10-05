@@ -5,7 +5,7 @@
 {
 	CPString name @accessors(readonly);
 	CPString path @accessors(readonly);
-	CPArray data @accessors(readonly);
+	CPArray actionItems @accessors(readonly);
 }
 
 - (id)initWithName:(CPString)aName withPath:(CPString)aPath
@@ -14,7 +14,7 @@
 	
 	if (self)
 	{
-		data = [];
+		actionItems = [];
 		name = aName;
 		path = aPath;
 	}
@@ -22,9 +22,9 @@
 	return self;
 }
 
-- (void)addData:(WikiPageData)moreData
+- (void)addActionItem:(ActionItem)actionItem
 {
-	[data addObject:moreData];
+	[actionItems addObject:actionItem];
 }
 
 @end

@@ -4,7 +4,7 @@
 
 @implementation CKSourceView : CPView
 {
-    CPArray sources @accessors(readonly);
+    CPArray _sources @accessors(readonly, property=sources);
     CKDetailView detailView @accessors;
 }
 
@@ -14,7 +14,7 @@
     
     if (self)
     {
-        sources = someSources;
+		_sources = someSources;
         
         var sourceListView = [[CPCollectionViewItem alloc] init];
         [sourceListView setView:[[SourceListView alloc] initWithFrame:CGRectMakeZero()]];
@@ -25,7 +25,7 @@
         [collectionView setVerticalMargin:0.0];
         [collectionView setMinItemSize:CGSizeMake(100.0, 40.0)];
         [collectionView setMaxItemSize:CGSizeMake(1000000.0, 40.0)];
-        [collectionView setContent:sources];
+        [collectionView setContent:_sources];
         [collectionView setDelegate:self];
         
         [self addSubview:collectionView];

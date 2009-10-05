@@ -1,4 +1,5 @@
 @import "DataController.j"
+@import "ActionItem.j"
 
 @implementation GitHubWikiController : DataController
 {
@@ -7,7 +8,7 @@
 	
 - (id)initWithPages:(CPArray)somePages
 {
-	self = [super init];
+	self = [super initWithPages:somePages];
 	
 	if (self)
 	{
@@ -15,9 +16,9 @@
 		
 		var baseUrl = [[CPURL alloc] initWithString:@"http://wiki.github.com/hammerdr/Omni-Software-Localization/"];
 		
-		for (var i=0; i < [somePages count]; i++)
+		for (var i=0; i < [pages count]; i++)
 		{
-			var url = [[CPURL alloc] initWithString:baseUrl + [[somePages objectAtIndex:i] path]];
+			var url = [[CPURL alloc] initWithString:baseUrl + [[pages objectAtIndex:i] path]];
 			var request = [CPURLRequest requestWithURL:url];
 			var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 			[connections addObject:connection];
@@ -35,53 +36,36 @@
 {	
 	var regEx = new RegExp(".*<b>Action Item<\\/b>(.*)<\\/(li|td|p)>", "gi");
 	
+	var page = [pages objectAtIndex:[connections indexOfObject:connection]];
+	
 	var nextMatch = regEx.exec(data);
 	
 	var allMatches = [[CPArray init] alloc];
-	[allMatches addObject:nextMatch];
+	if (nextMatch) [allMatches addObject:nextMatch];
 	
 	while (nextMatch)
 	{
 		[allMatches addObject:nextMatch];
 		nextMatch = regEx.exec(data);
 	}
-	console.log([allMatches count]);
-	console.log(allMatches);
 	
-	var goodMatches = [[CPArray init] alloc];
+	// var completedMatches = [[CPArray init] alloc]; // delete later
 	
 	for (var i=0; i<[allMatches count]; i++)
 	{
 		var match = [[allMatches objectAtIndex:i] objectAtIndex:1];
+
 		if (match.indexOf("</del>") < 0)
 		{
-			[goodMatches addObject:match];
+			[page addActionItem:[[ActionItem alloc] initWithString:match]];
 		}
+	//	else [completedMatches addObject:match]; // TODO: Add completed matches
 	}
 	
-	console.log(goodMatches);
+	console.log("GOOD MATCHES: ", page);
+	//console.log("COMPLETED MATCHES: " + completedMatches);
 	
-//	var commits = data.commits;
-//	
-//	for (var j = 0; j < [[self users] count]; j++) {
-//		var user = [[self users] objectAtIndex:j];
-//		var gitHubHandle = [[user handles] objectForKey:[self key]];
-//		
-//		for (var i = 0; i < commits.length; i++) {
-//			var commit = commits[i];
-//			if (commit.author.name === gitHubHandle) {
-//				var message = [commit.message removeTime];
-//				
-//				var time = [commit.message findTime];
-//				
-//				var date = [commit.authored_date convertFromGitHubDateToCPDate];
-//				
-//				var link = [CPURL URLWithString:commit.url];
-//				
-//				[user addData:[[UserData alloc] initWithMessage:message time:time date:date source:@"GitHub" user:[user name] link:link]];
-//			}
-//		}
-//	}
+
 
 }
 

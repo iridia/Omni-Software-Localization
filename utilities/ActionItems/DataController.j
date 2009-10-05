@@ -3,37 +3,22 @@
 
 @implementation DataController : CPObject
 {
-    CPArray users @accessors;
-    CPString key @accessors;
+    CPArray pages @accessors;
 }
 
 
--(id) init
+- (id)initWithPages:(CPArray)somePages
 {
 	self = [super init];
 	
 	if (self) {
-		
+		pages = somePages;
 	}
 	
 	return self;
 	
 }
 
-
-
-- (id)initWithUsers:(CPArray)someUsers andKey:(CPString)aKey
-{
-    self = [super init];
-    
-    if (self)
-    {
-        users = someUsers;
-        key = aKey;
-    }
-    
-    return self;
-}
 
 - (void)connection:(CPJSONPConnection)connection didReceiveData:(CPString)data
 {

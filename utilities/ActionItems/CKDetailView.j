@@ -22,7 +22,7 @@
 		[details setMaxNumberOfColumns:1];
 		[details setVerticalMargin:10.0];
 		[details setMinItemSize:CGSizeMake(500.0, 42.0)];
-		[details setMaxItemSize:CGSizeMake(10000.0, 42.0)];
+		[details setMaxItemSize:CGSizeMake(10000.0, 10000.0)];
 		[details setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 		[details setDelegate:self];
 		
@@ -40,9 +40,9 @@
 
 - (void)setSource:(WikiPage)source
 {
-	var data = [source data];
-	[data sortUsingFunction:function(i, j) {return ([i date] < [j date]) ? CPOrderedDescending : CPOrderedAscending} context:nil]
-	[details setContent:[source data]];
+	var data = [source actionItems];
+	// don't sort for now // [data sortUsingFunction:function(i, j) {return ([i date] < [j date]) ? CPOrderedDescending : CPOrderedAscending} context:nil]
+	[details setContent:data];
 }
 
 - (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
@@ -58,67 +58,55 @@
 
 @implementation SourceDataView : CPView
 {
-	CPTextField dateAndTime;
 	CPTextField message;
-//	CPTextField sourceAndUser;
-}
-
-- (id)initWithFrame:(CGRect)frame
-{
-	self = [super initWithFrame:frame];
 	
-	if (self)
-	{
-		[self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
-		[self setAutoresizingMask:CPViewWidthSizable];
-	}
+	CPWebView webView;
 	
-	return self;
-}
+}//
+//
+//- (id)initWithFrame:(CGRect)frame
+//{
+//	self = [super initWithFrame:frame];
+//	
+//	if (self)
+//	{
+//		[self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
+//		[self setAutoresizingMask:CPViewWidthSizable];
+//	}
+//	
+//	return self;
+//}
 
 - (void)setRepresentedObject:(JSObject)anObject
 {
-	if (!message)
-	{
-		message = [[CPTextField alloc] initWithFrame:CGRectInset([self bounds], 10, 10)];
-		
-		[message setFont:[CPFont systemFontOfSize:16.0]];
-		[message setTextShadowColor:[CPColor whiteColor]];
-		[message setTextShadowOffset:CGSizeMake(0, 1)];
- 
-		[self addSubview:message];
-	}
-	
-	[message setStringValue:[anObject message]];
-	[message sizeToFit];
-	[message setFrameOrigin:CGPointMake(10,CGRectGetHeight([message bounds]) / 2.0)];
-	
-	if (!dateAndTime)
-	{
-		dateAndTime = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([self bounds]), CGRectGetHeight([self bounds]))];
-		
-		[dateAndTime setFont:[CPFont systemFontOfSize:10.0]];
-		[dateAndTime setTextColor:[CPColor grayColor]];
-		
-		[self addSubview:dateAndTime];
-	}
-	
-	[dateAndTime setStringValue:[anObject date] + " for " + [anObject time] + " minutes."];
-	[dateAndTime sizeToFit];
-	
-//	if (!sourceAndUser)
+	//if (!message)
 //	{
-//		sourceAndUser = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([self bounds]), CGRectGetHeight([self bounds]))];
+//		message = [[CPTextField alloc] initWithFrame:CGRectInset([self bounds], 10, 10)];
 //		
-//		[sourceAndUser setFont:[CPFont systemFontOfSize:10.0]];
-//		[sourceAndUser setTextColor:[CPColor grayColor]];
-//		
-//		[self addSubview:sourceAndUser];
+//		[message setFont:[CPFont systemFontOfSize:16.0]];
+//		[message setTextShadowColor:[CPColor whiteColor]];
+//		[message setTextShadowOffset:CGSizeMake(0, 1)];
+// 
+//		[self addSubview:message];
 //	}
+//	
+//	[message setStringValue:[anObject actionItem]];
+//	[message sizeToFit];
+//	[message setFrameOrigin:CGPointMake(10,CGRectGetHeight([message bounds]) / 2.0)];
+
+
+	if (!webView)
+	{
+		webView = [[CPWebView alloc] initWithFrame:CGRectInset([self bounds], 10, 10)];
+		[self addSubview:webView];
+	}
 	
-//	[sourceAndUser setStringValue:"Posted by " + [anObject user] + " to " + [anObject source]];
-//	[sourceAndUser sizeToFit];
-//	[sourceAndUser setFrameOrigin:CGPointMake(CGRectGetWidth([self bounds]) - CGRectGetWidth([sourceAndUser bounds]), CGRectGetHeight([self bounds]) - CGRectGetHeight([sourceAndUser bounds]))];
+	var actionItemHTML = [anObject actionItem];
+	actionItemHTML = @"<html><body>" + actionItemHTML + @"</body></html>";
+	
+	[webView loadHTMLString:actionItemHTML];
+	[webView setFrameSize:CGSizeMake(CGRectGetWidth([self bounds]), 500)];
+	
 }
 
 @end
