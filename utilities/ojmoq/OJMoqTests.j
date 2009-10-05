@@ -1,7 +1,7 @@
 @import <Foundation/CPObject.J>
 @import "[OJMoq alloc].j"
 
-@implementation [OJMoq alloc]Tests : OJTestCase
+@implementation OJMoqTests : OJTestCase
 
 - (void)testThatBaseObjectIsSet
 {
