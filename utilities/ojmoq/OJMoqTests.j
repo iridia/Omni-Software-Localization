@@ -1,12 +1,12 @@
 @import <Foundation/CPObject.J>
-@import "OJMoq.j"
+@import "[OJMoq alloc].j"
 
-@implementation OJMoqTests : OJTestCase
+@implementation [OJMoq alloc]Tests : OJTestCase
 
 - (void)testThatBaseObjectIsSet
 {
 	var testString = @"Test";
-	var moq = [OJMoq initWithBaseObject:testString];
+	var moq = [[OJMoq alloc] initWithBaseObject:testString];
 	[self assert:[testString equals:[moq object]]];
 }
 
@@ -14,7 +14,7 @@
 {
 	var testString = @"Test";
 	var sel = @selector(stringByAppendingString:);
-	var moq = [OJMoq initWithBaseObject:testString];
+	var moq = [[OJMoq alloc] initWithBaseObject:testString];
 	[self assert:[moq sel:@"Temp"]];
 }
 
@@ -22,7 +22,7 @@
 {
 	var testString = @"Test";
 	var sel = @selector(stringByAppendingString:);
-	var moq = [OJMoq initWithBaseObject:testString];
+	var moq = [[OJMoq alloc] initWithBaseObject:testString];
 	[moq expectThatSelector:sel isCalled:1];
 	[moq sel:@"Temp"];
 	[moq verifyThatAllExpectationsHaveBeenMet];
@@ -32,7 +32,7 @@
 {
 	var testString = @"Test";
 	var sel = @selector(stringByAppendingString:);
-	var moq = [OJMoq initWithBaseObject:testString];
+	var moq = [[OJMoq alloc] initWithBaseObject:testString];
 	[moq expectThatSelector:sel isCalled:3];
 	[moq sel:@"Temp"];
 	[moq sel:@"Temp"];
@@ -45,7 +45,7 @@
 	var testString = @"Test";
 	var sel = @selector(stringByAppendingString:);
 	var sel2 = @selector(stringWithString:);
-	var moq = [OJMoq initWithBaseObject:testString];
+	var moq = [[OJMoq alloc] initWithBaseObject:testString];
 	[moq expectThatSelector:sel isCalled:1];
 	[moq expectThatSelector:sel2 isCalled:1];
 	[moq sel:@"Temp"];
@@ -57,7 +57,7 @@
 {
 	var testString = @"Test";
 	var sel = @selector(stringByAppendingString:);
-	var moq = [OJMoq initWithBaseObject:testString];
+	var moq = [[OJMoq alloc] initWithBaseObject:testString];
 	[moq expectThatSelector:sel isCalled:2];
 	[moq sel:@"Temp"];
 	[moq sel:@"Temp"];
@@ -69,7 +69,7 @@
 {
 	var testString = @"Test";
 	var sel = @selector(stringByAppendingString:);
-	var moq = [OJMoq initWithBaseObject:testString];
+	var moq = [[OJMoq alloc] initWithBaseObject:testString];
 	[moq expectThatSelector:sel isCalled:3];
 	[moq sel:@"Temp"];
 	[moq sel:@"Temp"];
