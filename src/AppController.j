@@ -9,6 +9,7 @@
 @import <Foundation/CPObject.j>
 @import "OLWelcomeView.j"
 @import "OLResourceView.j"
+@import "OLResourceController.j"
 
 
 @implementation AppController : CPObject
@@ -27,7 +28,7 @@
 	_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,200) withController:self];
 	[_welcomeView setCenter:[_contentView center]];
 	
-	[_welcomeView setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin | CPViewMinYMargin]
+	[_welcomeView setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin | CPViewMinYMargin];
 	
 	[_contentView addSubview:_welcomeView];
 	[_contentView setBackgroundColor: [CPColor colorWithHexString:@"AAAAAA"]];
@@ -39,7 +40,7 @@
 {
 	[_welcomeView removeFromSuperview];
 	
-	_resourceView = [[OLResourceView alloc] initWithFrame:[_contentView bounds]];
+	_resourceView = [[OLResourceView alloc] initWithFrame:[_contentView bounds] withController:[[OLResourceController alloc] init]];
 	
 	[_contentView addSubview:_resourceView];
 }

@@ -1,50 +1,58 @@
-@import <AppKit/CPView.j>
+@import "OLView.j"
+@import "OLFilterTableView.j"
+@import "OLStructureTableView.j"
+@import "OLFileTableView.j"
+@import "OLLineItemTableView.j"
 
-@implementation OLResourceView : CPView
+/*!
+ * The view for displaying relevant resource information.
+ */
+@implementation OLResourceView : OLView
 {
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame withController:(CPObject)controller
 {
-	if(self = [super initWithFrame:frame])
-	{
-		var fileSelectionView = [[CPView alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(frame), 200)];
+	if(self = [super initWithFrame:frame withController:controller])
+	{				
+		var fileSelectionView = [[CPView alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(frame), 220)];
 		
-		var filterTableView = [[CPTableView alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(frame)/4, 200)];
-		var structureTableView = [[CPTableView alloc] initWithFrame:CGRectMake(CGRectGetWidth(frame)/4,0,CGRectGetWidth(frame)/4, 200)];
-		var filesTableView = [[CPTableView alloc] initWithFrame:CGRectMake(CGRectGetWidth(frame)/2,0,CGRectGetWidth(frame)/2, 200)];
+		var filterView = [[CPScrollView alloc] initWithFrame:CGRectMake(20,20,CGRectGetWidth(frame)/4-40, 200)];
+		var filterTableView = [[OLFilterTableView alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth([filterView bounds]), 200)];
+		[filterView setDocumentView:filterTableView];
+		[filterView setBackgroundColor:[CPColor whiteColor]];
+		[filterView setHasHorizontalScroller:NO];
+		[filterView setAutohidesScrollers:YES];
 		
-		[fileSelectionView addSubview:filterTableView];
-		[fileSelectionView addSubview:structureTableView];
-		[fileSelectionView addSubview:filesTableView];
+		var structureView = [[CPScrollView alloc] initWithFrame:CGRectMake(CGRectGetWidth(frame)/4 + 20, 20,CGRectGetWidth(frame)/4 - 40, 200)];
+		var structureTableView = [[OLStructureTableView alloc] initWithFrame:CGRectMake(0, 0,CGRectGetWidth([structureView bounds]), 200)];
+		[structureView setDocumentView:structureTableView];
+		[structureView setBackgroundColor:[CPColor whiteColor]];
+		[structureView setAutohidesScrollers:YES];
+		[structureView setHasHorizontalScroller:NO];
 		
-		var column = [[CPTableColumn alloc] initWithIdentifier:@"a"];
-		[column setWidth: 200];
+		var filesView = [[CPScrollView alloc] initWithFrame:CGRectMake(CGRectGetWidth(frame)/2 + 20, 20,CGRectGetWidth(frame)/2 - 40, 200)];
+		var filesTableView = [[OLFileTableView alloc] initWithFrame:CGRectMake(0, 0,CGRectGetWidth([filesView bounds]), 200)];
+		[filesView setDocumentView:filesTableView];
+		[filesView setBackgroundColor:[CPColor whiteColor]];
+		[filesView setAutohidesScrollers:YES];
+		[filesView setHasHorizontalScroller:NO];
 		
-		[filterTableView addTableColumn:column];		
-		[structureTableView addTableColumn:column];	
-		[filesTableView addTableColumn:column];
+		[filterTableView setDataSource:controller];
+		[structureTableView setDataSource:controller];
+		[filesTableView setDataSource:controller];
 		
-		[filterTableView setDataSource:self];
-		[structureTableView setDataSource:self];
-		[filesTableView setDataSource:self];
+		[fileSelectionView addSubview:filterView];
+		[fileSelectionView addSubview:structureView];
+		[fileSelectionView addSubview:filesView];
 		
-		var lineItemTableView = [[CPTableView alloc] initWithFrame:CGRectMake(0,200,CGRectGetWidth(frame),CGRectGetHeight(frame)-200)];
+		var lineItemTableView = [[OLLineItemTableView alloc] initWithFrame:CGRectMake(20,240,CGRectGetWidth(frame)-40,CGRectGetHeight(frame)-200)];
+		[lineItemTableView setDataSource:controller];
 		
 		[self addSubview:fileSelectionView];
 		[self addSubview:lineItemTableView];
 	}
 	return self;
-}
-
-- (int)numberOfRowsInTableView:(CPTableView)view
-{
-	return 2;
-}
-
-- (id)tableView:(CPTableView)view objectValueForTableColumn:(CPTableColumn)column row:(int)row
-{	
-	return "Bob";
 }
 
 @end
