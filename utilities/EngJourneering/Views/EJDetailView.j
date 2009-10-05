@@ -1,5 +1,7 @@
 @import <AppKit/CPCollectionView.j>
 
+@import "../EJUser.j"
+
 @implementation EJDetailView : CPView
 {
     CPArray users;
@@ -44,7 +46,7 @@
     
     for (var i = 0; i < [users count]; i++)
     {
-        [data addObjectsFromArray:[users[i] data]];
+        [data addObjectsFromArray:[[users objectAtIndex:i] data]];
     }
     
     [data sortUsingSelector:@selector(compare:)];

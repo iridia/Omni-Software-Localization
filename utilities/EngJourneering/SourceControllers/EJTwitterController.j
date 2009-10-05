@@ -32,7 +32,7 @@ var ProjectOSL = "projectosl";
     
     for (var i = 0; i < tweets.length; i++) {
         var tweet = [tweets objectAtIndex:i];
-        if (tweet.in_reply_to_screen_name === ProjectOSL) {
+        if ((tweet.in_reply_to_screen_name === ProjectOSL) || (tweet.text.indexOf(ProjectOSL) >= 0)) {
             var message = [[tweet.text removeOccurencesOfString:"@" + ProjectOSL] removeTime];
             var time = [tweet.text findTime];
             var date = [[CPDate alloc] initWithString:tweet.created_at];

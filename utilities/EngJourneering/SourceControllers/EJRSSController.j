@@ -2,7 +2,7 @@
 
 @implementation EJRSSController : EJSourceController
 {
-    CPArrays connections;
+    CPArray connections;
 }
 
 - (id)initWithUsers:(CPArray)someUsers andKey:(CPString)aKey

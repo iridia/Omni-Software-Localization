@@ -1,5 +1,5 @@
 @import <Foundation/CPObject.j>
-@import "EJUserData.j"
+@import "../EJUserData.j"
 
 @implementation EJSourceController : CPObject
 {

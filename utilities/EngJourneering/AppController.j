@@ -10,10 +10,10 @@
 
 @import "EJ+CPString.j"
 @import "EJUser.j"
-@import "EJTwitterController.j"
-@import "EJGitHubController.j"
-@import "EJRSSController.j"
-@import "EJSourceView.j"
+@import "SourceControllers/EJTwitterController.j"
+@import "SourceControllers/EJGitHubController.j"
+@import "SourceControllers/EJRSSController.j"
+@import "Views/EJSourceView.j"
 
 @implementation AppController : CPObject
 {
