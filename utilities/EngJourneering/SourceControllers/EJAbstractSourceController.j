@@ -3,31 +3,41 @@
 
 @implementation EJAbstractSourceController : CPObject
 {
-    CPArray users @accessors(readonly);
-    CPString key @accessors(readonly);
+    CPString _key @accessors(property=key, readonly);
+    EJUser _currentUser @accessors(property=currentUser);
+    CPArray _currentUserData @accessors(property=currentUserData);
 }
 
-- (id)initWithUsers:(CPArray)someUsers andKey:(CPString)aKey
+- (id)initWithKey:(CPString)aKey
 {
     self = [super init];
     
     if (self)
     {
-        key = aKey;
-        users = [];
-        for (var i = 0; i < [someUsers count]; i++)
-        {
-            var user = [someUsers objectAtIndex:i];
-            if ([[user handles] objectForKey:key] != nil)
-            {
-                [users addObject:user];
-            } else {
-                console.log("user", [user displayName], "doesn't have a", key);
-            }
-        }
+        _key = aKey;
+        _currentUser = nil;
+        _currentUserData = [];
     }
     
     return self;
+}
+
+- (void)insertObject:(id)anObject inCurrentUserDataAtIndex:(CPInteger)anIndex
+{
+    [[self currentUserData] insertObject:anObject atIndex:anIndex];
+}
+
+- (BOOL)currentUserHasSource
+{
+    if (!_currentUser)
+        return NO;
+    
+    return ([[_currentUser handles] objectForKey:_key] != nil)
+}
+
+- (void)fetchDataForCurrentUser
+{
+    console.warn("You should override me.");
 }
 
 - (void)connection:(CPJSONPConnection)connection didReceiveData:(CPString)data

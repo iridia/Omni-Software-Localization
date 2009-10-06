@@ -5,29 +5,21 @@
     CPArray connections;
 }
 
-- (id)initWithUsers:(CPArray)someUsers andKey:(CPString)aKey
+- (void)fetchDataForCurrentUser
 {
-    self = [super initWithUsers:someUsers andKey:aKey];
-    
-    if (self)
-    {
-        connections = [];
-        
-        for (var i = 0; i < [users count]; i++) {
-            var user = [users objectAtIndex:i];
-            var url = [[CPURL alloc] initWithString:[[user handles] objectForKey:key]];
-            var request = [CPURLRequest requestWithURL:url];
-            var connection = [CPJSONPConnection sendRequest:request callback:@"callback" delegate:self];
-            [connections addObject:connection];
-        }
-    }
-    
-    return self;
+    if (![self currentUserHasSource])
+        return;
+
+    console.log("getting data for", _key, _currentUser);
+
+    var url = [[CPURL alloc] initWithString:[[_currentUser handles] objectForKey:_key]];
+    var request = [CPURLRequest requestWithURL:url];
+    var connection = [CPJSONPConnection sendRequest:request callback:@"callback" delegate:self];
 }
 
 - (void)connection:(CPJSONPConnection)connection didReceiveData:(CPJSObject)data
 {
-	var user = [users objectAtIndex:[connections indexOfObject:connection]];
+	var user = [self currentUser];
     var posts = data.items;
     
     for (var i = 0; i < [posts count]; i++)
@@ -39,7 +31,10 @@
         var date = [[CPDate alloc] initWithString:post.date];
         var dictionary = [[CPDictionary alloc] initWithObjects:[message, 0, date, link, @"Blog", [user displayName]]
                                                        forKeys:[@"message", @"time", @"date", @"link", @"source", @"user"]];
-        [user addData:[[EJUserData alloc] initWithDictionary:dictionary]];
+        
+        var data = [[EJUserData alloc] initWithDictionary:dictionary];
+        [user addData:data];
+        [self insertObject:data inCurrentUserDataAtIndex:i];
     }
 }
 

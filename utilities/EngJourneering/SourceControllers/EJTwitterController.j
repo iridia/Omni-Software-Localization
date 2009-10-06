@@ -7,28 +7,26 @@ var ProjectOSL = "projectosl";
     CPArray connections;
 }
 
-- (id)initWithUsers:(CPArray)someUsers andKey:(CPString)aKey
+- (CPURL)twitterURLForCurrentUser
 {
-    self = [super initWithUsers:someUsers andKey:aKey];
+    return [[CPURL alloc] initWithString:@"http://twitter.com/status/user_timeline/" + [[_currentUser handles] objectForKey:_key] + ".json"];
+}
+
+- (void)fetchDataForCurrentUser
+{
+    if (![self currentUserHasSource])
+        return;
+
+    console.log("getting data for", _key, _currentUser);
     
-    if (self)
-    {
-        connections = [];
-        
-        for (var i = 0; i < [users count]; i++) {
-            var url = [[CPURL alloc] initWithString:@"http://twitter.com/status/user_timeline/" + [[users[i] handles] objectForKey:[self key]] + ".json"];
-            var request = [CPURLRequest requestWithURL:url];
-            var connection = [CPJSONPConnection sendRequest:request callback:@"callback" delegate:self];
-            [connections addObject:connection];
-        }
-    }
-    
-    return self;
+    var url = [self twitterURLForCurrentUser];
+    var request = [CPURLRequest requestWithURL:url];
+    var connection = [CPJSONPConnection sendRequest:request callback:@"callback" delegate:self];
 }
 
 - (void)connection:(CPJSONPConnection)connection didReceiveData:(CPJSObject)tweets
 {
-    var user = [[self users] objectAtIndex:[connections indexOfObject:connection]];
+    var user = [self currentUser];
     
     for (var i = 0; i < tweets.length; i++) {
         var tweet = [tweets objectAtIndex:i];
@@ -40,7 +38,10 @@ var ProjectOSL = "projectosl";
             
             var dictionary = [[CPDictionary alloc] initWithObjects:[message, time, date, link, @"Twitter", [user displayName]]
                                                            forKeys:[@"message", @"time", @"date", @"link", @"source", @"user"]];
-            [user addData:[[EJUserData alloc] initWithDictionary:dictionary]];
+            
+            var data = [[EJUserData alloc] initWithDictionary:dictionary];
+            [user addData:data];
+            [self insertObject:data inCurrentUserDataAtIndex:[_currentUserData count]];
         }
     }
 }

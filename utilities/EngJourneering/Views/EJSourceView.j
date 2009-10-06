@@ -6,8 +6,8 @@
 @implementation EJSourceView : CPView
 {
     EJDetailView detailView @accessors;
-    EJUser _allUsers;
     CPCollectionView usersView;
+    EJUser _currentUser @accessors(property=currentUser);
 }
 
 - (id)initWithFrame:(CGRect)rect
@@ -16,8 +16,6 @@
     
     if (self)
     {        
-        _allUsers = [[EJUser alloc] initWithDictionary:[[CPDictionary alloc] initWithObjects:[@"All Users", nil] forKeys:[@"Display Name", @"Handles"]]];
-        
         var userListView = [[CPCollectionViewItem alloc] init];
         [userListView setView:[[UserListView alloc] initWithFrame:CGRectMakeZero()]];
         
@@ -37,11 +35,17 @@
     return self;
 }
 
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
+{
+    if (keyPath === @"users") {
+        [self setContent:[object users]];
+    }
+}
+
 - (void)setContent:(CPArray)content
 {
-    [content addObject:_allUsers];
-    
     [usersView setContent:content];
+    [usersView reloadContent];
 }
 
 - (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
@@ -52,14 +56,7 @@
     
     var user = [users objectAtIndex:listIndex];
     
-    if (user === _allUsers)
-    {
-        [[self detailView] setUsers:users];
-    }
-    else
-    {
-        [[self detailView] setUser:user];
-    }
+    [self setCurrentUser:user];
 }
 
 @end

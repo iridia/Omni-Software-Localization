@@ -37,25 +37,33 @@
     return self;
 }
 
-- (void)setUsers:(CPArray)users
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    var data = [];
-    
-    for (var i = 0; i < [users count]; i++)
-    {
-        [data addObjectsFromArray:[[users objectAtIndex:i] data]];
+    if (keyPath === @"currentUserData") {
+        var data = [object currentUserData];
+        [data sortUsingSelector:@selector(compare:)];
+        [self setContent:data];
     }
-    
-    [data sortUsingSelector:@selector(compare:)];
-    [details setContent:data];
 }
 
-- (void)setUser:(EJUser)user
+- (void)setContent:(CPArray)content
 {
-    var data = [user data];
-    [data sortUsingSelector:@selector(compare:)];
-    [details setContent:data];
+    [details setContent:content];
+    [details reloadContent];
 }
+
+// - (void)setUsers:(CPArray)users
+// {
+//     var data = [];
+//     
+//     for (var i = 0; i < [users count]; i++)
+//     {
+//         [data addObjectsFromArray:[[users objectAtIndex:i] data]];
+//     }
+//     
+//     [data sortUsingSelector:@selector(compare:)];
+//     [details setContent:data];
+// }
 
 - (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
 {
