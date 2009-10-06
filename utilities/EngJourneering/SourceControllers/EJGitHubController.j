@@ -1,6 +1,6 @@
-@import "EJSourceController.j"
+@import "EJAbstractSourceController.j"
 
-@implementation EJGitHubController : EJSourceController
+@implementation EJGitHubController : EJAbstractSourceController
 {
     CPJSONPConnection connection;
 }

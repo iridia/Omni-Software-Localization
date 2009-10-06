@@ -1,21 +1,18 @@
 @import <AppKit/CPCollectionView.j>
 
-@import "../EJUser.j"
+@import "../Users/EJUser.j"
 
 @implementation EJDetailView : CPView
 {
-    CPArray users;
     CPCollectionView details;
 }
 
-- (id)initWithFrame:(CGRect)rect users:someUsers
+- (id)initWithFrame:(CGRect)rect
 {
     self = [super initWithFrame:rect];
     
     if (self)
-    {
-        users = someUsers;
-        
+    {        
         var dataView = [[CPCollectionViewItem alloc] init];
         [dataView setView:[[UserDataView alloc] initWithFrame:CGRectMakeZero()]];
         
@@ -40,7 +37,7 @@
     return self;
 }
 
-- (void)setAllUsers:(CPArray)users
+- (void)setUsers:(CPArray)users
 {
     var data = [];
     
@@ -53,7 +50,7 @@
     [details setContent:data];
 }
 
-- (void)setUser:(User)user
+- (void)setUser:(EJUser)user
 {
     var data = [user data];
     [data sortUsingSelector:@selector(compare:)];

@@ -1,6 +1,6 @@
-@import "EJSourceController.j"
+@import "EJAbstractSourceController.j"
 
-@implementation EJRSSController : EJSourceController
+@implementation EJRSSController : EJAbstractSourceController
 {
     CPArray connections;
 }
@@ -41,13 +41,6 @@
                                                        forKeys:[@"message", @"time", @"date", @"link", @"source", @"user"]];
         [user addData:[[EJUserData alloc] initWithDictionary:dictionary]];
     }
-}
-
-
-- (void)connection:(CPJSONPConnection)connection didFailWithError:(CPString)error
-{
-    console.log("JSON Blog Reading Error!!!");
-    console.error(error);
 }
 
 @end

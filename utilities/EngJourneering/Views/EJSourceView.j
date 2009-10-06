@@ -1,57 +1,60 @@
 @import <AppKit/CPCollectionView.j>
 
 @import "EJDetailView.j"
-@import "../EJUser.j"
+@import "../Users/EJUser.j"
 
 @implementation EJSourceView : CPView
 {
-    CPArray users @accessors(readonly);
     EJDetailView detailView @accessors;
-    EJUser allUsers;
+    EJUser _allUsers;
+    CPCollectionView usersView;
 }
 
-- (id)initWithFrame:(CGRect)rect users:someUsers
+- (id)initWithFrame:(CGRect)rect
 {
     self = [super initWithFrame:rect];
     
     if (self)
     {        
-        users = someUsers;
-        
-        allUsers = [[EJUser alloc] initWithDictionary:[[CPDictionary alloc] initWithObjects:[@"All Users", nil] forKeys:[@"Display Name", @"Handles"]]];
-        
-        [users addObject:allUsers];
+        _allUsers = [[EJUser alloc] initWithDictionary:[[CPDictionary alloc] initWithObjects:[@"All Users", nil] forKeys:[@"Display Name", @"Handles"]]];
         
         var userListView = [[CPCollectionViewItem alloc] init];
         [userListView setView:[[UserListView alloc] initWithFrame:CGRectMakeZero()]];
         
-        var collectionView = [[CPCollectionView alloc] initWithFrame:rect];
-        [collectionView setItemPrototype:userListView];
-        [collectionView setMaxNumberOfColumns:1];
-        [collectionView setVerticalMargin:0.0];
-        [collectionView setMinItemSize:CGSizeMake(100.0, 40.0)];
-        [collectionView setMaxItemSize:CGSizeMake(1000000.0, 40.0)];
-        [collectionView setDelegate:self];
-        [collectionView setAutoresizingMask:CPViewWidthSizable];
+        usersView = [[CPCollectionView alloc] initWithFrame:rect];
+        [usersView setItemPrototype:userListView];
+        [usersView setMaxNumberOfColumns:1];
+        [usersView setVerticalMargin:0.0];
+        [usersView setMinItemSize:CGSizeMake(100.0, 40.0)];
+        [usersView setMaxItemSize:CGSizeMake(1000000.0, 40.0)];
+        [usersView setDelegate:self];
+        [usersView setAutoresizingMask:CPViewWidthSizable];
         
-        [collectionView setContent:users];
-        
-        [self addSubview:collectionView];
+        [self addSubview:usersView];
         [self setBackgroundColor:[CPColor colorWithCalibratedRed:0.840 green:0.868 blue:0.899 alpha:1.000]];
     }
     
     return self;
 }
 
+- (void)setContent:(CPArray)content
+{
+    [content addObject:_allUsers];
+    
+    [usersView setContent:content];
+}
+
 - (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
 {
     var listIndex = [[aCollectionView selectionIndexes] firstIndex];
     
-    var user = [[self users] objectAtIndex:listIndex];
+    var users = [usersView content];
     
-    if (user === allUsers)
+    var user = [users objectAtIndex:listIndex];
+    
+    if (user === _allUsers)
     {
-        [[self detailView] setAllUsers:[self users]];
+        [[self detailView] setUsers:users];
     }
     else
     {

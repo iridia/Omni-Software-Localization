@@ -1,43 +1,40 @@
 @import <Foundation/CPObject.j>
-@import "../EJUserData.j"
 
+@import "EJTwitterController.j"
+@import "EJGitHubController.j"
+@import "EJRSSController.j"
+@import "../Users/EJUserController.j"
+
+/*
+ * Initializes and tracks the individual source controllers.
+ */
 @implementation EJSourceController : CPObject
 {
-    CPArray users @accessors(readonly);
-    CPString key @accessors(readonly);
+    CPArray _sources @accessors(property=sources, readonly);
+    EJUserController _controller;
 }
 
-- (id)initWithUsers:(CPArray)someUsers andKey:(CPString)aKey
+- (id)initWithUserController:(EJUserController)controller
 {
     self = [super init];
     
     if (self)
     {
-        key = aKey;
-        users = [];
-        for (var i = 0; i < [someUsers count]; i++)
+        _sources = [];
+        _controller = controller;
+        
+        var bundle = [CPBundle mainBundle];
+        var bundleSources = [bundle objectForInfoDictionaryKey:@"EJSources"];
+        var users = [_controller users];
+        
+        for (var i = 0; i < [bundleSources count]; i++)
         {
-            var user = [someUsers objectAtIndex:i];
-            if ([[user handles] objectForKey:key] != nil)
-            {
-                [users addObject:user];
-            } else {
-                console.log("user", [user displayName], "doesn't have a", key);
-            }
+            var source = [bundleSources objectAtIndex:i];
+            var key = [source objectForKey:@"key"];
+            var classAsString = objj_getClass([source objectForKey:@"class"]);
+            [_sources addObject:[[classAsString alloc] initWithUsers:users andKey:key]];
         }
     }
     
     return self;
 }
-
-- (void)connection:(CPJSONPConnection)connection didReceiveData:(CPString)data
-{
-    console.warn("You should really override me.");
-}
-
-- (void)connection:(CPJSONPConnection)connection didFailWithError:(CPString)error
-{
-    console.error(error);
-}
-
-@end

@@ -1,8 +1,8 @@
-@import "EJSourceController.j"
+@import "EJAbstractSourceController.j"
 
 var ProjectOSL = "projectosl";
 
-@implementation EJTwitterController : EJSourceController
+@implementation EJTwitterController : EJAbstractSourceController
 {
     CPArray connections;
 }
@@ -43,13 +43,6 @@ var ProjectOSL = "projectosl";
             [user addData:[[EJUserData alloc] initWithDictionary:dictionary]];
         }
     }
-}
-
-
-- (void)connection:(CPJSONPConnection)connection didFailWithError:(CPString)error
-{
-    console.log("Twitter Error!!!");
-    console.error(error);
 }
 
 @end
