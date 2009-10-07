@@ -5,7 +5,6 @@
 {
     CPString _key @accessors(property=key, readonly);
     EJUser _currentUser @accessors(property=currentUser);
-    CPArray _currentUserData @accessors(property=currentUserData);
 }
 
 - (id)initWithKey:(CPString)aKey
@@ -20,11 +19,6 @@
     }
     
     return self;
-}
-
-- (void)insertObject:(id)anObject inCurrentUserDataAtIndex:(CPInteger)anIndex
-{
-    [[self currentUserData] insertObject:anObject atIndex:anIndex];
 }
 
 - (BOOL)currentUserHasSource

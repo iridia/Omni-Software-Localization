@@ -9,7 +9,7 @@ var ProjectOSL = "projectosl";
 
 - (CPURL)twitterURLForCurrentUser
 {
-    return [[CPURL alloc] initWithString:@"http://twitter.com/status/user_timeline/" + [[_currentUser handles] objectForKey:_key] + ".json"];
+    return [[CPURL alloc] initWithString:@"http://twitter.com/status/user_timeline/" + [[_currentUser handles] objectForKey:_key] + ".json?count=100"];
 }
 
 - (void)fetchDataForCurrentUser
@@ -17,7 +17,7 @@ var ProjectOSL = "projectosl";
     if (![self currentUserHasSource])
         return;
 
-    console.log("getting data for", _key, _currentUser);
+    // console.log("getting data from", _key, "for", [_currentUser displayName]);
     
     var url = [self twitterURLForCurrentUser];
     var request = [CPURLRequest requestWithURL:url];
@@ -28,9 +28,11 @@ var ProjectOSL = "projectosl";
 {
     var user = [self currentUser];
     
-    for (var i = 0; i < tweets.length; i++) {
+    for (var i = 0; i < tweets.length; i++)
+    {
         var tweet = [tweets objectAtIndex:i];
-        if ((tweet.in_reply_to_screen_name === ProjectOSL) || (tweet.text.indexOf(ProjectOSL) >= 0)) {
+        if ((tweet.in_reply_to_screen_name === ProjectOSL) || (tweet.text.indexOf(ProjectOSL) >= 0))
+        {
             var message = [[tweet.text removeOccurencesOfString:"@" + ProjectOSL] removeTime];
             var time = [tweet.text findTime];
             var date = [[CPDate alloc] initWithString:tweet.created_at];
@@ -40,8 +42,7 @@ var ProjectOSL = "projectosl";
                                                            forKeys:[@"message", @"time", @"date", @"link", @"source", @"user"]];
             
             var data = [[EJUserData alloc] initWithDictionary:dictionary];
-            [user addData:data];
-            [self insertObject:data inCurrentUserDataAtIndex:[_currentUserData count]];
+            [user insertObject:data inDataAtIndex:[[user data] count]];
         }
     }
 }

@@ -7,6 +7,7 @@
 @implementation EJUserController : CPObject
 {
     CPArray _users @accessors(property=users, readonly);
+    EJUser _currentUser @accessors(property=currentUser);
 }
 
 - (id)init
@@ -42,6 +43,21 @@
 - (void)insertObject:(id)anObject inUsersAtIndex:(CPInteger)anIndex
 {
     [_users addObject:anObject];
+}
+
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
+{
+    switch (keyPath)
+    {
+        case @"currentUser":
+            var user = [change objectForKey:CPKeyValueChangeNewKey];
+            [self setCurrentUser:user];
+            break;
+        
+        default:
+            console.warn("Unhandled keyPath");
+            break;
+    }
 }
 
 @end

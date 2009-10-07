@@ -3,9 +3,9 @@
 
 @implementation EJUser : CPObject
 {
-    CPDictionary    handles @accessors(readonly);
-    CPString        displayName @accessors(readonly);
-    CPArray         data @accessors(readonly);
+    CPDictionary    _handles @accessors(property=handles, readonly);
+    CPString        _displayName @accessors(property=displayName, readonly);
+    CPArray         _data @accessors(property=data);
 }
 
 - (id)initWithDictionary:(CPDictionary)aDictionary
@@ -14,17 +14,18 @@
     
     if (self)
     {
-        data = [];
-        handles = [aDictionary objectForKey:@"Handles"];
-        displayName = [aDictionary objectForKey:@"Display Name"];
+        _data = [];
+        _handles = [aDictionary objectForKey:@"Handles"];
+        _displayName = [aDictionary objectForKey:@"Display Name"];
     }
     
     return self;
 }
 
-- (void)addData:(UserData)moreData
+- (void)insertObject:(UserData)data inDataAtIndex:(CPInteger)index
 {
-    [data addObject:moreData];
+    // console.log("inserting", [data message], "for user", _displayName);
+    [_data insertObject:data atIndex:index];
 }
 
 - (CPComparisonResult)compare:(EJUser)otherUser

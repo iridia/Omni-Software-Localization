@@ -10,8 +10,7 @@
  */
 @implementation EJSourceController : CPObject
 {
-    CPArray _sources @accessors(property=sources, readonly);
-    CPArray _currentUserData @accessors(property=currentUserData);
+    CPArray _sources @accessors(property=sources);
 }
 
 - (id)init
@@ -21,36 +20,40 @@
     if (self)
     {
         _sources = [];
-        _currentUserData = [];
-        
-        var bundle = [CPBundle mainBundle];
-        var bundleSources = [bundle objectForInfoDictionaryKey:@"EJSources"];
-        
-        for (var i = 0; i < [bundleSources count]; i++)
-        {
-            var source = [bundleSources objectAtIndex:i];
-            var key = [source objectForKey:@"key"];
-            var classAsString = objj_getClass([source objectForKey:@"class"]);
-            [_sources addObject:[[classAsString alloc] initWithKey:key]];
-        }
     }
     
     return self;
 }
 
-- (void)insertObject:(id)anObject inCurrentUserDataAtIndex:(CPInteger)anIndex
+- (void)readSourcesFromBundle
+{    
+    var bundle = [CPBundle mainBundle];
+    var bundleSources = [bundle objectForInfoDictionaryKey:@"EJSources"];
+    
+    for (var i = 0; i < [bundleSources count]; i++)
+    {
+        var source = [bundleSources objectAtIndex:i];
+        var key = [source objectForKey:@"key"];
+        var classAsString = objj_getClass([source objectForKey:@"class"]);
+        [self insertObject:[[classAsString alloc] initWithKey:key] inSourcesAtIndex:i];
+    }
+}
+
+- (void)insertObject:(EJAbstractSourceController)source inSourcesAtIndex:(CPInteger)index
 {
-    [_currentUserData insertObject:anObject atIndex:anIndex];
+    [_sources insertObject:source atIndex:index];
 }
 
 - (void)fetchDataForUser:(EJUser)user
 {
-    [_currentUserData removeAllObjects];
+    if ([user displayName] === @"All Users")
+    {
+        console.log("ALL USERS");
+    }
     for (var i = 0; i < [_sources count]; i++)
     {
         var source = [_sources objectAtIndex:i];
         [source setCurrentUser:user];
-        [source addObserver:self forKeyPath:@"currentUserData" options:CPKeyValueObservingOptionNew context:nil];
         [source fetchDataForCurrentUser];
     }
 }
@@ -61,16 +64,22 @@
     {
         case @"currentUser":
             var user = [change objectForKey:CPKeyValueChangeNewKey];
-            [self fetchDataForUser:user];
+            if ([[user data] count] <= 0)
+            {                
+                [self fetchDataForUser:user];
+            }
+            else
+            {
+                console.log("we have already fetched data for", [user displayName]);
+            }
             break;
         
-        case @"currentUserData":
-            var data = [[change objectForKey:CPKeyValueChangeNewKey] objectAtIndex:0];
-            [self insertObject:data inCurrentUserDataAtIndex:[_currentUserData count]];
+        case @"currentSource":
+            console.log("source has changed");
             break;
         
         default:
-            console.error("Unhandled keyPath");
+            console.warn("Unhandled keyPath");
             break;
     }
 }

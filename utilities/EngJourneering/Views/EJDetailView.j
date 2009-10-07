@@ -39,31 +39,29 @@
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    if (keyPath === @"currentUserData") {
-        var data = [object currentUserData];
-        [data sortUsingSelector:@selector(compare:)];
-        [self setContent:data];
+    var user = [object currentUser];
+    var data = [user data];
+    
+    switch (keyPath)
+    {
+        case @"currentUser":
+            // called when the current user is switched. clear the data.
+            [details setContent:data];
+            [details reloadContent];
+            break;
+        
+        case @"currentUser.data":
+            // called when data is added to the current user.
+            [data sortUsingSelector:@selector(compare:)];
+            [details setContent:data];
+            [details reloadContent];
+            break;
+        
+        default:
+            console.warn("Unhandled keyPath in EJDetailView.j");
+            break;
     }
 }
-
-- (void)setContent:(CPArray)content
-{
-    [details setContent:content];
-    [details reloadContent];
-}
-
-// - (void)setUsers:(CPArray)users
-// {
-//     var data = [];
-//     
-//     for (var i = 0; i < [users count]; i++)
-//     {
-//         [data addObjectsFromArray:[[users objectAtIndex:i] data]];
-//     }
-//     
-//     [data sortUsingSelector:@selector(compare:)];
-//     [details setContent:data];
-// }
 
 - (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
 {

@@ -38,14 +38,9 @@
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
     if (keyPath === @"users") {
-        [self setContent:[object users]];
+        [usersView setContent:[object users]];
+        [usersView reloadContent];
     }
-}
-
-- (void)setContent:(CPArray)content
-{
-    [usersView setContent:content];
-    [usersView reloadContent];
 }
 
 - (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
@@ -56,7 +51,10 @@
     
     var user = [users objectAtIndex:listIndex];
     
-    [self setCurrentUser:user];
+    if (user !== _currentUser)
+    {
+        [self setCurrentUser:user];
+    }
 }
 
 @end

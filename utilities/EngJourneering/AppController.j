@@ -12,6 +12,7 @@
 @import "Users/EJUserController.j"
 @import "SourceControllers/EJSourceController.j"
 @import "Views/EJSourceView.j"
+@import "Views/EJToolbarDelegate.j"
 
 @implementation AppController : CPObject
 {
@@ -25,9 +26,10 @@
         contentView = [theWindow contentView];
         
     var toolbar = [[CPToolbar alloc] initWithIdentifier:@"Toolbar"];
-    [toolbar setDelegate:self];
-    
     [theWindow setToolbar:toolbar];
+    
+    var toolbarDelegate = [[EJToolbarDelegate alloc] init];
+    [toolbar setDelegate:toolbarDelegate];
     
     // Set up the data controllers
     _userController = [[EJUserController alloc] init];
@@ -47,7 +49,6 @@
     [splitView addSubview:detailView];
     
     [sourceView setDetailView:detailView];
-    [sourceView setContent:[_userController users]];
     [contentView addSubview:splitView];
     
     [theWindow orderFront:self];
@@ -56,24 +57,16 @@
     [_userController addObserver:sourceView forKeyPath:@"users" options:CPKeyValueObservingOptionNew context:nil];
     [_userController readUsersFromBundle];
     
-    [sourceView addObserver:_sourceController forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
+    [_userController addObserver:_sourceController forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
+    // We should have to do the following line? But we get 2 notifications if we do.
+    // [_userController addObserver:detailView forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
+    [_userController addObserver:detailView forKeyPath:@"currentUser.data" options:CPKeyValueObservingOptionNew context:nil];
     
-    [_sourceController addObserver:detailView forKeyPath:@"currentUserData" options:CPKeyValueObservingOptionNew context:nil];
-}
-
-- (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)aToolbar
-{
-    return [];
-}
-
-- (CPArray)toolbarAllowedItemIdentifiers:(CPToolbar)aToolbar
-{
-    return [];
-}
-
-- (CPToolbarItem)toolbar:(CPToolbar)aToolbar itemForItemIdentifier:(CPString)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
-{
-    return nil;
+    [sourceView addObserver:_userController forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
+    
+    // [_sourceController addObserver:toolbarDelegate forKeyPath:@"sources" options:CPKeyValueObservingOptionNew context:nil];
+    [_sourceController readSourcesFromBundle];
+    [toolbarDelegate addObserver:_sourceController forKeyPath:@"currentSource" options:CPKeyValueObservingOptionNew context:nil];
 }
 
 @end

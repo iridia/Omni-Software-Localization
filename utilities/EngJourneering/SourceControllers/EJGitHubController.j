@@ -22,7 +22,7 @@
     if (![self currentUserHasSource])
         return;
 
-    console.log("getting data for", _key, _currentUser);
+    // console.log("getting data from", _key, "for", [_currentUser displayName]);
     var request = [CPURLRequest requestWithURL:_gitHubURL];
     var connection = [CPJSONPConnection sendRequest:request callback:@"callback" delegate:self];
 }
@@ -45,8 +45,7 @@
                                                            forKeys:[@"message", @"time", @"date", @"link", @"source", @"user"]];
             
             var data = [[EJUserData alloc] initWithDictionary:dictionary];
-            [user addData:data];
-            [self insertObject:data inCurrentUserDataAtIndex:i];
+            [user insertObject:data inDataAtIndex:[[user data] count]];
         }
     }
 }
