@@ -27,6 +27,11 @@
     return self;
 }
 
+- (CPString)nicelyFormattedDate
+{
+    return date.toUTCString();
+}
+
 - (unsigned)compare:(UserData)other
 {
     if ([self date] < [other date])

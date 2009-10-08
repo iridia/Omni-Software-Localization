@@ -29,6 +29,14 @@
     return ([[_currentUser handles] objectForKey:_key] != nil)
 }
 
+- (BOOL)currentUserHasData
+{
+    if (!_currentUser)
+        return NO;
+    
+    return ([[_currentUser data] count] > 0);
+}
+
 - (void)fetchDataForCurrentUser
 {
     console.warn("You should override me.");

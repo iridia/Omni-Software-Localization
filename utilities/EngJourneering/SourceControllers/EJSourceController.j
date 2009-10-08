@@ -46,15 +46,23 @@
 
 - (void)fetchDataForUser:(EJUser)user
 {
-    if ([user displayName] === @"All Users")
+    if (user === [EJAllUsers sharedAllUsers])
     {
-        console.log("ALL USERS");
+        console.error("I have broken this feature completely...");
+        var users = [[EJAllUsers sharedAllUsers] users];
+        for (var i = 0; i < [users count]; i++)
+        {
+            //[self fetchDataForUser:[users objectAtIndex:i]];
+        }
     }
-    for (var i = 0; i < [_sources count]; i++)
+    else
     {
-        var source = [_sources objectAtIndex:i];
-        [source setCurrentUser:user];
-        [source fetchDataForCurrentUser];
+        for (var i = 0; i < [_sources count]; i++)
+        {
+            var source = [_sources objectAtIndex:i];
+            [source setCurrentUser:user];
+            [source fetchDataForCurrentUser];
+        } 
     }
 }
 
@@ -63,23 +71,12 @@
     switch (keyPath)
     {
         case @"currentUser":
-            var user = [change objectForKey:CPKeyValueChangeNewKey];
-            if ([[user data] count] <= 0)
-            {                
-                [self fetchDataForUser:user];
-            }
-            else
-            {
-                console.log("we have already fetched data for", [user displayName]);
-            }
-            break;
-        
-        case @"currentSource":
-            console.log("source has changed");
+            var user = [change objectForKey:CPKeyValueChangeNewKey];               
+            [self fetchDataForUser:user];
             break;
         
         default:
-            console.warn("Unhandled keyPath");
+            console.warn("Unhandled keyPath in EJSourceController.");
             break;
     }
 }

@@ -35,9 +35,7 @@
     
     // Want alphabetical order
     [_users sortUsingSelector:@selector(compare:)];
-    
-    var allUsers = [[EJUser alloc] initWithDictionary:[[CPDictionary alloc] initWithObjects:[@"All Users", nil] forKeys:[@"Display Name", @"Handles"]]];
-    [self insertObject:allUsers inUsersAtIndex:[_users count]];
+    [self insertObject:[EJAllUsers sharedAllUsers] inUsersAtIndex:[_users count]];
 }
 
 - (void)insertObject:(id)anObject inUsersAtIndex:(CPInteger)anIndex

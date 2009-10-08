@@ -8,6 +8,7 @@
 
 @import <Foundation/CPObject.j>
 
+@import "Users/EJUser.j"
 @import "Categories/EJ+CPString.j"
 @import "Users/EJUserController.j"
 @import "SourceControllers/EJSourceController.j"
@@ -31,7 +32,7 @@
     var toolbarDelegate = [[EJToolbarDelegate alloc] init];
     [toolbar setDelegate:toolbarDelegate];
     
-    // Set up the data controllers
+    // Set up the controllers
     _userController = [[EJUserController alloc] init];
     _sourceController = [[EJSourceController alloc] init];
     
@@ -39,6 +40,7 @@
     var splitView = [[CPSplitView alloc] initWithFrame:[contentView bounds]];
     [splitView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [splitView setVertical:YES];
+    [splitView setIsPaneSplitter:YES];
     
     var sourceView = [[EJSourceView alloc] initWithFrame:CGRectMake(0, 0, 150.0, CGRectGetHeight([contentView bounds]))];
     [sourceView setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
@@ -55,18 +57,20 @@
     
     // Set up observers
     [_userController addObserver:sourceView forKeyPath:@"users" options:CPKeyValueObservingOptionNew context:nil];
+    [_userController addObserver:[EJAllUsers sharedAllUsers] forKeyPath:@"users" options:CPKeyValueObservingOptionNew context:nil];
     [_userController readUsersFromBundle];
     
     [_userController addObserver:_sourceController forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
     // We should have to do the following line? But we get 2 notifications if we do.
     // [_userController addObserver:detailView forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
     [_userController addObserver:detailView forKeyPath:@"currentUser.data" options:CPKeyValueObservingOptionNew context:nil];
-    
     [sourceView addObserver:_userController forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
     
+    // We would like to do this, but toolbars are a bit tricky to update its contents.
     // [_sourceController addObserver:toolbarDelegate forKeyPath:@"sources" options:CPKeyValueObservingOptionNew context:nil];
     [_sourceController readSourcesFromBundle];
-    [toolbarDelegate addObserver:_sourceController forKeyPath:@"currentSource" options:CPKeyValueObservingOptionNew context:nil];
+    
+    [toolbarDelegate addObserver:detailView forKeyPath:@"currentSource" options:CPKeyValueObservingOptionNew context:nil];
 }
 
 @end

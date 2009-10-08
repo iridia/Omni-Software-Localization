@@ -56,7 +56,11 @@ var EJFilterSourcesToolbarItem = @"EJFilterSourcesToolbarItem";
 
 - (void)changeSource:(id)sender
 {
-    [self setCurrentSource:[_popUpButton titleOfSelectedItem]];
+    var newSource = [sender titleOfSelectedItem];
+    if (_currentSource !== newSource)
+    {
+        [self setCurrentSource:newSource];   
+    }
 }
 
 // - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context

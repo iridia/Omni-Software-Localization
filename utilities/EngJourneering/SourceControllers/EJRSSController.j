@@ -7,7 +7,7 @@
 
 - (void)fetchDataForCurrentUser
 {
-    if (![self currentUserHasSource])
+    if (![self currentUserHasSource] || [self currentUserHasData])
         return;
 
     // console.log("getting data from", _key, "for", [_currentUser displayName]);

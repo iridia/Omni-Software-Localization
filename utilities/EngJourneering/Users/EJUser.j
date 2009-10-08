@@ -37,3 +37,41 @@
 }
 
 @end
+
+// Singleton to represent All Users
+var allUsers;
+@implementation EJAllUsers : EJUser
+{
+    CPArray _users @accessors(property=users);
+}
+
+- (id)initWithDictionary:(CPDictionary)aDictionary
+{
+    self = [super initWithDictionary:aDictionary];
+    
+    if (self)
+    {
+        _users = [];
+    }
+    
+    return self;
+}
+
++ (EJAllUsers)sharedAllUsers
+{
+    if (!allUsers)
+    {
+        allUsers = [[self alloc] initWithDictionary:[[CPDictionary alloc] initWithObjects:[@"All Users", nil] forKeys:[@"Display Name", @"Handles"]]];
+    }
+    
+    return allUsers;
+}
+
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
+{
+    if (keyPath === @"users") {
+        _users = [object users];
+    }
+}
+
+@end

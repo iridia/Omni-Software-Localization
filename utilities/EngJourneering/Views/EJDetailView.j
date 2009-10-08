@@ -5,6 +5,9 @@
 @implementation EJDetailView : CPView
 {
     CPCollectionView details;
+    CPScrollView scrollView;
+    CPArray _currentData;
+    CPString _currentSource;
 }
 
 - (id)initWithFrame:(CGRect)rect
@@ -12,20 +15,23 @@
     self = [super initWithFrame:rect];
     
     if (self)
-    {        
+    {
+        _currentData = [];
+        _currentSource = nil;
+        
         var dataView = [[CPCollectionViewItem alloc] init];
         [dataView setView:[[UserDataView alloc] initWithFrame:CGRectMakeZero()]];
         
         details = [[CPCollectionView alloc] initWithFrame:rect];
         [details setItemPrototype:dataView];
         [details setMaxNumberOfColumns:1];
-        [details setVerticalMargin:10.0];
+        [details setVerticalMargin:0.0];
         [details setMinItemSize:CGSizeMake(500.0, 42.0)];
         [details setMaxItemSize:CGSizeMake(10000.0, 42.0)];
         [details setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         [details setDelegate:self];
         
-        var scrollView = [[CPScrollView alloc] initWithFrame:rect];
+        scrollView = [[CPScrollView alloc] initWithFrame:rect];
         [scrollView setAutohidesScrollers:YES];
         [scrollView setDocumentView:details];
         [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
@@ -37,24 +43,47 @@
     return self;
 }
 
+- (void)reloadContent
+{
+    [[scrollView contentView] scrollToPoint:CPMakePoint(0,0)];
+    var contentToLoad = [];
+    if (!_currentSource || _currentSource === @"All Sources")
+    {
+        contentToLoad = _currentData;
+    }
+    else
+    {
+        for (var i = 0; i < [_currentData count]; i++)
+        {
+            var data = [_currentData objectAtIndex:i];
+            if ([data source].toLowerCase() === _currentSource.toLowerCase())
+            {
+                [contentToLoad addObject:data];
+            }
+        }
+    }
+    
+    [contentToLoad sortUsingSelector:@selector(compare:)];
+    [details setContent:contentToLoad];
+    [details reloadContent];
+}
+
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    var user = [object currentUser];
-    var data = [user data];
-    
     switch (keyPath)
     {
-        case @"currentUser":
-            // called when the current user is switched. clear the data.
-            [details setContent:data];
-            [details reloadContent];
-            break;
-        
+        case @"currentUser":        
         case @"currentUser.data":
             // called when data is added to the current user.
-            [data sortUsingSelector:@selector(compare:)];
-            [details setContent:data];
-            [details reloadContent];
+            var user = [object currentUser];
+            var data = [user data];
+            _currentData = data;
+            [self reloadContent];
+            break;
+            
+        case @"currentSource":
+            _currentSource = [object currentSource];
+            [self reloadContent];
             break;
         
         default:
@@ -94,6 +123,19 @@
     return self;
 }
 
+- (void)drawRect:(CGRect)rect
+{
+    var bPath = [CPBezierPath bezierPath];
+    
+	[[CPColor grayColor] set];
+	
+	[bPath setLineWidth:2];
+	
+	[bPath moveToPoint:CPMakePoint(rect.origin.x, rect.origin.y + rect.size.height)];
+	[bPath lineToPoint:CPMakePoint(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height)];
+	[bPath stroke];
+}
+
 - (void)setRepresentedObject:(JSObject)anObject
 {
     if (!message)
@@ -117,11 +159,12 @@
         
         [dateAndTime setFont:[CPFont systemFontOfSize:10.0]];
         [dateAndTime setTextColor:[CPColor grayColor]];
+        [dateAndTime setAutoresizingMask:CPViewMaxXMargin | CPViewMaxYMargin];
         
         [self addSubview:dateAndTime];
     }
     
-    [dateAndTime setStringValue:[anObject date] + " for " + [anObject time] + " minutes."];
+    [dateAndTime setStringValue:[anObject nicelyFormattedDate] + " for " + [anObject time] + " minutes."];
     [dateAndTime sizeToFit];
     
     if (!sourceAndUser)
@@ -130,7 +173,7 @@
         
         [sourceAndUser setFont:[CPFont systemFontOfSize:10.0]];
         [sourceAndUser setTextColor:[CPColor grayColor]];
-        
+        [sourceAndUser setAutoresizingMask:CPViewMinXMargin | CPViewMinYMargin];
         [self addSubview:sourceAndUser];
     }
     

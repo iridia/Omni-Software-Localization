@@ -63,6 +63,7 @@
 {
     CPTextField label;
     CPView highlightView;
+    // CountView _countView;
 }
 
 - (void)setRepresentedObject:(JSObject)anObject
@@ -77,11 +78,17 @@
  
         [self addSubview:label];
     }
- 
+
     [label setStringValue:[anObject displayName]];
     [label sizeToFit];
  
     [label setFrameOrigin:CGPointMake(10,CGRectGetHeight([label bounds]) / 2.0)];
+    
+    // if (!_countView)
+    //     {
+    //         _countView = [[CountView alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+    //         [self addSubview:_countView];
+    //     }
 }
  
 - (void)setSelected:(BOOL)flag
@@ -105,6 +112,40 @@
         [label setTextColor:[CPColor blackColor]];
         [label setTextShadowColor:[CPColor whiteColor]];
     }
+}
+
+@end
+
+@implementation CountView : CPView
+{
+    // CPInteger _count @accessors(property=count);
+    CPTextField _countDisplay;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    
+    if (self)
+    {
+        _countDisplay = [CPTextField labelWithTitle:@"0"];
+        [_countDisplay setFont:[CPFont boldSystemFontOfSize:14.0]];
+        [_countDisplay setTextColor:[CPColor whiteColor]];
+        [_countDisplay sizeToFit];
+        
+        [self addSubview:_countDisplay];
+    }
+    
+    return self;
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    var path = [CPBezierPath bezierPathWithOvalInRect:rect];
+    
+    [[CPColor colorWithCalibratedRed:0.561 green:0.631 blue:0.761 alpha:1.000] set];
+    
+    [path stroke];
 }
 
 @end
