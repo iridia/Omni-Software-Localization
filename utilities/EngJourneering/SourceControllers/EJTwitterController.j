@@ -4,7 +4,7 @@ var ProjectOSL = "projectosl";
 
 @implementation EJTwitterController : EJAbstractSourceController
 {
-    CPArray connections;
+    CPDictionary _connections;
 }
 
 - (CPURL)twitterURLForCurrentUser
@@ -18,15 +18,20 @@ var ProjectOSL = "projectosl";
         return;
 
     // console.log("getting data from", _key, "for", [_currentUser displayName]);
+    if (!_connections)
+    {
+        _connections = [CPDictionary dictionary];
+    }
     
     var url = [self twitterURLForCurrentUser];
     var request = [CPURLRequest requestWithURL:url];
     var connection = [CPJSONPConnection sendRequest:request callback:@"callback" delegate:self];
+    [_connections setObject:_currentUser forKey:connection];
 }
 
 - (void)connection:(CPJSONPConnection)connection didReceiveData:(CPJSObject)tweets
 {
-    var user = [self currentUser];
+    var user = [_connections objectForKey:connection];
     
     for (var i = 0; i < tweets.length; i++)
     {
@@ -45,6 +50,8 @@ var ProjectOSL = "projectosl";
             [user insertObject:data inDataAtIndex:[[user data] count]];
         }
     }
+    
+    [_connections removeObjectForKey:connection];
 }
 
 @end

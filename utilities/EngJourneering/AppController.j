@@ -64,6 +64,7 @@
     // We should have to do the following line? But we get 2 notifications if we do.
     // [_userController addObserver:detailView forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
     [_userController addObserver:detailView forKeyPath:@"currentUser.data" options:CPKeyValueObservingOptionNew context:nil];
+    // [_userController addObserver:[EJAllUsers sharedAllUsers] forKeyPath:@"currentUser.data" options:CPKeyValueObservingOptionNew context:nil];
     [sourceView addObserver:_userController forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
     
     // We would like to do this, but toolbars are a bit tricky to update its contents.

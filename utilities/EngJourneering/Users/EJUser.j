@@ -69,8 +69,19 @@ var allUsers;
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    if (keyPath === @"users") {
-        _users = [object users];
+    if (keyPath === @"users")
+    {
+        var user = [[change objectForKey:CPKeyValueChangeNewKey] objectAtIndex:0];
+        if (user !== self)
+        {
+            [_users addObject:user];
+            [user addObserver:self forKeyPath:@"data" options:CPKeyValueObservingOptionNew context:nil];
+        }
+    }
+    else if (keyPath === @"data")
+    {
+        var data = [[change objectForKey:CPKeyValueChangeNewKey] objectAtIndex:0];
+        [self insertObject:data inDataAtIndex:[_data count]];
     }
 }
 

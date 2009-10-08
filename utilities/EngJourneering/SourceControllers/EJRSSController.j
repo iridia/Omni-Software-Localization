@@ -2,7 +2,7 @@
 
 @implementation EJRSSController : EJAbstractSourceController
 {
-    CPArray connections;
+    CPDictionary _connections;
 }
 
 - (void)fetchDataForCurrentUser
@@ -11,15 +11,21 @@
         return;
 
     // console.log("getting data from", _key, "for", [_currentUser displayName]);
-
+    if (!_connections)
+    {
+        _connections = [CPDictionary dictionary];
+    }
+    
     var url = [[CPURL alloc] initWithString:[[_currentUser handles] objectForKey:_key]];
     var request = [CPURLRequest requestWithURL:url];
     var connection = [CPJSONPConnection sendRequest:request callback:@"callback" delegate:self];
+    [_connections setObject:_currentUser forKey:connection];
 }
 
 - (void)connection:(CPJSONPConnection)connection didReceiveData:(CPJSObject)data
 {
-	var user = [self currentUser];
+	var user = [_connections objectForKey:connection];
+    
     var posts = data.items;
     
     for (var i = 0; i < [posts count]; i++)

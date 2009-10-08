@@ -48,11 +48,10 @@
 {
     if (user === [EJAllUsers sharedAllUsers])
     {
-        console.error("I have broken this feature completely...");
         var users = [[EJAllUsers sharedAllUsers] users];
         for (var i = 0; i < [users count]; i++)
         {
-            //[self fetchDataForUser:[users objectAtIndex:i]];
+            [self fetchDataForUser:[users objectAtIndex:i]];
         }
     }
     else
