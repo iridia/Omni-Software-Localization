@@ -41,7 +41,6 @@
 	var nextMatch = regEx.exec(data);
 	
 	var allMatches = [[CPArray init] alloc];
-	if (nextMatch) [allMatches addObject:nextMatch];
 	
 	while (nextMatch)
 	{
