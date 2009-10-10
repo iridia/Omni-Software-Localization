@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# install apache setup files
+sudo mv /private/etc/apache2/httpd.conf /private/etc/apache2/httpd.conf.oslbackup
+sudo cp ./httpd.conf /private/etc/apache2/httpd.conf
+
+# install php setup files
+sudo mv /private/etc/php.ini /private/etc/php.ini.oslbackup
+sudo cp ./php.ini /private/etc/php.ini
+
+# restart apache
+sudo /usr/sbin/apachectl restart
+
+# move files to server location
+sudo mv src/* /Library/WebServer/Documents/
