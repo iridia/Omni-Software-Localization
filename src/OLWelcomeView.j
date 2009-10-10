@@ -33,6 +33,7 @@
 		[importButton setTitle:@"Import"];
 		[importButton sizeToFit];
 		[importButton setDelegate:self];
+		[importButton setURL:@"upload.php"];
 		
 		[self addViews:new Array(welcomeText, importText, localizeText, importButton, localizeButton, imageView)];
 				
