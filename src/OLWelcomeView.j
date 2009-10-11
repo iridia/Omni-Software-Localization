@@ -52,7 +52,6 @@
  		[localizeText setTextColor:[CPColor grayColor]];
 
 		[importButton setTarget:self];
-		[importButton setAction:@selector(uploadFile:)];
 		
 		[localizeButton setTarget:controller];
 		[localizeButton setAction:@selector(transitionToResourceView:)];		
