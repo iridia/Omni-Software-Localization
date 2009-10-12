@@ -3,7 +3,7 @@
 @import "EJTwitterController.j"
 @import "EJGitHubController.j"
 @import "EJRSSController.j"
-@import "../Users/EJUserController.j"
+@import "EJUserController.j"
 
 /*
  * Initializes and tracks the individual source controllers.

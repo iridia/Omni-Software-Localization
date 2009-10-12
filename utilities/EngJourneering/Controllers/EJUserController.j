@@ -1,5 +1,5 @@
 @import <Foundation/CPObject.j>
-@import "EJUser.j"
+@import "../Models/EJUser.j"
 
 /*
  * Initalizes and tracks the users.

@@ -7,9 +7,9 @@
  */
 
 @import <Foundation/CPObject.j>
-@import "OLWelcomeView.j"
-@import "OLResourceView.j"
-@import "OLResourceController.j"
+@import "views/OLWelcomeView.j"
+@import "views/OLResourceView.j"
+@import "controllers/OLResourceController.j"
 
 
 @implementation AppController : CPObject

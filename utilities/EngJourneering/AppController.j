@@ -8,10 +8,10 @@
 
 @import <Foundation/CPObject.j>
 
-@import "Users/EJUser.j"
+@import "Models/EJUser.j"
 @import "Categories/EJ+CPString.j"
-@import "Users/EJUserController.j"
-@import "SourceControllers/EJSourceController.j"
+@import "Controllers/EJUserController.j"
+@import "Controllers/EJSourceController.j"
 @import "Views/EJSourceView.j"
 @import "Views/EJToolbarDelegate.j"
 

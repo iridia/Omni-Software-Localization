@@ -1,7 +1,7 @@
 @import <AppKit/CPCollectionView.j>
 
 @import "EJDetailView.j"
-@import "../Users/EJUser.j"
+@import "../Models/EJUser.j"
 
 @implementation EJSourceView : CPView
 {
