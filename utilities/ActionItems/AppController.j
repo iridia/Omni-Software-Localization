@@ -8,7 +8,6 @@
 
 @import <Foundation/CPObject.j>
 
-@import "OSL+CPString.j"
 @import "WikiPage.j"
 @import "GitHubWikiController.j"
 
