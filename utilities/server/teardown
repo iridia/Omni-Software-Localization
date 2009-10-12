@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# remove files to server location
+sudo rm -R /Library/WebServer/Documents/
+
+# uninstall apache setup files
+sudo mv /private/etc/apache2/httpd.conf.oslbackup /private/etc/apache2/httpd.conf
+
+# uninstall php setup files
+sudo mv /private/etc/php.ini.oslbackup /private/etc/php.ini
+
+# restart apache
+sudo /usr/sbin/apachectl restart
