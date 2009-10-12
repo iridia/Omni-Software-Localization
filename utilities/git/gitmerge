@@ -1,0 +1,5 @@
+#!/bin/sh
+# Merge Branch %1 into Branch %2
+
+git checkout %2
+git pull . %1
