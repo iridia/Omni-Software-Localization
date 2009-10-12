@@ -1,5 +1,5 @@
 @import <Foundation/CPObject.j>
-@import "../Users/EJUserData.j"
+@import "../Models/EJUserData.j"
 
 @implementation EJAbstractSourceController : CPObject
 {

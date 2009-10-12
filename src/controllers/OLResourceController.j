@@ -1,5 +1,5 @@
 @import <Foundation/CPObject.j>
-@import "OLResource.j"
+@import "../models/OLResource.j"
 
 /*!
  * The OLResourceController is a controller for the resource view and
