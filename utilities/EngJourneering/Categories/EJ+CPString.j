@@ -1,6 +1,6 @@
 @import <Foundation/CPString.j>
 
-var timeRegEx = new RegExp(".*t:(\\d+)h(\\d+)m", "gi");
+var timeRegEx = new RegExp("t:(\\d+)h(\\d+)m", "gi");
 
 @implementation CPString (EJ)
 
@@ -18,8 +18,7 @@ var timeRegEx = new RegExp(".*t:(\\d+)h(\\d+)m", "gi");
 
 - (CPString)removeTime
 {
-    // Can't get this to work yet
-    return self;
+    return self.replace(timeRegEx, "");
 }
 
 - (CPString)removeOccurencesOfString:(CPString)removeString

@@ -1,18 +1,23 @@
 @import <AppKit/CPCollectionView.j>
 
+@import "../Models/EJUser.j"
+
 @implementation EJDetailView : CPView
 {
-    CPArray users;
     CPCollectionView details;
+    CPScrollView scrollView;
+    CPArray _currentData;
+    CPString _currentSource;
 }
 
-- (id)initWithFrame:(CGRect)rect users:someUsers
+- (id)initWithFrame:(CGRect)rect
 {
     self = [super initWithFrame:rect];
     
     if (self)
     {
-        users = someUsers;
+        _currentData = [];
+        _currentSource = nil;
         
         var dataView = [[CPCollectionViewItem alloc] init];
         [dataView setView:[[UserDataView alloc] initWithFrame:CGRectMakeZero()]];
@@ -20,13 +25,13 @@
         details = [[CPCollectionView alloc] initWithFrame:rect];
         [details setItemPrototype:dataView];
         [details setMaxNumberOfColumns:1];
-        [details setVerticalMargin:10.0];
+        [details setVerticalMargin:0.0];
         [details setMinItemSize:CGSizeMake(500.0, 42.0)];
         [details setMaxItemSize:CGSizeMake(10000.0, 42.0)];
         [details setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         [details setDelegate:self];
         
-        var scrollView = [[CPScrollView alloc] initWithFrame:rect];
+        scrollView = [[CPScrollView alloc] initWithFrame:rect];
         [scrollView setAutohidesScrollers:YES];
         [scrollView setDocumentView:details];
         [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
@@ -38,24 +43,53 @@
     return self;
 }
 
-- (void)setAllUsers:(CPArray)users
+- (void)reloadContent
 {
-    var data = [];
-    
-    for (var i = 0; i < [users count]; i++)
+    [[scrollView contentView] scrollToPoint:CPMakePoint(0,0)];
+    var contentToLoad = [];
+    if (!_currentSource || _currentSource === @"All Sources")
     {
-        [data addObjectsFromArray:[users[i] data]];
+        contentToLoad = _currentData;
+    }
+    else
+    {
+        for (var i = 0; i < [_currentData count]; i++)
+        {
+            var data = [_currentData objectAtIndex:i];
+            if ([data source].toLowerCase() === _currentSource.toLowerCase())
+            {
+                [contentToLoad addObject:data];
+            }
+        }
     }
     
-    [data sortUsingSelector:@selector(compare:)];
-    [details setContent:data];
+    [contentToLoad sortUsingSelector:@selector(compare:)];
+    [details setContent:contentToLoad];
+    [details reloadContent];
 }
 
-- (void)setUser:(User)user
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    var data = [user data];
-    [data sortUsingSelector:@selector(compare:)];
-    [details setContent:data];
+    switch (keyPath)
+    {
+        case @"currentUser":        
+        case @"currentUser.data":
+            // called when data is added to the current user.
+            var user = [object currentUser];
+            var data = [user data];
+            _currentData = data;
+            [self reloadContent];
+            break;
+            
+        case @"currentSource":
+            _currentSource = [object currentSource];
+            [self reloadContent];
+            break;
+        
+        default:
+            console.warn("Unhandled keyPath in EJDetailView.j");
+            break;
+    }
 }
 
 - (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
@@ -89,6 +123,19 @@
     return self;
 }
 
+- (void)drawRect:(CGRect)rect
+{
+    var bPath = [CPBezierPath bezierPath];
+    
+	[[CPColor grayColor] set];
+	
+	[bPath setLineWidth:2];
+	
+	[bPath moveToPoint:CPMakePoint(rect.origin.x, rect.origin.y + rect.size.height)];
+	[bPath lineToPoint:CPMakePoint(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height)];
+	[bPath stroke];
+}
+
 - (void)setRepresentedObject:(JSObject)anObject
 {
     if (!message)
@@ -112,11 +159,12 @@
         
         [dateAndTime setFont:[CPFont systemFontOfSize:10.0]];
         [dateAndTime setTextColor:[CPColor grayColor]];
+        [dateAndTime setAutoresizingMask:CPViewMaxXMargin | CPViewMaxYMargin];
         
         [self addSubview:dateAndTime];
     }
     
-    [dateAndTime setStringValue:[anObject date] + " for " + [anObject time] + " minutes."];
+    [dateAndTime setStringValue:[anObject nicelyFormattedDate] + " for " + [anObject time] + " minutes."];
     [dateAndTime sizeToFit];
     
     if (!sourceAndUser)
@@ -125,7 +173,7 @@
         
         [sourceAndUser setFont:[CPFont systemFontOfSize:10.0]];
         [sourceAndUser setTextColor:[CPColor grayColor]];
-        
+        [sourceAndUser setAutoresizingMask:CPViewMinXMargin | CPViewMinYMargin];
         [self addSubview:sourceAndUser];
     }
     

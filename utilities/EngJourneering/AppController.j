@@ -8,16 +8,17 @@
 
 @import <Foundation/CPObject.j>
 
-@import "EJ+CPString.j"
-@import "EJUser.j"
-@import "EJTwitterController.j"
-@import "EJGitHubController.j"
-@import "EJRSSController.j"
-@import "EJSourceView.j"
+@import "Models/EJUser.j"
+@import "Categories/EJ+CPString.j"
+@import "Controllers/EJUserController.j"
+@import "Controllers/EJSourceController.j"
+@import "Views/EJSourceView.j"
+@import "Views/EJToolbarDelegate.j"
 
 @implementation AppController : CPObject
 {
-    CPArray users;
+    EJUserController _userController;
+    EJSourceController _sourceController;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
@@ -26,62 +27,51 @@
         contentView = [theWindow contentView];
         
     var toolbar = [[CPToolbar alloc] initWithIdentifier:@"Toolbar"];
-    [toolbar setDelegate:self];
-    
     [theWindow setToolbar:toolbar];
     
-    var bundle = [CPBundle mainBundle];
-    var usersFromBundle = [bundle objectForInfoDictionaryKey:@"EJUsers"];
+    var toolbarDelegate = [[EJToolbarDelegate alloc] init];
+    [toolbar setDelegate:toolbarDelegate];
     
-    var users = [];
-    for (var i = 0; i < [usersFromBundle count]; i++)
-    {
-        var user = [[EJUser alloc] initWithDictionary:[usersFromBundle objectAtIndex:i]];
-        [users addObject:user];
-    }
-    [users sortUsingSelector:@selector(compare:)];
+    // Set up the controllers
+    _userController = [[EJUserController alloc] init];
+    _sourceController = [[EJSourceController alloc] init];
     
-    var sources = [bundle objectForInfoDictionaryKey:@"EJSources"];
-    for (var i = 0; i < [sources count]; i++)
-    {
-        var source = [sources objectAtIndex:i];
-        var key = [source objectForKey:@"key"];
-        var classFromString = objj_getClass([source objectForKey:@"class"]);
-        [[classFromString alloc] initWithUsers:users andKey:key];
-    }
-    
+    // Set up views
     var splitView = [[CPSplitView alloc] initWithFrame:[contentView bounds]];
     [splitView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [splitView setVertical:YES];
+    [splitView setIsPaneSplitter:YES];
     
-    var sourceView = [[EJSourceView alloc] initWithFrame:CGRectMake(0, 0, 200.0, CGRectGetHeight([contentView bounds])) users:users];
-    [sourceView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    var sourceView = [[EJSourceView alloc] initWithFrame:CGRectMake(0, 0, 150.0, CGRectGetHeight([contentView bounds]))];
+    [sourceView setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
     [splitView addSubview:sourceView];
     
-    var detailView = [[EJDetailView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]) - CGRectGetWidth([sourceView bounds]), CGRectGetHeight([contentView bounds])) users:users];
+    var detailView = [[EJDetailView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]) - CGRectGetWidth([sourceView bounds]), CGRectGetHeight([contentView bounds]))];
     [detailView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [splitView addSubview:detailView];
     
     [sourceView setDetailView:detailView];
-    
-    [contentView addSubview:splitView]; 
+    [contentView addSubview:splitView];
     
     [theWindow orderFront:self];
-}
-
-- (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)aToolbar
-{
-    return [];
-}
-
-- (CPArray)toolbarAllowedItemIdentifiers:(CPToolbar)aToolbar
-{
-    return [];
-}
-
-- (CPToolbarItem)toolbar:(CPToolbar)aToolbar itemForItemIdentifier:(CPString)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
-{
-    return nil;
+    
+    // Set up observers
+    [_userController addObserver:sourceView forKeyPath:@"users" options:CPKeyValueObservingOptionNew context:nil];
+    [_userController addObserver:[EJAllUsers sharedAllUsers] forKeyPath:@"users" options:CPKeyValueObservingOptionNew context:nil];
+    [_userController readUsersFromBundle];
+    
+    [_userController addObserver:_sourceController forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
+    // We should have to do the following line? But we get 2 notifications if we do.
+    // [_userController addObserver:detailView forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
+    [_userController addObserver:detailView forKeyPath:@"currentUser.data" options:CPKeyValueObservingOptionNew context:nil];
+    // [_userController addObserver:[EJAllUsers sharedAllUsers] forKeyPath:@"currentUser.data" options:CPKeyValueObservingOptionNew context:nil];
+    [sourceView addObserver:_userController forKeyPath:@"currentUser" options:CPKeyValueObservingOptionNew context:nil];
+    
+    // We would like to do this, but toolbars are a bit tricky to update its contents.
+    // [_sourceController addObserver:toolbarDelegate forKeyPath:@"sources" options:CPKeyValueObservingOptionNew context:nil];
+    [_sourceController readSourcesFromBundle];
+    
+    [toolbarDelegate addObserver:detailView forKeyPath:@"currentSource" options:CPKeyValueObservingOptionNew context:nil];
 }
 
 @end
