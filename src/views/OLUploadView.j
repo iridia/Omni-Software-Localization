@@ -8,7 +8,7 @@
 @implementation OLUploadView : OLView
 {
 	CPString _fileName;
-	CPView _currentView;
+	OLView _currentView;
 }
 
 - (id)initWithFrame:(CGRect)frame withController:(OLWelcomeController)controller
@@ -17,7 +17,7 @@
 	{
 		var uploadingText = [CPTextField labelWithTitle:@"Uploading..."];
 		
-		_currentView = [OLView initWithFrame:frame];
+		_currentView = [[OLView alloc] initWithFrame:CPMakeRect(0,0,CGRectGetWidth(frame),CGRectGetHeight(frame)) withController:controller];
 		
 		[uploadingText setFont:[CPFont boldSystemFontOfSize:18]];
 		[uploadingText sizeToFit];
@@ -39,16 +39,19 @@
 	return self;
 }
 
-- (void)finishedUploadingWithFilename:(CPString)fileName
+- (void)finishedUploadingWithFilename:(CPString)aFileName
 {
-	_fileName = fileName;
+	_fileName = aFileName;
 	
-	[_currentView removeFromSuperview];
-	_currentView = [OLView initWithFrame:frame];
+	var finishedText = [CPTextField labelWithTitle:@"Finished!"];
+	[finishedText setFont:[CPFont boldSystemFontOfSize:18]];
+	[finishedText sizeToFit];
+	[finishedText setCenter:CGPointMake([self center].x, 25)];
 	
-	[self setBackgroundColor: [CPColor greenColor]];
+	var newView = [[CPView alloc] initWithFrame:[_currentView frame]];
+	[newView addSubview:finishedText];
 	
-	[self addSubview:_currentView];
+	[self replaceSubview:_currentView with:newView];
 }
 
 - (void)drawRect:(CPRect)rect
