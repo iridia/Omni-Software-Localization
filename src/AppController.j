@@ -51,18 +51,18 @@
 
 - (void)showUploading
 {	
-	_uploadingView = [[OLUploadingView alloc] initWithFrame:CPRectMake(0,0,400,100) withController:self];
+	_uploadingView = [[OLUploadingView alloc] initWithFrame:CPRectMake(0,0,250,100) withController:self];
+	[_uploadingView setCenter:CPPointMake([_contentView center].x, 45)];
 	
 	[_contentView addSubview:_uploadingView];
 }
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
-	console.log("Test");
-	
 	[_uploadingView removeFromSuperview];
 	
-	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,100) withFilename:response withController:self];
+	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,250,100) withFilename:response withController:self];
+	[_uploadedView setCenter:CPPointMake([_contentView center].x, 45)];
 	
 	[_contentView addSubview:_uploadedView];
 }

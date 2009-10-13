@@ -33,4 +33,12 @@
 	return self;
 }
 
+- (void)drawRect:(CPRect)rect
+{
+	var bPath = [CPBezierPath bezierPathWithRect:rect];
+	
+	[bPath setLineWidth:5];
+	[bPath stroke];
+}
+
 @end
