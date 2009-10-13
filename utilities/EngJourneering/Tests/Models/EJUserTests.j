@@ -1,4 +1,4 @@
-@import "EJUser.j"
+@import "../../Models/EJUser.j"
 
 @implementation EJUserTests : OJTestCase
 {

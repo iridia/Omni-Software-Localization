@@ -1,5 +1,5 @@
-@import "EJUserData.j"
-@import "EJUser.j"
+@import "../../Models/EJUserData.j"
+@import "../../Models/EJUser.j"
 
 @implementation EJUserDataTests : OJTestCase
 {
