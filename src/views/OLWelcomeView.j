@@ -10,7 +10,7 @@
 {
 }
 
-- (id)initWithFrame:(CGRect)frame withFilename:(CPString)fileName withController:(AppController)controller
+- (id)initWithFrame:(CGRect)frame withController:(AppController)controller
 {
 	if(self = [super initWithFrame:frame withController:controller])
 	{
@@ -74,12 +74,12 @@
 
 - (void)uploadButtonDidBeginUpload:(id)sender
 {
-	[controller showUploading];
+	[_controller showUploading];
 }
 
 - (void)uploadButton:(id)sender didFinishUploadWithData:(CPString)response
 {
-	[controller finishedUploadingWithResponse:response];
+	[_controller finishedUploadingWithResponse:response];
 }
 
 - (void)drawRect:(CPRect)rect

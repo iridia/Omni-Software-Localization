@@ -9,6 +9,8 @@
 @import <Foundation/CPObject.j>
 @import "views/OLWelcomeView.j"
 @import "views/OLResourceView.j"
+@import "views/OLUploadingView.j"
+@import "views/OLUploadedView.j"
 @import "controllers/OLResourceController.j"
 
 
