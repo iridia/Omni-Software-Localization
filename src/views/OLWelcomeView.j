@@ -28,7 +28,7 @@
 		
 		[welcomeText setFont:[CPFont boldSystemFontOfSize:18]];
 		[welcomeText sizeToFit];
-		[welcomeText setCenter:CGPointMake([self center].x, 40)];
+		[welcomeText setCenter:CGPointMake([self center].x, 25)];
 		
 		[importButton setTitle:@"Import"];
 		[importButton sizeToFit];

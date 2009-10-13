@@ -50,17 +50,19 @@
 }
 
 - (void)showUploading
-{
-	_uploadingView = [[OLUploadingView alloc] initWithFrame:CPRectMake(0,0,400,200) withController:self];
+{	
+	_uploadingView = [[OLUploadingView alloc] initWithFrame:CPRectMake(0,0,400,100) withController:self];
 	
 	[_contentView addSubview:_uploadingView];
 }
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
+	console.log("Test");
+	
 	[_uploadingView removeFromSuperview];
 	
-	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,200) withFilename:response withController:self];
+	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,100) withFilename:response withController:self];
 	
 	[_contentView addSubview:_uploadedView];
 }

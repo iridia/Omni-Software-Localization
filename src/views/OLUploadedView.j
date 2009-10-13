@@ -18,7 +18,11 @@
 		
 		// do stuff.. not sure yet what
 		alert(fileName);
+		
+		[self setBackgroundColor: [CPColor redColor]];
 	}
+	
+	return self;
 }
 
 @end

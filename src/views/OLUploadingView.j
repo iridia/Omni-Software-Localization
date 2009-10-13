@@ -13,9 +13,24 @@
 {
 	if(self = [super initWithFrame:frame withController:controller])
 	{
-		// do stuff.. not sure yet what
-		alert("Test");
+		var uploadingText = [CPTextField labelWithTitle:@"Uploading..."];
+		
+		[uploadingText setFont:[CPFont boldSystemFontOfSize:18]];
+		[uploadingText sizeToFit];
+		[uploadingText setCenter:CGPointMake([self center].x, 25)];
+		
+		var spinner = [[CPImage alloc] initByReferencingFile:@"Resources/upload_spinner.gif" size:CGSizeMake(24,24)];
+		var imageView = [[CPImageView alloc] initWithFrame:CPMakeRect(0,0,24,24)];
+		[imageView setCenter:CGPointMake([self center].x, 65)];
+		[imageView setImage:spinner];
+		
+		[self setBackgroundColor: [CPColor whiteColor]];
+		
+		[self addSubview:uploadingText];
+		[self addSubview:imageView];
 	}
+	
+	return self;
 }
 
 @end
