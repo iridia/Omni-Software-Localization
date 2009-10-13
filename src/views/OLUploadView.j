@@ -46,7 +46,7 @@
 	var finishedText = [CPTextField labelWithTitle:@"Finished!"];
 	[finishedText setFont:[CPFont boldSystemFontOfSize:18]];
 	[finishedText sizeToFit];
-	[finishedText setCenter:CGPointMake([self center].x, 25)];
+	[finishedText setCenter:CGPointMake([_currentView center].x, 25)];
 	
 	var newView = [[CPView alloc] initWithFrame:[_currentView frame]];
 	[newView addSubview:finishedText];
