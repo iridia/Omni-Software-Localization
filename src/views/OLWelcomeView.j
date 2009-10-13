@@ -10,7 +10,7 @@
 {
 }
 
-- (id)initWithFrame:(CGRect)frame withController:(AppController)controller
+- (id)initWithFrame:(CGRect)frame withController:(OLWelcomeController)controller
 {
 	if(self = [super initWithFrame:frame withController:controller])
 	{

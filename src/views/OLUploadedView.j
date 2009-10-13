@@ -10,7 +10,7 @@
 	CPString _fileName;
 }
 
-- (id)initWithFrame:(CGRect)frame withFilename:(CPString)fileName withController:(AppController)controller
+- (id)initWithFrame:(CGRect)frame withFilename:(CPString)fileName withController:(OLWelcomeController)controller
 {
 	if(self = [super initWithFrame:frame withController:controller])
 	{
