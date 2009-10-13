@@ -17,6 +17,8 @@
 	CPView _contentView;
 	OLWelcomeView _welcomeView;
 	OLResourceView _resourceView;
+	OLUploadingView _uploadingView;
+	OLUploadedView _uploadedView;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
@@ -43,6 +45,22 @@
 	_resourceView = [[OLResourceView alloc] initWithFrame:[_contentView bounds] withController:[[OLResourceController alloc] init]];
 	
 	[_contentView addSubview:_resourceView];
+}
+
+- (void)showUploading
+{
+	_uploadingView = [[OLUploadingView alloc] initWithFrame:CPRectMake(0,0,400,200) withController:self];
+	
+	[_contentView addSubview:_uploadingView];
+}
+
+- (void)finishedUploadingWithResponse:(CPString)response
+{
+	[_uploadingView removeFromSuperview];
+	
+	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,200) withFilename:response withController:self];
+	
+	[_contentView addSubview:_uploadedView];
 }
 
 @end
