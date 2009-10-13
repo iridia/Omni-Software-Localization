@@ -1,5 +1,7 @@
-@import "../src/OLWelcomeController.j"
+@import <AppKit/AppKit.j>
+@import "OLWelcomeController.j"
 @import "../testutilities/OLControllerTestFactory.j"
+@import "../testutilities/OJTestCase+ArrayAsserts.j"
 
 @implementation OLWelcomeControllerTests : OJTestCase
 
@@ -14,7 +16,9 @@
 	var target = [OLControllerTestFactory welcomeControllerWithFrame:CGRectMakeZero()];
 	
 	[target transitionToResourceView:self];
-	// still need to test something. This is difficult. This is a design smell!!
+	[self assert:[[target _contentView] subviews] doesNotContain:[target _welcomeView]];
+	[self assert:[[target _contentView] subviews] contains:[target _resourceView]];
+	[self assertNotNull:[[target _resourceView]]];
 }
 
 - (void)testThatOLWelcomeControllerDoesShowUploadingNotification
