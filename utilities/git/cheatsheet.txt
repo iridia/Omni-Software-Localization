@@ -1,0 +1,34 @@
+# Git Cheatsheet. 
+# Note: Remote Repository is the Default Remote
+# Note: origin is the name of the Remote Repository
+
+# Pull from Remote Repository
+git pull
+
+# Merge Branch A into Branch B
+git checkout B
+git pull . A
+
+# Delete Branch A from Remote Repository
+git push :heads/A
+
+# Track Branch A on Branch B from Remote Repository (A can equal B in this case)
+git checkout --track -b B origin/A
+
+# Create local branch A
+git branch A
+
+# Delete local branch A
+git branch -D A
+
+# Push Current Branch to Remote Repository
+git push
+
+# View the current files that are being tracked / untracked
+git status
+
+# Switch to git branch B
+git checkout B
+
+# Reset to HEAD of branch A
+git checkout A
