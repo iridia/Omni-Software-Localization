@@ -1,12 +1,14 @@
 @import "OLView.j"
 
 /*!
- * OLUploadingView
+ * OLUploadView
  *
  * The screen that is displayed when something is uploading.
  */
-@implementation OLUploadingView : OLView
+@implementation OLUploadView : OLView
 {
+	CPString _fileName;
+	CPView _currentView;
 }
 
 - (id)initWithFrame:(CGRect)frame withController:(OLWelcomeController)controller
@@ -14,6 +16,8 @@
 	if(self = [super initWithFrame:frame withController:controller])
 	{
 		var uploadingText = [CPTextField labelWithTitle:@"Uploading..."];
+		
+		_currentView = [OLView initWithFrame:frame];
 		
 		[uploadingText setFont:[CPFont boldSystemFontOfSize:18]];
 		[uploadingText sizeToFit];
@@ -26,11 +30,25 @@
 		
 		[self setBackgroundColor: [CPColor whiteColor]];
 		
-		[self addSubview:uploadingText];
-		[self addSubview:imageView];
+		[_currentView addSubview:uploadingText];
+		[_currentView addSubview:imageView];
+		
+		[self addSubview:_currentView];
 	}
 	
 	return self;
+}
+
+- (void)finishedUploadingWithFilename:(CPString)fileName
+{
+	_fileName = fileName;
+	
+	[_currentView removeFromSuperview];
+	_currentView = [OLView initWithFrame:frame];
+	
+	[self setBackgroundColor: [CPColor greenColor]];
+	
+	[self addSubview:_currentView];
 }
 
 - (void)drawRect:(CPRect)rect

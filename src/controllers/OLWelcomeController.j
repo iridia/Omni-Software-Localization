@@ -1,8 +1,7 @@
 @import <Foundation/CPObject.j>
 @import "../views/OLWelcomeView.j"
 @import "../views/OLResourceView.j"
-@import "../views/OLUploadingView.j"
-@import "../views/OLUploadedView.j"
+@import "../views/OLUploadView.j"
 @import "OLResourceController.j"
 
 /*!
@@ -14,8 +13,7 @@
 	CPView _contentView;
 	OLWelcomeView _welcomeView;
 	OLResourceView _resourceView;
-	OLUploadingView _uploadingView;
-	OLUploadedView _uploadedView;
+	OLUploadView _uploadView;
 }
 
 - (id)initWithContentView:(CPView)contentView
@@ -46,20 +44,15 @@
 
 - (void)showUploading
 {	
-	_uploadingView = [[OLUploadingView alloc] initWithFrame:CPRectMake(0,0,250,100) withController:self];
-	[_uploadingView setCenter:CPPointMake([_contentView center].x, 45)];
+	_uploadView = [[OLUploadView alloc] initWithFrame:CPRectMake(0,0,250,100) withController:self];
+	[_uploadView setCenter:CPPointMake([_contentView center].x, 45)];
 	
-	[_contentView addSubview:_uploadingView];
+	[_contentView addSubview:_uploadView];
 }
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
-	[_uploadingView removeFromSuperview];
-	
-	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,250,100) withFilename:response withController:self];
-	[_uploadedView setCenter:CPPointMake([_contentView center].x, 45)];
-	
-	[_contentView addSubview:_uploadedView];
+	[_uploadView finishedUploadingWithFilename:response];
 }
 
 @end
