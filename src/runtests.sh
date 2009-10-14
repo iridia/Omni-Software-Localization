@@ -1,0 +1,1 @@
+ojtest tests/*Test*.j

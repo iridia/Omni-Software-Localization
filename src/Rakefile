@@ -23,3 +23,7 @@ ObjectiveJ::BundleTask.new(:ProjectOSL) do |t|
 end
 
 task :default => [:ProjectOSL]
+
+task :test do
+    `./runtests`
+end
