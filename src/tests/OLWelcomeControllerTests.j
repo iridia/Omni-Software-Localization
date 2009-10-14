@@ -33,4 +33,13 @@
 	// still need to test something. This is difficult. This is a design smell!!
 }
 
+- (void)testThatOLWelcomeControllerDoesDownloadFiles
+{
+	var target = [OLControllerTestFactory welcomeControllerWithFrame:CGRectMakeZero()];
+	
+	[target downloadFile:nil];
+	// still need to test something. This is difficult. This is a design smell!!
+}
+
+
 @end
