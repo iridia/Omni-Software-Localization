@@ -1,5 +1,5 @@
-@import "../src/OLWelcomeController.j"
-@import "../testutilities/OLControllerTestFactory.j"
+@import "../controllers/OLWelcomeController.j"
+@import "utilities/OLControllerTestFactory.j"
 
 @implementation OLWelcomeControllerTests : OJTestCase
 
