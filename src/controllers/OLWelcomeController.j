@@ -61,7 +61,7 @@
 	
 	[_uploadingView removeFromSuperview];
 	
-	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,350,160) withController:self withFileName:response];
+	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,160) withController:self withFileName:response];
 	[_uploadedView setCenter:CPPointMake([_contentView center].x, 75)];
 	
 	[_contentView addSubview:_uploadedView];
