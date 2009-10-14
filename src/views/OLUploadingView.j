@@ -1,11 +1,11 @@
 @import "OLView.j"
 
 /*!
- * OLUploadView
+ * OLUploadingView
  *
  * The screen that is displayed when something is uploading.
  */
-@implementation OLUploadView : OLView
+@implementation OLUploadingView : OLView
 {
 	CPString _fileName;
 	OLView _currentView;
@@ -37,21 +37,6 @@
 	}
 	
 	return self;
-}
-
-- (void)finishedUploadingWithFilename:(CPString)aFileName
-{
-	_fileName = aFileName;
-	
-	var finishedText = [CPTextField labelWithTitle:@"Finished!"];
-	[finishedText setFont:[CPFont boldSystemFontOfSize:18]];
-	[finishedText sizeToFit];
-	[finishedText setCenter:CGPointMake([self center].x, 25)];
-	
-	var newView = [[CPView alloc] initWithFrame:[_currentView frame]];
-	[newView addSubview:finishedText];
-	
-	[self replaceSubview:_currentView with:newView];
 }
 
 - (void)drawRect:(CPRect)rect

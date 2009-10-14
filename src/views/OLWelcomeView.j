@@ -59,14 +59,6 @@
 	return self;
 }
 
-- (void)addViews:(CPArray)views
-{
-	for(var i = 0; i < [views count]; i++)
-	{
-		[self addSubview:views[i]];
-	}
-}
-
 - (void)uploadButton:(id)sender didChangeSelection:(CPString)selection
 {
 	[sender submit];
@@ -75,10 +67,12 @@
 - (void)uploadButtonDidBeginUpload:(id)sender
 {
 	[_controller showUploading];
+	[self uploadButton:nil didFinishUploadWithData:@"Test!"];
 }
 
 - (void)uploadButton:(id)sender didFinishUploadWithData:(CPString)response
 {
+	alert(response);
 	[_controller finishedUploadingWithResponse:response];
 }
 
