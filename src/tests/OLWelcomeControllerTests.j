@@ -13,6 +13,7 @@
 - (void)testThatOLWelcomeControllerDoesTransferToOLResourceView
 {
 	// var target = [OLControllerTestFactory welcomeControllerWithFrame:CGRectMakeZero()];
+	// [target set_contentView:[OJMoq mockBaseObject:[[CPView alloc] initWithFrame:CGRectMakeZero()]]];
 	
 	// [target transitionToResourceView:self];
 	// [self assert:[[target _contentView] subviews] contains:[target _resourceView]];

@@ -9,6 +9,14 @@
 	[self assert:testString equals:[moq object]];
 }
 
+- (void)testThatOJMoqDoesRespondToClassConstructor
+{
+	var testString = @"Test";
+	var moq = [OJMoq mockBaseObject:@"Test"];
+	[self assert:testString equals:[moq object]];
+}
+
+
 - (void)testThatMoqRespondsToSelector
 {
 	var testString = @"Test";

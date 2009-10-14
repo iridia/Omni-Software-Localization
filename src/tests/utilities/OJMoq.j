@@ -8,6 +8,11 @@
 	CPArray		_expectations;
 }
 
++ (id)mockBaseObject:(CPObject)baseObject
+{
+	return [[OJMoq alloc] initWithBaseObject:baseObject];
+}
+
 - (id)initWithBaseObject:(CPObject)baseObject
 {
 	if(self = [super init])
