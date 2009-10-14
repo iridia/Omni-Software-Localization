@@ -1,0 +1,5 @@
+# gitdrb - git delete remote branch
+# Usage:
+#  gitdrb <branch-to-delete>
+
+git push :heads/%1
