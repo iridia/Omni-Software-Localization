@@ -1,47 +1,99 @@
-#!/usr/bin/env objj
+// #!/usr/bin/env objj
 
-print("Running 'ojtest Tests/*/*Test*.j'...");
+@import <Foundation/CPObject.j>
 
-var pathToTestFolder = "Tests";
-
-var lsOptions = {output: ""};
-runCommand("ls", pathToTestFolder, lsOptions);
-
-var folders = lsOptions.output.split("\n");
-
-var testFiles = [];
-var re = new RegExp(".*Test.*.j", "i");
-
-var path = [pathToTestFolder];
-
-for (var i = 0; i < folders.length; i++)
+@implementation OLTestRunner : CPObject
 {
-    var folder = folders[i];
-    path.push(folder);
-    
-    var lsOptions = {output: ""};
-    runCommand("ls", path.join("/"), lsOptions);
-    
-    var files = lsOptions.output.split("\n");
-    for (var i = 0; i < files.length; i++)
-    {
-        var file = files[i];
-        path.push(file);
-        
-        if (re.test(file))
-        {
-            testFiles.push(path.join("/"));
-        }
-        
-        path.pop();
-    }
-    
-    path.pop();
 }
 
-print("");
+- (void)startWithArguments:(CPArray)arguments
+{
+    var arg = @"Tests/*/*Test*.j";
+    var globbedArguments = [self globArgument:arg];
+    var ojtestOptions = {args:globbedArguments};
+    
+    print("Running 'ojtest " + arg + "'...");
+    runCommand("ojtest", ojtestOptions);
+}
 
-var ojtestOptions = {args:testFiles};
-var result = runCommand("ojtest", ojtestOptions);
+- (CPArray)globArgument:(CPString)argument
+{
+    var arguments = [];
+    var paths = [""];
+    var tokens = argument.split("/");
+    
+    for (var i = 0; i < tokens.length; i++)
+    {
+        var token = tokens[i];
+        var newPaths = [];
+        for (var j = 0; j < paths.length; j++)
+        {
+            var path = paths[j];
+            if (path !== "")
+            {
+                path += "/";
+            }
+            var newPath = [self globPath:path withToken:token];
+            for (var k = 0; k < newPath.length; k++)
+            {
+                newPaths.push(newPath[k]);
+            }
+        }
+        paths = newPaths;
+    }
+    
+    return paths;
+}
 
-print("");
+- (CPArray)globPath:(CPString)currentPath withToken:(CPString)token
+{    
+    var paths = [];
+    var wildcardLocation = token.indexOf("*");
+    if (wildcardLocation === -1)
+    {
+        if (currentPath === "")
+        {
+            paths.push(token);
+        }
+        else
+        {
+            paths.push(currentPath + token);
+        }
+    }
+    else
+    {
+        var regExString = token.split("*").join(".*");
+        var regEx = new RegExp(regExString, "i");
+    
+        var filesOrFolders = [self runlsForPath:currentPath];
+        for (var j = 0; j < filesOrFolders.length; j++)
+        {
+            var fileOrFolder = filesOrFolders[j];
+            if (fileOrFolder && regEx.test(fileOrFolder))
+            {
+                paths.push(currentPath + fileOrFolder);
+            }
+        }
+    }
+    
+    return paths;
+}
+
+- (JSObject)runlsForPath:(CPString)path
+{
+    var options = {output: ''};
+    if (path === "")
+    {
+        runCommand("ls", options);
+    }
+    else
+    {
+        runCommand("ls", path, options);
+    }
+    return options.output.split("\n");
+}
+
+@end
+
+var testRunner = [[OLTestRunner alloc] init];
+[testRunner startWithArguments:args];
