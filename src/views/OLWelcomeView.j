@@ -7,8 +7,6 @@
  * The screen that is displayed to first-time visitors.
  */
 @implementation OLWelcomeView : OLView
-{
-}
 
 - (id)initWithFrame:(CGRect)frame withController:(OLWelcomeController)controller
 {
@@ -19,8 +17,8 @@
 		var localizeText = [CPTextField labelWithTitle:@"Start localizing applications from one language to another!"];
 		var importButton = [[UploadButton alloc] initWithFrame:CGRectMakeZero()];
 		var localizeButton = [CPButton buttonWithTitle:@"Localize"];
-		var awesomeImage = [[CPImage alloc] initByReferencingFile:@"http://www.gstatic.com/hostedimg/dbf8ffc7c45dee79_large" size:CGSizeMake(200,100)];
-		var imageView = [[CPImageView alloc] initWithFrame:CPMakeRect(250,60,75,100)];
+		var awesomeImage = [[CPImage alloc] initByReferencingFile:@"Resources/logo.png" size:CGSizeMake(150,150)];
+		var imageView = [[CPImageView alloc] initWithFrame:CPMakeRect(180,40,150,150)];
 		
 		[imageView setImage:awesomeImage];
 
@@ -38,7 +36,7 @@
 		[self addViews:new Array(welcomeText, importText, localizeText, importButton, localizeButton, imageView)];
 				
 		var point = [welcomeText center];
-		point.y = point.y + 25;
+		point.y = point.y + 40;
 		[importButton setFrameOrigin:point];
 		point.y = point.y + 25;		
 		[importText setFrameOrigin:point];
@@ -54,17 +52,10 @@
 		[importButton setTarget:self];
 		
 		[localizeButton setTarget:controller];
-		[localizeButton setAction:@selector(transitionToResourceView:)];		
+		[localizeButton setAction:@selector(transitionToResourceView:)];
+		[localizeButton setEnabled:NO];		
 	}
 	return self;
-}
-
-- (void)addViews:(CPArray)views
-{
-	for(var i = 0; i < [views count]; i++)
-	{
-		[self addSubview:views[i]];
-	}
 }
 
 - (void)uploadButton:(id)sender didChangeSelection:(CPString)selection

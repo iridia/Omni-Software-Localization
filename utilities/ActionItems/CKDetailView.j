@@ -21,7 +21,7 @@
 		[details setItemPrototype:dataView];
 		[details setMaxNumberOfColumns:1];
 		[details setVerticalMargin:10.0];
-		[details setMinItemSize:CGSizeMake(500.0, 42.0)];
+		[details setMinItemSize:CGSizeMake(500.0, 100.0)];
 		[details setMaxItemSize:CGSizeMake(10000.0, 10000.0)];
 		[details setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 		[details setDelegate:self];
@@ -62,7 +62,8 @@
 	
 	CPWebView webView;
 	
-}//
+}
+
 //
 //- (id)initWithFrame:(CGRect)frame
 //{
@@ -79,7 +80,7 @@
 
 - (void)setRepresentedObject:(JSObject)anObject
 {
-	//if (!message)
+//	if (!message)
 //	{
 //		message = [[CPTextField alloc] initWithFrame:CGRectInset([self bounds], 10, 10)];
 //		
@@ -97,7 +98,7 @@
 
 	if (!webView)
 	{
-		webView = [[CPWebView alloc] initWithFrame:CGRectInset([self bounds], 10, 10)];
+		webView = [[CPWebView alloc] initWithFrame:CGRectInset([self bounds], 10, 1)];
 		[self addSubview:webView];
 	}
 	
@@ -105,7 +106,7 @@
 	actionItemHTML = @"<html><body>" + actionItemHTML + @"</body></html>";
 	
 	[webView loadHTMLString:actionItemHTML];
-	[webView setFrameSize:CGSizeMake(CGRectGetWidth([self bounds]), 500)];
+	[webView setFrameSize:CGSizeMake(CGRectGetWidth([self bounds])-20, 100)];
 	
 }
 

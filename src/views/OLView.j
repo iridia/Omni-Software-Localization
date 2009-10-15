@@ -14,4 +14,12 @@
 	return self;
 }
 
+- (void)addViews:(CPArray)views
+{
+	for(var i = 0; i < [views count]; i++)
+	{
+		[self addSubview:views[i]];
+	}
+}
+
 @end

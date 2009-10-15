@@ -16,6 +16,7 @@
 	OLResourceView _resourceView;
 	OLUploadingView _uploadingView;
 	OLUploadedView _uploadedView;
+	CPString _fileName;
 }
 
 - (id)initWithContentView:(CPView)contentView
@@ -38,6 +39,8 @@
 - (void)transitionToResourceView:(id)sender
 {
 	[_welcomeView removeFromSuperview];
+	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
+	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
 	_resourceView = [[OLResourceView alloc] initWithFrame:[_contentView bounds] withController:[[OLResourceController alloc] init]];
 	
@@ -54,12 +57,19 @@
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
+	_fileName = response;
+	
 	[_uploadingView removeFromSuperview];
 	
-	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,250,100) withFilename:response withController:self];
-	[_uploadedView setCenter:CPPointMake([_contentView center].x, 45)];
+	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,160) withController:self withFileName:response];
+	[_uploadedView setCenter:CPPointMake([_contentView center].x, 75)];
 	
 	[_contentView addSubview:_uploadedView];
+}
+
+- (void)downloadFile:(id)sender
+{
+	window.open(_fileName);
 }
 
 @end

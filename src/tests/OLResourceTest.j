@@ -1,5 +1,5 @@
 @import <AppKit/AppKit.j>
-@import "OLResource.j"
+@import "../models/OLResource.j"
 
 @implementation OLResourceTest : OJTestCase
 
