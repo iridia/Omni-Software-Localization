@@ -25,5 +25,5 @@ end
 task :default => [:ProjectOSL]
 
 task :test do
-    `./runtests`
+    `./runtests.sh`
 end
