@@ -4,29 +4,36 @@
 @implementation OLApplication : CPObject
 {
 	CPString _name @accessors(property=name, readonly);
-	CPDictionary _resourceLists @accessors(property=resourceLists, readonly);
+	CPArray _resourceBundles @accessors(property=resourceBundles, readonly);
 }
 
 - (id)initWithName:(CPString)aName
 {
 	if(self = [super init])
 	{
-		_resourceLists = [CPDictionary dictionary];
-		_resources = [[CPArray alloc] init];
+		_resourceBundles = [[CPArray alloc] init];
 		_name = aName;
 	}
 	
 	return self;
 }
 
-- (void)addResources:(OLArray)resourceToAdd ofLangugage:(OLLanguage)language
+- (void)addResourceBundle:(OLResourceBundle)aResourceBundle
 {
-	[_resources addObject:resourceToAdd];
+	[_resourceBundles addObject:aResourceBundle];
 }
 
-- (CPArray)getResourcesOfLanguage:(OLLanguage)language
+- (CPArray)getResourceBundleOfLanguage:(OLLanguage)language
 {
-	return [_resources objectForKey:language];
+	for(int i = 0; i < [_resourceBundles count]; i++)
+	{
+		if([[[_resourceBundles objectAtIndex:i] language] equals:language]		)
+		{
+			return [_resourceBundles objectAtIndex:i];
+		}
+	}
+	
+	return nil;
 }
 
 @end
