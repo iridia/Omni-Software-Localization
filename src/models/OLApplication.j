@@ -1,5 +1,6 @@
 @import "OLResource.j"
 @import "OLLanguage.j"
+@import "Find+CPArray.j"
 
 @implementation OLApplication : CPObject
 {
@@ -23,17 +24,9 @@
 	[_resourceBundles addObject:aResourceBundle];
 }
 
-- (CPArray)getResourceBundleOfLanguage:(OLLanguage)language
+- (CPArray)getResourceBundleOfLanguage:(OLLanguage)languageToFind
 {
-	for(int i = 0; i < [_resourceBundles count]; i++)
-	{
-		if([[[_resourceBundles objectAtIndex:i] language] equals:language]		)
-		{
-			return [_resourceBundles objectAtIndex:i];
-		}
-	}
-	
-	return nil;
+	return [_resourceBundles findBy:function(rsrc){return [[rsrc language] equals:languageToFind];}];
 }
 
 @end
