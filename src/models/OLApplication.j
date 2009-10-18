@@ -3,24 +3,30 @@
 
 @implementation OLApplication : CPObject
 {
-	CPArray _resources @accessors(property=resources, readonly);
 	CPString _name @accessors(property=name, readonly);
-	OLLanguage _language @accessors(property=language, readonly);
+	CPDictionary _resourceLists @accessors(property=resourceLists, readonly);
 }
 
 - (id)initWithName:(CPString)aName
 {
 	if(self = [super init])
 	{
+		_resourceLists = [CPDictionary dictionary];
 		_resources = [[CPArray alloc] init];
 		_name = aName;
 	}
+	
 	return self;
 }
 
-- (void)addResource:(OLResource)resourceToAdd
+- (void)addResources:(OLArray)resourceToAdd ofLangugage:(OLLanguage)language
 {
 	[_resources addObject:resourceToAdd];
+}
+
+- (CPArray)getResourcesOfLanguage:(OLLanguage)language
+{
+	return [_resources objectForKey:language];
 }
 
 @end
