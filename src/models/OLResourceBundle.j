@@ -1,3 +1,6 @@
+/*!
+ * The OLResourceBundle represents a bundle of resources of a specific language.
+ */
 @implementation OLResourceBundle : CPObject
 {
 	OLLanguage _language @accessors(property=language, readonly);

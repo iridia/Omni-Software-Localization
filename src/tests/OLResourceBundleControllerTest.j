@@ -1,7 +1,7 @@
-@import "../controllers/OLResourceController.j"
+@import "../controllers/OLResourceBundleController.j"
 @import "utilities/OJMoq.j"
 
-@implementation OLResourceControllerTest : OJTestCase
+@implementation OLResourceBundleControllerTest : OJTestCase
 
 - (void)testThatOLResourceControllerLoads
 {

@@ -1,9 +1,11 @@
 @import <Foundation/CPObject.j>
 @import "../views/OLWelcomeView.j"
-@import "../views/OLResourceView.j"
+@import "../views/OLResourceBundleView.j"
 @import "../views/OLUploadingView.j"
 @import "../views/OLUploadedView.j"
-@import "OLResourceController.j"
+@import "OLResourceBundleController.j"
+@import "../models/OLResourceBundle.j"
+@import "../models/OLLanguage.j"
 
 /*!
  * The OLWelcomeController is a controller for the welcome views that decides
@@ -42,7 +44,9 @@
 	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
 	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
-	_resourceView = [[OLResourceView alloc] initWithFrame:[_contentView bounds] withController:[[OLResourceController alloc] init]];
+	var bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];
+	var resourceBundleController = [[OLResourceBundleController alloc] initWithBundle:bundle];
+	_resourceView = [[OLResourceBundleView alloc] initWithFrame:[_contentView bounds] withController:resourceBundleController];
 	
 	[_contentView addSubview:_resourceView];
 }

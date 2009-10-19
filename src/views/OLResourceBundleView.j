@@ -7,7 +7,7 @@
 /*!
  * The view for displaying relevant resource information.
  */
-@implementation OLResourceView : OLView
+@implementation OLResourceBundleView : OLView
 {
 }
 
