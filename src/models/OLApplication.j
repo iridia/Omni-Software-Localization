@@ -1,5 +1,6 @@
 @import "OLResource.j"
 @import "OLLanguage.j"
+@import "OLResourceBundle.j"
 @import "Find+CPArray.j"
 
 @implementation OLApplication : CPObject

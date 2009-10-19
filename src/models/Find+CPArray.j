@@ -1,8 +1,8 @@
 @implementation CPArray (Find)
 
--(CPObject)findBy:(Function)isTheObject
+- (CPObject)findBy:(Function)isTheObject
 {
-	for(int i = 0; i < [self count]; i++)
+	for(var i = 0; i < [self count]; i++)
 	{
 		if(isTheObject([self objectAtIndex:i]))
 		{

@@ -12,6 +12,11 @@
 	return self;
 }
 
+- (BOOL)equals:(OLLanguage)otherLanguage
+{
+	return [_name isEqualToString:[otherLanguage name]];
+}
+
 + (OLLanguage)english {	return [[OLLanguage alloc] initWithName:@"English"]; }
 + (OLLanguage)french {	return [[OLLanguage alloc] initWithName:@"French"]; }
 + (OLLanguage)spanish {	return [[OLLanguage alloc] initWithName:@"Spanish"]; }
