@@ -1,3 +1,7 @@
 [submodule "utilities/EngJourneering"]
 	path = utilities/EngJourneering
 	url = git://github.com/chandlerkent/EngJourneering.git
+
+[submodule "src/test/OJMoq"]
+	path = src/test/OJMoq
+	url = git://github.com/hammerdr/OJMoq.git

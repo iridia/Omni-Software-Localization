@@ -1,5 +1,5 @@
 @import "../controllers/OLResourceController.j"
-@import "utilities/OJMoq.j"
+@import "utilities/OJMoq/OJMoq.j"
 
 @implementation OLResourceControllerTest : OJTestCase
 
