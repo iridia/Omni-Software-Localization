@@ -19,6 +19,9 @@
 		[title setBackgroundColor:[CPColor whiteColor]];
 		
 		[self addSubview:title];
+		
+		///
+		
         var dataView = [[CPCollectionViewItem alloc] init];
         [dataView setView:[[OLResourceView alloc] initWithFrame:CGRectMakeZero()]];
         
@@ -48,6 +51,43 @@
 	return self;
 }
 
+- (void)setupLineItemsWithIndex:(int)index
+{
+	var resource = [[[[self controller] bundle] resources] objectAtIndex:index];
+	
+	var lineItems = [resource lineItems];
+	var frame = [self bounds];
+		
+    var dataView = [[CPCollectionViewItem alloc] init];
+    [dataView setView:[[OLLineItemView alloc] initWithFrame:CGRectMakeZero()]];
+    
+    var listOfResources = [[CPCollectionView alloc] initWithFrame:CGRectMake(50, 300, CGRectGetWidth(frame)-100, 200)];
+    [listOfResources setItemPrototype:dataView];
+    [listOfResources setVerticalMargin:0.0];
+    [listOfResources setMinItemSize:CGSizeMake(500.0, 42.0)];
+    [listOfResources setMaxItemSize:CGSizeMake(10000.0, 42.0)];
+    [listOfResources setDelegate:self];
+    
+	var arrayOfDataViews = [[CPArray alloc] init];
+	
+	for(var i = 0; i < [lineItems count]; i++)
+	{
+		var tempView = [[CPView alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(frame)-100, 42)];
+    	var dataView = [CPTextField labelWithTitle:[[lineItems objectAtIndex:i] identifier]];
+    	[dataView setCenter:CGPointMake([tempView center].x, 14)];
+		[tempView addSubview:dataView];
+		var dataView2 = [CPTextField labelWithTitle:[[lineItems objectAtIndex:i] value]];
+    	[dataView2 setCenter:CGPointMake([tempView center].x, 28)];
+    	[tempView addSubview:dataView2];
+		[arrayOfDataViews addObject:tempView];
+	}
+
+	[listOfResources setContent:arrayOfDataViews];
+	[listOfResources reloadContent];
+	
+	[self addSubview:listOfResources];	
+}
+
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
 }
@@ -61,6 +101,8 @@
 	
 	var selectedIndex = [[aCollectionView selectionIndexes] firstIndex];
 	[[[aCollectionView content] objectAtIndex:selectedIndex] setBackgroundColor:[CPColor colorWithHexString:@"CCCCFF"]];
+	
+	[self setupLineItemsWithIndex:selectedIndex];
 }
 
 @end
@@ -85,5 +127,28 @@
     [self addSubview:anObject];
     [self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
 }
+
+@end
+
+@implementation OLLineItemView : CPView
+{
+}
+
+- (id)init
+{
+	if(self = [super init])
+	{
+        [self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
+        [self setAutoresizingMask:CPViewWidthSizable];
+	}
+	return self;
+}
+
+- (void)setRepresentedObject:(JSObject)anObject
+{
+    [self addSubview:anObject];
+    [self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
+}
+
 
 @end
