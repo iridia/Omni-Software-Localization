@@ -25,9 +25,5 @@ end
 task :default => [:ProjectOSL]
 
 task :test do
-<<<<<<< HEAD
-    %x{objj RunTests.j}
-=======
     `./runtests.sh`
->>>>>>> cd046087e9f567086c6cb0f349a318543de65170
 end

@@ -1,4 +1,4 @@
-@import "utilities/OJMoq.j"
+@import "utilities/OJMoq/OJMoq.j"
 
 @implementation OJMoqTests : OJTestCase
 
