@@ -6,6 +6,7 @@
 @import "OLResourceBundleController.j"
 @import "../models/OLResourceBundle.j"
 @import "../models/OLLanguage.j"
+@import "../models/OLResource.j"
 
 /*!
  * The OLWelcomeController is a controller for the welcome views that decides
@@ -45,6 +46,9 @@
 	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
 	var bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];
+	[bundle addResource:[[OLResource alloc] initWithFilename:@"Test1" withFileType:@"xml" withLineItems:new Array()]];
+	[bundle addResource:[[OLResource alloc] initWithFilename:@"Test2" withFileType:@"xml" withLineItems:new Array()]];
+	[bundle addResource:[[OLResource alloc] initWithFilename:@"Test3" withFileType:@"xml" withLineItems:new Array()]];
 	var resourceBundleController = [[OLResourceBundleController alloc] initWithBundle:bundle];
 	_resourceView = [[OLResourceBundleView alloc] initWithFrame:[_contentView bounds] withController:resourceBundleController];
 	
