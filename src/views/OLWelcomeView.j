@@ -53,7 +53,7 @@
 		
 		[localizeButton setTarget:controller];
 		[localizeButton setAction:@selector(transitionToResourceView:)];
-		[localizeButton setEnabled:NO];		
+		//[localizeButton setEnabled:NO];		
 	}
 	return self;
 }

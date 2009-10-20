@@ -1,9 +1,13 @@
 @import <Foundation/CPObject.j>
 @import "../views/OLWelcomeView.j"
-@import "../views/OLResourceView.j"
+@import "../views/OLResourceBundleView.j"
 @import "../views/OLUploadingView.j"
 @import "../views/OLUploadedView.j"
-@import "OLResourceController.j"
+@import "OLResourceBundleController.j"
+@import "../models/OLResourceBundle.j"
+@import "../models/OLLanguage.j"
+@import "../models/OLResource.j"
+@import "../models/OLLineItem.j"
 
 /*!
  * The OLWelcomeController is a controller for the welcome views that decides
@@ -42,7 +46,17 @@
 	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
 	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
-	_resourceView = [[OLResourceView alloc] initWithFrame:[_contentView bounds] withController:[[OLResourceController alloc] init]];
+	var resource1LineItems = [[CPArray alloc] init];
+	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"id" withValue:@"1"]];
+	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"name" withValue:@"Bob"]];
+	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"lastName" withValue:@"Hammer"]];
+	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"title" withValue:@"Welcome to OSL"]];
+	var bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];
+	[bundle addResource:[[OLResource alloc] initWithFilename:@"Test1" withFileType:@"xml" withLineItems:resource1LineItems]];
+	[bundle addResource:[[OLResource alloc] initWithFilename:@"Test2" withFileType:@"xml" withLineItems:new Array()]];
+	[bundle addResource:[[OLResource alloc] initWithFilename:@"Test3" withFileType:@"xml" withLineItems:new Array()]];
+	var resourceBundleController = [[OLResourceBundleController alloc] initWithBundle:bundle];
+	_resourceView = [[OLResourceBundleView alloc] initWithFrame:[_contentView bounds] withController:resourceBundleController];
 	
 	[_contentView addSubview:_resourceView];
 }

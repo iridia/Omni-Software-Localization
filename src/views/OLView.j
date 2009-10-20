@@ -2,7 +2,7 @@
 
 @implementation OLView : CPView
 {
-	CPObject	_controller;
+	CPObject	_controller @accessors(property=controller);
 }
 
 - (id)initWithFrame:(CGRect)frame withController:(CPObject)controller

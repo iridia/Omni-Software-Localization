@@ -6,6 +6,7 @@
 	CPArray		_selectors;
 	CPDictionary _timesSelectorHasBeenCalled;
 	CPArray		_expectations;
+	CPDictionary _returnValues;
 }
 
 + (id)mockBaseObject:(CPObject)baseObject
@@ -18,6 +19,8 @@
 	if(self = [super init])
 	{
 		_baseObject = baseObject;
+		_returnValues = [CPDictionary dictionary];
+		_timesSelectorHasBeenCalled = [CPDictionary dictionary];
 	}
 	return self;
 }
@@ -39,8 +42,19 @@
 	return self;
 }
 
-- (id)doesNotRecognizeSelector:(SEL)aSelector
+- (id)selector:(SEL)aSelector returns:(CPObject)value
 {
+	[_returnValues setObject:value forKey:aSelector];
+}
+
+- (CPMethodSignature)methodSignatureForSelector:(SEL)aSelector
+{
+	return YES;
+}
+
+- (void)forwardInvocation:(CPInvocation)anInvocation
+{
+	var aSelector = [anInvocation selector];
 	if([_baseObject respondsToSelector:aSelector])
 	{
 		if([[_timesSelectorHasBeenCalled allKeys] containsObject:aSelector])
@@ -51,12 +65,20 @@
 		{
 			[_timesSelectorHasBeenCalled setObject:1 forKey:aSelector];
 		}
-		return [CPObject init];
+		
+		if([[_returnValues allKeys] containsObject:aSelector])
+		{
+			[anInvocation setReturnValue:[_returnValues objectForKey:aSelector]];
+		}
+		else
+		{
+			[anInvocation setReturnValue:[CPObject init]];
+		}
 	}
 	else
 	{
 		CPLog("The base object does not have that selector!");
-		[super doesNotRecognizeSelector:aSelector];
+		[self doesNotRecognizeSelector:aSelector];
 	}
 }
 
