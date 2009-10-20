@@ -1,0 +1,3 @@
+[submodule "utilities/EngJourneering"]
+	path = utilities/EngJourneering
+	url = git://github.com/chandlerkent/EngJourneering.git
