@@ -1,5 +1,5 @@
 @import "../models/OLApplication.j"
-@import "utilities/OJMoq.j"
+@import "utilities/OJMoq/OJMoq.j"
 
 @implementation OLApplicationTest : OJTestCase
 

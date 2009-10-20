@@ -1,6 +1,6 @@
 @import "../models/OLResourceBundle.j"
 @import "../models/OLLanguage.j"
-@import "utilities/OJMoq.j"
+@import "utilities/OJMoq/OJMoq.j"
 
 @implementation OLResourceBundleTest : OJTestCase
 

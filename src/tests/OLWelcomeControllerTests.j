@@ -1,6 +1,5 @@
 @import <AppKit/AppKit.j>
 @import "../controllers/OLWelcomeController.j"
-@import "utilities/OLControllerTestFactory.j"
 @import "utilities/OJMoq/OJMoq.j"
 
 @implementation OLWelcomeControllerTests : OJTestCase
