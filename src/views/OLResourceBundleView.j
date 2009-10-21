@@ -1,52 +1,30 @@
 @import "OLView.j"
+@import "OLLineItemView.j"
+@import "OLResourceView.j"
 
 /*!
  * The view for displaying relevant resource bundle information.
  */
 @implementation OLResourceBundleView : OLView
+{
+	CPCollectionView _listOfResourcesView;
+	CPCollectionView _listOfLineItemsView;
+}
 
 - (id)initWithFrame:(CGRect)frame withController:(CPObject)controller
 {
 	if(self = [super initWithFrame:frame withController:controller])
 	{
 		var resourceBundle = [controller bundle];
-		var title = [CPTextField labelWithTitle:"Resource Bundle in " + [[resourceBundle language] name]];
+		[self addSubview:createTitleView(self)];
 		
-		[title setFont:[CPFont boldFontWithName:"Tahoma" size:24]];
-		[title setBezeled:YES];
-		[title sizeToFit];
-		[title setCenter:CGPointMake([self center].x, 50)];
-		[title setBackgroundColor:[CPColor whiteColor]];
+        _listOfResourcesView = createListOfResourcesView(self);
+		[_listOfResourcesView setContent:[resourceBundle resources]];
+		[_listOfResourcesView reloadContent];
+		[self addSubview:_listOfResourcesView];
 		
-		[self addSubview:title];
-		
-		///
-		
-        var dataView = [[CPCollectionViewItem alloc] init];
-        [dataView setView:[[OLResourceView alloc] initWithFrame:CGRectMakeZero()]];
-        
-        var listOfResources = [[CPCollectionView alloc] initWithFrame:CGRectMake(50, 100, CGRectGetWidth(frame)-100, 500)];
-        [listOfResources setItemPrototype:dataView];
-        [listOfResources setVerticalMargin:0.0];
-        [listOfResources setMinItemSize:CGSizeMake(500.0, 42.0)];
-        [listOfResources setMaxItemSize:CGSizeMake(10000.0, 42.0)];
-        [listOfResources setDelegate:self];
-        
-		var arrayOfDataViews = [[CPArray alloc] init];
-		
-		for(var i = 0; i < [[resourceBundle resources] count]; i++)
-		{
-			var tempView = [[CPView alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(frame)-100, 42)];
-        	var dataView = [CPTextField labelWithTitle:[[[resourceBundle resources] objectAtIndex:i] fileName]];
-        	[dataView setCenter:CGPointMake([tempView center].x, 21)];
-			[tempView addSubview:dataView];
-			[arrayOfDataViews addObject:tempView];
-		}
-
-		[listOfResources setContent:arrayOfDataViews];
-		[listOfResources reloadContent];
-		
-		[self addSubview:listOfResources];
+		_listOfLineItemsView = createListOfLineItemsView(self);
+		[self addSubview:_listOfLineItemsView];
 	}
 	return self;
 }
@@ -56,99 +34,68 @@
 	var resource = [[[[self controller] bundle] resources] objectAtIndex:index];
 	
 	var lineItems = [resource lineItems];
-	var frame = [self bounds];
-		
-    var dataView = [[CPCollectionViewItem alloc] init];
-    [dataView setView:[[OLLineItemView alloc] initWithFrame:CGRectMakeZero()]];
     
-    var listOfResources = [[CPCollectionView alloc] initWithFrame:CGRectMake(50, 300, CGRectGetWidth(frame)-100, 200)];
-    [listOfResources setItemPrototype:dataView];
-    [listOfResources setVerticalMargin:0.0];
-    [listOfResources setMinItemSize:CGSizeMake(500.0, 42.0)];
-    [listOfResources setMaxItemSize:CGSizeMake(10000.0, 42.0)];
-    [listOfResources setDelegate:self];
-    
-	var arrayOfDataViews = [[CPArray alloc] init];
-	
-	for(var i = 0; i < [lineItems count]; i++)
-	{
-		var tempView = [[CPView alloc] initWithFrame:CGRectMake(0,0,CGRectGetWidth(frame)-100, 42)];
-    	var dataView = [CPTextField labelWithTitle:[[lineItems objectAtIndex:i] identifier]];
-    	[dataView setCenter:CGPointMake([tempView center].x, 14)];
-		[tempView addSubview:dataView];
-		var dataView2 = [CPTextField labelWithTitle:[[lineItems objectAtIndex:i] value]];
-    	[dataView2 setCenter:CGPointMake([tempView center].x, 28)];
-    	[tempView addSubview:dataView2];
-		[arrayOfDataViews addObject:tempView];
-	}
-
-	[listOfResources setContent:arrayOfDataViews];
-	[listOfResources reloadContent];
-	
-	[self addSubview:listOfResources];	
-}
-
-- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
-{
+	[_listOfLineItemsView setContent:lineItems];
+	[_listOfLineItemsView reloadContent];	
 }
 
 - (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
 {
-	for(var i = 0; i < [[aCollectionView content] count]; i++)
+	if ([aCollectionView isEqual:_listOfResourcesView])
 	{
-		[[[aCollectionView content] objectAtIndex:i] setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
+		var selectedIndex = [[aCollectionView selectionIndexes] firstIndex];
+	
+		[self setupLineItemsWithIndex:selectedIndex];	
 	}
-	
-	var selectedIndex = [[aCollectionView selectionIndexes] firstIndex];
-	[[[aCollectionView content] objectAtIndex:selectedIndex] setBackgroundColor:[CPColor colorWithHexString:@"CCCCFF"]];
-	
-	[self setupLineItemsWithIndex:selectedIndex];
-}
-
-@end
-
-@implementation OLResourceView : CPView
-
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    
-    if (self)
-    {
-        [self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
-        [self setAutoresizingMask:CPViewWidthSizable];
-    }
-    
-    return self;
-}
-
-- (void)setRepresentedObject:(JSObject)anObject
-{
-    [self addSubview:anObject];
-    [self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
-}
-
-@end
-
-@implementation OLLineItemView : CPView
-{
-}
-
-- (id)init
-{
-	if(self = [super init])
+	else if ([aCollectionView isEqual:_listOfLineItemsView])
 	{
-        [self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
-        [self setAutoresizingMask:CPViewWidthSizable];
+		// do something
 	}
-	return self;
 }
-
-- (void)setRepresentedObject:(JSObject)anObject
-{
-    [self addSubview:anObject];
-    [self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.926 alpha:1.000]];
-}
-
 
 @end
+
+function createTitleView(self)
+{
+	var controller = [self controller];
+	var resourceBundle = [controller bundle];
+	var title = [CPTextField labelWithTitle:"Resource Bundle in " + [[resourceBundle language] name]];
+	
+	[title setFont:[CPFont boldFontWithName:"Tahoma" size:24]];
+	[title setBezeled:YES];
+	[title sizeToFit];
+	[title setCenter:CGPointMake([self center].x, 50)];
+	[title setBackgroundColor:[CPColor whiteColor]];
+	
+	return title;
+}
+
+function createListOfResourcesView(self)
+{
+	var dataView = [[CPCollectionViewItem alloc] init];
+    [dataView setView:[[OLResourceView alloc] initWithFrame:CGRectMakeZero()]];
+    
+    var _listOfResourcesView = [[CPCollectionView alloc] initWithFrame:CGRectMake(50, 100, CGRectGetWidth([self bounds])-100, 500)];
+    [_listOfResourcesView setItemPrototype:dataView];
+    [_listOfResourcesView setVerticalMargin:0.0];
+    [_listOfResourcesView setMinItemSize:CGSizeMake(500.0, 42.0)];
+    [_listOfResourcesView setMaxItemSize:CGSizeMake(10000.0, 42.0)];
+    [_listOfResourcesView setDelegate:self];
+    
+    return _listOfResourcesView;
+}
+
+function createListOfLineItemsView(self)
+{
+	var lineItemView = [[CPCollectionViewItem alloc] init];
+	[lineItemView setView:[[OLLineItemView alloc] initWithFrame:CGRectMakeZero()]];
+	
+	var _listOfLineItemsView = [[CPCollectionView alloc] initWithFrame:CGRectMake(50, 300, CGRectGetWidth([self bounds])-100, 200)];
+    [_listOfLineItemsView setItemPrototype:lineItemView];
+    [_listOfLineItemsView setVerticalMargin:0.0];
+    [_listOfLineItemsView setMinItemSize:CGSizeMake(500.0, 42.0)];
+    [_listOfLineItemsView setMaxItemSize:CGSizeMake(10000.0, 42.0)];
+    [_listOfLineItemsView setDelegate:self];
+    
+    return _listOfLineItemsView;
+}
