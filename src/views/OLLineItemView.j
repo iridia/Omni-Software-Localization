@@ -30,7 +30,7 @@
     
     if (!_arrow)
     {
-        var arrowImage = [[CPImage alloc] initByReferencingFile:@"Resources/arrow.png" size:CGSizeMake(20,10)];
+        var arrowImage = [[CPImage alloc] initByReferencingFile:@"Resources/arrow.gif" size:CGSizeMake(20,10)];
         _arrow = [[CPImageView alloc] initWithFrame:CGRectMake(0,0,20,10)];
         [_arrow setImage:arrowImage];
         

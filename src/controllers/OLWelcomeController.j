@@ -47,14 +47,27 @@
 	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
 	var resource1LineItems = [[CPArray alloc] init];
-	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"id" withValue:@"1"]];
-	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"name" withValue:@"Bob"]];
-	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"lastName" withValue:@"Hammer"]];
-	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"title" withValue:@"Welcome to OSL"]];
+	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"title" withValue:@"Project OSL"]];
+	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"developer" withValue:@"developer"]];
+	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"localizer" withValue:@"localizer"]];
+	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"user" withValue:@"user"]];
+	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"community" withValue:@"community"]];
+	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"opensource" withValue:@"open source"]];
+	
+	var resource2LineItems = [[CPArray alloc] init];
+	[resource2LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"title" withValue:@"Welcome to Project OSL!"]];
+	[resource2LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"localizeButton" withValue:@"Localize"]];
+	[resource2LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"uploadButton" withValue:@"Import"]];
+	[resource2LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"localizeString" withValue:@"Start localizing applications from one language to another!"]];
+	[resource2LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"importString" withValue:@"Import localizable files in order for them to be translated!"]];
+	
+	var resource3LineItems = [[CPArray alloc] init];
+	[resource3LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"title" withValue:@"Resource Bundle in "]];
+	
 	var bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];
-	[bundle addResource:[[OLResource alloc] initWithFilename:@"Test1" withFileType:@"xml" withLineItems:resource1LineItems]];
-	[bundle addResource:[[OLResource alloc] initWithFilename:@"Test2" withFileType:@"xml" withLineItems:new Array()]];
-	[bundle addResource:[[OLResource alloc] initWithFilename:@"Test3" withFileType:@"xml" withLineItems:new Array()]];
+	[bundle addResource:[[OLResource alloc] initWithFilename:@"ProjectOSL" withFileType:@"xml" withLineItems:resource1LineItems]];
+	[bundle addResource:[[OLResource alloc] initWithFilename:@"Welcome" withFileType:@"xml" withLineItems:resource2LineItems]];
+	[bundle addResource:[[OLResource alloc] initWithFilename:@"ResourceView" withFileType:@"xml" withLineItems:resource3LineItems]];
 	var resourceBundleController = [[OLResourceBundleController alloc] initWithBundle:bundle];
 	_resourceView = [[OLResourceBundleView alloc] initWithFrame:[_contentView bounds] withController:resourceBundleController];
 	
