@@ -1,6 +1,7 @@
 @import "OLView.j"
 @import "OLLineItemView.j"
 @import "OLResourceView.j"
+@import "OLLineItemEditView.j"
 
 /*!
  * The view for displaying relevant resource bundle information.
