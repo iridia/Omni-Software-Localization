@@ -9,6 +9,7 @@
 {
 	CPCollectionView _listOfResourcesView;
 	CPCollectionView _listOfLineItemsView;
+	OLView _editView;
 }
 
 - (id)initWithFrame:(CGRect)frame withController:(CPObject)controller
@@ -25,6 +26,9 @@
 		
 		_listOfLineItemsView = createListOfLineItemsView(self);
 		[self addSubview:_listOfLineItemsView];
+		
+		_editView = createEditView(self, resourceBundle);
+		[self addSubview:_editView];
 	}
 	return self;
 }
@@ -49,8 +53,17 @@
 	}
 	else if ([aCollectionView isEqual:_listOfLineItemsView])
 	{
-		// do something
+		var selectedIndex = [[aCollectionView selectionIndexes] firstIndex];
+		var selectedLineItem = [[aCollectionView content] objectAtIndex:selectedIndex];
+		
+		[_editView setContent:selectedLineItem];
 	}
+}
+
+- (void)controlTextDidChange:(CPNotification)aNotification
+{
+	console.log("Test");
+	[_listOfLineItemsView reloadContent];
 }
 
 @end
@@ -78,8 +91,8 @@ function createListOfResourcesView(self)
     var _listOfResourcesView = [[CPCollectionView alloc] initWithFrame:CGRectMake(50, 100, CGRectGetWidth([self bounds])-100, 500)];
     [_listOfResourcesView setItemPrototype:dataView];
     [_listOfResourcesView setVerticalMargin:0.0];
-    [_listOfResourcesView setMinItemSize:CGSizeMake(500.0, 42.0)];
-    [_listOfResourcesView setMaxItemSize:CGSizeMake(10000.0, 42.0)];
+    [_listOfResourcesView setMinItemSize:CGSizeMake(CGRectGetWidth([self bounds])-100, 42.0)];
+    [_listOfResourcesView setMaxItemSize:CGSizeMake(CGRectGetWidth([self bounds])-100, 42.0)];
     [_listOfResourcesView setDelegate:self];
     
     return _listOfResourcesView;
@@ -93,9 +106,58 @@ function createListOfLineItemsView(self)
 	var _listOfLineItemsView = [[CPCollectionView alloc] initWithFrame:CGRectMake(50, 300, CGRectGetWidth([self bounds])-100, 200)];
     [_listOfLineItemsView setItemPrototype:lineItemView];
     [_listOfLineItemsView setVerticalMargin:0.0];
-    [_listOfLineItemsView setMinItemSize:CGSizeMake(500.0, 42.0)];
-    [_listOfLineItemsView setMaxItemSize:CGSizeMake(10000.0, 42.0)];
+    [_listOfLineItemsView setMinItemSize:CGSizeMake(CGRectGetWidth([self bounds])-100, 42.0)];
+    [_listOfLineItemsView setMaxItemSize:CGSizeMake(CGRectGetWidth([self bounds])-100, 42.0)];
     [_listOfLineItemsView setDelegate:self];
     
     return _listOfLineItemsView;
 }
+
+function createEditView(self, resourceBundle)
+{
+	var width = CGRectGetWidth([self bounds])-100;
+	var _editView = [[OLLineItemEditView alloc] initWithFrame:CGRectMake(50+width/2, 550, width/2, 200)];
+	[_editView setDelegate:self];
+	return _editView;
+}
+
+@implementation OLLineItemEditView : CPView
+{
+	CPTextField _editBox;
+	CPObject _delegate @accessors(property=delegate);
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+	if(self = [super initWithFrame:frame])
+	{
+		_editBox = [CPTextField roundedTextFieldWithStringValue:@"Test1" placeholder:@"Test2" width:CGRectGetWidth([self bounds])];
+		[_editBox setDelegate:self];
+		[self addSubview:_editBox];
+	}
+	return self;
+}
+
+- (void)setContent:(OLLineItem)aLineItem
+{
+	[_editBox setStringValue:[aLineItem value]];
+	_currentLineItem = aLineItem;
+	
+	if(_delegate)
+	{
+		[[CPNotificationCenter defaultCenter]
+             addObserver:_delegate
+                selector:@selector(controlTextDidChange:)
+                    name:CPControlTextDidChangeNotification
+                  object:self];
+	}
+}
+
+- (void)controlTextDidChange:(CPNotification)aNotification
+{
+	[_currentLineItem setValue:[[aNotification object] stringValue]];
+	
+    [[CPNotificationCenter defaultCenter] postNotificationName:CPControlTextDidChangeNotification object:self userInfo:[CPDictionary dictionary]];
+}
+
+@end
