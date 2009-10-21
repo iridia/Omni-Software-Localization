@@ -20,7 +20,6 @@
     	[self addSubview:_fileNameTextField];
     }
     
-        
 	[_fileNameTextField setStringValue:[anObject fileName]];
     [_fileNameTextField sizeToFit];
     [_fileNameTextField setCenter:CGPointMake([self center].x, 21)];
