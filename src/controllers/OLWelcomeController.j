@@ -20,7 +20,7 @@
 	OLResourceView _resourceView;
 	OLUploadingView _uploadingView;
 	OLUploadedView _uploadedView;
-	CPString _fileName;
+	OLResourceBundle _bundle;	
 }
 
 - (id)initWithContentView:(CPView)contentView
@@ -84,7 +84,7 @@
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
-	_fileName = response;
+	console.log(eval('(' + response + ')'));
 	
 	[_uploadingView removeFromSuperview];
 	
