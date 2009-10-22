@@ -7,16 +7,7 @@
  */
 @implementation OLResourceBundleController : CPObject
 {
-	OLResourceBundle _bundle @accessors(property=bundle, readonly);
-}
-
-- (id)initWithBundle:(OLResourceBundle)aBundle
-{
-	if(self = [super init])
-	{
-		_bundle = aBundle;
-	}
-	return self;
+	OLResourceBundle _bundle @accessors(property=bundle); //, readonly);
 }
 
 @end

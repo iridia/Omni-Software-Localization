@@ -14,9 +14,8 @@
 {
 	if(self = [super initWithFrame:frame])
 	{
-		_editBox = [CPTextField roundedTextFieldWithStringValue:@"Test1" placeholder:@"Test2" width:CGRectGetWidth([self bounds])];
+		_editBox = [CPTextField roundedTextFieldWithStringValue:@"" placeholder:@"" width:CGRectGetWidth([self bounds])];
 		[_editBox setDelegate:self];
-		//[_editBox setFont:[CPFont systemFontOfSize:18]];
 		[self addSubview:_editBox];
 	}
 	return self;

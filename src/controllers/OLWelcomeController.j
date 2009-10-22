@@ -15,20 +15,26 @@
  */
 @implementation OLWelcomeController : CPObject
 {
-	CPView _contentView;z
+	CPView _contentView;
 	CPWindow _welcomeWindow;
 	OLWelcomeView _welcomeView;
-	OLResourceView _resourceView;
+    // OLResourceView _resourceView;
 	OLUploadingView _uploadingView;
 	OLUploadedView _uploadedView;
 	CPString _fileName;
+	id _delegate @accessors(property=delegate);
+	SEL _finishedReadingResourceBundle;
+	OLResourceBundle _bundle @accessors(property=bundle, readonly);
 }
 
 - (id)initWithContentView:(CPView)contentView
 {
-	if(self = [super init])
+    self = [super init];
+    
+	if (self)
 	{
-		_contentView = contentView
+		_contentView = contentView;
+		_finishedReadingResourceBundle = @selector(finishedReadingResourceBundle:);
 		
         _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(200, 100, 700, 200) styleMask:CPTitledWindowMask];
         [_welcomeWindow setTitle:@"Welcome to Omni Software Localization"];
@@ -36,19 +42,20 @@
 		
 		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,200) withController:self];
         
-		[_welcomeView setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin | CPViewMinYMargin];
+        // [_welcomeView setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin | CPViewMinYMargin];
 		
 		[welcomeWindowContentView addSubview:_welcomeView];
 		[[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
 	}
+	
 	return self;
 }
 
 - (void)transitionToResourceView:(id)sender
 {
-    // [_welcomeView removeFromSuperview];
     [[CPApplication sharedApplication] stopModal];
     [_welcomeWindow orderOut:self];
+    
 	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
 	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
@@ -74,10 +81,13 @@
 	[bundle addResource:[[OLResource alloc] initWithFilename:@"ProjectOSL" withFileType:@"xml" withLineItems:resource1LineItems]];
 	[bundle addResource:[[OLResource alloc] initWithFilename:@"Welcome" withFileType:@"xml" withLineItems:resource2LineItems]];
 	[bundle addResource:[[OLResource alloc] initWithFilename:@"ResourceView" withFileType:@"xml" withLineItems:resource3LineItems]];
-	var resourceBundleController = [[OLResourceBundleController alloc] initWithBundle:bundle];
-	_resourceView = [[OLResourceBundleView alloc] initWithFrame:[_contentView bounds] withController:resourceBundleController];
 	
-	[_contentView addSubview:_resourceView];
+	_bundle = bundle;
+	
+	if ([_delegate respondsToSelector:_finishedReadingResourceBundle])
+	{
+	    [_delegate finishedReadingResourceBundle:self];
+	}
 }
 
 - (void)showUploading

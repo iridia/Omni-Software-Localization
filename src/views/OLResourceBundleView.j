@@ -1,42 +1,62 @@
+@import <AppKit/CPView.j>
+
 @import "OLView.j"
 @import "OLLineItemView.j"
 @import "OLResourceView.j"
 @import "OLLineItemEditView.j"
+@import "../models/OLResourceBundle.j"
 
 /*!
  * The view for displaying relevant resource bundle information.
  */
-@implementation OLResourceBundleView : OLView
+@implementation OLResourceBundleView : CPView
 {
 	CPCollectionView _listOfResourcesView;
 	CPCollectionView _listOfLineItemsView;
 	OLView _editView;
+	OLResourceBundle _resourceBundle @accessors(property=resourceBundle, readonly);
+	CPTextField _titleView;
 }
 
-- (id)initWithFrame:(CGRect)frame withController:(CPObject)controller
+- (id)initWithFrame:(CGRect)frame
 {
-	if(self = [super initWithFrame:frame withController:controller])
+    self = [super initWithFrame:frame];
+    
+    if (self)
 	{
-		var resourceBundle = [controller bundle];
-		[self addSubview:createTitleView(self)];
+        _titleView = createTitleView(self);
+		[self addSubview:_titleView];
 		
         _listOfResourcesView = createListOfResourcesView(self);
-		[_listOfResourcesView setContent:[resourceBundle resources]];
-		[_listOfResourcesView reloadContent];
 		[self addSubview:_listOfResourcesView];
 		
 		_listOfLineItemsView = createListOfLineItemsView(self);
 		[self addSubview:_listOfLineItemsView];
 		
-		_editView = createEditView(self, resourceBundle);
+		_editView = createEditView(self);
 		[self addSubview:_editView];
 	}
+	
 	return self;
+}
+
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
+{
+    if (keyPath === @"bundle")
+    {
+        _resourceBundle = [object bundle];
+        [_listOfResourcesView setContent:[_resourceBundle resources]];
+        [_listOfResourcesView reloadContent];
+        
+        [_titleView setStringValue:@"Resource Bundle in " + [[_resourceBundle language] name]];
+        [_titleView sizeToFit];
+        [_titleView setCenter:CGPointMake(CGRectGetWidth([self bounds]) / 2.0, 50)];
+    }
 }
 
 - (void)setupLineItemsWithIndex:(int)index
 {
-	var resource = [[[[self controller] bundle] resources] objectAtIndex:index];
+	var resource = [[_resourceBundle resources] objectAtIndex:index];
 	
 	var lineItems = [resource lineItems];
     
@@ -63,7 +83,6 @@
 
 - (void)controlTextDidChange:(CPNotification)aNotification
 {
-	console.log("Test");
 	[_listOfLineItemsView reloadContent];
 }
 
@@ -71,14 +90,10 @@
 
 function createTitleView(self)
 {
-	var controller = [self controller];
-	var resourceBundle = [controller bundle];
-	var title = [CPTextField labelWithTitle:"Resource Bundle in " + [[resourceBundle language] name]];
+    var title = [CPTextField labelWithTitle:@""];
 	
 	[title setFont:[CPFont boldFontWithName:"Tahoma" size:24]];
 	[title setBezeled:YES];
-	[title sizeToFit];
-	[title setCenter:CGPointMake([self center].x, 50)];
 	[title setBackgroundColor:[CPColor whiteColor]];
 	
 	return title;
@@ -114,7 +129,7 @@ function createListOfLineItemsView(self)
     return _listOfLineItemsView;
 }
 
-function createEditView(self, resourceBundle)
+function createEditView(self)
 {
 	var width = CGRectGetWidth([self bounds])-100;
 	var _editView = [[OLLineItemEditView alloc] initWithFrame:CGRectMake(50+width/2, 550, width/2, 200)];
