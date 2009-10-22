@@ -21,10 +21,14 @@
     // OLResourceView _resourceView;
 	OLUploadingView _uploadingView;
 	OLUploadedView _uploadedView;
+<<<<<<< HEAD
 	CPString _fileName;
 	id _delegate @accessors(property=delegate);
 	SEL _finishedReadingResourceBundle;
 	OLResourceBundle _bundle @accessors(property=bundle, readonly);
+=======
+	OLResourceBundle _bundle;	
+>>>>>>> beebe8451cab8f0fe44b8cfc80b4e11471d979e9
 }
 
 - (id)initWithContentView:(CPView)contentView
@@ -59,6 +63,7 @@
 	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
 	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
+<<<<<<< HEAD
 	var resource1LineItems = [[CPArray alloc] init];
 	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"title" withValue:@"Project OSL"]];
 	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"developer" withValue:@"developer"]];
@@ -81,6 +86,10 @@
 	[bundle addResource:[[OLResource alloc] initWithFilename:@"ProjectOSL" withFileType:@"xml" withLineItems:resource1LineItems]];
 	[bundle addResource:[[OLResource alloc] initWithFilename:@"Welcome" withFileType:@"xml" withLineItems:resource2LineItems]];
 	[bundle addResource:[[OLResource alloc] initWithFilename:@"ResourceView" withFileType:@"xml" withLineItems:resource3LineItems]];
+=======
+	var resourceBundleController = [[OLResourceBundleController alloc] initWithBundle:_bundle];
+	_resourceView = [[OLResourceBundleView alloc] initWithFrame:[_contentView bounds] withController:resourceBundleController];
+>>>>>>> beebe8451cab8f0fe44b8cfc80b4e11471d979e9
 	
 	_bundle = bundle;
 	
@@ -100,8 +109,21 @@
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
-	_fileName = response;
+	var jsonResponse = eval('(' + response + ')');
 	
+	var keys = jsonResponse.plist.dict.key;
+	var values = jsonResponse.plist.dict.string;
+	
+	_bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];	
+	var resourceLineItems = [[CPArray alloc] init];
+	
+	for(var i = 0; i < [keys count]; i++)
+	{
+		[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:[keys objectAtIndex:i] withValue:[values objectAtIndex:i]]];
+	}
+	[_bundle addResource:[[OLResource alloc] initWithFilename:@"Your File" withFileType:@"plist" withLineItems:resourceLineItems]];
+	
+		
 	[_uploadingView removeFromSuperview];
 	
 	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,160) withController:self withFileName:response];

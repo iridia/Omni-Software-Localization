@@ -1,11 +1,10 @@
 <?php
 
-$randomNumber = rand(1, 500000);
-$filename = "temp" + $randomNumber + ".data";
-$handle = fopen($filename, "w");
-$data = $_POST['file'];
-$numbytes = fwrite($handle, $data);
-fclose($handle);
-print "$filename\n";
+require_once("xml2json.php");
+
+$file = file_get_contents($_FILES['file']['tmp_name']);
+
+echo xml2json::transformXmlStringToJson($file);
 
 ?>
+

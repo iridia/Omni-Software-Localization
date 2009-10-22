@@ -185,7 +185,6 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
  
 - (void)uploadDidFinishWithResponse:(CPString)response
 {
-	console.log("Success" + response);
     if ([_delegate respondsToSelector:@selector(uploadButton:didFinishUploadWithData:)])
         [_delegate uploadButton: self didFinishUploadWithData: response];
     
@@ -193,7 +192,6 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
  
 - (void)uploadDidFailWithError:(CPString)anError
 {	
-	console.log("Fail");
     if ([_delegate respondsToSelector:@selector(uploadButton:didFailWithError:)])
         [_delegate uploadButton: self didFailWithError: anError];
 }

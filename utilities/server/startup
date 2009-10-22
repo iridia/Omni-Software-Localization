@@ -8,6 +8,9 @@ sudo cp ./httpd.conf /private/etc/apache2/httpd.conf
 sudo mv /private/etc/php.ini /private/etc/php.ini.oslbackup
 sudo cp ./php.ini /private/etc/php.ini
 
+# install JSON services
+sudo pear install Services_JSON-1.0.1
+
 # restart apache
 sudo /usr/sbin/apachectl restart
 
