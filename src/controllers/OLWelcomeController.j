@@ -46,29 +46,7 @@
 	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
 	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
-	var resource1LineItems = [[CPArray alloc] init];
-	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"title" withValue:@"Project OSL"]];
-	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"developer" withValue:@"developer"]];
-	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"localizer" withValue:@"localizer"]];
-	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"user" withValue:@"user"]];
-	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"community" withValue:@"community"]];
-	[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"opensource" withValue:@"open source"]];
-	
-	var resource2LineItems = [[CPArray alloc] init];
-	[resource2LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"title" withValue:@"Welcome to Project OSL!"]];
-	[resource2LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"localizeButton" withValue:@"Localize"]];
-	[resource2LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"uploadButton" withValue:@"Import"]];
-	[resource2LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"localizeString" withValue:@"Start localizing applications from one language to another!"]];
-	[resource2LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"importString" withValue:@"Import localizable files in order for them to be translated!"]];
-	
-	var resource3LineItems = [[CPArray alloc] init];
-	[resource3LineItems addObject:[[OLLineItem alloc] initWithIdentifier:@"title" withValue:@"Resource Bundle in "]];
-	
-	var bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];
-	[bundle addResource:[[OLResource alloc] initWithFilename:@"ProjectOSL" withFileType:@"xml" withLineItems:resource1LineItems]];
-	[bundle addResource:[[OLResource alloc] initWithFilename:@"Welcome" withFileType:@"xml" withLineItems:resource2LineItems]];
-	[bundle addResource:[[OLResource alloc] initWithFilename:@"ResourceView" withFileType:@"xml" withLineItems:resource3LineItems]];
-	var resourceBundleController = [[OLResourceBundleController alloc] initWithBundle:bundle];
+	var resourceBundleController = [[OLResourceBundleController alloc] initWithBundle:_bundle];
 	_resourceView = [[OLResourceBundleView alloc] initWithFrame:[_contentView bounds] withController:resourceBundleController];
 	
 	[_contentView addSubview:_resourceView];
@@ -84,8 +62,21 @@
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
-	console.log(eval('(' + response + ')'));
+	var jsonResponse = eval('(' + response + ')');
 	
+	var keys = jsonResponse.plist.dict.key;
+	var values = jsonResponse.plist.dict.string;
+	
+	_bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];	
+	var resourceLineItems = [[CPArray alloc] init];
+	
+	for(var i = 0; i < [keys count]; i++)
+	{
+		[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:[keys objectAtIndex:i] withValue:[values objectAtIndex:i]]];
+	}
+	[_bundle addResource:[[OLResource alloc] initWithFilename:@"Your File" withFileType:@"plist" withLineItems:resourceLineItems]];
+	
+		
 	[_uploadingView removeFromSuperview];
 	
 	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,160) withController:self withFileName:response];
