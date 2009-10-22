@@ -6,6 +6,9 @@ sudo rm -R /Library/WebServer/Documents/
 # uninstall apache setup files
 sudo mv /private/etc/apache2/httpd.conf.oslbackup /private/etc/apache2/httpd.conf
 
+# uninstall JSON services
+sudo pear uninstall Services_JSON-1.0.1
+
 # uninstall php setup files
 sudo mv /private/etc/php.ini.oslbackup /private/etc/php.ini
 
