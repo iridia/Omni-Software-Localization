@@ -1,0 +1,1 @@
+do shell script "/Users/projectosl/Documents/Project_OSL/Scripts/TestServer/update_test_server.sh"
