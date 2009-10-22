@@ -24,6 +24,9 @@ git branch -D A
 # Push Current Branch to Remote Repository
 git push
 
+# Push Untracked Local Branch to Remote (First push)
+git push origin HEAD
+
 # View the current files that are being tracked / untracked
 git status
 
