@@ -14,9 +14,9 @@
 	{
         var welcomeText = [CPTextField labelWithTitle:@"Welcome to Omni Software Localization!"];
 		var importText = [CPTextField labelWithTitle:@"Import localizable files in order for them to be translated!"];
-		var localizeText = [CPTextField labelWithTitle:@"Start localizing applications from one language to another!"];
+        var localizeText = [CPTextField labelWithTitle:@"Start localizing applications from one language to another!"];
 		var importButton = [[UploadButton alloc] initWithFrame:CGRectMakeZero()];
-		var localizeButton = [CPButton buttonWithTitle:@"Localize"];
+        var localizeButton = [CPButton buttonWithTitle:@"Localize"];
 		var awesomeImage = [[CPImage alloc] initByReferencingFile:@"Resources/logo.png" size:CGSizeMake(150,150)];
 		var imageView = [[CPImageView alloc] initWithFrame:CPMakeRect(180,40,150,150)];
 		
@@ -54,7 +54,7 @@
 		
 		[localizeButton setTarget:controller];
 		[localizeButton setAction:@selector(transitionToResourceView:)];
-		//[localizeButton setEnabled:NO];		
+        [localizeButton setEnabled:NO];     
 	}
 	return self;
 }

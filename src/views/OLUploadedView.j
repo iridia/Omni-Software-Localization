@@ -50,6 +50,7 @@
 		
 		[downloadButton setTarget:controller];
 		[downloadButton setAction:@selector(downloadFile:)];
+		[downloadButton setEnabled:NO];
 	}
 	
 	return self;

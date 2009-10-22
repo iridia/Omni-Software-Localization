@@ -62,7 +62,10 @@
 }
 
 - (void)showUploading
-{	
+{
+    [[CPApplication sharedApplication] stopModal];
+    [_welcomeWindow orderOut:self];
+    
 	_uploadingView = [[OLUploadingView alloc] initWithFrame:CPRectMake(0,0,250,100) withController:self];
 	[_uploadingView setCenter:CPPointMake([_contentView center].x, 45)];
 	
@@ -72,23 +75,23 @@
 - (void)finishedUploadingWithResponse:(CPString)response
 {
 	var jsonResponse = eval('(' + response + ')');
-	
+
 	var keys = jsonResponse.plist.dict.key;
 	var values = jsonResponse.plist.dict.string;
-	
+
 	_bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];	
 	var resourceLineItems = [[CPArray alloc] init];
-	
-	for(var i = 0; i < [keys count]; i++)
+
+	for (var i = 0; i < [keys count]; i++)
 	{
-		[resource1LineItems addObject:[[OLLineItem alloc] initWithIdentifier:[keys objectAtIndex:i] withValue:[values objectAtIndex:i]]];
+		[resourceLineItems addObject:[[OLLineItem alloc] initWithIdentifier:[keys objectAtIndex:i] withValue:[values objectAtIndex:i]]];
 	}
 	[_bundle addResource:[[OLResource alloc] initWithFilename:@"Your File" withFileType:@"plist" withLineItems:resourceLineItems]];
 	
 		
 	[_uploadingView removeFromSuperview];
 	
-	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,160) withController:self withFileName:response];
+	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,160) withController:self withFileName:@"Your File"];
 	[_uploadedView setCenter:CPPointMake([_contentView center].x, 75)];
 	
 	[_contentView addSubview:_uploadedView];
