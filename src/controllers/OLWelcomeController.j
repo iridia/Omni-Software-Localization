@@ -15,7 +15,8 @@
  */
 @implementation OLWelcomeController : CPObject
 {
-	CPView _contentView;
+	CPView _contentView;z
+	CPWindow _welcomeWindow;
 	OLWelcomeView _welcomeView;
 	OLResourceView _resourceView;
 	OLUploadingView _uploadingView;
@@ -29,20 +30,25 @@
 	{
 		_contentView = contentView
 		
-		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,200) withController:self];
-		[_welcomeView setCenter:[_contentView center]];
+        _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(200, 100, 700, 200) styleMask:CPTitledWindowMask];
+        [_welcomeWindow setTitle:@"Welcome to Omni Software Localization"];
+        var welcomeWindowContentView = [_welcomeWindow contentView];
 		
+		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,200) withController:self];
+        
 		[_welcomeView setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin | CPViewMinYMargin];
 		
-		[_contentView addSubview:_welcomeView];
-		[_contentView setBackgroundColor: [CPColor colorWithHexString:@"AAAAAA"]];
+		[welcomeWindowContentView addSubview:_welcomeView];
+		[[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
 	}
 	return self;
 }
 
 - (void)transitionToResourceView:(id)sender
 {
-	[_welcomeView removeFromSuperview];
+    // [_welcomeView removeFromSuperview];
+    [[CPApplication sharedApplication] stopModal];
+    [_welcomeWindow orderOut:self];
 	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
 	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
