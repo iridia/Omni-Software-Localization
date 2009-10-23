@@ -34,14 +34,14 @@
 		_contentView = contentView;
 		_finishedReadingResourceBundle = @selector(finishedReadingResourceBundle:);
 		
-        _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(200, 100, 700, 200) styleMask:CPTitledWindowMask];
+        _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 700, 200) styleMask:CPTitledWindowMask];
         [_welcomeWindow setTitle:@"Welcome to Omni Software Localization"];
         var welcomeWindowContentView = [_welcomeWindow contentView];
 		
 		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,200) withController:self];
         
 		[welcomeWindowContentView addSubview:_welcomeView];
-		[[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
+        [[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
 	}
 	
 	return self;
