@@ -7,8 +7,11 @@
  */
 
 @import <Foundation/CPObject.j>
-@import "controllers/OLWelcomeController.j"
+
 @import "OLColors+CPColor.j"
+@import "controllers/OLWelcomeController.j"
+@import "controllers/OLToolbarController.j"
+@import "controllers/OLFeedbackController.j"
 @import "views/OLMainView.j"
 @import "views/OLResourceBundleView.j"
 
@@ -18,6 +21,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 {
 	OLWelcomeController _welcomeController;
 	OLResourceBundleController _resourceBundleController;
+	OLFeedbackController _feedbackController;
 	OLRepository _repository;
 	CPToolbar _toolbar;
 	OLMainView _mainView;
@@ -29,11 +33,14 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	var contentView = [theWindow contentView];
 	
     _toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
-    // [_toolbar setDelegate:something];
     [theWindow setToolbar:_toolbar];
 	
 	_welcomeController = [[OLWelcomeController alloc] initWithContentView:contentView];
 	[_welcomeController setDelegate:self];
+	
+	_feedbackController = [[OLFeedbackController alloc] init];
+	[_toolbar setDelegate:[[OLToolbarController alloc] initWithFeedbackController:_feedbackController]];
+	// What if we eventually want the toolbar to send messages to multiple places? How are we going to handle this? Observers that only respond to certain messages?
 	
 	_resourceBundleController = [[OLResourceBundleController alloc] init];
 	
