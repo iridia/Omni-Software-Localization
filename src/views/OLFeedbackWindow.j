@@ -14,6 +14,7 @@
     CPTextField _feedbackTextView;
     
     CPButton _submitButton;
+    CPTextField _feedbackTextLabel;
     
     JSONObject _feedback @accessors(property=feedback, readonly);
     
@@ -50,14 +51,17 @@
         [_feedbackTypePopUpButton setFrameOrigin:CPMakePoint(0, calculateNextYPosition(feedbackTypeLabel))];
         var feedbackTypes = [@"Bug Report", @"Comment", @"Question", @"Suggestion"];
         [_feedbackTypePopUpButton addItemsWithTitles:feedbackTypes];
+        [_feedbackTypePopUpButton setTarget:self];
+        [_feedbackTypePopUpButton setAction:@selector(feedbackTypeDidChange:)];
         [_feedbackView addSubview:_feedbackTypePopUpButton];
         
-        var feedbackTextLabel = [CPTextField labelWithTitle:@"Comments:"];
-        [feedbackTextLabel setFrameOrigin:CPMakePoint(0, calculateNextYPosition(_feedbackTypePopUpButton, 5))];
-        [_feedbackView addSubview:feedbackTextLabel];
+        _feedbackTextLabel = [CPTextField labelWithTitle:@""];
+        [self feedbackTypeDidChange:_feedbackTypePopUpButton];
+        [_feedbackTextLabel setFrameOrigin:CPMakePoint(0, calculateNextYPosition(_feedbackTypePopUpButton, 5))];
+        [_feedbackView addSubview:_feedbackTextLabel];
         
         _feedbackTextView = [[CPTextView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([_feedbackView bounds]), 130)];
-        [_feedbackTextView setFrameOrigin:CPMakePoint(0, calculateNextYPosition(feedbackTextLabel))];
+        [_feedbackTextView setFrameOrigin:CPMakePoint(0, calculateNextYPosition(_feedbackTextLabel))];
         [_feedbackTextView setFont:inputFont]; // This does not work, unfortunately.
         [_feedbackView addSubview:_feedbackTextView];
         
@@ -89,6 +93,13 @@
     return self;
 }
 
+- (void)feedbackTypeDidChange:(id)sender
+{
+    var selectedItemTitle = [sender titleOfSelectedItem];
+    [_feedbackTextLabel setStringValue:selectedItemTitle + @":"];
+    [_feedbackTextLabel sizeToFit];
+}
+
 - (void)submitFeedback:(id)sender
 {
     _feedback.email = [_emailTextField stringValue];
@@ -115,6 +126,7 @@
     // Reset to empty values
     [_emailTextField setStringValue:@""];
     [_feedbackTypePopUpButton selectItemAtIndex:0];
+    [self feedbackTypeDidChange:_feedbackTypePopUpButton];
     [_feedbackTextView setStringValue:@""];
     [_submitButton setTitle:@"Submit Feedback"];
     _feedback = {};
