@@ -41,7 +41,7 @@
 		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,200) withController:self];
         
 		[welcomeWindowContentView addSubview:_welcomeView];
-		[[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
+        // [[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
 	}
 	
 	return self;

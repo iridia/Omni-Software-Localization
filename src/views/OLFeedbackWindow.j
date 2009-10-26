@@ -1,14 +1,19 @@
 @import <AppKit/CPWindow.j>
 
+@import "CPTextView.j"
+
 @implementation OLFeedbackWindow : CPWindow
 {
     CPView _feedbackView;
     CPView _submittingFeedbackView;
     CPView _submittedFeedbackView;
+    CPView _currentView;
     
     CPTextField _emailTextField;
     CPPopUpButton _feedbackTypePopUpButton;
-    CPTextField _feedbackTextField;
+    CPTextField _feedbackTextView;
+    
+    CPButton _submitButton;
     
     JSONObject _feedback @accessors(property=feedback, readonly);
     
@@ -24,6 +29,7 @@
         [self setTitle:@"Submit Feedback"];
         
         var contentView = [self contentView];
+        var inputFont = [CPFont systemFontOfSize:16.0];
         
         _feedbackView = [[CPView alloc] initWithFrame:CGRectInset([contentView bounds], 10, 10)];
         
@@ -31,7 +37,7 @@
         [_feedbackView addSubview:emailLabel];
         
         _emailTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"email@example.com" width:CGRectGetWidth([_feedbackView bounds])];
-        [_emailTextField setFont:[CPFont systemFontOfSize:16.0]];
+        [_emailTextField setFont:inputFont];
         [_emailTextField sizeToFit];
         [_emailTextField setFrameOrigin:CPMakePoint(0, CGRectGetHeight([emailLabel bounds]))];
         [_feedbackView addSubview:_emailTextField];
@@ -50,27 +56,34 @@
         [feedbackTextLabel setFrameOrigin:CPMakePoint(0, calculateNextYPosition(_feedbackTypePopUpButton, 5))];
         [_feedbackView addSubview:feedbackTextLabel];
         
-        _feedbackTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"" width:CGRectGetWidth([_feedbackView bounds])];
-        [_feedbackTextField setLineBreakMode:CPLineBreakByWordWrapping];
-        [_feedbackTextField setFrameOrigin:CPMakePoint(0, calculateNextYPosition(feedbackTextLabel))];
-        [_feedbackView addSubview:_feedbackTextField];
+        _feedbackTextView = [[CPTextView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([_feedbackView bounds]), 130)];
+        [_feedbackTextView setFrameOrigin:CPMakePoint(0, calculateNextYPosition(feedbackTextLabel))];
+        [_feedbackTextView setFont:inputFont]; // This does not work, unfortunately.
+        [_feedbackView addSubview:_feedbackTextView];
         
-        var submitButton = [CPButton buttonWithTitle:@"Submit Feedback"];
-        [submitButton setTarget:self];
-        [submitButton setAction:@selector(submitFeedback:)];
-        [submitButton setFrameOrigin:CPMakePoint(CGRectGetWidth([_feedbackView bounds]) - CGRectGetWidth([submitButton bounds]), CGRectGetHeight([_feedbackView bounds]) - CGRectGetHeight([submitButton bounds]))];
-        [_feedbackView addSubview:submitButton];
+        _submitButton = [CPButton buttonWithTitle:@"Submit Feedback"];
+        [_submitButton setTarget:self];
+        [_submitButton setAction:@selector(submitFeedback:)];
+        [_submitButton setFrameOrigin:CPMakePoint(CGRectGetWidth([_feedbackView bounds]) - CGRectGetWidth([_submitButton bounds]), CGRectGetHeight([_feedbackView bounds]) - CGRectGetHeight([_submitButton bounds]))];
+        [_feedbackView addSubview:_submitButton];
         
         var cancelButton = [CPButton buttonWithTitle:@"Cancel"];
         [cancelButton setTarget:self];
         [cancelButton setAction:@selector(cancel:)];
-        [cancelButton setFrameOrigin:CPMakePoint([submitButton frame].origin.x - CGRectGetWidth([cancelButton bounds]) - 5, CGRectGetHeight([_feedbackView bounds]) - CGRectGetHeight([cancelButton bounds]))];
+        [cancelButton setFrameOrigin:CPMakePoint([_submitButton frame].origin.x - CGRectGetWidth([cancelButton bounds]) - 5, CGRectGetHeight([_feedbackView bounds]) - CGRectGetHeight([cancelButton bounds]))];
         [_feedbackView addSubview:cancelButton];
         
         [contentView addSubview:_feedbackView];
         
+        _currentView = _feedbackView;
+        
         // Initialize empty feedback object.
         _feedback = {};
+        
+        // Create other views
+        _submittingFeedbackView = createSubmittingFeedbackView(self, contentView);
+        
+        _submittedFeedbackView = createSubmittedFeedbackView(self, contentView);
     }
     
     return self;
@@ -80,12 +93,18 @@
 {
     _feedback.email = [_emailTextField stringValue];
     _feedback.type = [_feedbackTypePopUpButton titleOfSelectedItem];
-    _feedback.text = [_feedbackTextField stringValue];
+    _feedback.text = [_feedbackTextView stringValue];
     
     if ([_delegate respondsToSelector:@selector(didSubmitFeedback:)])
 	{
-	    [_delegate didSubmitFeedback:self];
+	    [_delegate didSubmitFeedback:_feedback];
 	}
+}
+
+- (void)setCurrentView:(CPView)aView
+{
+    [[self contentView] replaceSubview:_currentView with:aView];
+    _currentView = aView;
 }
 
 - (void)cancel:(id)sender
@@ -96,13 +115,73 @@
     // Reset to empty values
     [_emailTextField setStringValue:@""];
     [_feedbackTypePopUpButton selectItemAtIndex:0];
-    [_feedbackTextField setStringValue:@""];
+    [_feedbackTextView setStringValue:@""];
+    [_submitButton setTitle:@"Submit Feedback"];
+    _feedback = {};
+    
+    // Put back first view
+    [self setCurrentView:_feedbackView];
+}
+
+- (void)sendingFeedback
+{
+    [self setCurrentView:_submittingFeedbackView];
+}
+
+- (void)receivedFeedback
+{
+    [self setCurrentView:_submittedFeedbackView];
 }
 
 @end
+
+function createSubmittingFeedbackView(self, contentView)
+{
+    var view = [[CPView alloc] initWithFrame:CGRectInset([contentView bounds], 10, 10)];
+    
+    var sendingText = [CPTextField labelWithTitle:@"Sending feedback..."];
+    [sendingText setFont:[CPFont boldSystemFontOfSize:18.0]];
+    [sendingText sizeToFit];
+    [sendingText setFrameOrigin:calculateCenter(view, sendingText)];
+    [view addSubview:sendingText];
+    
+    var indeterminateProgressIndicator = [[CPProgressIndicator alloc] initWithFrame:CGRectMakeZero()];
+    [indeterminateProgressIndicator setIndeterminate:YES];
+    [indeterminateProgressIndicator setStyle:CPProgressIndicatorSpinningStyle];
+    [indeterminateProgressIndicator sizeToFit];
+    [indeterminateProgressIndicator setFrameOrigin:CPMakePoint((CGRectGetWidth([view bounds]) / 2.0) - (CGRectGetWidth([indeterminateProgressIndicator bounds]) / 2.0), calculateNextYPosition(sendingText))];
+    [view addSubview:indeterminateProgressIndicator];
+    
+    return view;
+}
+
+function createSubmittedFeedbackView(self, contentView)
+{
+    var view = [[CPView alloc] initWithFrame:CGRectInset([contentView bounds], 10, 10)];
+    
+    var thankYouText = [CPTextField labelWithTitle:@"Thanks for your feedback!"];
+    [thankYouText setFont:[CPFont boldSystemFontOfSize:18.0]];
+    [thankYouText sizeToFit];
+    [thankYouText setFrameOrigin:calculateCenter(view, thankYouText)];
+    [view addSubview:thankYouText];
+    
+    var closeButton = [CPButton buttonWithTitle:@"Close"];
+    [closeButton setTarget:self];
+    [closeButton setAction:@selector(cancel:)];
+    [closeButton setFrameOrigin:CPMakePoint((CGRectGetWidth([view bounds]) / 2.0) - (CGRectGetWidth([closeButton bounds]) / 2.0), calculateNextYPosition(thankYouText))];
+    [view addSubview:closeButton];
+    
+    return view;
+}
 
 function calculateNextYPosition(previousView, padding)
 {
     padding = padding || 0;
     return CGRectGetHeight([previousView bounds]) + [previousView frame].origin.y + padding;
+}
+
+function calculateCenter(viewRelativeTo, view)
+{
+    return CPMakePoint((CGRectGetWidth([viewRelativeTo bounds]) / 2.0) - (CGRectGetWidth([view bounds]) / 2.0),
+        (CGRectGetHeight([viewRelativeTo bounds]) / 2.0) - CGRectGetHeight([view bounds]));
 }
