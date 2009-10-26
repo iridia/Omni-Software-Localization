@@ -1,1 +1,1 @@
-do shell script "/Users/projectosl/Documents/Project_OSL/Scripts/TestServer/update_test_server.sh"
+do shell script "/Library/WebServer/Documents/Omni-Software-Localization/utilities/server/Test_Server/update_test_server.sh" --needs password as a parameter ... could do this easily with an Automator workflow

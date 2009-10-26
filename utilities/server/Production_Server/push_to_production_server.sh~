@@ -78,7 +78,7 @@ else
 	echo -n Enter the password for @$TWEETOSL_USER: 
 	read -e TWEETOSL_PW
 fi
-$TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT"
+$TWEETOSL_EXEC "$TWEETOSL_TEXT" "$TWEETOSL_PW"
 echo
 
 
