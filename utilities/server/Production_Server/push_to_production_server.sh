@@ -15,37 +15,55 @@
 STARTING_DIR=$PWD
 
 GIT_REPO="/Library/WebServer/Documents/Omni-Software-Localization"
-GIT_EXEC="/usr/local/git/bin/git"
+SRC_DIR="$GIT_REPO/src"
 
-PROJECT_DIR="/Users/projectosl/Documents/Project_OSL"
-SCRIPTS_DIR="$PROJECT_DIR/Scripts"
+SCRIPTS_DIR="$GIT_REPO/utilities/server"
 MY_DIR="$SCRIPTS_DIR/Production_Server"
 
-LOGS_DIR="$PROJECT_DIR/Logs"
+LOGS_DIR="$GIT_REPO/utilities/Logs"
 # MY_LOG_DIR="$LOGS_DIR/Test_Server_Updates" # Later, I want to log ALL output from script to a file
-LOG_FILE="$LOGS_DIR/github_updates.log"
+LOG_FILE="$LOGS_DIR/production_pushes.log"
 
 TWEETOSL_EXEC="$SCRIPTS_DIR/tweet_from_projectosl.sh"
+TWEETOSL_USER="projectosl"
 
 CONFIG_FILES_DIR="$MY_DIR/Configuration_Files"
-CONFIG_SCRIPT="$MY_DIR/configure_production_server.sh"
+CONFIG_SCRIPT="$CONFIG_FILES_DIR/configure_production_server.sh"
 
-USER="projectosl"
-SERVER="shellder.omnigroup.com"
+DEST_DIR="/Users/projectosl/Documents/Project_OSL"
 
-############ THIS FILE HAS NOT BEEN UPDATED BELOW THIS LINE #########
+SERVER_USER="projectosl"
+SERVER_NAME="shellder.omnigroup.com"
+
+PASSWD_PRMPT="Enter the password for $SERVER_USER@$SERVER_NAME."
+
 
 # Perform script duties
 
-echo Sending configuration files to 
-cd $GIT_REPO
-$GIT_EXEC pull
-cd $STARTING_DIR
+echo
+echo Sending files from `hostname` to $SERVER_NAME:$DEST_DIR.
+echo
+
+echo Sending $SRC_DIR...
+echo $PASSWD_PRMPT 
+scp -r $SRC_DIR $SERVER_USER@$SERVER_NAME:$DEST_DIR
+echo
+
+echo Sending $CONFIG_FILES_DIR...
+echo $PASSWD_PRMPT
+scp -r $CONFIG_FILES_DIR $SERVER_USER@$SERVER_NAME:$DEST_DIR
 echo
 
 
+echo Running setup script on $SERVER...
+echo PASSWD_PRMPT
+ssh $SERVER_USER@$SERVER_NAME "$CONFIG_SCRIPT"
+echo
+
 echo Tweeting...
-$TWEETOSL_EXEC "Updated $HOSTNAME to latest git repo"
+echo -n Enter the password for @$TWEETOSL_USER: 
+read -e TWEETOSL_PW
+$TWEETOSL_EXEC "Latest Releace Cycle pushed to $SERVER_NAME" "$TWEETOSL_PW"
 echo
 
 

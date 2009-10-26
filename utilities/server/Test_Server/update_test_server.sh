@@ -17,14 +17,14 @@ STARTING_DIR=$PWD
 GIT_REPO="/Library/WebServer/Documents/Omni-Software-Localization"
 GIT_EXEC="/usr/local/git/bin/git"
 
-PROJECT_DIR="/Users/projectosl/Documents/Project_OSL"
-SCRIPTS_DIR="$PROJECT_DIR/Scripts"
+SCRIPTS_DIR="$GIT_REPO/utilities/server"
 MY_DIR="$SCRIPTS_DIR/Test_Server"
 
-LOGS_DIR="$PROJECT_DIR/Logs"
+LOGS_DIR="$GIT_REPO/utilities/Logs"
 # MY_LOG_DIR="$LOGS_DIR/Test_Server_Updates" # Later, I want to log ALL output from script to a file
-LOG_FILE="$LOGS_DIR/github_updates.log"
+LOG_FILE="$LOGS_DIR/klondike_github_updates.log"
 
+TWEETOSL_USER="projectosl"
 TWEETOSL_EXEC="$SCRIPTS_DIR/tweet_from_projectosl.sh"
 
 
@@ -38,7 +38,9 @@ echo
 
 
 echo Tweeting...
-$TWEETOSL_EXEC "Updated $HOSTNAME to latest git repo"
+echo -n Enter the password for @$TWEETOSL_USER: 
+read -e TWEETOSL_PW
+$TWEETOSL_EXEC "Updated $HOSTNAME to latest git repo" "$TWEETOSL_PW"
 echo
 
 
