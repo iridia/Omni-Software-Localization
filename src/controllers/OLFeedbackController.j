@@ -38,10 +38,10 @@
     [_emailRequest setValue:feedback.type forHTTPHeaderField:@"type"];
     [_emailRequest setValue:feedback.text forHTTPHeaderField:@"text"];
     
-    // var connection = [CPURLConnection connectionWithRequest:_emailRequest delegate:self];
+    var connection = [CPURLConnection connectionWithRequest:_emailRequest delegate:self];
     /* simulate sending data */
     [_feedbackWindow sendingFeedback];
-    window.setTimeout(function() {[_feedbackWindow receivedFeedback]}, 1000);
+    // window.setTimeout(function() {[_feedbackWindow receivedFeedback]}, 1000);
 }
 
 - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data

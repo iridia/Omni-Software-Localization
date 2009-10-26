@@ -7,7 +7,7 @@
     CPView _feedbackView;
     CPView _submittingFeedbackView;
     CPView _submittedFeedbackView;
-    CPView _currentView;
+    CPView _currentView; // Keeps track of the current content view
     
     CPTextField _emailTextField;
     CPPopUpButton _feedbackTypePopUpButton;
