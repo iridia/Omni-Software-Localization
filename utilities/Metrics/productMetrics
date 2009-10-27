@@ -1,0 +1,20 @@
+#!/bin/bash
+
+totalNumberOfMethods=`find ../.. -name OL*.j | xargs cat | grep '^[+|-]' | wc -l`
+
+totalNumberOfClasses=`find ../.. -name OL*.j | xargs cat | grep '^@implementation' | wc -l`
+
+numberOfTests=`find ../.. -name OL*Test.j | xargs cat | grep '^[+|-]' | wc -l`
+
+numberOfTestClasses=`find ../.. -name OL*Test.j | xargs cat | grep '^@implementation' | wc -l`
+
+numberOfMethods=$[$totalNumberOfMethods-$numberOfTests]
+numberOfClasses=$[$totalNumberOfClasses-$numberOfTestClasses]
+
+echo "Number of Methods: $numberOfMethods"
+echo "Number of Tests  : $numberOfTests"
+echo -n "Tests per Method : " 
+echo "scale=3;$numberOfTests/$numberOfMethods" | bc
+echo "Number of Classes: $numberOfClasses"
+echo -n "Methods per Class: "
+echo "scale=3;$numberOfMethods/$numberOfClasses" | bc
