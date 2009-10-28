@@ -23,7 +23,7 @@
 
 STARTING_DIR=$PWD
 
-GIT_REPO="/Library/WebServer/Documents/Omni-Software-Localization"
+GIT_REPO="/Library/WebServer/Omni-Software-Localization"
 SRC_DIR="$GIT_REPO/src"
 
 SCRIPTS_DIR="$GIT_REPO/utilities/server"
@@ -47,35 +47,37 @@ TWEETOSL_TEXT="Latest Release Cycle pushed to $SERVER_NAME"
 
 PASSWD_PRMPT="Enter the password for $SERVER_USER@$SERVER_NAME."
 
+SCRIPT_PROMPT="`basename $0`>>"
+
 
 # Perform script duties
 
 echo
-echo Sending files from `hostname` to $SERVER_NAME:$DEST_DIR.
+echo $SCRIPT_PROMPT Sending files from `hostname` to $SERVER_NAME:$DEST_DIR.
 echo
 
-echo Sending $SRC_DIR...
-echo $PASSWD_PRMPT 
+echo $SCRIPT_PROMPT Sending $SRC_DIR...
+echo $SCRIPT_PROMPT $PASSWD_PRMPT 
 scp -r $SRC_DIR $SERVER_USER@$SERVER_NAME:$DEST_DIR
 echo
 
-echo Sending $CONFIG_FILES_DIR...
-echo $PASSWD_PRMPT
+echo $SCRIPT_PROMPT Sending $CONFIG_FILES_DIR...
+echo $SCRIPT_PROMPT $PASSWD_PRMPT
 scp -r $CONFIG_FILES_DIR $SERVER_USER@$SERVER_NAME:$DEST_DIR
 echo
 
 
-echo Running setup script on $SERVER...
-echo PASSWD_PRMPT
+echo $SCRIPT_PROMPT Running setup script on $SERVER...
+echo $SCRIPT_PROMPT PASSWD_PRMPT
 ssh $SERVER_USER@$SERVER_NAME "$CONFIG_SCRIPT"
 echo
 
-echo Tweeting...
+echo $SCRIPT_PROMPT Tweeting...
 if [ $1 ]
 then
 	TWEETOSL_PW="$1"
 else
-	echo -n Enter the password for @$TWEETOSL_USER: 
+	echo -n $SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER: 
 	read -e TWEETOSL_PW
 fi
 $TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT"
@@ -83,11 +85,11 @@ echo
 
 
 echo `date` >> $LOG_FILE
-echo The date has been logged in $LOG_FILE.
+echo $SCRIPT_PROMPT The date has been logged in $LOG_FILE.
 echo
 
 
-echo Script complete.
+echo $SCRIPT_PROMPT Script complete.
 
 
 exit 0
