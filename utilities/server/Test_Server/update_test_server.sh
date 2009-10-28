@@ -33,7 +33,7 @@ LOG_FILE="$LOGS_DIR/klondike_github_updates.log"
 
 TWEETOSL_USER="projectosl"
 TWEETOSL_EXEC="$SCRIPTS_DIR/tweet_from_projectosl.sh"
-TWEETOSL_TEXT="Updated $HOSTNAME to latest git repo"
+TWEETOSL_TEXT="Updated Klondike to latest git repo"
 
 SCRIPT_PROMPT="`basename $0`>>"
 
