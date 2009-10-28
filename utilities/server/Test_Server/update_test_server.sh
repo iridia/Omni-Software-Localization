@@ -21,7 +21,7 @@
 
 STARTING_DIR=$PWD
 
-GIT_REPO="/Library/WebServer/Documents/Omni-Software-Localization"
+GIT_REPO="/Library/WebServer/Omni-Software-Localization"
 GIT_EXEC="/usr/local/git/bin/git"
 
 SCRIPTS_DIR="$GIT_REPO/utilities/server"
@@ -35,22 +35,23 @@ TWEETOSL_USER="projectosl"
 TWEETOSL_EXEC="$SCRIPTS_DIR/tweet_from_projectosl.sh"
 TWEETOSL_TEXT="Updated $HOSTNAME to latest git repo"
 
+SCRIPT_PROMPT="`basename $0`>>"
 
 # Perform script duties
 
-echo Updating git repository in $GIT_REPO...
+echo $SCRIPT_PROMPT Updating git repository in $GIT_REPO...
 cd $GIT_REPO
 $GIT_EXEC pull
 cd $STARTING_DIR
 echo
 
 
-echo Tweeting...
+echo $SCRIPT_PROMPT Tweeting...
 if [ $1 ]
 then
 	TWEETOSL_PW="$1"
 else
-	echo -n Enter the password for @$TWEETOSL_USER: 
+	echo -n $SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER: 
 	read -e TWEETOSL_PW
 fi
 $TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT"
@@ -58,11 +59,11 @@ echo
 
 
 echo `date` >> $LOG_FILE
-echo The date has been logged in $LOG_FILE.
+echo $SCRIPT_PROMPT The date has been logged in $LOG_FILE.
 echo
 
 
-echo Script complete.
+echo $SCRIPT_PROMPT Script complete.
 
 
 exit 0
