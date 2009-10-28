@@ -68,7 +68,7 @@ echo
 
 
 echo $SCRIPT_PROMPT Running setup script on $SERVER...
-echo $SCRIPT_PROMPT PASSWD_PRMPT
+echo $SCRIPT_PROMPT $PASSWD_PRMPT
 ssh $SERVER_USER@$SERVER_NAME "$CONFIG_SCRIPT"
 echo
 
