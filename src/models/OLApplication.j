@@ -31,3 +31,29 @@
 }
 
 @end
+
+var OLApplicationNameKey = @"OLApplicationNameKey";
+var OLApplicationResourceBundlesKey = @"OLApplicationResourceBundlesKey";
+
+@implementation OLApplication (CPCoding)
+
+- (id)initWithCoder:(CPCoder)aCoder
+{
+    self = [super init];
+    
+    if (self)
+    {
+        _name = [aCoder decodeObjectForKey:OLApplicationNameKey];
+        _resourceBundles = [aCoder decodeObjectForKey:OLApplicationResourceBundlesKey];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(CPCoder)aCoder
+{
+    [aCoder encodeObject:_name forKey:OLApplicationNameKey];
+    [aCoder encodeObject:_resourceBundles forKey:OLApplicationResourceBundlesKey];
+}
+
+@end

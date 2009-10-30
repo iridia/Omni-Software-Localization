@@ -8,7 +8,7 @@
 
 @import <Foundation/CPObject.j>
 @import "controllers/OLWelcomeController.j"
-@import "OLColors+CPColor.j"
+@import "Categories/OLColors+CPColor.j"
 @import "views/OLMainView.j"
 @import "views/OLResourceBundleView.j"
 

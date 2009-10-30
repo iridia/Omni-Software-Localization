@@ -23,3 +23,32 @@
 }
 
 @end
+
+var OLResourceFileNameKey = @"OLResourceFileNameKey";
+var OLResourceFileTypeKey = @"OLResourceFileTypeKey";
+var OLResourceLineItemsKey = @"OLResourceLineItemsKey";
+
+@implementation OLResource (CPCoding)
+
+- (id)initWithCoder:(CPCoder)aCoder
+{
+    self = [super init];
+    
+    if (self)
+    {
+        _fileName = [aCoder decodeObjectForKey:OLResourceFileNameKey];
+        _fileType = [aCoder decodeObjectForKey:OLResourceFileTypeKey];
+        _lineItems = [aCoder decodeObjectForKey:OLResourceLineItemsKey];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(CPCoder)aCoder
+{
+    [aCoder encodeObject:_fileName forKey:OLResourceFileNameKey];
+    [aCoder encodeObject:_fileType forKey:OLResourceFileTypeKey];
+    [aCoder encodeObject:_lineItems forKey:OLResourceLineItemsKey];
+}
+
+@end

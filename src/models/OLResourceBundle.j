@@ -34,3 +34,29 @@
 }
 
 @end
+
+var OLResourceBundleLanguageKey = @"OLResourceBundleLanguageKey";
+var OLResourceBundleResourcesKey = @"OLResourceBundleResourcesKey";
+
+@implementation OLResourceBundle (CPCoding)
+
+- (id)initWithCoder:(CPCoder)aCoder
+{
+    self = [super init];
+    
+    if (self)
+    {
+        _language = [aCoder decodeObjectForKey:OLResourceBundleLanguageKey];
+        _resources = [aCoder decodeObjectForKey:OLResourceBundleResourcesKey];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(CPCoder)aCoder
+{
+    [aCoder encodeObject:_language forKey:OLResourceBundleLanguageKey];
+    [aCoder encodeObject:_resources forKey:OLResourceBundleResourcesKey];
+}
+
+@end
