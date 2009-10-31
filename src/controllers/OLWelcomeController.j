@@ -75,19 +75,11 @@
 - (void)finishedUploadingWithResponse:(CPString)response
 {
 	var jsonResponse = eval('(' + response + ')');
-
-	var keys = jsonResponse.plist.dict.key;
-	var values = jsonResponse.plist.dict.string;
-
+	
 	_bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];	
 	var resourceLineItems = [[CPArray alloc] init];
 
-	for (var i = 0; i < [keys count]; i++)
-	{
-		[resourceLineItems addObject:[[OLLineItem alloc] initWithIdentifier:[keys objectAtIndex:i] withValue:[values objectAtIndex:i]]];
-	}
-	[_bundle addResource:[[OLResource alloc] initWithFilename:@"Your File" withFileType:@"plist" withLineItems:resourceLineItems]];
-	
+	[_bundle addResource:[[OLResource alloc] initWithFilename:@"Your File" withFileType:@"plist" withLineItems:resourceLineItems]];	
 		
 	[_uploadingView removeFromSuperview];
 	
