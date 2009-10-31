@@ -33,10 +33,11 @@ LOGS_DIR="$GIT_REPO/utilities/Logs"
 # MY_LOG_DIR="$LOGS_DIR/Test_Server_Updates" # Later, I want to log ALL output from script to a file
 LOG_FILE="$LOGS_DIR/production_pushes.log"
 
+DEST_DIR="/Users/projectosl/Documents/Project_OSL"
+
 CONFIG_FILES_DIR="$MY_DIR/Configuration_Files"
 CONFIG_SCRIPT="$CONFIG_FILES_DIR/configure_production_server.sh"
-
-DEST_DIR="/Users/projectosl/Documents/Project_OSL"
+SERVER_PATH_TO_CONFIG_SCRIPT="$DEST_DIR/Configuration_Files/configure_production_server.sh"
 
 SERVER_USER="projectosl"
 SERVER_NAME="shellder.omnigroup.com"
@@ -67,9 +68,9 @@ scp -r $CONFIG_FILES_DIR $SERVER_USER@$SERVER_NAME:$DEST_DIR
 echo
 
 
-echo $SCRIPT_PROMPT Running setup script on $SERVER...
-echo $SCRIPT_PROMPT PASSWD_PRMPT
-ssh $SERVER_USER@$SERVER_NAME "$CONFIG_SCRIPT"
+echo $SCRIPT_PROMPT Running setup script on $SERVER_NAME...
+echo $SCRIPT_PROMPT $PASSWD_PRMPT
+ssh $SERVER_USER@$SERVER_NAME "$SERVER_PATH_TO_CONFIG_SCRIPT"
 echo
 
 echo $SCRIPT_PROMPT Tweeting...
