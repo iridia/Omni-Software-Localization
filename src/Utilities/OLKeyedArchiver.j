@@ -1,4 +1,4 @@
-@import <AppKit/CPObject.j>
+@import <Foundation/CPObject.j>
 
 /*!
  * A class that helps in the conversion from a model

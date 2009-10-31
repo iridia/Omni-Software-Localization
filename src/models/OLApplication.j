@@ -1,10 +1,9 @@
-@import "OLActiveRecord.j"
 @import "OLResource.j"
 @import "OLLanguage.j"
 @import "OLResourceBundle.j"
 @import "Find+CPArray.j"
 
-@implementation OLApplication : OLActiveRecord
+@implementation OLApplication : CPObject
 {
 	CPString _name @accessors(property=name, readonly);
 	CPArray _resourceBundles @accessors(property=resourceBundles, readonly);

@@ -1,10 +1,9 @@
-@import "OLActiveRecord.j"
 @import "OLResource.j"
 
 /*!
  * The OLResourceBundle represents a bundle of resources of a specific language.
  */
-@implementation OLResourceBundle : OLActiveRecord
+@implementation OLResourceBundle : CPObject
 {
 	OLLanguage _language @accessors(property=language, readonly);
 	OLResourceBundle _baseBundle @accessors(property=baseBundle);
