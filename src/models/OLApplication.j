@@ -1,9 +1,10 @@
+@import "OLActiveRecord.j"
 @import "OLResource.j"
 @import "OLLanguage.j"
 @import "OLResourceBundle.j"
 @import "Find+CPArray.j"
 
-@implementation OLApplication : CPObject
+@implementation OLApplication : OLActiveRecord
 {
 	CPString _name @accessors(property=name, readonly);
 	CPArray _resourceBundles @accessors(property=resourceBundles, readonly);
@@ -33,20 +34,6 @@
 - (CPArray)getResourceBundleOfLanguage:(OLLanguage)languageToFind
 {
 	return [_resourceBundles findBy:function(rsrc){return [[rsrc language] equals:languageToFind];}];
-}
-
-- (id)encode:(CPKeyedArchiver)archiver
-{
-	[super encode:archiver];
-	[archiver encodeString:_name forKey:@"name"];
-	[archiver encodeArray:_resourceBundles forKey:@"resourceBundles"];
-}
-
-- (void)decode:(CPKeyedUnarchiver)unarchiver
-{
-	[super decode:unarchiver];
-	_name = [unarchiver decodeStringForKey:@"name"];
-	_resourceBundles = [unarchiver decodeArrayForKey:@"resourceBundles"];
 }
 
 @end

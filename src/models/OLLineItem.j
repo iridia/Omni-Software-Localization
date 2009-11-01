@@ -1,12 +1,19 @@
-@implementation OLLineItem : CPObject
+@import "OLActiveRecord.j"
+
+@implementation OLLineItem : OLActiveRecord
 {
 	CPString _identifier 	@accessors(readonly, property=identifier);
 	CPObject _value 		@accessors(property=value);
 }
 
-- (id)initWithIdentifier:(CPString)anIdentifier withValue:(CPObject)aValue
+- (id)initWithOId:(CPString)anOId
 {
-	if(self = [super init])
+    [self initWithOId:anOId identifier:nil value:nil];
+}
+
+- (id)initWithOId:(CPString)anOId identifier:(CPString)anIdentifier value:(CPObject)aValue
+{
+	if(self = [super initWithOId:anOId])
 	{
 		_identifier = anIdentifier;
 		_value = aValue;

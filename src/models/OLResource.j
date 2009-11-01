@@ -1,19 +1,24 @@
-@import <Foundation/CPObject.j>
+@import "OLActiveRecord.j"
 
 /*!
  * OLResource is a representation of a single resource. It is a member of a
  * set that could possibly belong to an OLBundle.
  */
-@implementation OLResource : CPObject
+@implementation OLResource : OLActiveRecord
 {
 	CPString	_fileName	@accessors(readonly, property=fileName);
 	CPString	_fileType	@accessors(readonly, property=fileType);
 	CPArray		_lineItems  @accessors(readonly, property=lineItems);
 }
 
-- (id)initWithFilename:(CPString)fileName withFileType:(CPString)fileType withLineItems:(CPArray)someLineItems
+- (id)initWithOId:(CPString)anOId
 {
-	if(self = [super init])
+    [self initWithOId:anOId fileName:nil fileType:nil lineItems:[CPArray array]];
+}
+
+- (id)initWithOId:(CPString)anOId fileName:(CPString)fileName fileType:(CPString)fileType lineItems:(CPArray)someLineItems
+{
+	if(self = [super initWithOId:anOId])
 	{
 		_fileName = fileName;
 		_fileType = fileType;

@@ -1,3 +1,5 @@
+@import <AppKit/CPObject.j>
+
 @implementation OLActiveRecord : CPObject
 {
 	CPString _OId @accessors(readonly, property=OId);

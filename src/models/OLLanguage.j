@@ -1,11 +1,18 @@
-@implementation OLLanguage : CPObject
+@import "OLActiveRecord.j"
+
+@implementation OLLanguage : OLActiveRecord
 {
 	CPString _name @accessors(property=name, readonly);
 }
 
-- (id)initWithName:(CPString)aName
+- (id)initWithOId:(CPString)anOId
 {
-	if(self = [super init])
+    [self initWithOId:anOId name:nil];
+}
+
+- (id)initWithOId:(CPString)anOId name:(CPString)aName
+{
+	if(self = [super initWithOId:anOId])
 	{
 		_name = aName;
 	}
