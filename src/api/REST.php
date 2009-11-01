@@ -13,13 +13,15 @@ parse_str(file_get_contents('php://input'), $putArgs);
 parse_str(file_get_contents('php://input'), $deleteArgs);
 
 $apiCall = str_replace($urlPrefix, "", $url);
+$dbName = explode("/",$apiCall)[0];
+$call = str_replace($dbName+"/", "", $apiCall);
 $db = new CouchDB('test');
 
 if($req_method == "GET")
 {
 	try
 	{
-		$response = $db->send($apiCall);
+		$response = $db->send($call);
 		
 		echo $response->getBody();
 	}
@@ -33,7 +35,7 @@ else if($req_method == "POST")
 {
 	try
 	{
-		$response = $db->send($apiCall, "POST", $postArgs);
+		$response = $db->send($call, "POST", $postArgs);
 		
 		echo $response->getBody();
 	}
@@ -48,7 +50,7 @@ else if($req_method == "PUT")
 {
 	try
 	{		
-		$response = $db->send($apiCall, "PUT", $putArgs);
+		$response = $db->send($call, "PUT", $putArgs);
 		
 		echo $response->getBody();		
 	}
@@ -62,7 +64,7 @@ else if($req_method == "DELETE")
 {
 	try
 	{
-		$response = $db->send($apiCall, "DELETE");
+		$response = $db->send($call, "DELETE");
 	}
 	catch
 	{
