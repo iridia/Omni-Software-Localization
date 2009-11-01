@@ -1,6 +1,5 @@
 @import <AppKit/CPView.j>
 
-@import "OLView.j"
 @import "OLLineItemView.j"
 @import "OLResourceView.j"
 @import "OLLineItemEditView.j"
