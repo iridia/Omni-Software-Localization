@@ -24,6 +24,16 @@ end
 
 task :default => [:ProjectOSL]
 
+desc "This task runs the script to update the test server to the latest git repo."
+task :deploy_test do
+	system("../utilities/server/Test_Server/update_test_server.sh")
+end
+
+desc "This task runs the script to update the production server with the latest release cycle using the files on the test server."
+task :deploy_production do
+	system("../utilities/server/Production_Server/push_to_production_server.sh")
+end
+
 task :test do
     system("objj RunTests.j")
 end
