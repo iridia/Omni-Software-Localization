@@ -11,14 +11,9 @@
 	CPArray		_lineItems  @accessors(readonly, property=lineItems);
 }
 
-- (id)initWithOId:(CPString)anOId
+- (id)initWithFileName:(CPString)fileName fileType:(CPString)fileType lineItems:(CPArray)someLineItems
 {
-    [self initWithOId:anOId fileName:nil fileType:nil lineItems:[CPArray array]];
-}
-
-- (id)initWithOId:(CPString)anOId fileName:(CPString)fileName fileType:(CPString)fileType lineItems:(CPArray)someLineItems
-{
-	if(self = [super initWithOId:anOId])
+	if(self = [super init])
 	{
 		_fileName = fileName;
 		_fileType = fileType;

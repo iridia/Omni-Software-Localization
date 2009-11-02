@@ -1,41 +1,16 @@
-@import <AppKit/CPObject.j>
+@import <Foundation/CPObject.j>
 
 @implementation OLActiveRecord : CPObject
 {
-	CPString _OId @accessors(readonly, property=OId);
+	CPString _OId @accessors(property=OId);
 }
 
 + (OLActiveRecord)findByOId:(CPString)anOId
 {
-	var record = [self initWithOId:anOId];
+	var record = [self init];
+	[record setOId:anOId];
 	[record get];
 	return record;
-}
-
-+ (OLActiveRecord)create
-{
-	var urlRequest = [[CPURLRequest alloc] initWithURL:"api/" + urlName(self)];
-	[urlRequest setHTTPMethod:"PUT"];
-	
-	var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
-	
-	var response = eval('(' + JSONresponse + ')');
-	
-	return [[self alloc] initWithOId:response["_id"]];
-}
-
-- (id)init
-{
-	return [self initWithOId:nil];
-}
-
-- (id)initWithOId:(CPString)anOId
-{
-	if(self = [super init])
-	{
-		_OId = anOId;
-	}
-	return self;
 }
 
 - (id)get
@@ -52,14 +27,33 @@
 
 - (id)save
 {
-	// some archiving stuff
-	var archivedData; // IN JSON
+	if(!_OId)
+	{
+		var urlRequest = [[CPURLRequest alloc] initWithURL:"api/" + urlName(self)];
+		[urlRequest setHTTPMethod:"PUT"];
 	
-	var urlRequest = [[CPURLRequest alloc] initWithURL:"api/" + urlName(self) + "/" + _OId];
-	[urlRequest setHTTPMethod:"POST"];
-	[urlRequest setHTTPBody:archivedData];
-	
-	[[CPURLConnection alloc] initWithRequest:urlRequest delegate:nil startImmediately:YES];
+		// some archiving stuff
+		var archivedData; // IN JSON
+		
+		[urlRequest setHTTPBody:archivedData];
+		
+		var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
+		
+		var response = eval('(' + JSONresponse + ')');
+		
+		_OId = response["_id"];	
+	}
+	else
+	{
+		// some archiving stuff
+		var archivedData; // IN JSON
+		
+		var urlRequest = [[CPURLRequest alloc] initWithURL:"api/" + urlName(self) + "/" + _OId];
+		[urlRequest setHTTPMethod:"POST"];
+		[urlRequest setHTTPBody:archivedData];
+		
+		[[CPURLConnection alloc] initWithRequest:urlRequest delegate:nil startImmediately:YES];
+	}
 }
 
 - (id)delete

@@ -10,19 +10,14 @@
 	CPArray _resources @accessors(property=resources, readonly);
 }
 
-- (id)initWithOid:(CPString)anOId
+- (id)initWithLanguage:(OLLanguage)aLanguage
 {
-	[self initWithOId:anOId language:nil];
+	[self initWithResources:[CPArray array] language:aLanguage];
 }
 
-- (id)initWithOId:(CPString)anOId language:(OLLanguage)aLanguage
+- (id)initWithResources:(CPArray)someResources language:(OLLanguage)aLanguage
 {
-	[self initWithOId:anOId resources:[CPArray array] language:aLanguage];
-}
-
-- (id)initWithOId:(CPString)anOId resources:(CPArray)someResources language:(OLLanguage)aLanguage
-{
-	if(self = [super initWithOId:anOId])
+	if(self = [super init])
 	{
 		_language = aLanguage;
 		_resources = someResources;

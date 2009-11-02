@@ -5,14 +5,9 @@
 	CPString _name @accessors(property=name, readonly);
 }
 
-- (id)initWithOId:(CPString)anOId
+- (id)initWithName:(CPString)aName
 {
-    [self initWithOId:anOId name:nil];
-}
-
-- (id)initWithOId:(CPString)anOId name:(CPString)aName
-{
-	if(self = [super initWithOId:anOId])
+	if(self = [super init])
 	{
 		_name = aName;
 	}

@@ -6,14 +6,9 @@
 	CPObject _value 		@accessors(property=value);
 }
 
-- (id)initWithOId:(CPString)anOId
+- (id)initWithIdentifier:(CPString)anIdentifier value:(CPObject)aValue
 {
-    [self initWithOId:anOId identifier:nil value:nil];
-}
-
-- (id)initWithOId:(CPString)anOId identifier:(CPString)anIdentifier value:(CPObject)aValue
-{
-	if(self = [super initWithOId:anOId])
+	if(self = [super init])
 	{
 		_identifier = anIdentifier;
 		_value = aValue;
