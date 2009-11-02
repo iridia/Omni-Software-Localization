@@ -1,3 +1,5 @@
+@import "OLResource.j"
+
 /*!
  * The OLResourceBundle represents a bundle of resources of a specific language.
  */
@@ -31,6 +33,45 @@
 - (void)addResource:(OLResource)aResource
 {
 	[_resources addObject:aResource];
+}
+
+- (id)encode:(CPKeyedArchiver)archiver
+{
+	[archiver encode:_language forKey:@"language"];
+	[archiver encode:_baseBundle forKey:@"baseBundle"];
+	[archiver encodeArray:_resources forKey:@"resources"];
+}
+
+- (void)decode:(CPKeyedUnarchiver)unarchiver
+{
+	_language = [unarchiver decodeObjectForKey:@"language"];
+	_resources = [unarchiver decodeArrayForKey:@"resources"];
+}
+
+@end
+
+var OLResourceBundleLanguageKey = @"OLResourceBundleLanguageKey";
+var OLResourceBundleResourcesKey = @"OLResourceBundleResourcesKey";
+
+@implementation OLResourceBundle (CPCoding)
+
+- (id)initWithCoder:(CPCoder)aCoder
+{
+    self = [super init];
+    
+    if (self)
+    {
+        _language = [aCoder decodeObjectForKey:OLResourceBundleLanguageKey];
+        _resources = [aCoder decodeObjectForKey:OLResourceBundleResourcesKey];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(CPCoder)aCoder
+{
+    [aCoder encodeObject:_language forKey:OLResourceBundleLanguageKey];
+    [aCoder encodeObject:_resources forKey:OLResourceBundleResourcesKey];
 }
 
 @end

@@ -34,13 +34,14 @@
 		_contentView = contentView;
 		_finishedReadingResourceBundle = @selector(finishedReadingResourceBundle:);
 		
-        _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(200, 100, 700, 200) styleMask:CPTitledWindowMask];
+        _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 700, 150) styleMask:CPTitledWindowMask];
         [_welcomeWindow setTitle:@"Welcome to Omni Software Localization"];
         var welcomeWindowContentView = [_welcomeWindow contentView];
 		
-		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,200) withController:self];
+		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,150) withController:self];
         
 		[welcomeWindowContentView addSubview:_welcomeView];
+		
         // [[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
 	}
 	
@@ -75,19 +76,11 @@
 - (void)finishedUploadingWithResponse:(CPString)response
 {
 	var jsonResponse = eval('(' + response + ')');
-
-	var keys = jsonResponse.plist.dict.key;
-	var values = jsonResponse.plist.dict.string;
-
+	
 	_bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];	
 	var resourceLineItems = [[CPArray alloc] init];
 
-	for (var i = 0; i < [keys count]; i++)
-	{
-		[resourceLineItems addObject:[[OLLineItem alloc] initWithIdentifier:[keys objectAtIndex:i] withValue:[values objectAtIndex:i]]];
-	}
-	[_bundle addResource:[[OLResource alloc] initWithFilename:@"Your File" withFileType:@"plist" withLineItems:resourceLineItems]];
-	
+	[_bundle addResource:[[OLResource alloc] initWithFilename:@"Your File" withFileType:@"plist" withLineItems:resourceLineItems]];	
 		
 	[_uploadingView removeFromSuperview];
 	

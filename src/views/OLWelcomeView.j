@@ -18,15 +18,11 @@
 		var importButton = [[UploadButton alloc] initWithFrame:CGRectMakeZero()];
         var localizeButton = [CPButton buttonWithTitle:@"Localize"];
 		var awesomeImage = [[CPImage alloc] initByReferencingFile:@"Resources/logo.png" size:CGSizeMake(150,150)];
-		var imageView = [[CPImageView alloc] initWithFrame:CPMakeRect(180,40,150,150)];
+		var imageView = [[CPImageView alloc] initWithFrame:CPMakeRect(180,0,150,150)];
 		
 		[imageView setImage:awesomeImage];
 
 		[self setBackgroundColor:[CPColor whiteColor]];
-		
-        [welcomeText setFont:[CPFont boldSystemFontOfSize:18]];
-        [welcomeText sizeToFit];
-        [welcomeText setCenter:CGPointMake([self center].x, 25)];
 		
 		[importButton setTitle:@"Import"];
 		[importButton sizeToFit];
@@ -36,8 +32,7 @@
         var views = [importText, localizeText, importButton, localizeButton, imageView]; //welcomeText];
         [self addViews:views];
 				
-		var point = [welcomeText center];
-		point.y = point.y + 40;
+		var point = CGPointMake([self center].x, 25);
 		[importButton setFrameOrigin:point];
 		point.y = point.y + 25;		
 		[importText setFrameOrigin:point];
