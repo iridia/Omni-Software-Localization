@@ -1,4 +1,6 @@
-@implementation OLLanguage : CPObject
+@import "OLActiveRecord.j"
+
+@implementation OLLanguage : OLActiveRecord
 {
 	CPString _name @accessors(property=name, readonly);
 }
