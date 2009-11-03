@@ -14,7 +14,7 @@
  
 -(id)initWithFrame:(CGRect)aFrame
 {
-    self = [super initWithFrame: aFrame];
+    self = [super initWithFrame:aFrame];
     
     FIXME_textArea = document.createElement("textarea");
     
@@ -30,7 +30,7 @@
     
     FIXME_textArea.style.left    = "0";
     FIXME_textArea.style.top     = "0";
-    FIXME_textArea.style.border  = "0";
+    FIXME_textArea.style.border  = "1";
     FIXME_textArea.style.margin  = "0";
     FIXME_textArea.style.padding = "5px";
     
