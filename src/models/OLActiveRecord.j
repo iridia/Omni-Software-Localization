@@ -13,6 +13,22 @@
 	return record;
 }
 
++ (CPArray)find
+{
+	var records = [CPArray array];
+
+	var urlRequest = [[CPURLRequest alloc] initWithURL:"api/" + urlName(self)];
+	[urlRequest setHTTPMethod:"GET"];
+	
+	var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
+	
+	var response = eval('(' + JSONresponse + ')');
+	
+	// some unarchiving stuff
+	
+	return records;
+}
+
 - (id)get
 {
 	var urlRequest = [[CPURLRequest alloc] initWithURL:"api/" + urlName(self) + "/" + _OId];
