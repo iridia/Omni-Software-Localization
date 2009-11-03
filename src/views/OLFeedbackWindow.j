@@ -62,7 +62,7 @@
         
         _feedbackTextView = [[CPTextView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([_feedbackView bounds]), 130)];
         [_feedbackTextView setFrameOrigin:CPMakePoint(0, calculateNextYPosition(_feedbackTextLabel))];
-        [_feedbackTextView setFont:inputFont]; // This does not work, unfortunately.
+        [_feedbackTextView setFont:inputFont];
         [_feedbackView addSubview:_feedbackTextView];
         
         _submitButton = [CPButton buttonWithTitle:@"Submit Feedback"];
