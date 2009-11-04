@@ -1,0 +1,4 @@
+
+RewriteEngine On
+RewriteBase /api/
+RewriteRule ^(.*)$ REST.php
