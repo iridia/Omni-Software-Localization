@@ -60,19 +60,30 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     var resourceBundleView = [[OLResourceBundleView alloc] initWithFrame:[_mainView currentViewFrame]];// withController:_resourceBundleController];
     [_resourceBundleController addObserver:resourceBundleView forKeyPath:@"bundle" options:CPKeyValueObservingOptionNew context:nil];
     
+	console.log([sender bundle]);
+	
     [_resourceBundleController setBundle:[sender bundle]];
     [_mainView setCurrentView:resourceBundleView];
+}
+
+- (void)switchToBundleView:(id)sender
+{
+    var resourceBundleView = [[OLResourceBundleView alloc] initWithFrame:[_mainView currentViewFrame]];
+	[sender addObserver:resourceBundleView forKeyPath:@"bundle" options:CPKeyValueObservingOptionNew context:nil];
+	
+	[_mainView setCurrentView:resourceBundleView];
 }
 
 - (void)selectedResourcesList:(id)sender
 {
 	var resourceView = [[OLResourcesView alloc] initWithFrame:[_mainView currentViewFrame]];
 	[resourceView setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
+	[resourceView setDelegate:_resourceBundleController];
 	
 	[_resourceBundleController addObserver:resourceView forKeyPath:@"resources" options:CPKeyValueObservingOptionNew context:nil];
+	[_resourceBundleController setDelegate:self];
 	
-	[resourceView setResources:[_resourceBundleController loadBundles]];
-	[resourceView reload];
+	[_resourceBundleController loadBundles];
 	[_mainView setCurrentView:resourceView];
 }
 

@@ -7,14 +7,20 @@
  */
 @implementation OLResourceBundleController : CPObject
 {
+	id _delegate @accessors(property=delegate);
 	OLResourceBundle _bundle @accessors(property=bundle); //, readonly);
 	CPArray _resources @accessors(property=resources);
 }
 
 - (void)loadBundles
 {
-	_resources = [OLResourceBundle list];
-	return _resources;
+	[self setResources:[OLResourceBundle list]];
+}
+
+- (void)doubleClickedResource:(OLResource)aResource
+{
+	[_delegate switchToBundleView:self];
+	[self setBundle:aResource];//[[OLResourceBundle alloc] initWithResources:new Array(aResource) language:[OLLanguage english]]];
 }
 
 @end

@@ -5,6 +5,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 @implementation OLResourcesView : CPView
 {
+	id _delegate @accessors(property=delegate);
     CPArray     _resources @accessors(property=resources);
     CPTableView _resourceTableView @accessors(property=resourceTableView);
 }
@@ -24,6 +25,8 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 		[_resourceTableView setDataSource:self];
 		[_resourceTableView setUsesAlternatingRowBackgroundColors:YES];
 		[_resourceTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+		[_resourceTableView setTarget:self];
+		[_resourceTableView setDoubleAction:@selector(doubleClicked:)];
 		
 		// define the header color
 		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"button-bezel-center.png"]]];
@@ -44,9 +47,15 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 	return self;
 }
 
+- (void)doubleClicked:(id)sender
+{
+	var index = [[sender selectedRowIndexes] firstIndex];
+	
+	[_delegate doubleClickedResource:[_resources objectAtIndex:index]];
+}
+
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-	console.log("Observed!");
     if (keyPath === @"resources")
     {
         _resources = [object resources];
@@ -59,11 +68,6 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 - (int)numberOfRowsInTableView:(CPTableView)resourceTableView
 {
     return [_resources count];
-}
-
-- (void)reload
-{
-	[_resourceTableView reloadData];
 }
 
 - (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
@@ -79,4 +83,16 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     	return [_resources[row] description];
 	}
 }
+@end
+
+@implementation CPTableView (DoubleClick)
+
+- (void)mouseDown:(CPEvent)anEvent
+{
+    if ([anEvent clickCount] == 2)
+        objj_msgSend([self target], [self doubleAction], self);
+
+	[super mouseDown:anEvent];
+}
+
 @end
