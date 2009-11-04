@@ -39,7 +39,6 @@ var OLLanguageNameKey = @"OLLanguageNameKey";
     if (self)
     {
         _name = [aCoder decodeObjectForKey:OLLanguageNameKey];
-        console.log("Decoding Language. Got:", _name);
     }
     
     return self;
@@ -47,7 +46,6 @@ var OLLanguageNameKey = @"OLLanguageNameKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    console.log("Encoding Language. For:", _name);
     [aCoder encodeObject:_name forKey:OLLanguageNameKey];
 }
 
