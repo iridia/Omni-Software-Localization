@@ -2,9 +2,28 @@
 
 @implementation OLFeedback : OLActiveRecord
 {
-    CPString _email;
-    CPString _type;
-    CPString _text;
+    CPString _email @accessors(property=email);
+    CPString _type @accessors(property=type);
+    CPString _text @accessors(property=text);
+}
+
+- (id)init
+{
+    [self initWithEmail:nil type:nil text:nil];
+}
+
+- (id)initWithEmail:(CPString)email type:(CPString)type text:(CPString)text
+{
+    self = [super init];
+    
+    if (self)
+    {
+        _email = email;
+        _type = type;
+        _text = text;
+    }
+    
+    return self;
 }
 
 @end
@@ -31,9 +50,9 @@ var OLFeedbackTextKey = @"OLFeedbackTextKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    [aCoder encodeObjectForKey:OLFeedbackEmailKey];
-    [aCoder encodeObjectForKey:OLFeedbackTypeKey];
-    [aCoder encodeObjectForKey:OLFeedbackTextKey];
+    [aCoder encodeObject:_email forKey:OLFeedbackEmailKey];
+    [aCoder encodeObject:_type forKey:OLFeedbackTypeKey];
+    [aCoder encodeObject:_text forKey:OLFeedbackTextKey];
 }
 
 @end
