@@ -90,7 +90,15 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 - (void)mouseDown:(CPEvent)anEvent
 {
     if ([anEvent clickCount] == 2)
-        objj_msgSend([self target], [self doubleAction], self);
+	{
+		var index = [[self selectedRowIndexes] firstIndex];
+		
+		if(index >= 0)
+		{
+			objj_msgSend([self target], [self doubleAction], self);	
+		}
+	}
+
 
 	[super mouseDown:anEvent];
 }
