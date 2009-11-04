@@ -17,9 +17,9 @@
 ## not compatible with your local development environment.
 
 
-
-
+#
 # Set up variables
+#
 
 STARTING_DIR=$PWD
 
@@ -49,32 +49,34 @@ TWEETOSL_TEXT="Latest Release Cycle pushed to $SERVER_NAME"
 PASSWD_PRMPT="Enter the password for $SERVER_USER@$SERVER_NAME."
 
 SCRIPT_PROMPT="`basename $0`>>"
+PROMPT="echo $SCRIPT_PROMPT"
 
-
+#
 # Perform script duties
+#
 
 echo
-echo $SCRIPT_PROMPT Sending files from `hostname` to $SERVER_NAME:$DEST_DIR.
+$PROMPT Sending files from `hostname` to $SERVER_NAME:$DEST_DIR.
 echo
 
-echo $SCRIPT_PROMPT Sending $SRC_DIR...
-echo $SCRIPT_PROMPT $PASSWD_PRMPT 
+$PROMPT Sending $SRC_DIR...
+$PROMPT $PASSWD_PRMPT 
 scp -r $SRC_DIR $SERVER_USER@$SERVER_NAME:$DEST_DIR
 echo
 
-echo $SCRIPT_PROMPT Sending $CONFIG_FILES_DIR...
-echo $SCRIPT_PROMPT $PASSWD_PRMPT
+$PROMPT Sending $CONFIG_FILES_DIR...
+$PROMPT $PASSWD_PRMPT
 scp -r $CONFIG_FILES_DIR $SERVER_USER@$SERVER_NAME:$DEST_DIR
 echo
 
 
-echo $SCRIPT_PROMPT Running setup script on $SERVER_NAME...
-echo $SCRIPT_PROMPT $PASSWD_PRMPT
+$PROMPT Running setup script on $SERVER_NAME...
+$PROMPT $PASSWD_PRMPT
 ssh $SERVER_USER@$SERVER_NAME "$SERVER_PATH_TO_CONFIG_SCRIPT"
 echo
 
 
-echo $SCRIPT_PROMPT Tweeting...
+$PROMPT Tweeting...
 if [ $1 ]
 then
 	TWEETOSL_PW="$1"
@@ -90,11 +92,11 @@ echo
 
 
 echo `date` >> $LOG_FILE
-echo $SCRIPT_PROMPT The date has been logged in $LOG_FILE.
+$PROMPT The date has been logged in $LOG_FILE.
 echo
 
 
-echo $SCRIPT_PROMPT Script complete.
+$PROMPT Script complete.
 
 
 exit 0
