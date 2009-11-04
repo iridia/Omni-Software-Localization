@@ -1,6 +1,7 @@
 @import <AppKit/CPWindow.j>
 
 @import "CPTextView.j"
+@import "../models/OLFeedback.j"
 
 @implementation OLFeedbackWindow : CPWindow
 {
@@ -15,8 +16,6 @@
     
     CPButton _submitButton;
     CPTextField _feedbackTextLabel;
-    
-    JSONObject _feedback @accessors(property=feedback, readonly);
     
     id _delegate @accessors(property=delegate);
 }
@@ -81,12 +80,8 @@
         
         _currentView = _feedbackView;
         
-        // Initialize empty feedback object.
-        _feedback = {};
-        
-        // Create other views
+        // Create other views up front
         _submittingFeedbackView = createSubmittingFeedbackView(self, contentView);
-        
         _submittedFeedbackView = createSubmittedFeedbackView(self, contentView);
     }
     
@@ -102,13 +97,14 @@
 
 - (void)submitFeedback:(id)sender
 {
-    _feedback.email = [_emailTextField stringValue];
-    _feedback.type = [_feedbackTypePopUpButton titleOfSelectedItem];
-    _feedback.text = [_feedbackTextView stringValue];
+    var feedback = [CPDictionary dictionary];
+    [feedback setObject:[_emailTextField stringValue] forKey:@"email"];
+    [feedback setObject:[_feedbackTypePopUpButton titleOfSelectedItem] forKey:@"type"];
+    [feedback setObject:[_feedbackTextView stringValue] forKey:@"text"];
     
     if ([_delegate respondsToSelector:@selector(didSubmitFeedback:)])
 	{
-	    [_delegate didSubmitFeedback:_feedback];
+	    [_delegate didSubmitFeedback:feedback];
 	}
 }
 
@@ -129,18 +125,17 @@
     [self feedbackTypeDidChange:_feedbackTypePopUpButton];
     [_feedbackTextView setStringValue:@""];
     [_submitButton setTitle:@"Submit Feedback"];
-    _feedback = {};
     
     // Put back first view
     [self setCurrentView:_feedbackView];
 }
 
-- (void)sendingFeedback
+- (void)showSendingFeedbackView
 {
     [self setCurrentView:_submittingFeedbackView];
 }
 
-- (void)receivedFeedback
+- (void)showReceivedFeedbackView
 {
     [self setCurrentView:_submittedFeedbackView];
 }

@@ -1,12 +1,11 @@
 @import <Foundation/CPObject.j>
 
 @import "../views/OLFeedbackWindow.j"
+@import "../models/OLFeedback.j"
 
 @implementation OLFeedbackController : CPObject
 {
     OLFeedbackWindow _feedbackWindow;
-    CPURL _emailURL;
-    CPURLRequest _emailRequest;
 }
 
 - (id)init
@@ -17,10 +16,6 @@
     {
         _feedbackWindow = [[OLFeedbackWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 300) styleMask:CPTitledWindowMask];
         [_feedbackWindow setDelegate:self];
-        
-        _emailURL = [CPURL URLWithString:@"feedback.php"];
-        _emailRequest = [CPURLRequest requestWithURL:_emailURL];
-        [_emailRequest setHTTPMethod:@"GET"];
     }
     
     return self;
@@ -31,23 +26,25 @@
     [[CPApplication sharedApplication] runModalForWindow:_feedbackWindow];
 }
 
-- (void)didSubmitFeedback:(JSObject)feedback
+- (void)didSubmitFeedback:(CPDictionary)feedbackDictionary
 {
-    // Send it to the server
-    [_emailRequest setValue:feedback.email forHTTPHeaderField:@"email"];
-    [_emailRequest setValue:feedback.type forHTTPHeaderField:@"type"];
-    [_emailRequest setValue:feedback.text forHTTPHeaderField:@"text"];
+    var email = [feedbackDictionary objectForKey:@"email"];
+    var type = [feedbackDictionary objectForKey:@"type"];
+    var text = [feedbackDictionary objectForKey:@"text"];
     
-    var connection = [CPURLConnection connectionWithRequest:_emailRequest delegate:self];
-    /* simulate sending data */
-    [_feedbackWindow sendingFeedback];
-    // window.setTimeout(function() {[_feedbackWindow receivedFeedback]}, 1000);
+    var feedback = [[OLFeedback alloc] initWithEmail:email type:type text:text];
+    [feedback setDelegate:self];
+    [feedback save];
 }
 
-- (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
+- (void)willCreateRecord:(OLFeedback)feedback
 {
-    [_feedbackWindow receivedFeedback];
-    console.log("Completed email with data: ", data);
+    [_feedbackWindow showSendingFeedbackView];
+}
+
+- (void)didCreateRecord:(OLFeedback)feedback
+{
+    [_feedbackWindow showReceivedFeedbackView];
 }
 
 @end
