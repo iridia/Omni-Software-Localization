@@ -19,9 +19,9 @@
 	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
     var url = @"api/" + modifiedClassName + "/_all_docs";
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
-	var JSONresponse = [[CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil]];
+	var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
 	
-	var data = eval('(' + JSONresponse[0].string + ')');
+	var data = eval('(' + JSONresponse.string + ')');
 	
 	for(var i = 0; i < [data.rows count]; i++)
 	{

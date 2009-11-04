@@ -42,8 +42,9 @@ var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
     
     if (itemIdentifier === OLFeedbackToolbarItemIdentifier)
     {
-        var feedbackButton = [[CPImage alloc] initWithContentsOfFile:"Resources/FeedbackButton.png" size:CPSizeMake(30, 25)],
-        var feedbackButtonPushed = [[CPImage alloc] initWithContentsOfFile:"Resources/FeedbackButtonPushed.png" size:CPSizeMake(30, 25)];
+        var feedbackButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/FeedbackButton.png" size:CPSizeMake(30, 25)];
+
+        var feedbackButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/FeedbackButtonPushed.png" size:CPSizeMake(30, 25)];
             
         [toolbarItem setImage:feedbackButton];
         [toolbarItem setAlternateImage:feedbackButtonPushed];

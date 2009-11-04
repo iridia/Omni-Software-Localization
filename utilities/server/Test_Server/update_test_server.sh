@@ -21,8 +21,10 @@
 
 STARTING_DIR=$PWD
 
-GIT_REPO="/Library/WebServer/Omni-Software-Localization"
 GIT_EXEC="/usr/local/git/bin/git"
+GIT_REPO="/Library/WebServer/Omni-Software-Localization"
+GIT_INFO="$GIT_REPO/.git"
+GIT_TEMP="/tmp/.git"
 
 SCRIPTS_DIR="$GIT_REPO/utilities/server"
 MY_DIR="$SCRIPTS_DIR/Test_Server"
@@ -33,15 +35,25 @@ LOG_FILE="$LOGS_DIR/klondike_github_updates.log"
 
 TWEETOSL_USER="projectosl"
 TWEETOSL_EXEC="$SCRIPTS_DIR/tweet_from_projectosl.sh"
-TWEETOSL_TEXT="updated $HOSTNAME to latest git repo"
+TWEETOSL_TEXT="Updated `hostname` to latest git repo"
 
 SCRIPT_PROMPT="`basename $0`>>"
 
+
 # Perform script duties
 
-echo $SCRIPT_PROMPT Updating git repository in $GIT_REPO...
+echo $SCRIPT_PROMPT Updating git repository in $GIT_REPO.
 cd $GIT_REPO
+
+echo $SCRIPT_PROMPT Discarding local changes...
+mv $GIT_INFO $GIT_TEMP
+rm -rf *
+mv $GIT_TEMP $GIT_INFO
+$GIT_EXEC checkout .
+
+echo $SCRIPT_PROMPT Pulling latest repo...
 $GIT_EXEC pull
+
 cd $STARTING_DIR
 echo
 
@@ -51,8 +63,11 @@ if [ $1 ]
 then
 	TWEETOSL_PW="$1"
 else
-	echo -n $SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER: 
-	read -e TWEETOSL_PW
+	echo -n $SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER:
+	STTY_ORIG=`stty -g` 	# Saves current stty settings for later restoration
+	stty -echo 		# Hides characters for password entry
+	read -e TWEETOSL_PW 	# Reads the input
+	stty $STTY_ORIG 	# Restores original stty settings
 fi
 $TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT"
 echo

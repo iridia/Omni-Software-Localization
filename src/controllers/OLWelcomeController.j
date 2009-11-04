@@ -34,11 +34,11 @@
 		_contentView = contentView;
 		_finishedReadingResourceBundle = @selector(finishedReadingResourceBundle:);
 		
-        _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 700, 150) styleMask:CPTitledWindowMask];
+        _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 700, 250) styleMask:CPTitledWindowMask];
         [_welcomeWindow setTitle:@"Welcome to Omni Software Localization"];
         var welcomeWindowContentView = [_welcomeWindow contentView];
 		
-		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,150) withController:self];
+		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,250) withController:self];
         
 		[welcomeWindowContentView addSubview:_welcomeView];
 		
@@ -60,6 +60,23 @@
     // {
     //     [_delegate finishedReadingResourceBundle:self];
     // }
+}
+
+- (void)transitionToResourceList:(id)sender
+{
+	[[CPApplication sharedApplication] stopModal];
+	[_welcomeWindow orderOut:self];
+
+	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
+	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
+	
+	[_delegate selectResourcesList:self];
+}
+
+- (void)poof
+{
+	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
+	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 }
 
 - (void)showUploading
@@ -101,8 +118,8 @@
 	
 	[_uploadingView removeFromSuperview];
 	
-	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,160) withController:self withFileName:fileName];
-	[_uploadedView setCenter:CPPointMake([_contentView center].x, 75)];
+	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,120) withController:self withFileName:fileName];
+	[_uploadedView setCenter:CPPointMake([_contentView center].x, 55)];
 	
 	[_contentView addSubview:_uploadedView];
 	

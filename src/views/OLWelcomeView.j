@@ -1,5 +1,12 @@
 @import "OLView.j"
 @import "CPUploadButton.j"
+@import "CPTextView.j"
+
+var BETA_TEXT = @"The Omni Software Localization tool is currently under construction,"+
+" and as such, the development team and their affiliates (Omni Group and Rose-Hulman"+
+" Institute of Technology) are not liable for the content or functionality of the"+
+" application at this time. We provide no warranty, guarantee, or license, expressed or"+
+" implied, for the accuracy or reliability of the information or services that the tool currently renders.";
 
 /*!
  * OLWelcomeScreen
@@ -18,6 +25,7 @@
 		var importButton = [[UploadButton alloc] initWithFrame:CGRectMakeZero()];
         var localizeButton = [CPButton buttonWithTitle:@"Localize"];
 		var awesomeImage = [[CPImage alloc] initByReferencingFile:@"Resources/logo.png" size:CGSizeMake(150,150)];
+		var betaText = [[CPTextView alloc] initWithFrame:CGRectMake(0.0, 0.0, 650, 100)]
 		var imageView = [[CPImageView alloc] initWithFrame:CPMakeRect(180,0,150,150)];
 		
 		[imageView setImage:awesomeImage];
@@ -29,7 +37,11 @@
 		[importButton setDelegate:self];
 		[importButton setURL:@"upload.php"];
 		
-        var views = [importText, localizeText, importButton, localizeButton, imageView]; //welcomeText];
+		[betaText setStringValue:BETA_TEXT];
+		[betaText setFrameOrigin:point];
+		[betaText setCenter:CPPointMake([self center].x, 200)];
+		
+        var views = [importText, localizeText, betaText, importButton, localizeButton, imageView]; //welcomeText];
         [self addViews:views];
 				
 		var point = CGPointMake([self center].x, 25);
@@ -40,7 +52,7 @@
 		point.y = point.y + 25;
 		[localizeButton setFrameOrigin:point];
 		point.y = point.y + 25;
-		[localizeText setFrameOrigin:point];		
+		[localizeText setFrameOrigin:point];	
 		
 		[importText setTextColor:[CPColor grayColor]];
  		[localizeText setTextColor:[CPColor grayColor]];
@@ -48,8 +60,7 @@
 		[importButton setTarget:self];
 		
 		[localizeButton setTarget:controller];
-		[localizeButton setAction:@selector(transitionToResourceView:)];
-        [localizeButton setEnabled:NO];     
+		[localizeButton setAction:@selector(transitionToResourceList:)];    
 	}
 	return self;
 }
