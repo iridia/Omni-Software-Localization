@@ -10,4 +10,8 @@
 	OLResourceBundle _bundle @accessors(property=bundle); //, readonly);
 }
 
+/*- (void) getAllResources
+{
+	
+}*/
 @end
