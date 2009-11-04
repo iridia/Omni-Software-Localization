@@ -18,19 +18,20 @@ else if(isStrings($_FILES['file']['name']))
 	$postArgs = transformStringsToJson($file);
 }
 
-try
-{
-	echo $postArgs;
-	
-	$response = $db->send($apiCall, "POST", $postArgs);
-	
-	echo $response->getBody();
-}
-catch(Exception $e)
-{
-	header("Status: 404");
-	header("Content-Type: text/plain" );
-}
+// temporary fix
+echo $postArgs;
+// 
+// try
+// {
+// 	$response = $db->send($apiCall, "POST", $postArgs);
+// 	
+// 	echo $response->getBody();
+// }
+// catch(Exception $e)
+// {
+// 	header("Status: 404");
+// 	header("Content-Type: text/plain" );
+// }
 
 // Functions. Are called from above.
 
