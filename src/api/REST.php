@@ -2,7 +2,7 @@
 
 require_once "CouchDB.php";
 
-$urlPrefix = "/~hammerdr/osl/src/api/"; // should be /api/ in 
+$urlPrefix = "/~hammerdr/osl/src/api/"; // should be /api/ on server
 $couchDbBaseURL = "http://localhost:5984/";
 
 $url = $_SERVER['REQUEST_URI'];
