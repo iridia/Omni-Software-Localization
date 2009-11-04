@@ -80,7 +80,7 @@
         [self _create];
 	}
 	else
-	{		
+	{	
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"POST"];
 		
@@ -119,14 +119,20 @@
 
 - (void)connection:(CPURLConnection)connection didReceiveData:(CPString)data
 {
+    var json = eval('(' + data + ')');
+    
     switch (connection)
     {
         case _createConnection:
-            _recordID = data["_id"];
+            _recordID = json["id"];
+            _revision = json["rev"];
             if ([_delegate respondsToSelector:@selector(didCreateRecord:)])
         	{
         	    [_delegate didCreateRecord:self];
         	}
+            break;
+        case _saveConnection:
+            _revision = json["rev"] || _revision;
             break;
         default:
             break;

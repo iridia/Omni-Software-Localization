@@ -58,7 +58,6 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    console.log(_cmd, keyPath);
     if (keyPath === @"bundles")
     {
         _resources = [object bundles];
@@ -66,8 +65,10 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     }
 }
 
-// ---
-// CPTableView datasource methods
+@end
+
+@implementation OLResourcesView (CPTableViewDataSource)
+
 - (int)numberOfRowsInTableView:(CPTableView)resourceTableView
 {
     return [_resources count];
@@ -86,6 +87,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     	return [_resources[row] description];
 	}
 }
+
 @end
 
 @implementation CPTableView (DoubleClick)

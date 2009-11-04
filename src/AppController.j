@@ -13,7 +13,6 @@
 @import "controllers/OLToolbarController.j"
 @import "controllers/OLFeedbackController.j"
 @import "views/OLMainView.j"
-@import "views/OLResourceBundleView.j"
 @import "views/OLResourceEditorView.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
@@ -55,15 +54,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	
 	[CPMenu setMenuBarVisible:YES];
 }
-
-// - (void)finishedReadingResourceBundle:(id)sender
-// {
-//     var resourceBundleView = [[OLResourceBundleView alloc] initWithFrame:[_mainView currentViewFrame]];// withController:_resourceBundleController];
-//     [_resourceBundleController addObserver:resourceBundleView forKeyPath:@"bundle" options:CPKeyValueObservingOptionNew context:nil];
-//  
-//     [_resourceBundleController setBundle:[sender bundle]];
-//     [_mainView setCurrentView:resourceBundleView];
-// }
 
 - (void)editBundle:(id)sender
 {

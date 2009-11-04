@@ -66,11 +66,6 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 - (void)edit:(id)sender
 {
     var _editingRow = [[sender selectedRowIndexes] firstIndex];
-    if (_editingRow < 0)
-    {
-        _editingRow = nil;
-        return;
-    }
     
     var rowRect = [_lineItemsTableView rectOfRow:_editingRow];
     [_editorTextField setFrameOrigin:CPMakePoint(200.0 - 3.0, rowRect.origin.y + (CGRectGetHeight([_editorTextField bounds]) / 2.0))];
@@ -134,12 +129,12 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 {
     if (keyPath === @"editingBundle")
     {
-        var resource = [[[change objectForKey:CPKeyValueChangeNewKey] resources] objectAtIndex:0];
+        var resource = [[[change objectForKey:CPKeyValueChangeNewKey] resources] objectAtIndex:0]; // FIXME: should not be hardcoded
         [self setEditingResource:resource];
     }
     else if (keyPath === @"editingBundle.resources")
     {
-        var resource = [[[object editingBundle] resources] objectAtIndex:0];
+        var resource = [[[object editingBundle] resources] objectAtIndex:0]; // FIXME: should not be hardcoded
         [self setEditingResource:resource];
     }
 }

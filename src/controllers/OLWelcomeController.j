@@ -1,6 +1,5 @@
 @import <Foundation/CPObject.j>
 @import "../views/OLWelcomeView.j"
-@import "../views/OLResourceBundleView.j"
 @import "../views/OLUploadingView.j"
 @import "../views/OLUploadedView.j"
 @import "OLResourceBundleController.j"
@@ -42,24 +41,10 @@
         
 		[welcomeWindowContentView addSubview:_welcomeView];
 		
-        // [[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
+        [[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
 	}
 	
 	return self;
-}
-
-- (void)transitionToResourceView:(id)sender
-{
-    [[CPApplication sharedApplication] stopModal];
-    [_welcomeWindow orderOut:self];
-    
-	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
-	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
-	
-    // if ([_delegate respondsToSelector:_finishedReadingResourceBundle])
-    // {
-    //     [_delegate finishedReadingResourceBundle:self];
-    // }
 }
 
 - (void)transitionToResourceList:(id)sender
@@ -92,8 +77,6 @@
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
-	console.log(response);
-	
 	var jsonResponse = eval('(' + response + ')');
 	
 	var language = [OLLanguage english];
@@ -114,7 +97,7 @@
 
 	var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
 
-	[_bundle addResource:resource];
+    [_bundle insertObject:resource inResourcesAtIndex:0];
 	
 	[_uploadingView removeFromSuperview];
 	
@@ -122,7 +105,7 @@
 	[_uploadedView setCenter:CPPointMake([_contentView center].x, 55)];
 	
 	[_contentView addSubview:_uploadedView];
-	
+
 	[_bundle save];
 }
 

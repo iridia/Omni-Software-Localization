@@ -42,7 +42,7 @@
 		[self addSubview:_currentView];
 		
 		[localizeButton setTarget:controller];
-		[localizeButton setAction:@selector(transitionToResourceView:)];
+		[localizeButton setAction:@selector(transitionToResourceList:)];
 	}
 	
 	return self;

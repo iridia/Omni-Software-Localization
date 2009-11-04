@@ -1,6 +1,5 @@
 @import <AppKit/CPCollectionView.j>
 
-@import "OLResourceBundleView.j"
 @import "OLResourcesView.j"
 @import "../models/OLApplication.j"
 
@@ -19,7 +18,6 @@
 	
 	if (self)
 	{
-		
 		//This is how it was for CPCollectionView, being changed for CPOutlineView.
 		var applicationListView = [[CPCollectionViewItem alloc] init];
 		[applicationListView setView:[[ApplicationListView alloc] initWithFrame:CGRectMakeZero()]];
