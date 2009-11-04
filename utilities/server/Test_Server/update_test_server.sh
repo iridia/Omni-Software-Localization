@@ -41,6 +41,7 @@ SCRIPT_PROMPT="`basename $0`>>"
 
 echo $SCRIPT_PROMPT Updating git repository in $GIT_REPO...
 cd $GIT_REPO
+$GIT_EXEC checkout .
 $GIT_EXEC pull
 cd $STARTING_DIR
 echo
