@@ -4,6 +4,7 @@
 @implementation OLActiveRecord : CPObject
 {
 	CPString _recordID @accessors(property=recordID);
+	CPString _revision @accessors(property=revision);
 	
 	CPURLConnection _saveConnection;
 	CPURLConnection _createConnection;
@@ -45,6 +46,7 @@
     if (self)
     {
         _recordID = nil;
+        _revision = nil;
         _delegate = nil;
     }
     
@@ -65,6 +67,7 @@
 	var archivedData = [CPData dataWithString:archivedString];
 	var rootObject = [CPKeyedUnarchiver unarchiveObjectWithData:archivedData];
 	
+	[rootObject setRevision:response._rev];
 	[rootObject setRecordID:response._id];
 	
 	return rootObject;
@@ -82,7 +85,8 @@
 		[urlRequest setHTTPMethod:"POST"];
 		
         var archivedData = [[CPKeyedArchiver archivedDataWithRootObject:self] string];
-    	[urlRequest setHTTPBody:archivedData];
+        var jsonedData = JSON.stringify({"_rev": _revision, "archive":archivedData});
+    	[urlRequest setHTTPBody:jsonedData];
 	
     	_saveConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
     }    
