@@ -21,8 +21,10 @@
 
 STARTING_DIR=$PWD
 
-GIT_REPO="/Library/WebServer/Omni-Software-Localization"
 GIT_EXEC="/usr/local/git/bin/git"
+GIT_REPO="/Library/WebServer/Omni-Software-Localization"
+GIT_INFO="$GIT_REPO/.git"
+GIT_TEMP="/tmp/.git"
 
 SCRIPTS_DIR="$GIT_REPO/utilities/server"
 MY_DIR="$SCRIPTS_DIR/Test_Server"
@@ -37,12 +39,21 @@ TWEETOSL_TEXT="Updated `hostname` to latest git repo"
 
 SCRIPT_PROMPT="`basename $0`>>"
 
+
 # Perform script duties
 
-echo $SCRIPT_PROMPT Updating git repository in $GIT_REPO...
+echo $SCRIPT_PROMPT Updating git repository in $GIT_REPO.
 cd $GIT_REPO
+
+echo $SCRIPT_PROMPT Discarding local changes...
+mv $GIT_INFO $GIT_TEMP
+rm -rf *
+mv $GIT_TEMP $GIT_INFO
 $GIT_EXEC checkout .
+
+echo $SCRIPT_PROMPT Pulling latest repo...
 $GIT_EXEC pull
+
 cd $STARTING_DIR
 echo
 
