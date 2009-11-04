@@ -5,11 +5,13 @@
 ## Functionality:
 ## This script updates the git repository in the WebServer
 ## directory on the Test Server.
-## It also creates log files and tweets from @projectosl.
+## It creates log files and can tweet from @projectosl.
 ##
 ## Inputs:
-## This script accepts the password for @projectosl as the first parameter
-## but will prompt for the password if it is not passed as a parameter.
+## Optional - if you want to tweet, pass "tweet" as the first parameter.
+## Optional - if tweet was given as first parameter, you pay pass the
+## password for @projectosl as the second parameter. If not provided,
+## the script will prompt for the password.
 ## 
 ## Environment:
 ## This script was designed specifically to be run on the Test Server
@@ -17,7 +19,9 @@
 ## development environment.
 
 
+#
 # Set up variables
+#
 
 STARTING_DIR=$PWD
 
@@ -38,47 +42,55 @@ TWEETOSL_EXEC="$SCRIPTS_DIR/tweet_from_projectosl.sh"
 TWEETOSL_TEXT="Updated `hostname` to latest git repo"
 
 SCRIPT_PROMPT="`basename $0`>>"
+PROMPT="echo $SCRIPT_PROMPT"
 
 
+#
 # Perform script duties
+#
 
-echo $SCRIPT_PROMPT Updating git repository in $GIT_REPO.
+$PROMPT Updating git repository in $GIT_REPO.
 cd $GIT_REPO
 
-echo $SCRIPT_PROMPT Discarding local changes...
+$PROMPT Discarding local changes...
 mv $GIT_INFO $GIT_TEMP
 rm -rf *
 mv $GIT_TEMP $GIT_INFO
 $GIT_EXEC checkout .
 
-echo $SCRIPT_PROMPT Pulling latest repo...
+$PROMPT Pulling latest repo...
 $GIT_EXEC pull
 
 cd $STARTING_DIR
 echo
 
 
-echo $SCRIPT_PROMPT Tweeting...
-if [ $1 ]
+if [[ "$1" == "tweet" ]]
 then
-	TWEETOSL_PW="$1"
+	$PROMPT Tweeting...
+	if [ $2 ]
+	then
+		TWEETOSL_PW="$2"
+	else
+		echo -n $SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER:
+		STTY_ORIG=`stty -g` 	# Saves current stty settings for later restoration
+		stty -echo 		# Hides characters for password entry
+		read -e TWEETOSL_PW 	# Reads the input
+		stty $STTY_ORIG 	# Restores original stty settings
+	fi
+	$TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT"
 else
-	echo -n $SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER:
-	STTY_ORIG=`stty -g` 	# Saves current stty settings for later restoration
-	stty -echo 		# Hides characters for password entry
-	read -e TWEETOSL_PW 	# Reads the input
-	stty $STTY_ORIG 	# Restores original stty settings
+	$PROMPT Not tweeting.
 fi
-$TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT"
 echo
 
 
 echo `date` >> $LOG_FILE
-echo $SCRIPT_PROMPT The date has been logged in $LOG_FILE.
+$PROMPT The date has been logged in $LOG_FILE.
 echo
 
 
-echo $SCRIPT_PROMPT Script complete.
+$PROMPT Script complete.
 
 
 exit 0
