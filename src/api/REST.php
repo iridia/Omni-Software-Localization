@@ -2,14 +2,14 @@
 
 require_once "CouchDB.php";
 
-$urlPrefix = "/~hammerdr/osl/src/api/"; // should be /api/ in 
+$urlPrefix = "/~chandler/osl/src/api/"; // should be /api/ in 
 $couchDbBaseURL = "http://localhost:5984/";
 
 $url = $_SERVER['REQUEST_URI'];
 $req_method = $_SERVER['REQUEST_METHOD'];
 $getArgs = $_GET;
 $postArgs = $_POST;
-parse_str(file_get_contents('php://input'), $putArgs);
+$putArgs = file_get_contents('php://input');
 parse_str(file_get_contents('php://input'), $deleteArgs);
 
 $apiCall = str_replace($urlPrefix, "", $url);
@@ -17,6 +17,14 @@ $exploded = explode("/",$apiCall);
 $dbName = $exploded[0];
 $call = str_replace($dbName."/", "", $apiCall);
 $db = new CouchDB($dbName);
+
+/* DEBUG
+echo $dbName;
+echo "<br />";
+echo $apiCall;
+echo "<br />";
+echo $call;
+*/
 
 if($req_method == "GET")
 {
@@ -50,8 +58,8 @@ else if($req_method == "POST")
 else if($req_method == "PUT")
 {
 	try
-	{		
-		$response = $db->send($call, "PUT", $putArgs);
+	{	
+		$response = $db->send("", "POST", $putArgs);
 		
 		echo $response->getBody();		
 	}

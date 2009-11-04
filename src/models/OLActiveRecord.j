@@ -84,12 +84,14 @@
 	[urlRequest setHTTPMethod:"PUT"];
 
     var archivedData = [[CPKeyedArchiver archivedDataWithRootObject:self] string];
-    [urlRequest setHTTPBody:archivedData];
+    var jsonedData = JSON.stringify({"archive":archivedData});
+    [urlRequest setHTTPBody:jsonedData];
 	
 	if ([_delegate respondsToSelector:@selector(willCreateRecord:)])
 	{
 	    [_delegate willCreateRecord:self];
 	}
+	
 	_createConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
 }
 
