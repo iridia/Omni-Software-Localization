@@ -7,7 +7,12 @@
 {
 	OLLanguage _language @accessors(property=language, readonly);
 	OLResourceBundle _baseBundle @accessors(property=baseBundle);
-	CPArray _resources @accessors(property=resources, readonly);
+	CPArray _resources @accessors(property=resources);
+}
+
+- (id)init
+{
+    return [self initWithResources:[CPArray array] language:nil];
 }
 
 - (id)initWithLanguage:(OLLanguage)aLanguage
@@ -25,9 +30,18 @@
 	return self;
 }
 
-- (void)addResource:(OLResource)aResource
+@end
+
+@implementation OLResourceBundle (KVC)
+
+- (void)insertObject:(OLResource)resource inResourcesAtIndex:(CPInteger)index
 {
-	[_resources addObject:aResource];
+    [_resources insertObject:resource atIndex:index];
+}
+
+- (void)replaceObjectInResourcesAtIndex:(CPInteger)index withObject:(OLResource)resource
+{
+    [_resources replaceObjectAtIndex:index withObject:resource];
 }
 
 @end

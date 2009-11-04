@@ -1,6 +1,8 @@
 @import <AppKit/CPView.j>
 //@import <Foundation/CPObject.j>
 
+// FIXME: THIS IS ACTUALLY A BUNDLES VIEW
+
 var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 @implementation OLResourcesView : CPView
@@ -51,14 +53,15 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 {
 	var index = [[sender selectedRowIndexes] firstIndex];
 	
-	[_delegate doubleClickedResource:[_resources objectAtIndex:index]];
+	[_delegate didSelectBundleAtIndex:index];
 }
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    if (keyPath === @"resources")
+    console.log(_cmd, keyPath);
+    if (keyPath === @"bundles")
     {
-        _resources = [object resources];
+        _resources = [object bundles];
         [_resourceTableView reloadData];
     }
 }

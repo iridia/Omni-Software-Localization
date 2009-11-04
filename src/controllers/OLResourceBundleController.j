@@ -8,19 +8,39 @@
 @implementation OLResourceBundleController : CPObject
 {
 	id _delegate @accessors(property=delegate);
-	OLResourceBundle _bundle @accessors(property=bundle); //, readonly);
-	CPArray _resources @accessors(property=resources);
+	CPArray _bundles @accessors(property=bundles);
+	CPInteger _editingBundle @accessors(property=editingBundle);
+}
+
+- (id)init
+{
+    self = [super init];
+    
+    if (self)
+    {
+        _bundles = nil;
+        _delegate = nil;
+        _editingBundle = nil;
+    }
+    
+    return self;
 }
 
 - (void)loadBundles
 {
-	[self setResources:[OLResourceBundle list]];
+	[self setBundles:[OLResourceBundle list]];
 }
 
-- (void)doubleClickedResource:(OLResource)aResource
+- (void)didSelectBundleAtIndex:(CPInteger)selectedIndex
 {
-	[_delegate switchToBundleView:self];
-	[self setBundle:aResource];//[[OLResourceBundle alloc] initWithResources:new Array(aResource) language:[OLLanguage english]]];
+	[_delegate editBundle:self];
+    [self setEditingBundle:[_bundles objectAtIndex:selectedIndex]];
+}
+
+- (void)didEditResourceForEditingBundle:(OLResource)editedResource
+{
+    [_editingBundle replaceObjectInResourcesAtIndex:0 withObject:editedResource];
+    [_editingBundle save];
 }
 
 @end

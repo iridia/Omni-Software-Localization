@@ -42,7 +42,7 @@
         
 		[welcomeWindowContentView addSubview:_welcomeView];
 		
-        [[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
+        // [[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
 	}
 	
 	return self;
@@ -56,10 +56,10 @@
 	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
 	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
-	if ([_delegate respondsToSelector:_finishedReadingResourceBundle])
-	{
-	    [_delegate finishedReadingResourceBundle:self];
-	}
+    // if ([_delegate respondsToSelector:_finishedReadingResourceBundle])
+    // {
+    //     [_delegate finishedReadingResourceBundle:self];
+    // }
 }
 
 - (void)showUploading
