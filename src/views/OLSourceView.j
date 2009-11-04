@@ -1,6 +1,7 @@
 @import <AppKit/CPCollectionView.j>
 
 @import "OLResourceBundleView.j"
+@import "OLResourcesView.j"
 @import "../models/OLApplication.j"
 
 
@@ -9,7 +10,6 @@
 	OLResourceBundleView detailView @accessors;
 	CPCollectionView applicationsView;
 	OLApplication _currentApplication @accessors(property=currentApplication);
-	
 }
 
 - (id)initWithFrame:(CGRect)rect
@@ -18,7 +18,9 @@
 	
 	if (self)
 	{
-		var applicationListView = [[CPCollectionView alloc] init];
+		
+		//This is how it was for CPCollectionView, being changed for CPOutlineView.
+		var applicationListView = [[CPCollectionViewItem alloc] init];
 		[applicationListView setView:[[ApplicationListView alloc] initWithFrame:CGRectMakeZero()]];
 		
 		applicationsView = [[CPCollectionView alloc] initWithFrame:rect];
@@ -26,37 +28,67 @@
 		[applicationsView setMaxNumberOfColumns:1];
 		[applicationsView setVerticalMargin:0.0];
 		[applicationsView setMinItemSize:CGSizeMake(100.0, 40.0)];
-		[applicationsView setMaxItemSize:CGSizeMake(1000000.0, 40.0)];
+		[applicationsView setMaxItemSize:CGSizeMake(1000000.0, 40.0)];		
 		[applicationsView setDelegate:self];
 		[applicationsView setAutoresizingMask:CPViewWidthSizable];
+		[applicationsView setContent:new Array("Resources","Resource Bundles","Others")];
+		[applicationsView reloadContent];
 		
-		[self addSubview:applicationsView];
-		[self setBackgroundColor:[CPColor colorWithCalibratedRed:0.840 green:0.868 blue:0.899 alpha:1.000]];
+		[self addSubview:applicationsView];		
 	}
 	
 	return self;
 }
-
-- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
+/*
+// These are the required DataSource methods
+-(void)outlineView:(CPOutlineView)anOutlineView child:(CPNumber)aChild ofItem:(id)anItem
 {
-	if (keyPath === @"applications") {
-		[applicationsView setContent:[object users]];
-		[applicationsView reloadContent];
-	}
+	console.log("child of item");
+	return @"aString";
+	//return [[CPView alloc] initWithFrame:CGRectMake(0,0,100,100)];
 }
 
+-(void)outlineView:(CPOutlineView)anOutlineView isItemExpandable:(BOOL)flag
+{
+	console.log("isItemExpandable");
+	return YES;
+}
+
+-(void)outlineView:(CPOutlineView)anOutlineView numberOfChildrenOfItem:(CPNumber)aNumber
+{
+	console.log("number of children of item");
+	return 4;
+}
+-(void)outlineView:(CPOutlineView)anOutlineView objectValueForTableColumn:(id)aTableColumn byItem:(id)anItem
+{
+	console.log("object value for table column");
+	return @"aString";
+}
+//End required methods.
+*/
 - (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
 {
 	var listIndex = [[aCollectionView selectionIndexes] firstIndex];
-	
-	var applications = [applicationsView content];
-	
-	var application = [applications objectAtIndex:listIndex];
-	
-	if (application !== _currentApplication)
-	{
-		[self setCurrentApplication:application];
-	}
+	    
+    var apps = [applicationsView content];
+    
+    var app = [apps objectAtIndex:listIndex];
+    
+    if (app !== _currentApplication)
+    {
+        [self setCurrentApplication:app];
+		if (app == "Resources")
+		{
+			var resourceView = [[OLResourcesView alloc] initWithFrame:[[self superview] currentViewFrame]];
+			[resourceView setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
+			
+			//TODO:  get the file names and display in the view.
+			//[resourceView setContents:[OLResourceBundleController getAllResources]];
+			[[self superview] setCurrentView:resourceView];
+			console.log("Made it.");
+			
+		}
+    }
 }
 
 @end
@@ -80,7 +112,7 @@
 		[self addSubview:label];
 	}
 
-	[label setStringValue:[anObject displayName]];
+	[label setStringValue:anObject];
 	[label sizeToFit];
  
 	[label setFrameOrigin:CGPointMake(10,CGRectGetHeight([label bounds]) / 2.0)];

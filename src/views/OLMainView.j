@@ -1,4 +1,5 @@
 @import <AppKit/CPSplitView.j>
+@import "OLSourceView.j"
 
 @implementation OLMainView : CPSplitView
 {
@@ -15,7 +16,7 @@
         [self setVertical:YES];
         [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 
-        var sourceView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight(frame))];
+        var sourceView = [[OLSourceView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight(frame))];
         [sourceView setBackgroundColor:[CPColor sourceViewColor]];
         [sourceView setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
 
