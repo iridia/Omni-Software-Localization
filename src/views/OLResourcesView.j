@@ -1,6 +1,8 @@
 @import <AppKit/CPView.j>
 //@import <Foundation/CPObject.j>
 
+var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
+
 @implementation OLResourcesView : CPView
 {
     CPArray     _resources @accessors(property=resources);
@@ -30,7 +32,7 @@
 		[[_resourceTableView cornerView] setBackgroundColor:headerColor];
 		
 		// add the first column
-		var column = [[CPTableColumn alloc] initWithIdentifier:"Filename"];
+		var column = [[CPTableColumn alloc] initWithIdentifier:OLResourcesViewFileNameColumn];
 		[[column headerView] setStringValue:"Filename"];
 		[[column headerView] setBackgroundColor:headerColor];
 		[column setWidth:CGRectGetWidth(aFrame)];
@@ -56,7 +58,6 @@
 // CPTableView datasource methods
 - (int)numberOfRowsInTableView:(CPTableView)resourceTableView
 {
-	console.log([_resources count]);
     return [_resources count];
 }
 
@@ -67,9 +68,15 @@
 
 - (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
-    if ([tableColumn identifier]==="Filename")
-        return [_resources[row] RecordID];
+    if ([tableColumn identifier] === OLResourcesViewFileNameColumn)
+    {
+        var resourceBundle = [_resources objectAtIndex:row];
+        var resource = [[resourceBundle resources] objectAtIndex:0]; // FIXME
+        return [resource fileName];
+    }
     else
+    {
     	return [_resources[row] description];
+	}
 }
 @end

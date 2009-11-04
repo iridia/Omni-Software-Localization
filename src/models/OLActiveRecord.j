@@ -3,7 +3,7 @@
 
 @implementation OLActiveRecord : CPObject
 {
-	CPString _recordID @accessors(property=RecordID);
+	CPString _recordID @accessors(property=recordID);
 	
 	CPURLConnection _saveConnection;
 	CPURLConnection _createConnection;
@@ -26,7 +26,7 @@
 	{
 		[records addObject:[self findByRecordID:data.rows[i].id]];
 	}
-	
+
 	return records;
 }
 
@@ -34,24 +34,8 @@
 {
 	var record = [[self alloc] init];
 	[record setRecordID:aRecordID];
-	[record get];
-	return record;
-}
-
-+ (CPArray)find
-{
-	var records = [CPArray array];
-
-	var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:NO]];
-	[urlRequest setHTTPMethod:"GET"];
-	
-	var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
-	
-	var response = eval('(' + JSONresponse + ')');
-	
-	// some unarchiving stuff
-	
-	return records;
+	var newRecord = [record get];
+	return newRecord;
 }
 
 - (id)init
@@ -76,9 +60,14 @@
 	
 	var response = eval('(' + JSONresponse.string + ')');
 	
-	_recordID = response._id;
+	// Unarchive the data
+	var archivedString = response.archive;
+	var archivedData = [CPData dataWithString:archivedString];
+	var rootObject = [CPKeyedUnarchiver unarchiveObjectWithData:archivedData];
 	
-	// some unarchiving stuff, this depends on how couch sends it back, this is unknown
+	[rootObject setRecordID:response._id];
+	
+	return rootObject;
 }
 
 - (void)save
