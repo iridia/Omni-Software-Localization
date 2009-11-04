@@ -85,6 +85,12 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	
 	[_resourceBundleController loadBundles];
 	[_mainView setCurrentView:resourceView];
+	[_welcomeController poof];
+}
+
+- (void)selectResourcesList:(id)sender
+{
+	[[[_mainView sourceView] applicationsView] setSelectionIndexes:[[CPIndexSet alloc] initWithIndex:0]];
 }
 
 @end

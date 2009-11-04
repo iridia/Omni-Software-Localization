@@ -8,7 +8,7 @@
 @implementation OLSourceView : CPView
 {
 	OLResourceBundleView detailView @accessors;
-	CPCollectionView applicationsView;
+	CPCollectionView applicationsView @accessors;
 	OLApplication _currentApplication @accessors(property=currentApplication);
 	id _delegate @accessors(property=delegate);
 }
@@ -35,7 +35,7 @@
 		[applicationsView setContent:new Array("Resources","Resource Bundles","Others")];
 		[applicationsView reloadContent];
 		
-		[self addSubview:applicationsView];		
+		[self addSubview:applicationsView];
 	}
 	
 	return self;

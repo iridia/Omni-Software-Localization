@@ -48,8 +48,7 @@
 		[importButton setTarget:self];
 		
 		[localizeButton setTarget:controller];
-		[localizeButton setAction:@selector(transitionToResourceView:)];
-        [localizeButton setEnabled:NO];     
+		[localizeButton setAction:@selector(transitionToResourceList:)];    
 	}
 	return self;
 }
