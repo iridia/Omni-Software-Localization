@@ -33,7 +33,7 @@ LOG_FILE="$LOGS_DIR/klondike_github_updates.log"
 
 TWEETOSL_USER="projectosl"
 TWEETOSL_EXEC="$SCRIPTS_DIR/tweet_from_projectosl.sh"
-TWEETOSL_TEXT="updated $HOSTNAME to latest git repo"
+TWEETOSL_TEXT="Updated `hostname` to latest git repo"
 
 SCRIPT_PROMPT="`basename $0`>>"
 
@@ -52,8 +52,11 @@ if [ $1 ]
 then
 	TWEETOSL_PW="$1"
 else
-	echo -n $SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER: 
-	read -e TWEETOSL_PW
+	echo -n $SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER:
+	STTY_ORIG=`stty -g` 	# Saves current stty settings for later restoration
+	stty -echo 		# Hides characters for password entry
+	read -e TWEETOSL_PW 	# Reads the input
+	stty $STTY_ORIG 	# Restores original stty settings
 fi
 $TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT"
 echo
