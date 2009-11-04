@@ -46,6 +46,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	
     _mainView = [[OLMainView alloc] initWithFrame:[contentView bounds]];
     [_mainView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+	[_mainView setDelegate:self];
 	
 	[contentView addSubview:_mainView];
 	
@@ -61,6 +62,18 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     
     [_resourceBundleController setBundle:[sender bundle]];
     [_mainView setCurrentView:resourceBundleView];
+}
+
+- (void)selectedResourcesList:(id)sender
+{
+	var resourceView = [[OLResourcesView alloc] initWithFrame:[_mainView currentViewFrame]];
+	[resourceView setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
+	
+	[_resourceBundleController addObserver:resourceView forKeyPath:@"resources" options:CPKeyValueObservingOptionNew context:nil];
+	
+	[resourceView setResources:[_resourceBundleController loadBundles]];
+	[resourceView reload];
+	[_mainView setCurrentView:resourceView];
 }
 
 @end

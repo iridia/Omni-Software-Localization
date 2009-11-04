@@ -2,7 +2,7 @@
 
 require_once "CouchDB.php";
 
-$urlPrefix = "/~chandler/osl/src/api/"; // should be /api/ in 
+$urlPrefix = "/~hammerdr/osl/src/api/"; // should be /api/ in 
 $couchDbBaseURL = "http://localhost:5984/";
 
 $url = $_SERVER['REQUEST_URI'];
@@ -25,6 +25,8 @@ echo $apiCall;
 echo "<br />";
 echo $call;
 */
+
+header("Content-Type: application/json" );
 
 if($req_method == "GET")
 {
@@ -85,6 +87,6 @@ else
 {
 	header("Status: 401");
 	header("Content-Type: text/plain" );
-}
+}	
 
 ?>

@@ -11,9 +11,28 @@
 	id _delegate @accessors(property=delegate);
 }
 
++ (CPArray)list
+{
+	var records = [CPArray array];
+	
+	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
+    var url = @"api/" + modifiedClassName + "/_all_docs";
+	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
+	var JSONresponse = [[CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil]];
+	
+	var data = eval('(' + JSONresponse[0].string + ')');
+	
+	for(var i = 0; i < [data.rows count]; i++)
+	{
+		[records addObject:[self findByRecordID:data.rows[i].id]];
+	}
+	
+	return records;
+}
+
 + (OLActiveRecord)findByRecordID:(CPString)aRecordID
 {
-	var record = [self init];
+	var record = [[self alloc] init];
 	[record setRecordID:aRecordID];
 	[record get];
 	return record;
@@ -55,7 +74,9 @@
 	
 	var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
 	
-	var response = eval('(' + JSONresponse + ')');
+	var response = eval('(' + JSONresponse.string + ')');
+	
+	_recordID = response._id;
 	
 	// some unarchiving stuff, this depends on how couch sends it back, this is unknown
 }

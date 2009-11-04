@@ -12,7 +12,7 @@
 
 - (id)initWithLanguage:(OLLanguage)aLanguage
 {
-	[self initWithResources:[CPArray array] language:aLanguage];
+	return [self initWithResources:[CPArray array] language:aLanguage];
 }
 
 - (id)initWithResources:(CPArray)someResources language:(OLLanguage)aLanguage
