@@ -42,7 +42,7 @@
         
 		[welcomeWindowContentView addSubview:_welcomeView];
 		
-        // [[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
+        [[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
 	}
 	
 	return self;
