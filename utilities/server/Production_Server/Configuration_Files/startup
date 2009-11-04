@@ -2,7 +2,7 @@
 
 # move REST files to correct location
 sudo mv .htaccess /Library/WebServer/Documents/api/
-sudo mv REST.php /Library/WebServer/Documents/api/
+sudo mv REST-config.php /Library/WebServer/Documents/api/
 
 # install apache setup files
 sudo mv /private/etc/apache2/httpd.conf /private/etc/apache2/httpd.conf.oslbackup

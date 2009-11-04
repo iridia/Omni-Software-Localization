@@ -1,9 +1,7 @@
 <?php
 
 require_once "CouchDB.php";
-
-$urlPrefix = "/~chandler/osl/src/api/"; // should be /api/ in 
-$couchDbBaseURL = "http://localhost:5984/";
+require_once "REST-config.php";
 
 $url = $_SERVER['REQUEST_URI'];
 $req_method = $_SERVER['REQUEST_METHOD'];
