@@ -10,6 +10,7 @@
 	OLResourceBundleView detailView @accessors;
 	CPCollectionView applicationsView;
 	OLApplication _currentApplication @accessors(property=currentApplication);
+	id _delegate @accessors(property=delegate);
 }
 
 - (id)initWithFrame:(CGRect)rect
@@ -79,14 +80,10 @@
         [self setCurrentApplication:app];
 		if (app == "Resources")
 		{
-			var resourceView = [[OLResourcesView alloc] initWithFrame:[[self superview] currentViewFrame]];
-			[resourceView setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
-			
-			//TODO:  get the file names and display in the view.
-			//[resourceView setContents:[OLResourceBundleController getAllResources]];
-			[[self superview] setCurrentView:resourceView];
-			console.log("Made it.");
-			
+			if([_delegate respondsToSelector:@selector(selectedResourcesList:)])
+			{
+				[_delegate selectedResourcesList:self];
+			}
 		}
     }
 }

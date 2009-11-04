@@ -3,7 +3,7 @@
 
 @implementation OLResourcesView : CPView
 {
-    CPArray     _files @accessors(property=files);
+    CPArray     _resources @accessors(property=resources);
     CPTableView _resourceTableView @accessors(property=resourceTableView);
 }
 
@@ -42,18 +42,34 @@
 	return self;
 }
 
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
+{
+	console.log("Observed!");
+    if (keyPath === @"resources")
+    {
+        _resources = [object resources];
+        [_resourceTableView reloadData];
+    }
+}
+
 // ---
 // CPTableView datasource methods
 - (int)numberOfRowsInTableView:(CPTableView)resourceTableView
 {
-    return 75;//[_files count];
+	console.log([_resources count]);
+    return [_resources count];
+}
+
+- (void)reload
+{
+	[_resourceTableView reloadData];
 }
 
 - (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
     if ([tableColumn identifier]==="Filename")
-        return @"Tom";//@"@"+[_files[row] fromUser];
+        return [_resources[row] RecordID];
     else
-    	return [_files[row] text];
+    	return [_resources[row] description];
 }
 @end

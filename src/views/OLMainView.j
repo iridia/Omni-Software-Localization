@@ -4,6 +4,7 @@
 @implementation OLMainView : CPSplitView
 {
     CPView _currentView;
+	id _delegate @accessors(property=delegate);
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -21,6 +22,7 @@
         [sourceView setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
 
         [self addSubview:sourceView];
+		[sourceView setDelegate:self];
 
         _currentView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame) - 200, CGRectGetHeight(frame))];
         [_currentView setBackgroundColor:[CPColor lightGrayColor]];
@@ -30,6 +32,14 @@
     }
     
     return self;
+}	
+
+- (void)selectedResourcesList:(id)sender
+{
+	if([_delegate respondsToSelector:@selector(selectedResourcesList:)])
+	{
+		[_delegate selectedResourcesList:sender];
+	}
 }
 
 - (void)setCurrentView:(CPView)newView

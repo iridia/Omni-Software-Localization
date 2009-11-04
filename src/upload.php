@@ -11,11 +11,11 @@ $db = new CouchDB('test');
 
 if(isPlist($_FILES['file']['name']))
 {
-	$postArgs = xml2json::transformXmlStringToJson($file);
+	$postArgs = addFilenameAndType(xml2json::transformXmlStringToJson($file), $_FILES['file']['name'], "plist");
 }
 else if(isStrings($_FILES['file']['name']))
 {
-	$postArgs = transformStringsToJson($file);
+	$postArgs = transformStringsToJson($file, $_FILES['file']['name']);
 }
 
 // temporary fix
@@ -35,6 +35,15 @@ echo $postArgs;
 
 // Functions. Are called from above.
 
+function addFilenameAndType($original, $fileName, $fileType)
+{
+	$search = "{\"plist\":{\"@attributes\":{\"version\":\"1.0\"},";
+	$replacement = "{\"fileName\":\"" . $fileName . "\", \"fileType\":\"" . $fileType . "\",";
+	$modified = str_replace($search, $replacement, $original); 
+	
+	return substr($modified, 0, strlen($modified)-1);
+}
+
 function isPlist($name)
 {
 	return preg_match("/.plist/", $name);
@@ -45,25 +54,46 @@ function isStrings($name)
 	return preg_match("/.strings/", $name);
 }
 
-function transformStringsToJson($data)
+function transformStringsToJson($data, $fileName)
 {
-	$json = "{";
-	$lines = split("\n", $data);
-	$last_item = end($lines);	
+	$json = "({fileName: \"" . $fileName . "\", fileType: \"strings\", dict: {";
+	$lines = split("\n", $data);	
+	$keys = array();
+	$values = array();	
 	
 	foreach($lines as $line)
 	{		
 		preg_match("/\"(.*)\"\s*=\s*\"(.*)\";/", $line, $regs);
 				
-		$json .= "\"" . $regs[1] . "\":\"" . $regs[2] . "\"";
-		
-		if($line != $last_item)
+		$keys[] = $regs[1];
+		$values[] = $regs[2];
+	}
+	
+	$json .= "key:[";
+	$last_item = end($keys);
+	for($i = 0; $i < count($keys); $i++)
+	{		
+		$json .= "\"" . $keys[$i] . "\"";
+
+		if($keys[$i] != $last_item)
 		{
 			$json .= ",";
 		}
 	}
 	
-	$json .= "}";
+	$json .= "], string:[";
+	$last_item = end($values);
+	for($i = 0; $i < count($values); $i++)
+	{		
+		$json .= "\"" . $values[$i] . "\"";
+
+		if($values[$i] != $last_item)
+		{
+			$json .= ",";
+		}
+	}
+	
+	$json .= "]}})";
 	
 	return $json;
 }

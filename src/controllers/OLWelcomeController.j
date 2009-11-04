@@ -75,19 +75,38 @@
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
+	console.log(response);
+	
 	var jsonResponse = eval('(' + response + ')');
 	
-	_bundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];	
+	var language = [OLLanguage english];
+	
+	_bundle = [[OLResourceBundle alloc] initWithLanguage:language];
+	
 	var resourceLineItems = [[CPArray alloc] init];
+	
+	var fileName = jsonResponse.fileName;
+	var fileType = jsonResponse.fileType;
+	var lineItemKeys = jsonResponse.dict.key;
+	var lineItemStrings = jsonResponse.dict.string;	
+	
+	for(var i = 0; i < [lineItemKeys count]; i++)
+	{
+		[resourceLineItems addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
+	}
 
-	[_bundle addResource:[[OLResource alloc] initWithFilename:@"Your File" withFileType:@"plist" withLineItems:resourceLineItems]];	
-		
+	var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
+
+	[_bundle addResource:resource];
+	
 	[_uploadingView removeFromSuperview];
 	
-	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,160) withController:self withFileName:@"Your File"];
+	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,160) withController:self withFileName:fileName];
 	[_uploadedView setCenter:CPPointMake([_contentView center].x, 75)];
 	
 	[_contentView addSubview:_uploadedView];
+	
+	[_bundle save];
 }
 
 - (void)downloadFile:(id)sender

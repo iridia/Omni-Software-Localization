@@ -8,10 +8,13 @@
 @implementation OLResourceBundleController : CPObject
 {
 	OLResourceBundle _bundle @accessors(property=bundle); //, readonly);
+	CPArray _resources @accessors(property=resources);
 }
 
-/*- (void) getAllResources
+- (void)loadBundles
 {
-	
-}*/
+	_resources = [OLResourceBundle list];
+	return _resources;
+}
+
 @end
