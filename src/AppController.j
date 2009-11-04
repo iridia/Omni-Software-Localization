@@ -14,6 +14,7 @@
 @import "controllers/OLFeedbackController.j"
 @import "views/OLMainView.j"
 @import "views/OLResourceBundleView.j"
+@import "views/OLResourceEditorView.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
@@ -55,23 +56,23 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[CPMenu setMenuBarVisible:YES];
 }
 
-- (void)finishedReadingResourceBundle:(id)sender
-{
-    var resourceBundleView = [[OLResourceBundleView alloc] initWithFrame:[_mainView currentViewFrame]];// withController:_resourceBundleController];
-    [_resourceBundleController addObserver:resourceBundleView forKeyPath:@"bundle" options:CPKeyValueObservingOptionNew context:nil];
-    
-	console.log([sender bundle]);
-	
-    [_resourceBundleController setBundle:[sender bundle]];
-    [_mainView setCurrentView:resourceBundleView];
-}
+// - (void)finishedReadingResourceBundle:(id)sender
+// {
+//     var resourceBundleView = [[OLResourceBundleView alloc] initWithFrame:[_mainView currentViewFrame]];// withController:_resourceBundleController];
+//     [_resourceBundleController addObserver:resourceBundleView forKeyPath:@"bundle" options:CPKeyValueObservingOptionNew context:nil];
+//  
+//     [_resourceBundleController setBundle:[sender bundle]];
+//     [_mainView setCurrentView:resourceBundleView];
+// }
 
-- (void)switchToBundleView:(id)sender
+- (void)editBundle:(id)sender
 {
-    var resourceBundleView = [[OLResourceBundleView alloc] initWithFrame:[_mainView currentViewFrame]];
-	[sender addObserver:resourceBundleView forKeyPath:@"bundle" options:CPKeyValueObservingOptionNew context:nil];
+    var resourceEditorView = [[OLResourceEditorView alloc] initWithFrame:[_mainView currentViewFrame]];
+	[_resourceBundleController addObserver:resourceEditorView forKeyPath:@"editingBundle" options:CPKeyValueObservingOptionNew context:nil];
+    [_resourceBundleController addObserver:resourceEditorView forKeyPath:@"editingBundle.resources" options:CPKeyValueObservingOptionNew context:nil];
+	[resourceEditorView setDelegate:_resourceBundleController];
 	
-	[_mainView setCurrentView:resourceBundleView];
+	[_mainView setCurrentView:resourceEditorView];
 }
 
 - (void)selectedResourcesList:(id)sender
@@ -80,7 +81,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[resourceView setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
 	[resourceView setDelegate:_resourceBundleController];
 	
-	[_resourceBundleController addObserver:resourceView forKeyPath:@"resources" options:CPKeyValueObservingOptionNew context:nil];
+	[_resourceBundleController addObserver:resourceView forKeyPath:@"bundles" options:CPKeyValueObservingOptionNew context:nil];
 	[_resourceBundleController setDelegate:self];
 	
 	[_resourceBundleController loadBundles];
