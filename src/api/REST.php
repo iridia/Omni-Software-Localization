@@ -2,7 +2,7 @@
 
 require_once "CouchDB.php";
 
-$urlPrefix = "/osl/src/api/"; // should be /api/ in 
+$urlPrefix = "/~hammerdr/osl/src/api/"; // should be /api/ in 
 $couchDbBaseURL = "http://localhost:5984/";
 
 $url = $_SERVER['REQUEST_URI'];
@@ -13,9 +13,10 @@ parse_str(file_get_contents('php://input'), $putArgs);
 parse_str(file_get_contents('php://input'), $deleteArgs);
 
 $apiCall = str_replace($urlPrefix, "", $url);
-$dbName = explode("/",$apiCall)[0];
-$call = str_replace($dbName+"/", "", $apiCall);
-$db = new CouchDB('test');
+$exploded = explode("/",$apiCall);
+$dbName = $exploded[0];
+$call = str_replace($dbName."/", "", $apiCall);
+$db = new CouchDB($dbName);
 
 if($req_method == "GET")
 {
@@ -54,7 +55,7 @@ else if($req_method == "PUT")
 		
 		echo $response->getBody();		
 	}
-	catch
+	catch(Exception $e)
 	{
 		header("Status: 404");
 		header("Content-Type: text/plain" );		
@@ -66,7 +67,7 @@ else if($req_method == "DELETE")
 	{
 		$response = $db->send($call, "DELETE");
 	}
-	catch
+	catch(Exception $e)
 	{
 		header("Status: 404");
 		header("Content-Type: text/plain" );		
@@ -77,8 +78,5 @@ else
 	header("Status: 401");
 	header("Content-Type: text/plain" );
 }
-
-
-
 
 ?>
