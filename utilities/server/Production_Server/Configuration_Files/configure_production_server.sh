@@ -16,18 +16,41 @@
 ## development environment.
 
 
+#
 # Set up variables
+#
 
 STARTING_DIR=$PWD
 
 CONFIG_FILES_DIR="/Users/projectosl/Documents/Project_OSL/Configuration_Files"
 STARTUP_SCRIPT="$CONFIG_FILES_DIR/startup"
+TEARDOWN_SCRIPT="$CONFIG_FILES_DIR/teardown"
+
+SCRIPT_PROMPT="`basename $0`>>"
+PROMPT="echo $SCRIPT_PROMPT"
 
 
+#
 # Perform script duties
+#
 
-chmod u+x $STARTUP_SCRIPT
+$PROMPT Fixing permissions on $TEARDOWN_SCRIPT...
+chmod +x $TEARDOWN_SCRIPT
+echo
+
+$PROMPT Running $TEARDOWN_SCRIPT...
+$TEARDOWN_SCRIPT
+echo
+
+$PROMPT Fixing permissions on $STARTUP_SCRIPT...
+chmod +x $STARTUP_SCRIPT
+echo
+
+$PROMPT Running $STARTUP_SCRIPT...
 $STARTUP_SCRIPT
+echo
 
+
+$PROMPT Script complete.
 
 exit 0
