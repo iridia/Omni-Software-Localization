@@ -1,15 +1,21 @@
 #!/bin/bash
 
-totalNumberOfMethods=`find ../.. -name OL*.j | xargs cat | grep '^[+|-]' | wc -l`
+totalNumberOfMethods=`find ../../src -name OL*.j | xargs cat | grep '^[+|-]' | wc -l`
 
-totalNumberOfClasses=`find ../.. -name OL*.j | xargs cat | grep '^@implementation' | wc -l`
+totalNumberOfClasses=`find ../../src -name OL*.j | xargs cat | grep '^@implementation' | wc -l`
 
-numberOfTests=`find ../.. -name OL*Test.j | xargs cat | grep '^[+|-]' | wc -l`
+numberOfTests=`find ../../src -name OL*Test.j | xargs cat | grep '^[+|-]' | wc -l`
 
 numberOfTestClasses=`find ../.. -name OL*Test.j | xargs cat | grep '^@implementation' | wc -l`
 
-numberOfMethods=$[$totalNumberOfMethods-$numberOfTests]
-numberOfClasses=$[$totalNumberOfClasses-$numberOfTestClasses]
+numberOfFoundationMethods=`find ../../src/Frameworks/Foundation -name OL*.j | xargs cat | grep '^[+|-]' | wc -l`
+numberOfAppKitMethods=`find ../../src/Frameworks/AppKit -name OL*.j | xargs cat | grep '^[+|-]' | wc -l`
+
+numberOfFoundationClasses=`find ../../src/Frameworks/Foundation -name OL*.j | xargs cat | grep '^@implementation' | wc -l`
+numberOfAppKitClasses=`find ../../src/Frameworks/AppKit -name OL*.j | xargs cat | grep '^@implementation' | wc -l`
+
+numberOfMethods=$[$totalNumberOfMethods-$numberOfTests-$numberOfFoundationMethods-$numberOfAppKitMethods]
+numberOfClasses=$[$totalNumberOfClasses-$numberOfTestClasses-$numberOfFoundationClasses-$numberOfAppKitClasses]
 
 echo "Number of Methods: $numberOfMethods"
 echo "Number of Tests  : $numberOfTests"
