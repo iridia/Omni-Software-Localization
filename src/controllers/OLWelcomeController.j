@@ -77,7 +77,11 @@
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
+	console.log(response);
+	
 	var jsonResponse = eval('(' + response + ')');
+	
+	console.log(jsonResponse);
 	
 	var language = [OLLanguage english];
 	

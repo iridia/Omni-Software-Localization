@@ -20,20 +20,6 @@ else if(isStrings($_FILES['file']['name']))
 
 // temporary fix
 echo $postArgs;
-// 
-// try
-// {
-// 	$response = $db->send($apiCall, "POST", $postArgs);
-// 	
-// 	echo $response->getBody();
-// }
-// catch(Exception $e)
-// {
-// 	header("Status: 404");
-// 	header("Content-Type: text/plain" );
-// }
-
-// Functions. Are called from above.
 
 function addFilenameAndType($original, $fileName, $fileType)
 {
@@ -61,12 +47,20 @@ function transformStringsToJson($data, $fileName)
 	$keys = array();
 	$values = array();	
 	
+	$i = 0;
 	foreach($lines as $line)
-	{		
-		preg_match("/\"(.*)\"\s*=\s*\"(.*)\";/", $line, $regs);
+	{
+		$i = $i + 1;
+		
+		if(preg_match("/^\s*$/", $line) || preg_match("/^\/*(.*)*\//", $line))
+		{
+			continue;
+		}
+		
+		preg_match("/\"(.+)\"\s*=\s*\"(.+)\";/", $line, $regs);
 				
-		$keys[] = $regs[1];
-		$values[] = $regs[2];
+		$keys[] = str_replace("<", "&lt;", $regs[1]);
+		$values[] = str_replace("<", "&lt;", $regs[2]);
 	}
 	
 	$json .= "key:[";
