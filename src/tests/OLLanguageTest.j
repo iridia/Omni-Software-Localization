@@ -1,4 +1,4 @@
-@import "../models/OLLanguage.j"
+@import "../Models/OLLanguage.j"
 
 @implementation OLLanguageTest : OJTestCase
 
