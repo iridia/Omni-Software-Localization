@@ -4,6 +4,7 @@
 {
 	id _contentController @accessors(property=contentController);
 	id _transitionManager @accessors(property=transitionManager);
+	id _delegate @accessors(property=delegate);
 }
 
 - (void)handleMessage:(SEL)aMessage

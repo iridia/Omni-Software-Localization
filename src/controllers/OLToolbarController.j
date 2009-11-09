@@ -5,6 +5,7 @@ var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
 @implementation OLToolbarController : CPObject
 {
     OLFeedbackController _feedbackController;
+	id _delegate @accessors(property=delegate);
 }
 
 - (id)init

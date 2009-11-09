@@ -2,17 +2,7 @@
 
 @implementation OLMainViewController : CPObject
 {
-}
-
-- (id)init
-{
-    self = [super init];
-    if (self)
-    {
-        
-    }
-    
-    return self;
+	id _delegate @accessors(property=delegate);
 }
 
 @end
