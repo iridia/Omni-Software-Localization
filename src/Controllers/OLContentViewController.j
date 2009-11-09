@@ -12,4 +12,9 @@
 	objj_msgSend(_transitionManager, aMessage);
 }
 
+- (void)showView:(CPView)aView
+{
+	[_delegate setContentView:aView];
+}
+
 @end

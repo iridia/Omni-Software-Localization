@@ -30,10 +30,10 @@ var ResourcesItem = "Resources";
 	    
 	var item = [_items objectAtIndex:listIndex];
     
-    if (item !== _currentApplication)
+    if (item !== _currentItem)
     {
         _currentItem = item;
-		if (app == ResourcesItem)
+		if (item == ResourcesItem)
 		{
 			[self showResourcesView];
 		}

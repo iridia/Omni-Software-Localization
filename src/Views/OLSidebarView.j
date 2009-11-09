@@ -1,9 +1,9 @@
 @import <AppKit/CPCollectionView.j>
 
-@implementation OLSourceView : CPView
+@implementation OLSidebarView : CPView
 {
 	CPCollectionView _applicationsView @accessors;
-	id _delegate @accessors(property=delegate);
+	id _delegate @accessors(property=delegate, readonly);
 }
 
 - (id)initWithFrame:(CGRect)rect
@@ -32,6 +32,7 @@
 - (void)setDelegate:(id)aDelegate
 {
 	_delegate = aDelegate;
+	[_applicationsView setDelegate:_delegate];
 	[_applicationsView setContent:[_delegate items]];
 	[_applicationsView reloadContent];
 }

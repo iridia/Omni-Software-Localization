@@ -12,8 +12,9 @@
 @import "Controllers/OLFeedbackController.j"
 @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
-@import "views/OLSourceView.j"
-@import "views/OLMainView.j"
+@import "Managers/OLTransitionManager.j"
+@import "Views/OLSidebarView.j"
+@import "Views/OLMainView.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
@@ -39,10 +40,18 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	setupContentView(self, _mainView, [contentView bounds]);
 	
 	[contentView addSubview:_mainView];
-	
 	[theWindow orderFront:self];
-	
 	[CPMenu setMenuBarVisible:YES];
+}
+
+- (void)contentViewSendMessage:(SEL)aMessage
+{
+	[_contentViewController handleMessage:aMessage];
+}
+
+- (void)setContentView:(CPView)aView
+{
+	[_mainView setCurrentView:aView];
 }
 
 @end
@@ -65,7 +74,7 @@ function setupSidebar(self, mainView, frame)
 	var sidebarController = [[OLSidebarController alloc] init];
 	[sidebarController setDelegate:self];
 	
-	var sidebar = [[OLSourceView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight(frame))];
+	var sidebar = [[OLSidebarView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight(frame))];
     [sidebar setBackgroundColor:[CPColor sourceViewColor]];
     [sidebar setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
 	[sidebar setDelegate:sidebarController];
@@ -76,10 +85,16 @@ function setupSidebar(self, mainView, frame)
 
 function setupContentView(self, mainView, frame)
 {
+	var contentViewSize = CGRectMake(200, 0, CGRectGetWidth(frame) - 200, CGRectGetHeight(frame));
+	
 	var contentViewController = [[OLContentViewController alloc] init];
 	[contentViewController setDelegate:self];
 	
-    var currentView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame) - 200, CGRectGetHeight(frame))];
+	var transitionManager = [[OLTransitionManager alloc] initWithFrame:contentViewSize];
+	[contentViewController setTransitionManager:transitionManager];
+	[transitionManager setDelegate:contentViewController];
+	
+    var currentView = [[CPView alloc] initWithFrame:contentViewSize];
 	
 	[mainView setCurrentView:currentView];
 	[self setContentViewController:contentViewController];
