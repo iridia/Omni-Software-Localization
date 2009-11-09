@@ -1,14 +1,8 @@
 @import <AppKit/CPCollectionView.j>
 
-@import "OLResourcesView.j"
-@import "../models/OLApplication.j"
-
-
 @implementation OLSourceView : CPView
 {
-	OLResourceBundleView detailView @accessors;
-	CPCollectionView applicationsView @accessors;
-	OLApplication _currentApplication @accessors(property=currentApplication);
+	CPCollectionView _applicationsView @accessors;
 	id _delegate @accessors(property=delegate);
 }
 
@@ -18,72 +12,28 @@
 	
 	if (self)
 	{
-		//This is how it was for CPCollectionView, being changed for CPOutlineView.
 		var applicationListView = [[CPCollectionViewItem alloc] init];
 		[applicationListView setView:[[ApplicationListView alloc] initWithFrame:CGRectMakeZero()]];
 		
-		applicationsView = [[CPCollectionView alloc] initWithFrame:rect];
-		[applicationsView setItemPrototype:applicationListView];
-		[applicationsView setMaxNumberOfColumns:1];
-		[applicationsView setVerticalMargin:0.0];
-		[applicationsView setMinItemSize:CGSizeMake(100.0, 40.0)];
-		[applicationsView setMaxItemSize:CGSizeMake(1000000.0, 40.0)];		
-		[applicationsView setDelegate:self];
-		[applicationsView setAutoresizingMask:CPViewWidthSizable];
-		[applicationsView setContent:new Array("Resources","Resource Bundles","Others")];
-		[applicationsView reloadContent];
+		_applicationsView = [[CPCollectionView alloc] initWithFrame:rect];
+		[_applicationsView setItemPrototype:applicationListView];
+		[_applicationsView setMaxNumberOfColumns:1];
+		[_applicationsView setVerticalMargin:0.0];
+		[_applicationsView setMinItemSize:CGSizeMake(100.0, 40.0)];
+		[_applicationsView setMaxItemSize:CGSizeMake(1000000.0, 40.0)];
+		[_applicationsView setAutoresizingMask:CPViewWidthSizable];
 		
-		[self addSubview:applicationsView];
+		[self addSubview:_applicationsView];
 	}
 	
 	return self;
 }
-/*
-// These are the required DataSource methods
--(void)outlineView:(CPOutlineView)anOutlineView child:(CPNumber)aChild ofItem:(id)anItem
-{
-	console.log("child of item");
-	return @"aString";
-	//return [[CPView alloc] initWithFrame:CGRectMake(0,0,100,100)];
-}
 
--(void)outlineView:(CPOutlineView)anOutlineView isItemExpandable:(BOOL)flag
+- (void)setDelegate:(id)aDelegate
 {
-	console.log("isItemExpandable");
-	return YES;
-}
-
--(void)outlineView:(CPOutlineView)anOutlineView numberOfChildrenOfItem:(CPNumber)aNumber
-{
-	console.log("number of children of item");
-	return 4;
-}
--(void)outlineView:(CPOutlineView)anOutlineView objectValueForTableColumn:(id)aTableColumn byItem:(id)anItem
-{
-	console.log("object value for table column");
-	return @"aString";
-}
-//End required methods.
-*/
-- (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
-{
-	var listIndex = [[aCollectionView selectionIndexes] firstIndex];
-	    
-    var apps = [applicationsView content];
-    
-    var app = [apps objectAtIndex:listIndex];
-    
-    if (app !== _currentApplication)
-    {
-        [self setCurrentApplication:app];
-		if (app == "Resources")
-		{
-			if([_delegate respondsToSelector:@selector(selectedResourcesList:)])
-			{
-				[_delegate selectedResourcesList:self];
-			}
-		}
-    }
+	_delegate = aDelegate;
+	[_applicationsView setContent:[_delegate items]];
+	[_applicationsView reloadContent];
 }
 
 @end

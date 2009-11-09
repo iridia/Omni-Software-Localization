@@ -7,6 +7,7 @@
  */
 
 @import <Foundation/CPObject.j>
+@import "Categories/OLColors+CPColor.j"
 @import "Controllers/OLContentViewController.j"
 @import "Controllers/OLFeedbackController.j"
 @import "Controllers/OLToolbarController.j"
@@ -65,6 +66,8 @@ function setupSidebar(self, mainView, frame)
 	[sidebarController setDelegate:self];
 	
 	var sidebar = [[OLSourceView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight(frame))];
+    [sidebar setBackgroundColor:[CPColor sourceViewColor]];
+    [sidebar setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
 	[sidebar setDelegate:sidebarController];
 	
 	[mainView setSourceView:sidebar];

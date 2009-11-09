@@ -3,7 +3,7 @@
 @implementation OLMainView : CPSplitView
 {
     CPView _currentView @accessors(property=currentView, readonly);
-	CPView _sourceView @accessors(property=sourceView);
+	CPView _sourceView @accessors(property=sourceView, readonly);
 	id _delegate @accessors(property=delegate);
 }
 
@@ -16,6 +16,12 @@
         [self setIsPaneSplitter:YES];
         [self setVertical:YES];
         [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+		_sourceView = [[CPView alloc] initWithFrame:CGRectMakeZero()];
+        [self addSubview:_sourceView];
+
+        _currentView = [[CPView alloc] initWithFrame:CGRectMakeZero()];
+        [self addSubview:_currentView];
     }
     
     return self;
@@ -23,12 +29,16 @@
 
 - (void)setCurrentView:(CPView)newView
 {
-	if(_currentView)
-	{
-    	[self replaceSubview:_currentView with:newView];
-	}
+    [self replaceSubview:_currentView with:newView];
     
     _currentView = newView;
+}
+
+- (void)setSourceView:(CPView)newView
+{
+	[self replaceSubview:_sourceView with:newView];
+	
+	_sourceView = newView;
 }
 
 - (CGRect)currentViewFrame
