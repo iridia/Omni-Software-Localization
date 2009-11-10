@@ -5,7 +5,7 @@
 {
 	CPString _recordID @accessors(property=recordID);
 	CPString _revision @accessors(property=revision);
-	
+
 	CPURLConnection _saveConnection;
 	CPURLConnection _createConnection;
 	

@@ -1,9 +1,3 @@
-require 'autotest/growl'
-
-# Override autotest default magic deciding which test to run when
-# a file is changed : enable more flexible naming conventions
-# trading some of the efficiency: we rerun all the tests each time.
-#
 class Autotest
   def make_test_cmd files_to_test
     return "objj RunTests.j"
