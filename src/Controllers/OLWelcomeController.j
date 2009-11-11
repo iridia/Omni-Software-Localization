@@ -14,30 +14,26 @@
  */
 @implementation OLWelcomeController : CPObject
 {
-	CPView _contentView;
+	OLResourceBundle _bundle @accessors(property=bundle, readonly);
+
 	CPWindow _welcomeWindow;
 	OLWelcomeView _welcomeView;
-	OLUploadingView _uploadingView;
-	OLUploadedView _uploadedView;
+
 	id _delegate @accessors(property=delegate);
-	SEL _finishedReadingResourceBundle;
-	OLResourceBundle _bundle @accessors(property=bundle, readonly);
 }
 
-- (id)initWithContentView:(CPView)contentView
+- (id)init
 {
     self = [super init];
     
 	if (self)
 	{
-		_contentView = contentView;
-		_finishedReadingResourceBundle = @selector(finishedReadingResourceBundle:);
-		
         _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 700, 250) styleMask:CPTitledWindowMask];
         [_welcomeWindow setTitle:@"Welcome to Omni Software Localization"];
         var welcomeWindowContentView = [_welcomeWindow contentView];
 		
-		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,250) withController:self];
+		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,250)];
+		[_welcomeView setDelegate:self];
         
 		[welcomeWindowContentView addSubview:_welcomeView];
 		
@@ -51,28 +47,14 @@
 {
 	[[CPApplication sharedApplication] stopModal];
 	[_welcomeWindow orderOut:self];
-
-	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
-	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
 	
-	[_delegate selectResourcesList:self];
-}
-
-- (void)poof
-{
-	if (_uploadingView) { [_uploadingView removeFromSuperview]; }
-	if (_uploadedView) { [_uploadedView removeFromSuperview]; }
+	[_delegate sidebarSendMessage:@selector(selectResources)];
 }
 
 - (void)showUploading
 {
     [[CPApplication sharedApplication] stopModal];
     [_welcomeWindow orderOut:self];
-    
-	_uploadingView = [[OLUploadingView alloc] initWithFrame:CPRectMake(0,0,250,100) withController:self];
-	[_uploadingView setCenter:CPPointMake([_contentView center].x, 45)];
-	
-	[_contentView addSubview:_uploadingView];
 }
 
 - (void)finishedUploadingWithResponse:(CPString)response
@@ -98,20 +80,8 @@
 	var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
 
     [_bundle insertObject:resource inResourcesAtIndex:0];
-	
-	[_uploadingView removeFromSuperview];
-	
-	_uploadedView = [[OLUploadedView alloc] initWithFrame:CPRectMake(0,0,400,120) withController:self withFileName:fileName];
-	[_uploadedView setCenter:CPPointMake([_contentView center].x, 55)];
-	
-	[_contentView addSubview:_uploadedView];
 
 	[_bundle save];
-}
-
-- (void)downloadFile:(id)sender
-{
-	window.open(_fileName);
 }
 
 @end

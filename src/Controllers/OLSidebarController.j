@@ -19,6 +19,12 @@ var ResourcesItem = "Resources";
 	return self;
 }
 
+- (void)handleMessage:(SEL)aMessage
+{
+	console.log(_sidebarView);
+	objj_msgSend(_sidebarView, aMessage);
+}
+
 - (void)showResourcesView
 {
 	[_delegate contentViewSendMessage:@selector(showResourcesView)];

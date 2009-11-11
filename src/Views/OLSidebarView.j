@@ -37,6 +37,12 @@
 	[_applicationsView reloadContent];
 }
 
+- (void)selectResources
+{
+	var indexes = [CPIndexSet indexSetWithIndex:[[_applicationsView content] indexOfObject:"Resources"]];
+	[_applicationsView setSelectionIndexes:indexes];
+}
+
 @end
 
 @implementation ApplicationListView : CPView

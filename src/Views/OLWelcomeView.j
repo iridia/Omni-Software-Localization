@@ -13,11 +13,14 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
  *
  * The screen that is displayed to first-time visitors.
  */
-@implementation OLWelcomeView : OLView
-
-- (id)initWithFrame:(CGRect)frame withController:(OLWelcomeController)controller
+@implementation OLWelcomeView : CPView
 {
-	if(self = [super initWithFrame:frame withController:controller])
+	id _delegate @accessors(property=delegate);
+}
+
+- (id)initWithFrame:(CGRect)frame
+{	
+	if(self = [super initWithFrame:frame])
 	{
         var welcomeText = [CPTextField labelWithTitle:@"Welcome to Omni Software Localization!"];
 		var importText = [CPTextField labelWithTitle:@"Import localizable files in order for them to be translated!"];
@@ -59,10 +62,18 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
 
 		[importButton setTarget:self];
 		
-		[localizeButton setTarget:controller];
+		[localizeButton setTarget:self];
 		[localizeButton setAction:@selector(transitionToResourceList:)];    
 	}
 	return self;
+}
+
+- (void)addViews:(CPArray)views
+{
+	for(var i = 0; i < [views count]; i++)
+	{
+		[self addSubview:views[i]];
+	}
 }
 
 - (void)uploadButton:(id)sender didChangeSelection:(CPString)selection
@@ -72,20 +83,17 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
 
 - (void)uploadButtonDidBeginUpload:(id)sender
 {
-	[_controller showUploading];
+	[_delegate showUploading];
 }
 
 - (void)uploadButton:(id)sender didFinishUploadWithData:(CPString)response
 {
-	[_controller finishedUploadingWithResponse:response];
+	[_delegate finishedUploadingWithResponse:response];
 }
 
-// - (void)drawRect:(CPRect)rect
-// {
-//  var bPath = [CPBezierPath bezierPathWithRect:rect];
-//  
-//  [bPath setLineWidth:5];
-//  [bPath stroke];
-// }
+- (void)transitionToResourceList:(id)sender
+{
+	[_delegate transitionToResourceList:sender];
+}
 
 @end

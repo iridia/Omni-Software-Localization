@@ -1,5 +1,4 @@
 @import <AppKit/CPSplitView.j>
-@import "OLSourceView.j"
 
 @implementation OLMainView : CPSplitView
 {
@@ -18,29 +17,21 @@
         [self setVertical:YES];
         [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 
-        _sourceView = [[OLSourceView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight(frame))];
-        [_sourceView setBackgroundColor:[CPColor sourceViewColor]];
-        [_sourceView setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
-
+        _sourceView = [[CPView alloc] initWithFrame:CGRectMakeZero()];
         [self addSubview:_sourceView];
-		[_sourceView setDelegate:self];
 
-        _currentView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame) - 200, CGRectGetHeight(frame))];
-        [_currentView setBackgroundColor:[CPColor lightGrayColor]];
-        [_currentView setAutoresizingMask:CPViewHeightSizable | CPViewWidthSizable];
-
+        _currentView = [[CPView alloc] initWithFrame:CGRectMakeZero()];
         [self addSubview:_currentView];
     }
     
     return self;
 }	
 
-- (void)selectedResourcesList:(id)sender
+- (void)setSourceView:(CPView)newView
 {
-	if([_delegate respondsToSelector:@selector(selectedResourcesList:)])
-	{
-		[_delegate selectedResourcesList:sender];
-	}
+	[self replaceSubview:_sourceView with:newView];
+	
+	_sourceView = newView;
 }
 
 - (void)setCurrentView:(CPView)newView
@@ -48,11 +39,6 @@
     [self replaceSubview:_currentView with:newView];
     
     _currentView = newView;
-}
-
-- (CGRect)currentViewFrame
-{
-    return [_currentView frame];
 }
 
 @end

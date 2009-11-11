@@ -12,6 +12,7 @@
 @import "Controllers/OLFeedbackController.j"
 @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
+@import "Controllers/OLWelcomeController.j"
 @import "Managers/OLTransitionManager.j"
 @import "Views/OLSidebarView.j"
 @import "Views/OLMainView.j"
@@ -42,6 +43,14 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[contentView addSubview:_mainView];
 	[theWindow orderFront:self];
 	[CPMenu setMenuBarVisible:YES];
+	
+	var welcomeController = [[OLWelcomeController alloc] init];
+	[welcomeController setDelegate:self];
+}
+
+- (void)sidebarSendMessage:(SEL)aMessage
+{
+	[_sidebarController handleMessage:aMessage];
 }
 
 - (void)contentViewSendMessage:(SEL)aMessage
@@ -78,6 +87,8 @@ function setupSidebar(self, mainView, frame)
     [sidebar setBackgroundColor:[CPColor sourceViewColor]];
     [sidebar setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
 	[sidebar setDelegate:sidebarController];
+	
+	[sidebarController setSidebarView:sidebar];
 	
 	[mainView setSourceView:sidebar];
 	[self setSidebarController:sidebarController];
