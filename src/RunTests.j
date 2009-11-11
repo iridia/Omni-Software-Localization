@@ -26,5 +26,4 @@ print("");
 
 var ojtestOptions = {args:testFiles};
 var result = runCommand("ojtest", ojtestOptions);
-
-print("");
+print("Completed.");

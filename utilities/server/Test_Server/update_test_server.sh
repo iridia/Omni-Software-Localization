@@ -40,6 +40,7 @@ LOG_FILE="$LOGS_DIR/klondike_github_updates.log"
 TWEETOSL_USER="projectosl"
 TWEETOSL_EXEC="$SCRIPTS_DIR/tweet_from_projectosl.sh"
 TWEETOSL_TEXT="Updated `hostname` to latest git repo"
+TWEETOSL_FILE="$LOGS_DIR/last_twitter_response.txt"
 
 SCRIPT_PROMPT="`basename $0`>>"
 PROMPT="echo $SCRIPT_PROMPT"
@@ -72,13 +73,11 @@ then
 	then
 		TWEETOSL_PW="$2"
 	else
-		echo -n $SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER:
-		STTY_ORIG=`stty -g` 	# Saves current stty settings for later restoration
-		stty -echo 		# Hides characters for password entry
-		read -e TWEETOSL_PW 	# Reads the input
-		stty $STTY_ORIG 	# Restores original stty settings
+		read -s -p "$SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER:" TWEETOSL_PW
+		echo
 	fi
-	$TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT"
+	$TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT" > $TWEETOSL_FILE
+	$PROMPT The response from Twitter has been logged in $TWEETOSL_FILE.
 else
 	$PROMPT Not tweeting.
 fi

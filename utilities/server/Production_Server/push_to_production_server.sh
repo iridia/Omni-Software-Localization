@@ -45,6 +45,7 @@ SERVER_NAME="shellder.omnigroup.com"
 TWEETOSL_EXEC="$SCRIPTS_DIR/tweet_from_projectosl.sh"
 TWEETOSL_USER="projectosl"
 TWEETOSL_TEXT="Latest Release Cycle pushed to $SERVER_NAME"
+TWEETOSL_FILE="$LOGS_DIR/last_twitter_response.txt"
 
 PASSWD_PRMPT="Enter the password for $SERVER_USER@$SERVER_NAME."
 
@@ -81,13 +82,11 @@ if [ $1 ]
 then
 	TWEETOSL_PW="$1"
 else
-	echo -n $SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER:
-	STTY_ORIG=`stty -g`	# Saves current stty settings for later restoration
-	stty -echo		# Hides characters for password entry
-	read -e TWEETOSL_PW	# Reads the input 
-	stty $STTY_ORIG		# Restores original stty settings
+	read -s -p "$SCRIPT_PROMPT Enter the password for @$TWEETOSL_USER:" TWEETOSL_PW
+	echo
 fi
-$TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT"
+$TWEETOSL_EXEC "$TWEETOSL_PW" "$TWEETOSL_TEXT" > $TWEETOSL_FILE
+$PROMPT The response from Twitter has been logged in $TWEETOSL_FILE.
 echo
 
 
