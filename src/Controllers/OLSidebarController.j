@@ -35,15 +35,12 @@ var ResourcesItem = "Resources";
 	var listIndex = [[aCollectionView selectionIndexes] firstIndex];
 	    
 	var item = [_items objectAtIndex:listIndex];
-    
-    if (item !== _currentItem)
-    {
-        _currentItem = item;
-		if (item == ResourcesItem)
-		{
-			[self showResourcesView];
-		}
-    }
+
+    _currentItem = item;
+	if (item == ResourcesItem)
+	{
+		[self showResourcesView];
+	}
 }
 
 @end
