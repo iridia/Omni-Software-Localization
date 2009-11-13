@@ -1,3 +1,4 @@
+@import <AppKit/AppKit.j>
 @import "../Managers/OLTransitionManager.j"
 @import "../Controllers/OLContentViewController.j"
 @import "utilities/OJMoq/OJMoq.j"

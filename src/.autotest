@@ -1,5 +1,5 @@
 class Autotest
   def make_test_cmd files_to_test
-    return "objj RunTests.j"
+    return "jake test"
   end
 end
