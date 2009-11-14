@@ -1,9 +1,5 @@
 #!/bin/sh
 
-# move REST files to correct location
-sudo mv .htaccess /Library/WebServer/Documents/api/
-sudo mv REST-config.php /Library/WebServer/Documents/api/
-
 # install apache setup files
 sudo mv /private/etc/apache2/httpd.conf /private/etc/apache2/httpd.conf.oslbackup
 sudo cp ./httpd.conf /private/etc/apache2/httpd.conf
@@ -18,5 +14,12 @@ sudo pear install Services_JSON-1.0.1
 # restart apache
 sudo /usr/sbin/apachectl restart
 
+sudo mkdir /Library/WebServer/Documents
+
 # move files to server location
-sudo mv src/* /Library/WebServer/Documents/
+sudo mv ../src/* /Library/WebServer/Documents/
+
+# move REST files to correct location
+sudo mv .htaccess /Library/WebServer/Documents/api/
+sudo mv REST-config.php /Library/WebServer/Documents/api/
+

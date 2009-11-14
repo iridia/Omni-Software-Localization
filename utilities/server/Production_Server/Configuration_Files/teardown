@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# remove files to server location
+# remove files from server location
 sudo rm -R /Library/WebServer/Documents/
 
 # uninstall apache setup files
