@@ -63,6 +63,7 @@ $PROMPT Pulling latest repo...
 $GIT_EXEC pull
 
 $PROMPT Updating submodules...
+$GIT_EXEC submodule init
 $GIT_EXEC submodule update
 
 cd $STARTING_DIR
