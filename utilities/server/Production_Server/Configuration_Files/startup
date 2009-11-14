@@ -23,3 +23,7 @@ sudo mv ../src/* /Library/WebServer/Documents/
 sudo mv .htaccess /Library/WebServer/Documents/api/
 sudo mv REST-config.php /Library/WebServer/Documents/api/
 
+# create new databases on CouchDBX, requires CouchDBX to be installed and running!
+curl -X PUT http://localhost:5984/user
+curl -X PUT http://localhost:5984/feedback
+curl -X PUT http://localhost:5984/resourcebundle

@@ -3,8 +3,6 @@
 require_once("xml2json.php");
 require_once "api/CouchDB.php";
 
-$couchDbBaseURL = "http://localhost:5984/";
-
 $file = utf16_to_utf8(file_get_contents($_FILES['file']['tmp_name']));
 
 $db = new CouchDB('test');
