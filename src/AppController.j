@@ -7,7 +7,7 @@
  */
 
 @import <Foundation/CPObject.j>
-@import "Categories/OLColors+CPColor.j"
+@import "Categories/CPColor+OLColors.j"
 @import "Controllers/OLContentViewController.j"
 @import "Controllers/OLFeedbackController.j"
 @import "Controllers/OLToolbarController.j"
