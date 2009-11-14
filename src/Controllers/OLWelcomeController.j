@@ -59,8 +59,11 @@
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
-	console.log(response);
+	response = response.replace("<pre style=\"word-wrap: break-word; white-space: pre-wrap;\">", "");
+	response = response.replace("\n</pre>", "");
 	
+	console.log(response);
+		
 	var jsonResponse = eval('(' + response + ')');
 	
 	console.log(jsonResponse);
