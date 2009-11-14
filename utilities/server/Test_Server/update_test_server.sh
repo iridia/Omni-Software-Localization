@@ -62,6 +62,9 @@ $GIT_EXEC checkout .
 $PROMPT Pulling latest repo...
 $GIT_EXEC pull
 
+$PROMPT Updating submodules...
+$GIT_EXEC submodule update
+
 cd $STARTING_DIR
 echo
 
