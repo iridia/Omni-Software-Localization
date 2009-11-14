@@ -1,4 +1,3 @@
-@import "OLView.j"
 @import "CPUploadButton.j"
 @import "CPTextView.j"
 

@@ -1,7 +1,5 @@
 @import <Foundation/CPObject.j>
 @import "../views/OLWelcomeView.j"
-@import "../views/OLUploadingView.j"
-@import "../views/OLUploadedView.j"
 @import "OLResourceBundleController.j"
 @import "../models/OLResourceBundle.j"
 @import "../models/OLLanguage.j"
