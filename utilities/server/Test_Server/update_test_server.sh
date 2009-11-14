@@ -27,6 +27,8 @@ STARTING_DIR=$PWD
 
 GIT_EXEC="/usr/local/git/bin/git"
 GIT_REPO="/Library/WebServer/Omni-Software-Localization"
+GIT_REPO_SRC="$GIT_REPO/src"
+GIT_REPO_SRC_DEV="$GIT_REPO/src-dev"
 GIT_INFO="$GIT_REPO/.git"
 GIT_TEMP="/tmp/.git"
 
@@ -65,6 +67,9 @@ $GIT_EXEC pull
 $PROMPT Updating submodules...
 $GIT_EXEC submodule init
 $GIT_EXEC submodule update
+
+$PROMPT Recreating development directory...
+cp $GIT_REPO_SRC $GIT_REPO_SRC_DEV
 
 cd $STARTING_DIR
 echo
