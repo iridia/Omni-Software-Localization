@@ -1,4 +1,3 @@
-@import "OLView.j"
 @import "CPTextView.j"
 @import "../Categories/OLColors+CPColor.j"
 
