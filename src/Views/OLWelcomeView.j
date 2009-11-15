@@ -1,5 +1,4 @@
 @import "CPUploadButton.j"
-@import "CPTextView.j"
 
 var BETA_TEXT = @"The Omni Software Localization tool is currently under construction,"+
 " and as such, the development team and their affiliates (Omni Group and Rose-Hulman"+
