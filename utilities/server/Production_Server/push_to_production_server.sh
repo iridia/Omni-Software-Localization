@@ -29,7 +29,7 @@ SRC_DIR="$GIT_REPO/src"
 SCRIPTS_DIR="$GIT_REPO/utilities/server"
 MY_DIR="$SCRIPTS_DIR/Production_Server"
 
-LOGS_DIR="$GIT_REPO/utilities/Logs"
+LOGS_DIR="/Users/projectosl/Project_OSL/Logs"
 # MY_LOG_DIR="$LOGS_DIR/Test_Server_Updates" # Later, I want to log ALL output from script to a file
 LOG_FILE="$LOGS_DIR/production_pushes.log"
 
