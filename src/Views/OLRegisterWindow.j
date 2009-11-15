@@ -10,6 +10,7 @@
 {
 	id _delegate @accessors(property=delegate);
 	CPTextField _userNameField;
+	CPTextField _registrationFailed;
 }
 
 - (id)initWithContentRect:(CGRect)rect styleMask:(unsigned)styleMask
@@ -24,6 +25,9 @@
 		
 		var registerButton = [CPButton buttonWithTitle:@"Register"];
 		var cancelButton = [CPButton buttonWithTitle:@"Cancel"];
+		_registrationFailed = [CPTextField labelWithTitle:"That's not a valid email address!"];
+		[_registrationFailed setTextColor:[CPColor redColor]];
+		
 		/*
 		var passwordText = [CPTextField labelWithTitle:@"Password"];
 		var passwordField = [CPTextField roundedTextFieldWithStringValue:@"" placeholder:@"Password" width:200];
@@ -41,8 +45,9 @@
 
 		[registerButton setFrameOrigin:CGPointMake(190, 75)];
 		[usernameText setFrameOrigin:CGPointMake(50, 15)];
-		[_userNameField setFrameOrigin:CGPointMake(50, 40)];
+		[_userNameField setFrameOrigin:CGPointMake(50, 30)];
 		[cancelButton setFrameOrigin:CGPointMake(130, 75)];
+		[_registrationFailed setFrameOrigin:CGPointMake(70, 55)];
 		
  		[_userNameField setTextColor:[CPColor grayColor]];
 		
@@ -79,4 +84,9 @@
 {
 	[[CPApplication sharedApplication] stopModal];
 	[self orderOut:self];
+}
+
+- (void)showRegistrationFailed
+{
+	[[self contentView] addSubview:_registrationFailed];
 }

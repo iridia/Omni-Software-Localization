@@ -79,10 +79,24 @@
 	var user = [[OLUser alloc] initWithEmail:[registrationInfo objectForKey:@"username"]];
 	if([user email])
 	{
-		[user save];
+		[self hasRegistered:user];
 	}
+	else
+	{
+		[self registrationFailed];
+	}
+}
+
+- (void)hasRegistered:(OLUser)aUser
+{
+	[aUser save];
 	[_registerWindow close];
-	[_delegate updateLoginItemWithTitle:makeLoggedInTitle(user)];
+	[_delegate updateLoginItemWithTitle:makeLoggedInTitle(aUser)];
+}
+
+- (void)registrationFailed
+{
+	[_registerWindow showRegistrationFailed]
 }
 
 @end
