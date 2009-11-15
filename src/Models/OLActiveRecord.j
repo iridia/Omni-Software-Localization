@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 @import <Foundation/CPKeyedArchiver.j>
+@import "../Utilities/OLException.j"
 
 @implementation OLActiveRecord : CPObject
 {
