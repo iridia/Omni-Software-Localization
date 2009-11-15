@@ -8,14 +8,15 @@
 {
 	CPWindow _loginWindow;
 	CPWindow _registerWindow;
+	id _delegate @accessors(property=delegate);
 }
 
 - (id)init
 {
 	if(self = [super init])
 	{
-		_loginWindow = [[OLLoginWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 300) styleMask:CPTitledWindowMask];
-		_registerWindow = [[OLRegisterWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 300) styleMask:CPTitledWindowMask];
+		_loginWindow = [[OLLoginWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 200) styleMask:CPTitledWindowMask];
+		_registerWindow = [[OLRegisterWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 120) styleMask:CPTitledWindowMask];
 		[_loginWindow setDelegate:self];
 		[_registerWindow setDelegate:self];
 	}
@@ -30,6 +31,7 @@
 - (void)hasLoggedIn:(OLUser)aUser
 {
 	[_loginWindow close];
+	[_delegate updateLoginItemWithTitle:makeLoggedInTitle(aUser)];
 }
 
 - (void)loginFailed
@@ -80,6 +82,13 @@
 		[user save];
 	}
 	[_registerWindow close];
+	[_delegate updateLoginItemWithTitle:makeLoggedInTitle(user)];
 }
 
 @end
+
+function makeLoggedInTitle(user)
+{
+	var email = [user email];
+	return "Welcome, " + email + "!";
+}

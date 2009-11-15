@@ -16,12 +16,13 @@
 {
     if(self = [super initWithContentRect:rect styleMask:styleMask])
 	{
+		[self setTitle:@"Register"];
 		var contentView = [self contentView];
 
-		var usernameText = [CPTextField labelWithTitle:@"Username"];
-		var _userNameField = [CPTextField roundedTextFieldWithStringValue:@"" placeholder:@"Username" width:200];
+		var usernameText = [CPTextField labelWithTitle:@"Login"];
+		var _userNameField = [CPTextField roundedTextFieldWithStringValue:@"" placeholder:@"E-mail address" width:200];
 		
-		var registerButton = [CPButton buttonWithTitle:@"Register!"];
+		var registerButton = [CPButton buttonWithTitle:@"Register"];
 		var cancelButton = [CPButton buttonWithTitle:@"Cancel"];
 		/*
 		var passwordText = [CPTextField labelWithTitle:@"Password"];
@@ -38,10 +39,10 @@
 		var views = [usernameText, _userNameField, registerButton, cancelButton];
         [self addViews:views to:contentView];
 
-		[registerButton setFrameOrigin:CGPointMake(120, 225)];
-		[usernameText setFrameOrigin:CGPointMake(80, 25)];
-		[_userNameField setFrameOrigin:CGPointMake(50, 50)];
-		[cancelButton setFrameOrigin:CGPointMake(140, 150)];
+		[registerButton setFrameOrigin:CGPointMake(190, 75)];
+		[usernameText setFrameOrigin:CGPointMake(50, 15)];
+		[_userNameField setFrameOrigin:CGPointMake(50, 40)];
+		[cancelButton setFrameOrigin:CGPointMake(130, 75)];
 		
  		[_userNameField setTextColor:[CPColor grayColor]];
 		

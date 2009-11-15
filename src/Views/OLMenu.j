@@ -6,6 +6,7 @@
 {
     OLFeedbackController _feedbackController;
 	OLLoginController _loginController;
+	CPMenuItem _loginItem;
 }
 
 - (id)initWithTitle:(CPString)title
@@ -25,17 +26,23 @@
         [self insertItem:feedbackItem atIndex:0];
 
 		_loginController = [[OLLoginController alloc] init];
-		var loginItem = [[CPMenuItem alloc] initWithTitle:@"Login / Register" action:@selector(showLogin:) keyEquivalent:@"l"];
-		[loginItem setTarget:_loginController];
+		[_loginController setDelegate:self];
+		_loginItem = [[CPMenuItem alloc] initWithTitle:@"Login / Register" action:@selector(showLogin:) keyEquivalent:@"l"];
+		[_loginItem setTarget:_loginController];
 		
 		var loginImage = [[CPImage alloc] initWithContentsOfFile:@"Resources/User.png" size:CPMakeSize(24, 24)];
-		[loginItem setImage:loginImage];
-		[loginItem setAlternateImage:loginImage];
+		[_loginItem setImage:loginImage];
+		[_loginItem setAlternateImage:loginImage];
 		
-		[self insertItem:loginItem atIndex:1];
+		[self insertItem:_loginItem atIndex:1];
     }
     
     return self;
+}
+
+- (void)updateLoginItemWithTitle:(CPString)aTitle
+{
+	[_loginItem setTitle:aTitle];
 }
 
 @end

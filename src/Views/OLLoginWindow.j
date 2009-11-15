@@ -10,6 +10,7 @@
 {
 	id _delegate @accessors(property=delegate);
 	CPTextField _userNameField;
+	CPTextField _loginFailed;
 }
 
 - (id)initWithContentRect:(CGRect)rect styleMask:(unsigned)styleMask
@@ -17,15 +18,19 @@
     if(self = [super initWithContentRect:rect styleMask:styleMask])
 	{
 		var contentView = [self contentView];
+		[self setTitle:@"Login"];
 		
         var loginText = [CPTextField labelWithTitle:@"Login"];
-		_userNameField = [CPTextField roundedTextFieldWithStringValue:@"" placeholder:@"Username" width:200];
+		_userNameField = [CPTextField roundedTextFieldWithStringValue:@"" placeholder:@"E-mail address" width:200];
 		// Uncomment once DB supports passwords.
 		//var passwordText = [CPTextField labelWithTitle:@"Import localizable files in order for them to be translated!"];
 		var loginButton = [CPButton  buttonWithTitle:@"Login"];
 		var registerText = [CPTextField labelWithTitle:@"New to OSL?  Register now!"];
         var registerButton = [CPButton buttonWithTitle:@"Register"];
 		var cancelButton = [CPButton buttonWithTitle:@"Cancel"];
+		_loginFailed = [CPTextField labelWithTitle:"That's not a valid login!"];
+		
+		[_loginFailed setTextColor:[CPColor redColor]];
 
 		[self setBackgroundColor:[CPColor sourceViewColor]];
 		
@@ -38,6 +43,7 @@
 		[loginButton setFrameOrigin:CGPointMake(208, 150)];
 		[cancelButton setFrameOrigin:CGPointMake(140, 150)];
 		[_userNameField setFrameOrigin:CGPointMake(50, 90)];
+		[_loginFailed setFrameOrigin:CGPointMake(70, 120)];
 		
 		[loginText setTextColor:[CPColor blackColor]];
 		[registerText setTextColor:[CPColor blackColor]];
@@ -88,6 +94,11 @@
 - (void)showLoggingIn
 {
 	// do nothing for now
+}
+
+- (void)showLoginFailed
+{
+	[[self contentView] addSubview:_loginFailed]; 
 }
 
 @end
