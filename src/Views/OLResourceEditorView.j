@@ -78,7 +78,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 
 - (void)controlTextDidEndEditing:(CPNotification)aNotification
 {
-	var newValue = [_editorTextField stringValue];
+    var newValue = [_editorTextField stringValue];
 	
 	if ([_delegate respondsToSelector:@selector(didEditResourceForEditingBundle:)])
 	{
@@ -89,6 +89,11 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 	
 	[_editorTextField removeFromSuperview];
     _editingRow = nil;
+}
+
+- (void)controlTextDidBlur:(CPNotification)aNotification
+{
+    [self controlTextDidEndEditing:aNotification]; // FIXME: This seems wrong, but it works.
 }
 
 - (void)setEditingResource:(OLResource)resource

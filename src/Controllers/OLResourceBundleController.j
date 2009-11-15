@@ -32,9 +32,7 @@
 }
 
 - (void)didSelectBundleAtIndex:(CPInteger)selectedIndex
-{
-	[_delegate handleMessage:@selector(showResourceView)];
-	
+{	
     [self setEditingBundle:[_bundles objectAtIndex:selectedIndex]];
 }
 

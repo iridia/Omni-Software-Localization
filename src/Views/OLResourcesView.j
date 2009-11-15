@@ -1,15 +1,19 @@
-@import <AppKit/CPView.j>
-//@import <Foundation/CPObject.j>
+@import <AppKit/CPSplitView.j>
+
+@import "OLResourceEditorView.j"
 
 // FIXME: THIS IS ACTUALLY A BUNDLES VIEW
 
 var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
-@implementation OLResourcesView : CPView
+@implementation OLResourcesView : CPSplitView
 {
 	id _delegate @accessors(property=delegate);
     CPArray     _resources @accessors(property=resources);
     CPTableView _resourceTableView @accessors(property=resourceTableView);
+
+    OLResourceEditorView _editingView;
+    BOOL _isEditing @accessors(property=isEditing);
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -18,6 +22,8 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 	
 	if (self)
 	{
+	    [self setVertical:NO];
+	    
 		var scrollView = [[CPScrollView alloc] initWithFrame:[self bounds]];
 		[scrollView setAutohidesScrollers:YES];
 		[scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
@@ -27,12 +33,10 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 		[_resourceTableView setDataSource:self];
 		[_resourceTableView setUsesAlternatingRowBackgroundColors:YES];
 		[_resourceTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-		[_resourceTableView setTarget:self];
-		[_resourceTableView setDoubleAction:@selector(doubleClicked:)];
+		[_resourceTableView setDelegate:self];
 		
 		// define the header color
 		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"button-bezel-center.png"]]];
-
 		
 		[[_resourceTableView cornerView] setBackgroundColor:headerColor];
 		
@@ -43,17 +47,14 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 		[column setWidth:CGRectGetWidth(aFrame)];
 		[_resourceTableView addTableColumn:column];
 		[scrollView setDocumentView:_resourceTableView];
+		
 		[self addSubview:scrollView];
+
+        // Create the editingView up front, show it when needed
+		_editingView = [[OLResourceEditorView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)];
 	}
 	
 	return self;
-}
-
-- (void)doubleClicked:(id)sender
-{
-	var index = [[sender selectedRowIndexes] firstIndex];
-	
-	[_delegate didSelectBundleAtIndex:index];
 }
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
@@ -62,6 +63,17 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     {
         _resources = [object bundles];
         [_resourceTableView reloadData];
+    }
+}
+
+- (void)setDelegate:(id)aDelegate
+{
+    if (aDelegate !== _delegate)
+    {
+        _delegate = aDelegate;
+        [_delegate addObserver:_editingView forKeyPath:@"editingBundle" options:CPKeyValueObservingOptionNew context:nil];
+        [_delegate addObserver:_editingView forKeyPath:@"editingBundle.resources" options:CPKeyValueObservingOptionNew context:nil];
+    	[_editingView setDelegate:_delegate];
     }
 }
 
@@ -86,6 +98,41 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     {
     	return [_resources[row] description];
 	}
+}
+
+@end
+
+@implementation OLResourcesView (CPTableViewDelegate)
+
+- (void)tableViewSelectionDidChange:(CPNotification)aNotification
+{
+    console.log(self);
+    var index = [[[aNotification object] selectedRowIndexes] firstIndex];
+    
+    if (index < 0)
+    {
+        if (_isEditing)
+        {
+            [_editingView removeFromSuperview];
+            self._needsResizeSubviews = YES;
+            [self setNeedsDisplay:YES];
+        }
+        
+        [self setIsEditing:NO];
+    }
+    else
+    {
+        if (!_isEditing)
+        {
+            [self addSubview:_editingView];
+            [self setNeedsDisplay:YES];
+            [self setIsEditing:YES];
+        }
+    
+        [_delegate didSelectBundleAtIndex:index];
+    }
+    
+    // [_editingView deselectRow]; Probably want to do something along these lines
 }
 
 @end
