@@ -5,6 +5,7 @@
 // FIXME: THIS IS ACTUALLY A BUNDLES VIEW
 
 var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
+var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 
 @implementation OLResourcesView : CPSplitView
 {
@@ -40,12 +41,13 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 		
 		[[_resourceTableView cornerView] setBackgroundColor:headerColor];
 		
-		// add the first column
+		// add the filename column
 		var column = [[CPTableColumn alloc] initWithIdentifier:OLResourcesViewFileNameColumn];
 		[[column headerView] setStringValue:"Filename"];
 		[[column headerView] setBackgroundColor:headerColor];
 		[column setWidth:CGRectGetWidth(aFrame)];
 		[_resourceTableView addTableColumn:column];
+		
 		[scrollView setDocumentView:_resourceTableView];
 		
 		[self addSubview:scrollView];
@@ -88,17 +90,20 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 - (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
+    var resourceBundle = [_resources objectAtIndex:row];
+    var resource = [[resourceBundle resources] objectAtIndex:0]; // FIXME: shoud not be hard coded to 0.
+    
     if ([tableColumn identifier] === OLResourcesViewFileNameColumn)
     {
-        var resourceBundle = [_resources objectAtIndex:row];
-        var resource = [[resourceBundle resources] objectAtIndex:0]; // FIXME
         return [resource fileName];
     }
-    else
-    {
-    	return [_resources[row] description];
-	}
 }
+
+// This is not yet implemented in capp :(
+// - (id)tableView:(CPTableView)tableView heightOfRow:(int)row
+// {
+//     return 60.0;
+// }
 
 @end
 
@@ -106,7 +111,6 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
-    console.log(self);
     var index = [[[aNotification object] selectedRowIndexes] firstIndex];
     
     if (index < 0)

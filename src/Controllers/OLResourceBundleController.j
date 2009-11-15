@@ -48,4 +48,14 @@
     [_editingBundle save];
 }
 
+- (void)voteUpResource:(OLResource)resource
+{
+    [resource voteUp];
+}
+
+- (void)voteDownResource:(OLResource)resource
+{
+    [resource voteDown];
+}
+
 @end
