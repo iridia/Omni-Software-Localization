@@ -69,7 +69,7 @@ $GIT_EXEC submodule init
 $GIT_EXEC submodule update
 
 $PROMPT Recreating development directory...
-cp $GIT_REPO_SRC $GIT_REPO_SRC_DEV
+cp -r $GIT_REPO_SRC $GIT_REPO_SRC_DEV
 
 cd $STARTING_DIR
 echo
