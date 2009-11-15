@@ -1,6 +1,5 @@
 @import <AppKit/CPWindow.j>
 
-@import "CPTextView.j"
 @import "../models/OLFeedback.j"
 
 @implementation OLFeedbackWindow : CPWindow
