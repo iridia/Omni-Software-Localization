@@ -35,7 +35,7 @@ GIT_TEMP="/tmp/.git"
 SCRIPTS_DIR="$GIT_REPO/utilities/server"
 MY_DIR="$SCRIPTS_DIR/Test_Server"
 
-LOGS_DIR="$GIT_REPO/utilities/Logs"
+LOGS_DIR="/Users/projectosl/Documents/Project_OSL/Logs"
 # MY_LOG_DIR="$LOGS_DIR/Test_Server_Updates" # Later, I want to log ALL output from script to a file
 LOG_FILE="$LOGS_DIR/klondike_github_updates.log"
 
