@@ -67,6 +67,11 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[_mainView setCurrentView:aView];
 }
 
+- (void)handleException:(OLException)anException
+{
+	alert("Error!\n"+[anException name]+" threw error "+[anException reason]);
+}
+
 @end
 
 // function setupToolbar(self, theWindow)
