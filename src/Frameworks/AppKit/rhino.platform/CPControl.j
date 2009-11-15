@@ -104,19 +104,19 @@ objj_msgSend(_20,"sendAction:to:",_action,_target);
 _trackingWasWithinFrame=isWithinFrame;
 _previousTrackingLocation=_24;
 }
-}),new objj_method(sel_getUid("performClick:"),function(_25,_26,_27){
+}),new objj_method(sel_getUid("setState:"),function(_25,_26,_27){
 with(_25){
-objj_msgSend(_25,"highlight:",YES);
-objj_msgSend(_25,"setState:",objj_msgSend(_25,"nextState"));
-objj_msgSend(_25,"sendAction:to:",objj_msgSend(_25,"action"),objj_msgSend(_25,"target"));
-objj_msgSend(_25,"highlight:",NO);
 }
-}),new objj_method(sel_getUid("setState:"),function(_28,_29,_2a){
+}),new objj_method(sel_getUid("nextState"),function(_28,_29){
 with(_28){
-}
-}),new objj_method(sel_getUid("nextState"),function(_2b,_2c){
-with(_2b){
 return 0;
+}
+}),new objj_method(sel_getUid("performClick:"),function(_2a,_2b,_2c){
+with(_2a){
+objj_msgSend(_2a,"highlight:",YES);
+objj_msgSend(_2a,"setState:",objj_msgSend(_2a,"nextState"));
+objj_msgSend(_2a,"sendAction:to:",objj_msgSend(_2a,"action"),objj_msgSend(_2a,"target"));
+objj_msgSend(_2a,"highlight:",NO);
 }
 }),new objj_method(sel_getUid("mouseDownFlags"),function(_2d,_2e){
 with(_2d){

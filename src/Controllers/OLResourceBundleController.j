@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 @import "../models/OLResourceBundle.j"
+@import "../Utilities/OLException.j"
 
 /*!
  * The OLResourceBundleController is a controller for the resource bundle view and
@@ -28,7 +29,12 @@
 
 - (void)loadBundles
 {
-	[self setBundles:[OLResourceBundle list]];
+	try
+	{
+		[self setBundles:[OLResourceBundle list]];
+	} catch (ex) {
+		[OLException raise:"OLResourceBundleController" reason:"it couldn't load the bundles properly."];
+	}
 }
 
 - (void)didSelectBundleAtIndex:(CPInteger)selectedIndex

@@ -1,4 +1,4 @@
-I;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.jc;23191;
+I;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.jc;23271;
 var _1="dblclick",_2="mousedown",_3="mouseup",_4="mousemove",_5="mousedrag",_6="keyup",_7="keydown",_8="keypress",_9="copy",_a="paste",_b="resize",_c="mousewheel",_d="touchstart",_e="touchmove",_f="touchend",_10="touchcancel";
 var _11=[];
 _11["INPUT"]=YES;
@@ -193,8 +193,10 @@ _DOMWindow=window.open("","_blank","menubar=no,location=no,resizable=yes,scrollb
 _DOMWindow.document.write("<html><head></head><body style = 'background-color:transparent;'></body></html>");
 _DOMWindow.document.close();
 if(!objj_msgSend(CPPlatform,"isBrowser")){
+_DOMWindow.cpSetFrame(_contentRect);
 _DOMWindow.cpSetLevel(_level);
 _DOMWindow.cpSetHasShadow(_hasShadow);
+_DOMWindow.cpSetShadowStyle(_shadowStyle);
 }
 objj_msgSend(_45,"registerDOMWindow");
 }

@@ -1,7 +1,7 @@
-I;21;Foundation/CPObject.jc;3903;
+I;21;Foundation/CPObject.jc;4479;
 var _1=NULL;
 var _2=objj_allocateClassPair(CPObject,"CPPlatformWindow"),_3=_2.isa;
-class_addIvars(_2,[new objj_ivar("_contentRect"),new objj_ivar("_level"),new objj_ivar("_hasShadow"),new objj_ivar("_DOMWindow"),new objj_ivar("_DOMBodyElement"),new objj_ivar("_DOMFocusElement"),new objj_ivar("_windowLevels"),new objj_ivar("_windowLayers"),new objj_ivar("_mouseIsDown"),new objj_ivar("_mouseDownWindow"),new objj_ivar("_lastMouseUp"),new objj_ivar("_lastMouseDown"),new objj_ivar("_charCodes"),new objj_ivar("_keyCode"),new objj_ivar("_DOMEventMode"),new objj_ivar("_DOMPasteboardElement"),new objj_ivar("_pasteboardKeyDownEvent"),new objj_ivar("_overriddenEventType")]);
+class_addIvars(_2,[new objj_ivar("_contentRect"),new objj_ivar("_level"),new objj_ivar("_hasShadow"),new objj_ivar("_shadowStyle"),new objj_ivar("_DOMWindow"),new objj_ivar("_DOMBodyElement"),new objj_ivar("_DOMFocusElement"),new objj_ivar("_windowLevels"),new objj_ivar("_windowLayers"),new objj_ivar("_mouseIsDown"),new objj_ivar("_mouseDownWindow"),new objj_ivar("_lastMouseUp"),new objj_ivar("_lastMouseDown"),new objj_ivar("_charCodes"),new objj_ivar("_keyCode"),new objj_ivar("_DOMEventMode"),new objj_ivar("_DOMPasteboardElement"),new objj_ivar("_pasteboardKeyDownEvent"),new objj_ivar("_overriddenEventType")]);
 objj_registerClassPair(_2);
 objj_addClassForBundle(_2,objj_getBundleWithPath(OBJJ_CURRENT_BUNDLE.path));
 class_addMethods(_2,[new objj_method(sel_getUid("initWithContentRect:"),function(_4,_5,_6){
@@ -70,32 +70,51 @@ return {x:_1f.x-(_20.origin.x),y:_1f.y-(_20.origin.y)};
 with(_21){
 return _DOMWindow!==NULL;
 }
-}),new objj_method(sel_getUid("setLevel:"),function(_23,_24,_25){
+}),new objj_method(sel_getUid("deminiaturize:"),function(_23,_24,_25){
 with(_23){
-_level=_25;
-if(_DOMWindow&&_DOMWindow.cpSetLevel){
-_DOMWindow.cpSetLevel(_25);
+if(_DOMWindow&&typeof _DOMWindow["cpDeminiaturize"]==="function"){
+_DOMWindow.cpDeminiaturize();
 }
 }
-}),new objj_method(sel_getUid("setHasShadow:"),function(_26,_27,_28){
+}),new objj_method(sel_getUid("miniaturize:"),function(_26,_27,_28){
 with(_26){
-_hasShadow=_28;
-if(_DOMWindow&&_DOMWindow.cpSetHasShadow){
-_DOMWindow.cpSetHasShadow(_28);
+if(_DOMWindow&&typeof _DOMWindow["cpMiniaturize"]==="function"){
+_DOMWindow.cpMiniaturize();
 }
 }
-}),new objj_method(sel_getUid("supportsFullPlatformWindows"),function(_29,_2a){
+}),new objj_method(sel_getUid("setLevel:"),function(_29,_2a,_2b){
 with(_29){
+_level=_2b;
+if(_DOMWindow&&_DOMWindow.cpSetLevel){
+_DOMWindow.cpSetLevel(_2b);
+}
+}
+}),new objj_method(sel_getUid("setHasShadow:"),function(_2c,_2d,_2e){
+with(_2c){
+_hasShadow=_2e;
+if(_DOMWindow&&_DOMWindow.cpSetHasShadow){
+_DOMWindow.cpSetHasShadow(_2e);
+}
+}
+}),new objj_method(sel_getUid("setShadowStyle:"),function(_2f,_30,_31){
+with(_2f){
+_shadowStyle=_31;
+if(_DOMWindow&&_DOMWindow.cpSetShadowStyle){
+_shadowStyle.cpSetShadowStyle(_31);
+}
+}
+}),new objj_method(sel_getUid("supportsFullPlatformWindows"),function(_32,_33){
+with(_32){
 return objj_msgSend(CPPlatform,"isBrowser");
 }
 })]);
-class_addMethods(_3,[new objj_method(sel_getUid("primaryPlatformWindow"),function(_2b,_2c){
-with(_2b){
+class_addMethods(_3,[new objj_method(sel_getUid("primaryPlatformWindow"),function(_34,_35){
+with(_34){
 return _1;
 }
-}),new objj_method(sel_getUid("setPrimaryPlatformWindow:"),function(_2d,_2e,_2f){
-with(_2d){
-_1=_2f;
+}),new objj_method(sel_getUid("setPrimaryPlatformWindow:"),function(_36,_37,_38){
+with(_36){
+_1=_38;
 }
 })]);
 i;22;CPPlatformWindow+DOM.j

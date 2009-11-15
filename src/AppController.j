@@ -7,15 +7,15 @@
  */
 
 @import <Foundation/CPObject.j>
-@import "Categories/OLColors+CPColor.j"
+@import "Categories/CPColor+OLColors.j"
 @import "Controllers/OLContentViewController.j"
-@import "Controllers/OLFeedbackController.j"
-@import "Controllers/OLToolbarController.j"
+// @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
 @import "Managers/OLTransitionManager.j"
 @import "Views/OLSidebarView.j"
 @import "Views/OLMainView.j"
+@import "Views/OLMenu.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
@@ -36,16 +36,20 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [_mainView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 	[_mainView setDelegate:self];
 	
-	setupToolbar(self, theWindow);
+    // setupToolbar(self, theWindow);
 	setupSidebar(self, _mainView, [contentView bounds]);
 	setupContentView(self, _mainView, [contentView bounds]);
 	
 	[contentView addSubview:_mainView];
-	[theWindow orderFront:self];
-	[CPMenu setMenuBarVisible:YES];
 	
 	var welcomeController = [[OLWelcomeController alloc] init];
 	[welcomeController setDelegate:self];
+	
+	[theWindow orderFront:self];
+	
+	var menu = [[OLMenu alloc] init];
+	[[CPApplication sharedApplication] setMainMenu:menu];
+    [CPMenu setMenuBarVisible:YES];
 }
 
 - (void)sidebarSendMessage:(SEL)aMessage
@@ -63,20 +67,24 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[_mainView setCurrentView:aView];
 }
 
+- (void)handleException:(OLException)anException
+{
+	alert("Error!\n"+[anException name]+" threw error "+[anException reason]);
+}
+
 @end
 
-function setupToolbar(self, theWindow)
-{
-	var feedbackController = [[OLFeedbackController alloc] init];
-    var toolbarController = [[OLToolbarController alloc] initWithFeedbackController:feedbackController];
-    [toolbarController setDelegate:self];
-
-	var toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
-	[toolbar setDelegate:toolbarController];
-	
-    [theWindow setToolbar:toolbar];
-	[self setToolbarController:toolbarController];
-}
+// function setupToolbar(self, theWindow)
+// {
+//     var toolbarController = [[OLToolbarController alloc] initWithFeedbackController:feedbackController];
+//     [toolbarController setDelegate:self];
+// 
+//  var toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
+//  [toolbar setDelegate:toolbarController];
+//  
+//     [theWindow setToolbar:toolbar];
+//  [self setToolbarController:toolbarController];
+// }
 
 function setupSidebar(self, mainView, frame)
 {

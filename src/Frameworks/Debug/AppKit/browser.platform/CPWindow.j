@@ -1,4 +1,4 @@
-I;25;Foundation/CPCountedSet.jI;33;Foundation/CPNotificationCenter.jI;26;Foundation/CPUndoManager.ji;12;CGGeometry.ji;13;CPAnimation.ji;13;CPResponder.ji;10;CPScreen.ji;18;CPPlatformWindow.jc;65693;
+I;25;Foundation/CPCountedSet.jI;33;Foundation/CPNotificationCenter.jI;26;Foundation/CPUndoManager.ji;12;CGGeometry.ji;13;CPAnimation.ji;13;CPResponder.ji;10;CPScreen.ji;18;CPPlatformWindow.jc;72892;
 CPBorderlessWindowMask = 0;
 CPTitledWindowMask = 1 << 0;
 CPClosableWindowMask = 1 << 1;
@@ -32,6 +32,14 @@ CPWindowWillCloseNotification = "CPWindowWillCloseNotification";
 CPWindowDidBecomeMainNotification = "CPWindowDidBecomeMainNotification";
 CPWindowDidResignMainNotification = "CPWindowDidResignMainNotification";
 CPWindowDidMoveNotification = "CPWindowDidMoveNotification";
+CPWindowWillBeginSheetNotification = "CPWindowWillBeginSheetNotification";
+CPWindowDidEndSheetNotification = "CPWindowDidEndSheetNotification";
+CPWindowDidMiniaturizeNotification = "CPWindowDidMiniaturizeNotification";
+CPWindowWillMiniaturizeNotification = "CPWindowWillMiniaturizeNotification";
+CPWindowDidDeminiaturizeNotification = "CPWindowDidDeminiaturizeNotification";
+CPWindowShadowStyleStandard = 0;
+CPWindowShadowStyleMenu = 1;
+CPWindowShadowStylePanel = 2;
 var SHADOW_MARGIN_LEFT = 20.0,
     SHADOW_MARGIN_RIGHT = 19.0,
     SHADOW_MARGIN_TOP = 10.0,
@@ -41,7 +49,7 @@ var SHADOW_MARGIN_LEFT = 20.0,
 var CPWindowSaveImage = nil,
     CPWindowSavingImage = nil;
 {var the_class = objj_allocateClassPair(CPResponder, "CPWindow"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_platformWindow"), new objj_ivar("_windowNumber"), new objj_ivar("_styleMask"), new objj_ivar("_frame"), new objj_ivar("_level"), new objj_ivar("_isVisible"), new objj_ivar("_isAnimating"), new objj_ivar("_hasShadow"), new objj_ivar("_isMovableByWindowBackground"), new objj_ivar("_supportsMultipleDocuments"), new objj_ivar("_isDocumentEdited"), new objj_ivar("_isDocumentSaving"), new objj_ivar("_shadowView"), new objj_ivar("_windowView"), new objj_ivar("_contentView"), new objj_ivar("_toolbarView"), new objj_ivar("_mouseEnteredStack"), new objj_ivar("_leftMouseDownView"), new objj_ivar("_rightMouseDownView"), new objj_ivar("_toolbar"), new objj_ivar("_firstResponder"), new objj_ivar("_initialFirstResponder"), new objj_ivar("_delegate"), new objj_ivar("_title"), new objj_ivar("_acceptsMouseMovedEvents"), new objj_ivar("_ignoresMouseEvents"), new objj_ivar("_windowController"), new objj_ivar("_minSize"), new objj_ivar("_maxSize"), new objj_ivar("_undoManager"), new objj_ivar("_representedURL"), new objj_ivar("_registeredDraggedTypes"), new objj_ivar("_registeredDraggedTypesArray"), new objj_ivar("_inclusiveRegisteredDraggedTypes"), new objj_ivar("_defaultButton"), new objj_ivar("_defaultButtonEnabled"), new objj_ivar("_autorecalculatesKeyViewLoop"), new objj_ivar("_keyViewLoopIsDirty"), new objj_ivar("_sharesChromeWithPlatformWindow"), new objj_ivar("_DOMElement"), new objj_ivar("_autoresizingMask"), new objj_ivar("_delegateRespondsToWindowWillReturnUndoManagerSelector"), new objj_ivar("_isFullPlatformWindow"), new objj_ivar("_fullPlatformWindowSession")]);
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_platformWindow"), new objj_ivar("_windowNumber"), new objj_ivar("_styleMask"), new objj_ivar("_frame"), new objj_ivar("_level"), new objj_ivar("_isVisible"), new objj_ivar("_isMiniaturized"), new objj_ivar("_isAnimating"), new objj_ivar("_hasShadow"), new objj_ivar("_isMovableByWindowBackground"), new objj_ivar("_shadowStyle"), new objj_ivar("_supportsMultipleDocuments"), new objj_ivar("_isDocumentEdited"), new objj_ivar("_isDocumentSaving"), new objj_ivar("_shadowView"), new objj_ivar("_windowView"), new objj_ivar("_contentView"), new objj_ivar("_toolbarView"), new objj_ivar("_mouseEnteredStack"), new objj_ivar("_leftMouseDownView"), new objj_ivar("_rightMouseDownView"), new objj_ivar("_toolbar"), new objj_ivar("_firstResponder"), new objj_ivar("_initialFirstResponder"), new objj_ivar("_delegate"), new objj_ivar("_title"), new objj_ivar("_acceptsMouseMovedEvents"), new objj_ivar("_ignoresMouseEvents"), new objj_ivar("_windowController"), new objj_ivar("_minSize"), new objj_ivar("_maxSize"), new objj_ivar("_undoManager"), new objj_ivar("_representedURL"), new objj_ivar("_registeredDraggedTypes"), new objj_ivar("_registeredDraggedTypesArray"), new objj_ivar("_inclusiveRegisteredDraggedTypes"), new objj_ivar("_defaultButton"), new objj_ivar("_defaultButtonEnabled"), new objj_ivar("_autorecalculatesKeyViewLoop"), new objj_ivar("_keyViewLoopIsDirty"), new objj_ivar("_sharesChromeWithPlatformWindow"), new objj_ivar("_DOMElement"), new objj_ivar("_autoresizingMask"), new objj_ivar("_delegateRespondsToWindowWillReturnUndoManagerSelector"), new objj_ivar("_isFullPlatformWindow"), new objj_ivar("_fullPlatformWindowSession"), new objj_ivar("_sheetContext"), new objj_ivar("_parentView"), new objj_ivar("_isSheet")]);
 objj_registerClassPair(the_class);
 objj_addClassForBundle(the_class, objj_getBundleWithPath(OBJJ_CURRENT_BUNDLE.path));
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithContentRect:styleMask:"), function $CPWindow__initWithContentRect_styleMask_(self, _cmd, aContentRect, aStyleMask)
@@ -63,6 +71,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithContentRect:sty
         _isFullPlatformWindow = NO;
         _registeredDraggedTypes = objj_msgSend(CPSet, "set");
         _registeredDraggedTypesArray = [];
+        _isSheet = NO;
         _windowNumber = objj_msgSend(CPApp._windows, "count");
         CPApp._windows[_windowNumber] = self;
         _styleMask = aStyleMask;
@@ -449,7 +458,13 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithContentRect:sty
         _shadowView = nil;
     }
 }
-},["void","BOOL"]), new objj_method(sel_getUid("setDelegate:"), function $CPWindow__setDelegate_(self, _cmd, aDelegate)
+},["void","BOOL"]), new objj_method(sel_getUid("setShadowStyle:"), function $CPWindow__setShadowStyle_(self, _cmd, aStyle)
+{ with(self)
+{
+    _shadowStyle = aStyle;
+    objj_msgSend(objj_msgSend(self, "platformWindow"), "setShadowStyle:", _shadowStyle);
+}
+},["void","unsigned"]), new objj_method(sel_getUid("setDelegate:"), function $CPWindow__setDelegate_(self, _cmd, aDelegate)
 { with(self)
 {
     _delegate = aDelegate;
@@ -811,6 +826,31 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithContentRect:sty
         objj_msgSend(item, "setEnabled:", YES);
     }
 }
+},["void"]), new objj_method(sel_getUid("performMiniaturize:"), function $CPWindow__performMiniaturize_(self, _cmd, aSender)
+{ with(self)
+{
+    objj_msgSend(self, "miniaturize:", aSender);
+}
+},["void","id"]), new objj_method(sel_getUid("miniaturize:"), function $CPWindow__miniaturize_(self, _cmd, sender)
+{ with(self)
+{
+    objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "postNotificationName:object:", CPWindowWillMiniaturizeNotification, self);
+    objj_msgSend(objj_msgSend(self, "platformWindow"), "miniaturize:", sender);
+    objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "postNotificationName:object:", CPWindowDidMiniaturizeNotification, self);
+    _isMiniaturized = YES;
+}
+},["void","id"]), new objj_method(sel_getUid("deminiaturize:"), function $CPWindow__deminiaturize_(self, _cmd, sender)
+{ with(self)
+{
+    objj_msgSend(objj_msgSend(self, "platformWindow"), "deminiaturize:", sender);
+    objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "postNotificationName:object:", CPWindowDidDeminiaturizeNotification, self);
+    _isMiniaturized = NO;
+}
+},["void","id"]), new objj_method(sel_getUid("isMiniaturized"), function $CPWindow__isMiniaturized(self, _cmd)
+{ with(self)
+{
+    return _isMiniaturized;
+}
 },["void"]), new objj_method(sel_getUid("performClose:"), function $CPWindow__performClose_(self, _cmd, aSender)
 { with(self)
 {
@@ -899,31 +939,123 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithContentRect:sty
     }
     objj_msgSend(self, "setFrame:", newFrame);
 }
-},["void"]), new objj_method(sel_getUid("_setAttachedSheetFrameOrigin"), function $CPWindow___setAttachedSheetFrameOrigin(self, _cmd)
+},["void"]), new objj_method(sel_getUid("_setFrame:delegate:duration:curve:"), function $CPWindow___setFrame_delegate_duration_curve_(self, _cmd, aFrame, delegate, duration, curve)
 { with(self)
 {
-    var contentRect = objj_msgSend(objj_msgSend(self, "contentView"), "frame"),
-        sheetFrame = CGRectMakeCopy(objj_msgSend(_attachedSheet, "frame"));
-   sheetFrame.origin.y = CGRectGetMinY(_frame) + CGRectGetMinY(contentRect);
-   sheetFrame.origin.x = CGRectGetMinX(_frame) + FLOOR((CGRectGetWidth(_frame) - CGRectGetWidth(sheetFrame)) / 2.0);
-   objj_msgSend(_attachedSheet, "setFrameOrigin:", sheetFrame.origin);
+    var animation = objj_msgSend(objj_msgSend(_CPWindowFrameAnimation, "alloc"), "initWithWindow:targetFrame:", self, aFrame);
+    objj_msgSend(animation, "setDelegate:", delegate);
+    objj_msgSend(animation, "setAnimationCurve:", curve);
+    objj_msgSend(animation, "setDuration:", duration);
+    objj_msgSend(animation, "startAnimation");
 }
-},["void"]), new objj_method(sel_getUid("_animateAttachedSheet"), function $CPWindow___animateAttachedSheet(self, _cmd)
+},["void","CGRect","id","int","CPAnimationCurve"]), new objj_method(sel_getUid("_setAttachedSheetFrameOrigin"), function $CPWindow___setAttachedSheetFrameOrigin(self, _cmd)
 { with(self)
 {
+    var attachedSheet = objj_msgSend(self, "attachedSheet");
+    var contentRect = objj_msgSend(objj_msgSend(self, "contentView"), "frame"),
+        sheetFrame = CGRectMakeCopy(objj_msgSend(attachedSheet, "frame"));
+    sheetFrame.origin.y = CGRectGetMinY(_frame) + CGRectGetMinY(contentRect);
+    sheetFrame.origin.x = CGRectGetMinX(_frame) + FLOOR((CGRectGetWidth(_frame) - CGRectGetWidth(sheetFrame)) / 2.0);
+    objj_msgSend(attachedSheet, "setFrameOrigin:", sheetFrame.origin);
 }
 },["void"]), new objj_method(sel_getUid("_attachSheet:modalDelegate:didEndSelector:contextInfo:"), function $CPWindow___attachSheet_modalDelegate_didEndSelector_contextInfo_(self, _cmd, aSheet, aModalDelegate, aDidEndSelector, aContextInfo)
 { with(self)
 {
-    _attachedSheet = aSheet;
-    aSheet._isSheet = YES;
-    objj_msgSend(self, "_setAttachedSheetFrameOrigin");
-    objj_msgSend(_platformWindow, "order:window:relativeTo:", CPWindowAbove, aSheet, self);
+    var sheetFrame = objj_msgSend(aSheet, "frame");
+    _sheetContext = {"sheet":aSheet, "modalDelegate":aModalDelegate, "endSelector":aDidEndSelector, "contextInfo":aContextInfo, "frame":CGRectMakeCopy(sheetFrame), "returnCode":-1, "opened": NO};
+    objj_msgSend(self, "_attachSheetWindow:", aSheet);
 }
-},["void","CPWindow","id","SEL","id"]), new objj_method(sel_getUid("attachedSheet"), function $CPWindow__attachedSheet(self, _cmd)
+},["void","CPWindow","id","SEL","id"]), new objj_method(sel_getUid("_attachSheetWindow:"), function $CPWindow___attachSheetWindow_(self, _cmd, aSheet)
 { with(self)
 {
-    return _attachedSheet;
+    var sheetFrame = objj_msgSend(aSheet, "frame"),
+        frame = objj_msgSend(self, "frame"),
+        sheetContent = objj_msgSend(aSheet, "contentView");
+    objj_msgSend(self, "_setUpMasksForView:", sheetContent);
+    aSheet._isSheet = YES;
+    aSheet._parentView = self;
+    var originx = frame.origin.x + FLOOR((frame.size.width - sheetFrame.size.width)/2),
+        originy = frame.origin.y + objj_msgSend(objj_msgSend(self, "contentView"), "frame").origin.y,
+        startFrame = CGRectMake(originx, originy, sheetFrame.size.width, 0),
+        endFrame = CGRectMake(originx, originy, sheetFrame.size.width, sheetFrame.size.height);
+    objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "postNotificationName:object:", CPWindowWillBeginSheetNotification, self);
+    objj_msgSend(CPApp, "runModalForWindow:", aSheet);
+    objj_msgSend(aSheet, "orderFront:", self);
+    objj_msgSend(aSheet, "setFrame:", startFrame);
+    _sheetContext["opened"] = YES;
+    objj_msgSend(aSheet, "_setFrame:delegate:duration:curve:", endFrame, self, 0.2, CPAnimationEaseOut);
+    objj_msgSend(aSheet, "becomeKeyWindow");
+}
+},["void","CPWindow"]), new objj_method(sel_getUid("_detachSheetWindow"), function $CPWindow___detachSheetWindow(self, _cmd)
+{ with(self)
+{
+    var sheet = objj_msgSend(self, "attachedSheet"),
+        startFrame = objj_msgSend(sheet, "frame"),
+        endFrame = CGRectMakeCopy(startFrame);
+    endFrame.size.height = 0;
+    _sheetContext["frame"] = startFrame;
+    var sheetContent = objj_msgSend(sheet, "contentView");
+    objj_msgSend(self, "_setUpMasksForView:", sheetContent);
+    _sheetContext["opened"] = NO;
+    objj_msgSend(sheet, "_setFrame:delegate:duration:curve:", endFrame, self, 0.2, CPAnimationEaseIn);
+}
+},["void"]), new objj_method(sel_getUid("animationDidEnd:"), function $CPWindow__animationDidEnd_(self, _cmd, anim)
+{ with(self)
+{
+    var sheet = _sheetContext["sheet"];
+    if (anim._window != sheet)
+        return;
+    var sheetContent = objj_msgSend(sheet, "contentView");
+    if (_sheetContext["opened"] === YES)
+    {
+        objj_msgSend(self, "_restoreMasksForView:", sheetContent);
+        return;
+    }
+    objj_msgSend(CPApp, "stopModal");
+    objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "postNotificationName:object:", CPWindowDidEndSheetNotification, self);
+    objj_msgSend(sheet, "orderOut:", self);
+    var lastFrame = _sheetContext["frame"];
+    objj_msgSend(sheet, "setFrame:", lastFrame);
+    objj_msgSend(self, "_restoreMasksForView:", sheetContent);
+    var delegate = _sheetContext["modalDelegate"],
+        endSelector = _sheetContext["endSelector"];
+    if (delegate != nil && endSelector != nil)
+        objj_msgSend(delegate, endSelector, sheet, _sheetContext["returnCode"], _sheetContext["contextInfo"]);
+    _sheetContext = nil;
+    sheet._parentView = nil;
+}
+},["void","id"]), new objj_method(sel_getUid("_setUpMasksForView:"), function $CPWindow___setUpMasksForView_(self, _cmd, aView)
+{ with(self)
+{
+    var views = objj_msgSend(CPArray, "arrayWithArray:", objj_msgSend(aView, "subviews"));
+    objj_msgSend(views, "addObject:", aView);
+    for (var i = 0, count = objj_msgSend(views, "count"); i < count; i++)
+    {
+        var view = objj_msgSend(views, "objectAtIndex:", i),
+            mask = objj_msgSend(view, "autoresizingMask"),
+            maskToAdd = (mask & CPViewMinYMargin) ? 128 : CPViewMinYMargin;
+        objj_msgSend(view, "setAutoresizingMask:", (mask | maskToAdd));
+    }
+}
+},["void","CPView"]), new objj_method(sel_getUid("_restoreMasksForView:"), function $CPWindow___restoreMasksForView_(self, _cmd, aView)
+{ with(self)
+{
+    var views = objj_msgSend(CPArray, "arrayWithArray:", objj_msgSend(aView, "subviews"));
+    objj_msgSend(views, "addObject:", aView);
+    for (var i = 0, count = objj_msgSend(views, "count"); i < count; i++)
+    {
+        var view = objj_msgSend(views, "objectAtIndex:", i),
+            mask = objj_msgSend(view, "autoresizingMask"),
+            maskToRemove = (mask & 128) ? 128 : CPViewMinYMargin;
+        objj_msgSend(view, "setAutoresizingMask:", (mask & (~ maskToRemove)));
+    }
+}
+},["void","CPView"]), new objj_method(sel_getUid("attachedSheet"), function $CPWindow__attachedSheet(self, _cmd)
+{ with(self)
+{
+    if (_sheetContext === nil)
+        return nil;
+   return _sheetContext["sheet"];
 }
 },["CPWindow"]), new objj_method(sel_getUid("isSheet"), function $CPWindow__isSheet(self, _cmd)
 { with(self)
@@ -1095,6 +1227,8 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
         return _CPHUDWindowView;
     else if (aStyleMask === CPBorderlessWindowMask)
         return _CPBorderlessWindowView;
+    else if (aStyleMask & CPDocModalWindowMask)
+        return _CPDocModalWindowView;
     return _CPStandardWindowView;
 }
 },["Class","unsigned"]), new objj_method(sel_getUid("_windowViewClassForFullPlatformWindowStyleMask:"), function $CPWindow___windowViewClassForFullPlatformWindowStyleMask_(self, _cmd, aStyleMask)
@@ -1311,4 +1445,4 @@ _CPWindowFullPlatformWindowSessionMake= function(aWindowView, aContentRect, hasS
 {
     return { windowView:aWindowView, contentRect:aContentRect, hasShadow:hasShadow, level:aLevel };
 }
-i;15;_CPWindowView.ji;23;_CPStandardWindowView.ji;18;_CPHUDWindowView.ji;25;_CPBorderlessWindowView.ji;31;_CPBorderlessBridgeWindowView.ji;14;CPDragServer.ji;8;CPView.j
+i;15;_CPWindowView.ji;23;_CPStandardWindowView.ji;23;_CPDocModalWindowView.ji;18;_CPHUDWindowView.ji;25;_CPBorderlessWindowView.ji;31;_CPBorderlessBridgeWindowView.ji;14;CPDragServer.ji;8;CPView.j

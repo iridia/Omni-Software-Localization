@@ -1,4 +1,4 @@
-I;21;Foundation/CPBundle.ji;17;CPCompatibility.ji;9;CPEvent.ji;8;CPMenu.ji;13;CPResponder.ji;22;CPDocumentController.ji;14;CPThemeBlend.ji;14;CPCibLoading.ji;12;CPPlatform.jc;18828;
+I;21;Foundation/CPBundle.ji;17;CPCompatibility.ji;9;CPEvent.ji;8;CPMenu.ji;13;CPResponder.ji;22;CPDocumentController.ji;14;CPThemeBlend.ji;14;CPCibLoading.ji;12;CPPlatform.jc;19535;
 var _1="CPMainCibFile",_2="Main cib file base name";
 CPApp=nil;
 CPApplicationWillFinishLaunchingNotification="CPApplicationWillFinishLaunchingNotification";
@@ -340,151 +340,173 @@ return _currentEvent;
 }
 }),new objj_method(sel_getUid("beginSheet:modalForWindow:modalDelegate:didEndSelector:contextInfo:"),function(_8b,_8c,_8d,_8e,_8f,_90,_91){
 with(_8b){
+var _92=objj_msgSend(_8d,"styleMask");
+if(!(_92&CPDocModalWindowMask)){
+objj_msgSend(CPException,"raise:reason:",CPInternalInconsistencyException,"Currently only CPDocModalWindowMask style mask is supported for attached sheets");
+return;
+}
 objj_msgSend(_8e,"_attachSheet:modalDelegate:didEndSelector:contextInfo:",_8d,_8f,_90,_91);
 }
-}),new objj_method(sel_getUid("arguments"),function(_92,_93){
-with(_92){
+}),new objj_method(sel_getUid("endSheet:returnCode:"),function(_93,_94,_95,_96){
+with(_93){
+var _97=objj_msgSend(_windows,"count");
+while(--_97>=0){
+var _98=objj_msgSend(_windows,"objectAtIndex:",_97);
+var _99=_98._sheetContext;
+if(_99!=nil&&_99["sheet"]===_95){
+_99["returnCode"]=_96;
+objj_msgSend(_98,"_detachSheetWindow");
+return;
+}
+}
+}
+}),new objj_method(sel_getUid("endSheet:"),function(_9a,_9b,_9c){
+with(_9a){
+objj_msgSend(_9a,"endSheet:returnCode:",_9c,0);
+}
+}),new objj_method(sel_getUid("arguments"),function(_9d,_9e){
+with(_9d){
 if(_fullArgsString!=window.location.hash){
-objj_msgSend(_92,"_reloadArguments");
+objj_msgSend(_9d,"_reloadArguments");
 }
 return _args;
 }
-}),new objj_method(sel_getUid("setArguments:"),function(_94,_95,_96){
-with(_94){
-if(!_96||_96.length==0){
+}),new objj_method(sel_getUid("setArguments:"),function(_9f,_a0,_a1){
+with(_9f){
+if(!_a1||_a1.length==0){
 _args=[];
 window.location.hash="#";
 return;
 }
-if(objj_msgSend(_96,"class")!=CPArray){
-_96=objj_msgSend(CPArray,"arrayWithObject:",_96);
+if(objj_msgSend(_a1,"class")!=CPArray){
+_a1=objj_msgSend(CPArray,"arrayWithObject:",_a1);
 }
-_args=_96;
-var _97=objj_msgSend(_args,"copy");
-for(var i=0,_99=_97.length;i<_99;i++){
-_97[i]=encodeURIComponent(_97[i]);
+_args=_a1;
+var _a2=objj_msgSend(_args,"copy");
+for(var i=0,_a4=_a2.length;i<_a4;i++){
+_a2[i]=encodeURIComponent(_a2[i]);
 }
-var _9a=objj_msgSend(_97,"componentsJoinedByString:","/");
-window.location.hash="#"+_9a;
+var _a5=objj_msgSend(_a2,"componentsJoinedByString:","/");
+window.location.hash="#"+_a5;
 }
-}),new objj_method(sel_getUid("_reloadArguments"),function(_9b,_9c){
-with(_9b){
+}),new objj_method(sel_getUid("_reloadArguments"),function(_a6,_a7){
+with(_a6){
 _fullArgsString=window.location.hash;
-var _9d=_fullArgsString.replace("#","").split("/").slice(0);
-for(var i=0,_9f=_9d.length;i<_9f;i++){
-_9d[i]=decodeURIComponent(_9d[i]);
+var _a8=_fullArgsString.replace("#","").split("/").slice(0);
+for(var i=0,_aa=_a8.length;i<_aa;i++){
+_a8[i]=decodeURIComponent(_a8[i]);
 }
-_args=_9d;
+_args=_a8;
 }
-}),new objj_method(sel_getUid("namedArguments"),function(_a0,_a1){
-with(_a0){
+}),new objj_method(sel_getUid("namedArguments"),function(_ab,_ac){
+with(_ab){
 return _namedArgs;
 }
-}),new objj_method(sel_getUid("_openFile:"),function(_a2,_a3,_a4){
-with(_a2){
+}),new objj_method(sel_getUid("_openFile:"),function(_ad,_ae,_af){
+with(_ad){
 if(_delegate&&objj_msgSend(_delegate,"respondsToSelector:",sel_getUid("application:openFile:"))){
-return objj_msgSend(_delegate,"application:openFile:",_a2,_a4);
+return objj_msgSend(_delegate,"application:openFile:",_ad,_af);
 }else{
-return objj_msgSend(_documentController,"openDocumentWithContentsOfURL:display:error:",_a4,YES,NULL);
+return objj_msgSend(_documentController,"openDocumentWithContentsOfURL:display:error:",_af,YES,NULL);
 }
 }
 })]);
-class_addMethods(_4,[new objj_method(sel_getUid("sharedApplication"),function(_a5,_a6){
-with(_a5){
+class_addMethods(_4,[new objj_method(sel_getUid("sharedApplication"),function(_b0,_b1){
+with(_b0){
 if(!CPApp){
 CPApp=objj_msgSend(objj_msgSend(CPApplication,"alloc"),"init");
 }
 return CPApp;
 }
 })]);
-var _35=function(_a7,_a8){
-return {_window:_a7,_state:CPRunContinuesResponse,_previous:nil};
+var _35=function(_b2,_b3){
+return {_window:_b2,_state:CPRunContinuesResponse,_previous:nil};
 };
-var _7f=function(_a9,_aa){
-return {_mask:_a9,_callback:_aa};
+var _7f=function(_b4,_b5){
+return {_mask:_b4,_callback:_b5};
 };
-var _2d=function(_ab){
+var _2d=function(_b6){
 objj_msgSend(CPApp,"setCallback:forNextEventMatchingMask:untilDate:inMode:dequeue:",_2d,CPAnyEventMask,nil,0,NO);
-var _ac=objj_msgSend(_ab,"window"),_ad=CPApp._currentSession;
-if(_ac==_ad._window||objj_msgSend(_ac,"worksWhenModal")){
-objj_msgSend(_ac,"sendEvent:",_ab);
+var _b7=objj_msgSend(_b6,"window"),_b8=CPApp._currentSession;
+if(_b7==_b8._window||objj_msgSend(_b7,"worksWhenModal")){
+objj_msgSend(_b7,"sendEvent:",_b6);
 }
 };
-CPApplicationMain=function(_ae,_af){
-var _b0=objj_msgSend(CPBundle,"mainBundle"),_b1=objj_msgSend(_b0,"principalClass");
-if(!_b1){
-_b1=objj_msgSend(CPApplication,"class");
+CPApplicationMain=function(_b9,_ba){
+var _bb=objj_msgSend(CPBundle,"mainBundle"),_bc=objj_msgSend(_bb,"principalClass");
+if(!_bc){
+_bc=objj_msgSend(CPApplication,"class");
 }
-objj_msgSend(_b1,"sharedApplication");
-if(!_ae){
-var _ae=objj_msgSend(CPApp,"arguments");
-if(objj_msgSend(_ae,"containsObject:","debug")){
+objj_msgSend(_bc,"sharedApplication");
+if(!_b9){
+var _b9=objj_msgSend(CPApp,"arguments");
+if(objj_msgSend(_b9,"containsObject:","debug")){
 CPLogRegister(CPLogPopup);
 }
 }
-if(!_af){
-var _b2=window.location.search.substring(1).split("&");
-_af=objj_msgSend(CPDictionary,"dictionary");
-for(var i=0;i<_b2.length;i++){
-var _b4=_b2[i].indexOf("=");
-if(_b4==-1){
-objj_msgSend(_af,"setObject:forKey:","",_b2[i]);
+if(!_ba){
+var _bd=window.location.search.substring(1).split("&");
+_ba=objj_msgSend(CPDictionary,"dictionary");
+for(var i=0;i<_bd.length;i++){
+var _bf=_bd[i].indexOf("=");
+if(_bf==-1){
+objj_msgSend(_ba,"setObject:forKey:","",_bd[i]);
 }else{
-objj_msgSend(_af,"setObject:forKey:",_b2[i].substring(_b4+1),_b2[i].substring(0,_b4));
+objj_msgSend(_ba,"setObject:forKey:",_bd[i].substring(_bf+1),_bd[i].substring(0,_bf));
 }
 }
 }
-CPApp._args=_ae;
-CPApp._namedArgs=_af;
+CPApp._args=_b9;
+CPApp._namedArgs=_ba;
 objj_msgSend(_CPAppBootstrapper,"performActions");
 };
-var _b5=nil;
+var _c0=nil;
 var _3=objj_allocateClassPair(CPObject,"_CPAppBootstrapper"),_4=_3.isa;
 objj_registerClassPair(_3);
 objj_addClassForBundle(_3,objj_getBundleWithPath(OBJJ_CURRENT_BUNDLE.path));
-class_addMethods(_4,[new objj_method(sel_getUid("actions"),function(_b6,_b7){
-with(_b6){
+class_addMethods(_4,[new objj_method(sel_getUid("actions"),function(_c1,_c2){
+with(_c1){
 return [sel_getUid("bootstrapPlatform"),sel_getUid("loadDefaultTheme"),sel_getUid("loadMainCibFile")];
 }
-}),new objj_method(sel_getUid("performActions"),function(_b8,_b9){
-with(_b8){
-if(!_b5){
-_b5=objj_msgSend(_b8,"actions");
+}),new objj_method(sel_getUid("performActions"),function(_c3,_c4){
+with(_c3){
+if(!_c0){
+_c0=objj_msgSend(_c3,"actions");
 }
-while(_b5.length){
-var _ba=_b5.shift();
-if(objj_msgSend(_b8,_ba)){
+while(_c0.length){
+var _c5=_c0.shift();
+if(objj_msgSend(_c3,_c5)){
 return;
 }
 }
 objj_msgSend(CPApp,"run");
 }
-}),new objj_method(sel_getUid("bootstrapPlatform"),function(_bb,_bc){
-with(_bb){
+}),new objj_method(sel_getUid("bootstrapPlatform"),function(_c6,_c7){
+with(_c6){
 return objj_msgSend(CPPlatform,"bootstrap");
 }
-}),new objj_method(sel_getUid("loadDefaultTheme"),function(_bd,_be){
-with(_bd){
-var _bf=objj_msgSend(objj_msgSend(CPThemeBlend,"alloc"),"initWithContentsOfURL:",objj_msgSend(objj_msgSend(CPBundle,"bundleForClass:",objj_msgSend(CPApplication,"class")),"pathForResource:","Aristo.blend"));
-objj_msgSend(_bf,"loadWithDelegate:",_bd);
+}),new objj_method(sel_getUid("loadDefaultTheme"),function(_c8,_c9){
+with(_c8){
+var _ca=objj_msgSend(objj_msgSend(CPThemeBlend,"alloc"),"initWithContentsOfURL:",objj_msgSend(objj_msgSend(CPBundle,"bundleForClass:",objj_msgSend(CPApplication,"class")),"pathForResource:","Aristo.blend"));
+objj_msgSend(_ca,"loadWithDelegate:",_c8);
 return YES;
 }
-}),new objj_method(sel_getUid("blendDidFinishLoading:"),function(_c0,_c1,_c2){
-with(_c0){
+}),new objj_method(sel_getUid("blendDidFinishLoading:"),function(_cb,_cc,_cd){
+with(_cb){
 objj_msgSend(CPTheme,"setDefaultTheme:",objj_msgSend(CPTheme,"themeNamed:","Aristo"));
-objj_msgSend(_c0,"performActions");
+objj_msgSend(_cb,"performActions");
 }
-}),new objj_method(sel_getUid("loadMainCibFile"),function(_c3,_c4){
-with(_c3){
-var _c5=objj_msgSend(CPBundle,"mainBundle"),_c6=objj_msgSend(_c5,"objectForInfoDictionaryKey:",_1)||objj_msgSend(_c5,"objectForInfoDictionaryKey:",_2);
-if(_c6){
-objj_msgSend(_c5,"loadCibFile:externalNameTable:loadDelegate:",_c6,objj_msgSend(CPDictionary,"dictionaryWithObject:forKey:",CPApp,CPCibOwner),_c3);
+}),new objj_method(sel_getUid("loadMainCibFile"),function(_ce,_cf){
+with(_ce){
+var _d0=objj_msgSend(CPBundle,"mainBundle"),_d1=objj_msgSend(_d0,"objectForInfoDictionaryKey:",_1)||objj_msgSend(_d0,"objectForInfoDictionaryKey:",_2);
+if(_d1){
+objj_msgSend(_d0,"loadCibFile:externalNameTable:loadDelegate:",_d1,objj_msgSend(CPDictionary,"dictionaryWithObject:forKey:",CPApp,CPCibOwner),_ce);
 return YES;
 }
 return NO;
 }
-}),new objj_method(sel_getUid("cibDidFinishLoading:"),function(_c7,_c8,_c9){
-with(_c7){
-objj_msgSend(_c7,"performActions");
+}),new objj_method(sel_getUid("cibDidFinishLoading:"),function(_d2,_d3,_d4){
+with(_d2){
+objj_msgSend(_d2,"performActions");
 }
 })]);

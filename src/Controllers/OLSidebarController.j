@@ -36,11 +36,15 @@ var ResourcesItem = "Resources";
 	    
 	var item = [_items objectAtIndex:listIndex];
 
-    _currentItem = item;
-	if (item == ResourcesItem)
-	{
-		[self showResourcesView];
-	}
+    // If our selection didn't change, don't do anything.
+    if (_currentItem !== item)
+    {
+        _currentItem = item;
+	    if (item === ResourcesItem)
+    	{
+    		[self showResourcesView];
+    	}
+    }
 }
 
 @end

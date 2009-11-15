@@ -1,4 +1,4 @@
-I;21;Foundation/CPBundle.ji;17;CPCompatibility.ji;9;CPEvent.ji;8;CPMenu.ji;13;CPResponder.ji;22;CPDocumentController.ji;14;CPThemeBlend.ji;14;CPCibLoading.ji;12;CPPlatform.jc;26578;
+I;21;Foundation/CPBundle.ji;17;CPCompatibility.ji;9;CPEvent.ji;8;CPMenu.ji;13;CPResponder.ji;22;CPDocumentController.ji;14;CPThemeBlend.ji;14;CPCibLoading.ji;12;CPPlatform.jc;27649;
 var CPMainCibFile = "CPMainCibFile",
     CPMainCibFileHumanFriendly = "Main cib file base name";
 CPApp = nil;
@@ -362,9 +362,36 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $CPApp
 },["CPEvent"]), new objj_method(sel_getUid("beginSheet:modalForWindow:modalDelegate:didEndSelector:contextInfo:"), function $CPApplication__beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo_(self, _cmd, aSheet, aWindow, aModalDelegate, aDidEndSelector, aContextInfo)
 { with(self)
 {
+    var styleMask = objj_msgSend(aSheet, "styleMask");
+    if (!(styleMask & CPDocModalWindowMask))
+    {
+        objj_msgSend(CPException, "raise:reason:", CPInternalInconsistencyException, "Currently only CPDocModalWindowMask style mask is supported for attached sheets");
+        return;
+    }
     objj_msgSend(aWindow, "_attachSheet:modalDelegate:didEndSelector:contextInfo:", aSheet, aModalDelegate, aDidEndSelector, aContextInfo);
 }
-},["void","CPWindow","CPWindow","id","SEL","id"]), new objj_method(sel_getUid("arguments"), function $CPApplication__arguments(self, _cmd)
+},["void","CPWindow","CPWindow","id","SEL","id"]), new objj_method(sel_getUid("endSheet:returnCode:"), function $CPApplication__endSheet_returnCode_(self, _cmd, sheet, returnCode)
+{ with(self)
+{
+    var count = objj_msgSend(_windows, "count");
+    while (--count >= 0)
+    {
+        var aWindow = objj_msgSend(_windows, "objectAtIndex:", count);
+        var context = aWindow._sheetContext;
+        if (context != nil && context["sheet"] === sheet)
+        {
+            context["returnCode"] = returnCode;
+            objj_msgSend(aWindow, "_detachSheetWindow");
+            return;
+        }
+    }
+}
+},["void","CPWindow","int"]), new objj_method(sel_getUid("endSheet:"), function $CPApplication__endSheet_(self, _cmd, sheet)
+{ with(self)
+{
+   objj_msgSend(self, "endSheet:returnCode:", sheet, 0);
+}
+},["void","CPWindow"]), new objj_method(sel_getUid("arguments"), function $CPApplication__arguments(self, _cmd)
 { with(self)
 {
     if(_fullArgsString != window.location.hash)

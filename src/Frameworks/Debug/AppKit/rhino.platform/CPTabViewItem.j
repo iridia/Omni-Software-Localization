@@ -1,4 +1,4 @@
-I;21;Foundation/CPObject.jI;15;AppKit/CPView.jc;3911;
+I;21;Foundation/CPObject.jI;15;AppKit/CPView.jc;4075;
 CPSelectedTab = 0;
 CPBackgroundTab = 1;
 CPPressedTab = 2;
@@ -6,7 +6,12 @@ CPPressedTab = 2;
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_identifier"), new objj_ivar("_label"), new objj_ivar("_view"), new objj_ivar("_auxiliaryView")]);
 objj_registerClassPair(the_class);
 objj_addClassForBundle(the_class, objj_getBundleWithPath(OBJJ_CURRENT_BUNDLE.path));
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithIdentifier:"), function $CPTabViewItem__initWithIdentifier_(self, _cmd, anIdentifier)
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $CPTabViewItem__init(self, _cmd)
+{ with(self)
+{
+    return objj_msgSend(self, "initWithIdentifier:", "");
+}
+},["id"]), new objj_method(sel_getUid("initWithIdentifier:"), function $CPTabViewItem__initWithIdentifier_(self, _cmd, anIdentifier)
 { with(self)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPObject") }, "init");

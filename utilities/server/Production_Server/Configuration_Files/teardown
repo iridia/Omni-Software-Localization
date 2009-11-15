@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# remove files to server location
+# remove files from server location
 sudo rm -R /Library/WebServer/Documents/
 
 # uninstall apache setup files
@@ -14,3 +14,8 @@ sudo mv /private/etc/php.ini.oslbackup /private/etc/php.ini
 
 # restart apache
 sudo /usr/sbin/apachectl restart
+
+# delete databases on CouchDBX, requires CouchDBX to be installed and running!
+curl -X DELETE http://localhost:5984/user
+curl -X DELETE http://localhost:5984/feedback
+curl -X DELETE http://localhost:5984/resourcebundle
