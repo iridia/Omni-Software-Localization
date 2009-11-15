@@ -1,4 +1,4 @@
-I;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPString.ji;15;CPApplication.ji;12;CPClipView.ji;12;CPMenuItem.ji;9;CPPanel.jc;49033;
+I;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPString.ji;15;CPApplication.ji;12;CPClipView.ji;12;CPMenuItem.ji;9;CPPanel.jc;49094;
 CPMenuDidAddItemNotification="CPMenuDidAddItemNotification";
 CPMenuDidChangeItemNotification="CPMenuDidChangeItemNotification";
 CPMenuDidRemoveItemNotification="CPMenuDidRemoveItemNotification";
@@ -520,6 +520,7 @@ _moreBelowView=objj_msgSend(objj_msgSend(CPImageView,"alloc"),"initWithFrame:",C
 objj_msgSend(_moreBelowView,"setImage:",_CPMenuWindowMoreBelowImage);
 objj_msgSend(_moreBelowView,"setFrameSize:",objj_msgSend(_CPMenuWindowMoreBelowImage,"size"));
 objj_msgSend(_fc,"addSubview:",_moreBelowView);
+objj_msgSend(_fa,"setShadowStyle:",CPWindowShadowStyleMenu);
 }
 return _fa;
 }

@@ -215,10 +215,7 @@ var _sprintf_justify = function(sign, prefix, string, suffix, width, leftJustify
 }
 var _sprintf_pad = function(n, ch)
 {
-    var result = "";
-    for (var i = 0; i < n; i++)
-        result += ch;
-    return result;
+    return Array(MAX(0,n)+1).join(ch);
 }
 var base64_map_to = [
         "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
@@ -916,6 +913,8 @@ objj_markedStream.prototype.getMarker = function()
     if (next < 0)
         return NULL;
     var marker = string.substring(location, next);
+    if (marker === 'e')
+        return NULL;
     this._location = next + 1;
     return marker;
 }
@@ -1283,7 +1282,29 @@ _CPPropertyList280NorthSerializers["dictionary"] = function(aDictionary, seriali
     }
     return string + END_MARKER + ';';
 }
-var OBJJ_PLATFORMS = ["browser", "objj"];
+var OBJJ_ENVIRONMENTS = ["ObjJ"];
+var userAgent = window.navigator.userAgent;
+if (userAgent.indexOf("MSIE 7") !== -1)
+    OBJJ_ENVIRONMENTS.unshift("IE7");
+if (userAgent.indexOf("MSIE 8") !== -1)
+    OBJJ_ENVIRONMENTS.unshift("IE8");
+else
+    OBJJ_ENVIRONMENTS.unshift("W3C");
+function objj_mostEligibleEnvironmentFromArray(environments)
+{
+    var index = 0,
+        count = OBJJ_ENVIRONMENTS.length,
+        innerCount = environments.length;
+    for(; index < count; ++index)
+    {
+        var innerIndex = 0,
+            environment = OBJJ_ENVIRONMENTS[index];
+        for (; innerIndex < innerCount; ++innerIndex)
+            if(environment === environments[innerIndex])
+                return environment;
+    }
+    return NULL;
+}
 var OBJJFileNotFoundException = "OBJJFileNotFoundException",
     OBJJExecutableNotFoundException = "OBJJExecutableNotFoundException";
 var objj_files = { },
@@ -1311,6 +1332,7 @@ function objj_bundle()
 {
     this.path = NULL;
     this.info = NULL;
+    this._URIMap = { };
     this.__address = (OBJECT_COUNT++);
 }
 function objj_getBundleWithPath(aPath)
@@ -1517,26 +1539,11 @@ objj_search.prototype.didReceiveBundleResponse = function(aResponse)
     var executablePath = ((bundle.info)._buckets["CPBundleExecutable"]);
     if (executablePath)
     {
-        var platform = NULL,
-            platforms = ((bundle.info)._buckets["CPBundlePlatforms"]),
-            index = 0,
-            count = OBJJ_PLATFORMS.length,
-            innerCount = platforms.length;
-        for(; index < count; ++index)
-        {
-            var innerIndex = 0,
-                currentPlatform = OBJJ_PLATFORMS[index];
-            for (; innerIndex < innerCount; ++innerIndex)
-                if(currentPlatform === platforms[innerIndex])
-                {
-                    platform = currentPlatform;
-                    break;
-                }
-        }
-        executablePath = platform + ".platform/" + executablePath;
+        var environment = objj_mostEligibleEnvironmentFromArray(((bundle.info)._buckets["CPBundleEnvironments"]));
+        executablePath = environment + ".environment/" + executablePath;
         this.request((aResponse.filePath).substr(0, (aResponse.filePath).lastIndexOf('/') + 1) + executablePath, this.didReceiveExecutableResponse);
         var directory = (aResponse.filePath).substr(0, (aResponse.filePath).lastIndexOf('/') + 1),
-            replacedFiles = ((bundle.info)._buckets["CPBundleReplacedFiles"]),
+            replacedFiles = ((((bundle.info)._buckets["CPBundleReplacedFiles"]))._buckets[environment]),
             index = 0,
             count = replacedFiles.length;
         for (; index < count; ++index)
@@ -1658,6 +1665,7 @@ var objj_request_xmlhttp = function()
 var OBJJUnrecognizedFormatException = "OBJJUnrecognizedFormatException";
 var STATIC_MAGIC_NUMBER = "@STATIC",
     MARKER_PATH = "p",
+    MARKER_URI = "u",
     MARKER_CODE = "c",
     MARKER_BUNDLE = "b",
     MARKER_TEXT = "t",
@@ -1687,6 +1695,11 @@ function objj_decompile(aString, bundle)
                                         file.fragments = [];
                                         files.push(file);
                                         objj_files[file.path] = file;
+                                        break;
+            case MARKER_URI: var URI = stream.getString();
+                                        if (URI.toLowerCase().indexOf("mhtml:") === 0)
+                                            URI = "mhtml:" + (window.location.href).substr(0, (window.location.href).lastIndexOf('/') + 1) + '/' + (bundle.path).substr(0, (bundle.path).lastIndexOf('/') + 1) + '/' + URI.substr("mhtml:".length);
+                                        bundle._URIMap[text] = URI;
                                         break;
             case MARKER_BUNDLE: var bundlePath = (bundle.path).substr(0, (bundle.path).lastIndexOf('/') + 1) + '/' + text;
                                         file.bundle = objj_getBundleWithPath(bundlePath);

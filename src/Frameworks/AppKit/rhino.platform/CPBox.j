@@ -1,4 +1,4 @@
-i;8;CPView.jc;5848;
+i;8;CPView.jc;5852;
 CPNoBorder=0;
 CPLineBorder=1;
 CPBezelBorder=2;
@@ -9,7 +9,8 @@ objj_registerClassPair(_1);
 objj_addClassForBundle(_1,objj_getBundleWithPath(OBJJ_CURRENT_BUNDLE.path));
 class_addMethods(_1,[new objj_method(sel_getUid("initWithFrame:"),function(_3,_4,_5){
 with(_3){
-if(_3=objj_msgSendSuper({receiver:_3,super_class:objj_getClass("CPView")},"initWithFrame:",_5)){
+_3=objj_msgSendSuper({receiver:_3,super_class:objj_getClass("CPView")},"initWithFrame:",_5);
+if(_3){
 _fillColor=objj_msgSend(CPColor,"clearColor");
 _borderColor=objj_msgSend(CPColor,"blackColor");
 _borderWidth=1;

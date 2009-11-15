@@ -27,13 +27,15 @@ STARTING_DIR=$PWD
 
 GIT_EXEC="/usr/local/git/bin/git"
 GIT_REPO="/Library/WebServer/Omni-Software-Localization"
+GIT_REPO_SRC="$GIT_REPO/src"
+GIT_REPO_SRC_DEV="$GIT_REPO/src-dev"
 GIT_INFO="$GIT_REPO/.git"
 GIT_TEMP="/tmp/.git"
 
 SCRIPTS_DIR="$GIT_REPO/utilities/server"
 MY_DIR="$SCRIPTS_DIR/Test_Server"
 
-LOGS_DIR="$GIT_REPO/utilities/Logs"
+LOGS_DIR="/Users/projectosl/Documents/Project_OSL/Logs"
 # MY_LOG_DIR="$LOGS_DIR/Test_Server_Updates" # Later, I want to log ALL output from script to a file
 LOG_FILE="$LOGS_DIR/klondike_github_updates.log"
 
@@ -61,6 +63,13 @@ $GIT_EXEC checkout .
 
 $PROMPT Pulling latest repo...
 $GIT_EXEC pull
+
+$PROMPT Updating submodules...
+$GIT_EXEC submodule init
+$GIT_EXEC submodule update
+
+$PROMPT Recreating development directory...
+cp -r $GIT_REPO_SRC $GIT_REPO_SRC_DEV
 
 cd $STARTING_DIR
 echo

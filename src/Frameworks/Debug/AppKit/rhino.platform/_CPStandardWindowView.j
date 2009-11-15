@@ -1,4 +1,4 @@
-i;15;_CPWindowView.jc;14360;
+i;15;_CPWindowView.jc;16135;
 var GRADIENT_HEIGHT = 41.0;
 var _CPTexturedWindowHeadGradientColor = nil,
     _CPTexturedWindowHeadSolidColor = nil;
@@ -60,11 +60,13 @@ var _CPStandardWindowViewBodyBackgroundColor = nil,
     _CPStandardWindowViewDividerBackgroundColor = nil,
     _CPStandardWindowViewTitleBackgroundColor = nil,
     _CPStandardWindowViewCloseButtonImage = nil,
-    _CPStandardWindowViewCloseButtonHighlightedImage = nil;
+    _CPStandardWindowViewCloseButtonHighlightedImage = nil,
+    _CPStandardWindowViewMinimizeButtonImage = nil,
+    _CPStandardWindowViewMinimizeButtonHighlightedImage = nil;
 var STANDARD_GRADIENT_HEIGHT = 41.0;
     STANDARD_TITLEBAR_HEIGHT = 25.0;
 {var the_class = objj_allocateClassPair(_CPWindowView, "_CPStandardWindowView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_headView"), new objj_ivar("_dividerView"), new objj_ivar("_bodyView"), new objj_ivar("_toolbarView"), new objj_ivar("_titleField"), new objj_ivar("_closeButton")]);
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_headView"), new objj_ivar("_dividerView"), new objj_ivar("_bodyView"), new objj_ivar("_toolbarView"), new objj_ivar("_titleField"), new objj_ivar("_closeButton"), new objj_ivar("_minimizeButton")]);
 objj_registerClassPair(the_class);
 objj_addClassForBundle(the_class, objj_getBundleWithPath(OBJJ_CURRENT_BUNDLE.path));
 class_addMethods(the_class, [new objj_method(sel_getUid("contentRectForFrameRect:"), function $_CPStandardWindowView__contentRectForFrameRect_(self, _cmd, aFrameRect)
@@ -143,6 +145,20 @@ class_addMethods(the_class, [new objj_method(sel_getUid("contentRectForFrameRect
             objj_msgSend(_closeButton, "setAlternateImage:", _CPStandardWindowViewCloseButtonHighlightedImage);
             objj_msgSend(self, "addSubview:", _closeButton);
         }
+        if (_styleMask & CPMiniaturizableWindowMask && !objj_msgSend(CPPlatform, "isBrowser"))
+        {
+            if (!_CPStandardWindowViewMinimizeButtonImage)
+            {
+                var bundle = objj_msgSend(CPBundle, "bundleForClass:", objj_msgSend(CPWindow, "class"));
+                _CPStandardWindowViewMinimizeButtonImage = objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:size:", objj_msgSend(bundle, "pathForResource:", "CPWindow/Standard/CPWindowStandardMinimizeButton.png"), CGSizeMake(16.0, 16.0));
+                _CPStandardWindowViewMinimizeButtonHighlightedImage = objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:size:", objj_msgSend(bundle, "pathForResource:", "CPWindow/Standard/CPWindowStandardMinimizeButtonHighlighted.png"), CGSizeMake(16.0, 16.0));
+            }
+            _minimizeButton = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:", CGRectMake(27.0, 7.0, 16.0, 16.0));
+            objj_msgSend(_minimizeButton, "setBordered:", NO);
+            objj_msgSend(_minimizeButton, "setImage:", _CPStandardWindowViewMinimizeButtonImage);
+            objj_msgSend(_minimizeButton, "setAlternateImage:", _CPStandardWindowViewMinimizeButtonHighlightedImage);
+            objj_msgSend(self, "addSubview:", _minimizeButton);
+        }
         objj_msgSend(self, "tile");
     }
     return self;
@@ -152,6 +168,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("contentRectForFrameRect
 {
     objj_msgSend(_closeButton, "setTarget:", objj_msgSend(self, "window"));
     objj_msgSend(_closeButton, "setAction:", sel_getUid("performClose:"));
+    objj_msgSend(_minimizeButton, "setTarget:", objj_msgSend(self, "window"));
+    objj_msgSend(_minimizeButton, "setAction:", sel_getUid("performMiniaturize:"));
 }
 },["void"]), new objj_method(sel_getUid("toolbarOffset"), function $_CPStandardWindowView__toolbarOffset(self, _cmd)
 { with(self)
@@ -169,7 +187,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("contentRectForFrameRect
     objj_msgSend(_dividerView, "setFrame:", CGRectMake(0.0, CGRectGetMaxY(objj_msgSend(_headView, "frame")), width, 1.0));
     var dividerMaxY = CGRectGetMaxY(objj_msgSend(_dividerView, "frame"));
     objj_msgSend(_bodyView, "setFrame:", CGRectMake(0.0, dividerMaxY, width, CGRectGetHeight(bounds) - dividerMaxY));
-    objj_msgSend(_titleField, "setFrame:", CGRectMake(10.0, 3.0, width - 20.0, CGRectGetHeight(objj_msgSend(_titleField, "frame"))));
+    var leftOffset = 8;
+    if (_closeButton)
+        leftOffset += 19.0;
+    if (_minimizeButton)
+        leftOffset += 19.0;
+    objj_msgSend(_titleField, "setFrame:", CGRectMake(leftOffset, 5.0, width - leftOffset*2.0, CGRectGetHeight(objj_msgSend(_titleField, "frame"))));
     objj_msgSend(objj_msgSend(theWindow, "contentView"), "setFrameOrigin:", CGPointMake(0.0, CGRectGetMaxY(objj_msgSend(_dividerView, "frame"))));
 }
 },["void"]), new objj_method(sel_getUid("setTitle:"), function $_CPStandardWindowView__setTitle_(self, _cmd, aTitle)

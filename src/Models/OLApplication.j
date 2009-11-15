@@ -2,7 +2,7 @@
 @import "OLResource.j"
 @import "OLLanguage.j"
 @import "OLResourceBundle.j"
-@import "Find+CPArray.j"
+@import "CPArray+Find.j"
 
 @implementation OLApplication : OLActiveRecord
 {

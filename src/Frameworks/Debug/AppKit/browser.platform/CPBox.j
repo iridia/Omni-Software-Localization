@@ -1,4 +1,4 @@
-i;8;CPView.jc;8500;
+i;8;CPView.jc;8510;
 CPNoBorder = 0;
 CPLineBorder = 1;
 CPBezelBorder = 2;
@@ -10,7 +10,8 @@ objj_addClassForBundle(the_class, objj_getBundleWithPath(OBJJ_CURRENT_BUNDLE.pat
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), function $CPBox__initWithFrame_(self, _cmd, frameRect)
 { with(self)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPView") }, "initWithFrame:", frameRect))
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPView") }, "initWithFrame:", frameRect);
+    if (self)
     {
         _fillColor = objj_msgSend(CPColor, "clearColor");
         _borderColor = objj_msgSend(CPColor, "blackColor");

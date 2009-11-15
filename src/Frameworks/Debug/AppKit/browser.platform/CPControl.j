@@ -117,15 +117,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
     _trackingWasWithinFrame = isWithinFrame;
     _previousTrackingLocation = currentLocation;
 }
-},["void","CPEvent"]), new objj_method(sel_getUid("performClick:"), function $CPControl__performClick_(self, _cmd, sender)
-{ with(self)
-{
-    objj_msgSend(self, "highlight:", YES);
-    objj_msgSend(self, "setState:", objj_msgSend(self, "nextState"));
-    objj_msgSend(self, "sendAction:to:", objj_msgSend(self, "action"), objj_msgSend(self, "target"));
-    objj_msgSend(self, "highlight:", NO);
-}
-},["void","id"]), new objj_method(sel_getUid("setState:"), function $CPControl__setState_(self, _cmd, state)
+},["void","CPEvent"]), new objj_method(sel_getUid("setState:"), function $CPControl__setState_(self, _cmd, state)
 { with(self)
 {
 }
@@ -134,7 +126,15 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 {
     return 0;
 }
-},["int"]), new objj_method(sel_getUid("mouseDownFlags"), function $CPControl__mouseDownFlags(self, _cmd)
+},["int"]), new objj_method(sel_getUid("performClick:"), function $CPControl__performClick_(self, _cmd, sender)
+{ with(self)
+{
+    objj_msgSend(self, "highlight:", YES);
+    objj_msgSend(self, "setState:", objj_msgSend(self, "nextState"));
+    objj_msgSend(self, "sendAction:to:", objj_msgSend(self, "action"), objj_msgSend(self, "target"));
+    objj_msgSend(self, "highlight:", NO);
+}
+},["void","id"]), new objj_method(sel_getUid("mouseDownFlags"), function $CPControl__mouseDownFlags(self, _cmd)
 { with(self)
 {
     return _trackingMouseDownFlags;
