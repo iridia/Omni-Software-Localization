@@ -59,9 +59,12 @@
         [_feedbackTextLabel setFrameOrigin:CPMakePoint(0, calculateNextYPosition(_feedbackTypePopUpButton, 5))];
         [_feedbackView addSubview:_feedbackTextLabel];
         
-        _feedbackTextView = [[CPTextView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([_feedbackView bounds]), 130)];
+        _feedbackTextView = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([_feedbackView bounds]), 130)];
         [_feedbackTextView setFrameOrigin:CPMakePoint(0, calculateNextYPosition(_feedbackTextLabel))];
         [_feedbackTextView setFont:inputFont];
+	    [_feedbackTextView setEditable:YES];
+		[_feedbackTextView setBezeled:YES];
+		[_feedbackTextView setLineBreakMode:CPLineBreakByWordWrapping];
         [_feedbackView addSubview:_feedbackTextView];
         
         _submitButton = [CPButton buttonWithTitle:@"Submit Feedback"];
