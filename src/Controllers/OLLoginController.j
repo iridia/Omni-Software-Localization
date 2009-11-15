@@ -45,14 +45,14 @@
 	var users = [OLUser list];
 	var foundUser = NO;
 	var theUser;
-	
+
 	theUser = [users findBy:function(anotherUser){
 		if([[anotherUser email] isEqualToString:[userInfo objectForKey:@"username"]])
 		{
 			foundUser = YES;
 			return anotherUser;
 		}}];
-	
+
 	if(!foundUser)
 	{
 		[self loginFailed];
@@ -90,8 +90,9 @@
 - (void)hasRegistered:(OLUser)aUser
 {
 	[aUser save];
-	[_registerWindow close];
 	[_delegate updateLoginItemWithTitle:makeLoggedInTitle(aUser)];
+	
+	[_registerWindow close];
 }
 
 - (void)registrationFailed

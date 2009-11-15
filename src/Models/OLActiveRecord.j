@@ -37,9 +37,9 @@
 		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
 			reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
 
-		[exception setClassWithError:[self class]];
+		//[exception setClassWithError:[self class]];
 		[exception setMethodWithError:@"list"];
-		[exception setAdditionalInformation:ex];
+		//[exception setAdditionalInformation:ex];
 
 		[exception raise];
 		
@@ -93,11 +93,11 @@
 	catch(ex)
 	{
 		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
+			reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
 			
-		[exception setClassWithError:[self class]];
+		//[exception setClassWithError:[self class]];
 		[exception setMethodWithError:@"get"];
-		[exception setAdditionalInformation:ex];
+		//[exception setAdditionalInformation:ex];
 		
 		[exception raise];
 		
@@ -129,9 +129,9 @@
 			var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
 				reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
 
-			[exception setClassWithError:[self class]];
+			//[exception setClassWithError:[self class]];
 			[exception setMethodWithError:@"save"];
-			[exception setAdditionalInformation:ex];
+			//[exception setAdditionalInformation:ex];
 
 			[exception raise];
 		}
@@ -161,9 +161,9 @@
 		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
 			reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
 
-		[exception setClassWithError:[self class]];
+		//[exception setClassWithError:[self class]];
 		[exception setMethodWithError:@"create"];
-		[exception setAdditionalInformation:ex];
+		//[exception setAdditionalInformation:ex];
 
 		[exception raise];
 	}
@@ -183,9 +183,9 @@
 		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
 			reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
 			
-		[exception setClassWithError:[self class]];
+		//[exception setClassWithError:[self class]];
 		[exception setMethodWithError:@"delete"];
-		[exception setAdditionalInformation:ex];
+		//[exception setAdditionalInformation:ex];
 		
 		[exception raise];		
 	}
@@ -214,14 +214,14 @@
 	            break;
 	    }
 	}
-	catch(e)
+	catch(ex)
 	{
 		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
 			reason:"it was unable to handle the response from the server" userInfo:[CPDictionary dictionary]];
 			
-		[exception setClassWithError:[self class]];
+		///[exception setClassWithError:""+[self class]];
 		[exception setMethodWithError:@"get"];
-		[exception setAdditionalInformation:ex];
+		//[exception setAdditionalInformation:ex];
 		
 		[exception raise];
 	}
