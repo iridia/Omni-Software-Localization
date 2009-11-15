@@ -1,4 +1,4 @@
-I;21;Foundation/CPObject.jI;21;Foundation/CPString.jI;22;AppKit/CPApplication.jI;17;AppKit/CPButton.jI;16;AppKit/CPColor.jI;15;AppKit/CPFont.jI;16;AppKit/CPImage.jI;20;AppKit/CPImageView.jI;16;AppKit/CPPanel.jI;20;AppKit/CPTextField.jc;7565;
+I;21;Foundation/CPObject.jI;21;Foundation/CPString.jI;22;AppKit/CPApplication.jI;17;AppKit/CPButton.jI;16;AppKit/CPColor.jI;15;AppKit/CPFont.jI;16;AppKit/CPImage.jI;20;AppKit/CPImageView.jI;16;AppKit/CPPanel.jI;20;AppKit/CPTextField.jc;7563;
 CPWarningAlertStyle = 0;
 CPInformationalAlertStyle = 1;
 CPCriticalAlertStyle = 2;
@@ -34,13 +34,13 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $CPAle
     _alertPanel = objj_msgSend(objj_msgSend(CPPanel, "alloc"), "initWithContentRect:styleMask:", CGRectMake(0.0, 0.0, 300.0, 130.0), styleMask ? styleMask | CPTitledWindowMask : CPTitledWindowMask);
     objj_msgSend(_alertPanel, "setFloatingPanel:", YES);
     objj_msgSend(_alertPanel, "center");
-    objj_msgSend(_messageLabel, "setTextColor:", (styleMask == CPHUDBackgroundWindowMask) ? objj_msgSend(CPColor, "whiteColor") : objj_msgSend(CPColor, "blackColor"));
+    objj_msgSend(_messageLabel, "setTextColor:", (styleMask & CPHUDBackgroundWindowMask) ? objj_msgSend(CPColor, "whiteColor") : objj_msgSend(CPColor, "blackColor"));
     var count = objj_msgSend(_buttons, "count");
     for(var i=0; i < count; i++)
     {
         var button = _buttons[i];
         objj_msgSend(button, "setFrameSize:", CGSizeMake(objj_msgSend(button, "frame").size.width, (styleMask == CPHUDBackgroundWindowMask) ? 20.0 : 24.0));
-        objj_msgSend(button, "setBezelStyle:", (styleMask == CPHUDBackgroundWindowMask) ? CPHUDBezelStyle : CPRoundedBezelStyle);
+        objj_msgSend(button, "setBezelStyle:", (styleMask & CPHUDBackgroundWindowMask) ? CPHUDBezelStyle : CPRoundedBezelStyle);
         objj_msgSend(objj_msgSend(_alertPanel, "contentView"), "addSubview:", button);
     }
     objj_msgSend(objj_msgSend(_alertPanel, "contentView"), "addSubview:", _messageLabel);

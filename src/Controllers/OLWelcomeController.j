@@ -26,11 +26,11 @@
     
 	if (self)
 	{
-        _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 700, 250) styleMask:CPTitledWindowMask];
+        _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 700, 325) styleMask:CPTitledWindowMask];
         [_welcomeWindow setTitle:@"Welcome to Omni Software Localization"];
         var welcomeWindowContentView = [_welcomeWindow contentView];
 		
-		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0,0,700,250)];
+		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0, 0, 700, 325)];
 		[_welcomeView setDelegate:self];
         
 		[welcomeWindowContentView addSubview:_welcomeView];
@@ -41,18 +41,21 @@
 	return self;
 }
 
-- (void)transitionToResourceList:(id)sender
+- (void)closeWelcomeWindow:(id)sender
 {
-	[[CPApplication sharedApplication] stopModal];
+    [[CPApplication sharedApplication] stopModal];
 	[_welcomeWindow orderOut:self];
-	
+}
+
+- (void)transitionToResourceList:(id)sender
+{	
+    [self closeWelcomeWindow:self];
 	[_delegate sidebarSendMessage:@selector(selectResources)];
 }
 
 - (void)showUploading
 {
-    [[CPApplication sharedApplication] stopModal];
-    [_welcomeWindow orderOut:self];
+    [self closeWelcomeWindow:self];
 }
 
 - (void)finishedUploadingWithResponse:(CPString)response

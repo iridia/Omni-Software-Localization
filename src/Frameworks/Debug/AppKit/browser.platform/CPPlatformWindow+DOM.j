@@ -1,4 +1,4 @@
-I;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.jc;38897;
+I;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.jc;38973;
 var DoubleClick = "dblclick",
     MouseDown = "mousedown",
     MouseUp = "mouseup",
@@ -34,7 +34,7 @@ if(!the_class) objj_exception_throw(new objj_exception(OBJJClassNotFoundExceptio
 var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("_init"), function $CPPlatformWindow___init(self, _cmd)
 { with(self)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPPlatformWindow").super_class }, "init");
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPObject") }, "init");
     if (self)
     {
         _DOMWindow = window;
@@ -216,8 +216,10 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     _DOMWindow.document.close();
     if (!objj_msgSend(CPPlatform, "isBrowser"))
     {
+        _DOMWindow.cpSetFrame(_contentRect);
         _DOMWindow.cpSetLevel(_level);
         _DOMWindow.cpSetHasShadow(_hasShadow);
+        _DOMWindow.cpSetShadowStyle(_shadowStyle);
     }
     objj_msgSend(self, "registerDOMWindow");
 }

@@ -71,7 +71,7 @@ function objj_printf(string)
 {
     objj_fprintf(alert, string);
 }
-var warning_stream = function (aString) { Packages.java.lang.System.out.println(aString) };
+var warning_stream = function (aString) { print(aString) };
 var _sprintfFormatRegex = new RegExp("([^%]+|%[\\+\\-\\ \\#0]*[0-9\\*]*(.[0-9\\*]+)?[hlL]?[cbBdieEfgGosuxXpn%@])", "g");
 var _sprintfTagRegex = new RegExp("(%)([\\+\\-\\ \\#0]*)([0-9\\*]*)((.[0-9\\*]+)?)([hlL]?)([cbBdieEfgGosuxXpn%@])");
 function sprintf(format)
@@ -2450,10 +2450,10 @@ function fragment_evaluate_code(aFragment)
     try
     {
         var functionText = "function(){"+aFragment.info+"/**/\n}";
-        if (window.isRhino)
+        if (typeof system !== "undefined" && system.engine === "rhino")
             compiled = Packages.org.mozilla.javascript.Context.getCurrentContext().compileFunction(window, functionText, aFragment.file.path, 0, null);
         else
-            compiled = eval(functionText);
+            compiled = eval("("+functionText+")");
     }
     catch(anException)
     {
