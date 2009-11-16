@@ -3,7 +3,8 @@
  * Project OSL
  *
  * Created by Project Omni Software Localization on September 25, 2009.
- * Copyright 2009, OmniGroup and Rose-Hulman Institute of Technology All rights reserved.
+ * Copyright 2009, OmniGroup and Rose-Hulman Institute of Technology 
+ * All rights reserved.
  */
 
 @import <Foundation/CPObject.j>
