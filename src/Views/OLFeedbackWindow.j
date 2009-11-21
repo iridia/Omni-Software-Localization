@@ -122,7 +122,6 @@
     [self orderOut:self];
     
     // Reset to empty values
-    [_emailTextField setStringValue:@""];
     [_feedbackTypePopUpButton selectItemAtIndex:0];
     [self feedbackTypeDidChange:_feedbackTypePopUpButton];
     [_feedbackTextView setStringValue:@""];
