@@ -24,3 +24,10 @@ task ("test", function()
     if (code !== 0)
         OS.exit(code);
 });
+
+task ("metrics", function()
+{
+    var code = OS.system("BeanCounter/CKMetricGatherer.j");
+    if (code !== 0)
+        OS.exit(code);
+});
