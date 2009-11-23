@@ -4,3 +4,6 @@
 [submodule "utilities/EngJourneering"]
 	path = utilities/EngJourneering
 	url = git://github.com/chandlerkent/EngJourneering.git
+[submodule "src/BeanCounter"]
+	path = src/BeanCounter
+	url = git://github.com/chandlerkent/BeanCounter.git
