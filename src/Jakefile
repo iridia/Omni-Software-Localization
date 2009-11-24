@@ -27,7 +27,7 @@ task ("test", function()
 
 task ("metrics", function()
 {
-    var code = OS.system("BeanCounter/CKMetricSuite.j");
+    var code = OS.system("BeanCounter/BeanCounter.j");
     if (code !== 0)
         OS.exit(code);
 });
