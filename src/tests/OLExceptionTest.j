@@ -1,5 +1,5 @@
 @import "../Utilities/OLException.j"
-@import "utilities/OJMoq/OJMoq.j"
+@import <OJMoq/OJMoq.j>
 @import <AppKit/AppKit.j>
 
 @implementation OLExceptionTest : OJTestCase

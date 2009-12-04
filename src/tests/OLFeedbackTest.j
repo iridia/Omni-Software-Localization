@@ -1,5 +1,5 @@
 @import "../Models/OLFeedback.j"
-@import "utilities/OJMoq/OJMoq.j"
+@import <OJMoq/OJMoq.j>
 
 @implementation OLFeedbackTest : OJTestCase
 

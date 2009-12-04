@@ -10,21 +10,7 @@
 {
 	id _delegate @accessors(property=delegate);
 	CPArray _bundles @accessors(property=bundles);
-	CPInteger _editingBundle @accessors(property=editingBundle);
-}
-
-- (id)init
-{
-    self = [super init];
-    
-    if (self)
-    {
-        _bundles = nil;
-        _delegate = nil;
-        _editingBundle = nil;
-    }
-    
-    return self;
+	OLResourceBundle _editingBundle @accessors(property=editingBundle);
 }
 
 - (void)loadBundles

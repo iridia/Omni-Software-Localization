@@ -62,5 +62,3 @@ function isValidEmail(anEmail)
 		return NO;
 	}
 }
-
-

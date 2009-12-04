@@ -1,7 +1,7 @@
 @import <AppKit/AppKit.j>
 @import "../Managers/OLTransitionManager.j"
 @import "../Controllers/OLContentViewController.j"
-@import "utilities/OJMoq/OJMoq.j"
+@import <OJMoq/OJMoq.j>
 
 @implementation OLTransitionManagerTest : OJTestCase
 

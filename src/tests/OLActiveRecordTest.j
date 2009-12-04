@@ -1,6 +1,6 @@
 @import "../Models/OLActiveRecord.j"
 @import <AppKit/AppKit.j>
-@import "utilities/OJMoq/OJMoq.j"
+@import <OJMoq/OJMoq.j>
 
 @implementation OLActiveRecordTest : OJTestCase
 
