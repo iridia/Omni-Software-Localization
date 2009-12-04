@@ -1,0 +1,39 @@
+# Syntax for the BRDSL #
+
+When a view with tag ___Tag___  
+Is ___Action___ (optional arguments, specified by the action)  
+Then a view with tag ___Tag___  
+Should ___Response___ (optional arguments, specified by the response)  
+(And ___Response___ (args))  
+(And ...)  
+...  
+
+## Tag ##
+
+Any arbitrary tag. Error handling will report if the script can't find that view.
+
+## Action ##
+
+Actions are defined in UIActions/UIAction*.j where * is the name of the action. Default actions include
+
+* Clicked
+* Selected
+
+These actions can have arguments. For example, Selected can have arguments "row #" where # is the row number.
+
+## Response ##
+
+Responses are defined in UIResponses/UIResponse*.j where * is the name of the response. Default responses include
+
+* Display
+* Select row #
+
+These actions can have arguments. For example, Select requires a specific row to be selected.
+
+## Commenting ##
+
+You can use a /, # or Comment at the beginning of each line. For example:
+
+`# This is a comment`  
+`/ This is a comment`  
+`Comment This is also a comment`

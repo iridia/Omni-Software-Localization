@@ -1,0 +1,5 @@
+When view with tag 1
+Is Clicked
+Then view with tag 2
+Should Display
+And HaveContent 1,2,3,4
