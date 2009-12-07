@@ -11,6 +11,7 @@
 	id _delegate @accessors(property=delegate);
 	CPArray _bundles @accessors(property=bundles);
 	OLResourceBundle _editingBundle @accessors(property=editingBundle);
+    OLResource _editingResource;
 }
 
 - (void)loadBundles
@@ -28,10 +29,45 @@
     [self setEditingBundle:[_bundles objectAtIndex:selectedIndex]];
 }
 
-- (void)didEditResourceForEditingBundle:(OLResource)editedResource
+- (void)didEditResourceForEditingBundle
 {
-    [_editingBundle replaceObjectInResourcesAtIndex:0 withObject:editedResource];
+    [_editingBundle replaceObjectInResourcesAtIndex:0 withObject:_editingResource];
     [_editingBundle save];
+}
+
+- (void)editLineItem:(OLLineItem)aLineItem resource:(OLResource)editingResource
+{
+    _editingResource = editingResource;
+    var testWindowController = [[OLLineItemEditWindowController alloc] 
+        initWithWindowCibName:"LineItemEditor.cib" lineItem:aLineItem];
+    [testWindowController setDelegate:self];
+    [testWindowController loadWindow];
+}
+
+- (void)nextLineItem:(OLLineItem)currentLineItem
+{
+    var currentIndex = [[_editingResource lineItems] indexOfObject:currentLineItem];
+    var nextIndex = currentIndex + 1;
+
+    if(currentIndex == [[_editingResource lineItems] count]-1)
+    {
+        nextIndex = 0;
+    }
+
+    return [[_editingResource lineItems] objectAtIndex:nextIndex];
+}
+
+- (void)previousLineItem:(OLLineItem)currentLineItem
+{
+    var currentIndex = [[_editingResource lineItems] indexOfObject:currentLineItem];
+    var nextIndex = currentIndex - 1;
+
+    if(currentIndex == 0)
+    {
+        nextIndex = [[_editingResource lineItems] count]-1;
+    }
+
+    return [[_editingResource lineItems] objectAtIndex:nextIndex];
 }
 
 - (void)voteUpResource:(OLResource)resource

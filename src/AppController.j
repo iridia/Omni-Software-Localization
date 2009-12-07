@@ -23,36 +23,34 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 @implementation AppController : CPObject
 {
-	OLMainView _mainView;
-	OLToolbarController _toolbarController @accessors(property=toolbarController);
-	OLSidebarController _sidebarController @accessors(property=sidebarController);
-	OLContentViewController _contentViewController @accessors(property=contentViewController);
+    OLMainView _mainView;
+    OLToolbarController _toolbarController @accessors(property=toolbarController);
+    OLSidebarController _sidebarController @accessors(property=sidebarController);
+    OLContentViewController _contentViewController @accessors(property=contentViewController);
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-	var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask];
-	var contentView = [theWindow contentView];
-	
+    var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask];
+    var contentView = [theWindow contentView];
+
     _mainView = [[OLMainView alloc] initWithFrame:[contentView bounds]];
     [_mainView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-	[_mainView setDelegate:self];
-	
+    [_mainView setDelegate:self];
+
     // setupToolbar(self, theWindow);
-	setupSidebar(self, _mainView, [contentView bounds]);
-	setupContentView(self, _mainView, [contentView bounds]);
-	
-	[contentView addSubview:_mainView];
-	
-	var welcomeController = [[OLWelcomeController alloc] init];
-	[welcomeController setDelegate:self];
-	
-	var testWindowController = [[OLLineItemEditWindowController alloc] initWithWindowCibName:"LineItemEditor.cib"];
-	[testWindowController loadWindow];
-	[theWindow orderFront:self];
-	
-	var menu = [[OLMenu alloc] init];
-	[[CPApplication sharedApplication] setMainMenu:menu];
+    setupSidebar(self, _mainView, [contentView bounds]);
+    setupContentView(self, _mainView, [contentView bounds]);
+
+    [contentView addSubview:_mainView];
+
+    var welcomeController = [[OLWelcomeController alloc] init];
+    [welcomeController setDelegate:self];
+
+    [theWindow orderFront:self];
+
+    var menu = [[OLMenu alloc] init];
+    [[CPApplication sharedApplication] setMainMenu:menu];
     [CPMenu setMenuBarVisible:YES];
 }
 
@@ -63,17 +61,17 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 - (void)contentViewSendMessage:(SEL)aMessage
 {
-	[_contentViewController handleMessage:aMessage];
+    [_contentViewController handleMessage:aMessage];
 }
 
 - (void)setContentView:(CPView)aView
 {
-	[_mainView setCurrentView:aView];
+    [_mainView setCurrentView:aView];
 }
 
 - (void)handleException:(OLException)anException
 {
-	alert("Error!\n"+[anException name]+" threw error "+[anException reason]);
+    alert("Error!\n"+[anException name]+" threw error "+[anException reason]);
 }
 
 @end
