@@ -17,6 +17,7 @@
 @import "Views/OLSidebarView.j"
 @import "Views/OLMainView.j"
 @import "Views/OLMenu.j"
+@import "Controllers/LineItemEditWindowController.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
@@ -46,6 +47,8 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	var welcomeController = [[OLWelcomeController alloc] init];
 	[welcomeController setDelegate:self];
 	
+	var testWindowController = [[OLLineItemEditWindowController alloc] initWithWindowCibName:"LineItemEditor.cib"];
+	[testWindowController loadWindow];
 	[theWindow orderFront:self];
 	
 	var menu = [[OLMenu alloc] init];
