@@ -38,18 +38,17 @@
 - (void)editLineItem:(OLLineItem)aLineItem resource:(OLResource)editingResource
 {
     _editingResource = editingResource;
-    var testWindowController = [[OLLineItemEditWindowController alloc] 
+    var lineItemEditWindowController = [[OLLineItemEditWindowController alloc] 
         initWithWindowCibName:"LineItemEditor.cib" lineItem:aLineItem];
-    [testWindowController setDelegate:self];
-    [testWindowController loadWindow];
+    [lineItemEditWindowController setDelegate:self];
+    [lineItemEditWindowController loadWindow];
 }
 
 - (void)nextLineItem:(OLLineItem)currentLineItem
 {
-    var currentIndex = [[_editingResource lineItems] indexOfObject:currentLineItem];
-    var nextIndex = currentIndex + 1;
+    var nextIndex = [self indexOfLineItem:currentLineItem] + 1;
 
-    if(currentIndex == [[_editingResource lineItems] count]-1)
+    if([self indexOfLineItem:currentLineItem] == [[_editingResource lineItems] count]-1)
     {
         nextIndex = 0;
     }
@@ -59,10 +58,9 @@
 
 - (void)previousLineItem:(OLLineItem)currentLineItem
 {
-    var currentIndex = [[_editingResource lineItems] indexOfObject:currentLineItem];
-    var nextIndex = currentIndex - 1;
+    var nextIndex = [self indexOfLineItem:currentLineItem] - 1;
 
-    if(currentIndex == 0)
+    if([self indexOfLineItem:currentLineItem] == 0)
     {
         nextIndex = [[_editingResource lineItems] count]-1;
     }
@@ -78,6 +76,11 @@
 - (void)voteDownResource:(OLResource)resource
 {
     [resource voteDown];
+}
+
+- (void)indexOfLineItem:(OLLineItem)aLineItem
+{
+	return [[_editingResource lineItems] indexOfObject:aLineItem];
 }
 
 @end
