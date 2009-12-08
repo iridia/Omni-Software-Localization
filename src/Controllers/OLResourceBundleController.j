@@ -2,16 +2,53 @@
 @import "../models/OLResourceBundle.j"
 @import "../Utilities/OLException.j"
 
+var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
+
 /*!
  * The OLResourceBundleController is a controller for the resource bundle view and
  * the decisions on which data to send to the view is made here.
  */
-@implementation OLResourceBundleController : CPObject
+@implementation OLResourceBundleController : CPViewController
 {
 	id _delegate @accessors(property=delegate);
 	CPArray _bundles @accessors(property=bundles);
 	OLResourceBundle _editingBundle @accessors(property=editingBundle);
     OLResource _editingResource;
+    CPTableView tableView;
+}
+
+- (void)init
+{
+        return [self initWithCibName:"Resources" bundle:nil externalNameTable:[CPDictionary dictionaryWithObject:self forKey:CPCibOwner]];
+}
+
+- (void)initWithCibName:(CPString)aName bundle:(CPBundle)aBundle externalNameTable:(CPDictionary)anExternalNameTable
+{
+    self = [super initWithCibName:aName bundle:aBundle externalNameTable:anExternalNameTable];
+    return self;
+}
+
+- (void)awakeFromCib
+{
+    var scrollView = [tableView superview];
+    [scrollView setBounds:CGRectMake(0,0,400,200)];
+
+    [tableView setDataSource:self];
+    [tableView setUsesAlternatingRowBackgroundColors:YES];
+    [tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [tableView setDelegate:self];
+
+    // define the header color
+	var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"button-bezel-center.png"]]];
+
+    [[tableView cornerView] setBackgroundColor:headerColor];
+
+	// add the filename column
+	var column = [[CPTableColumn alloc] initWithIdentifier:OLResourcesViewFileNameColumn];
+	[[column headerView] setStringValue:"Filename"];
+	[[column headerView] setBackgroundColor:headerColor];
+	[column setWidth:CGRectGetWidth([tableView bounds])];
+	[tableView addTableColumn:column];
 }
 
 - (void)loadBundles
@@ -81,6 +118,21 @@
 - (void)indexOfLineItem:(OLLineItem)aLineItem
 {
 	return [[_editingResource lineItems] indexOfObject:aLineItem];
+}
+- (int)numberOfRowsInTableView:(CPTableView)resourceTableView
+{
+    return [_bundles count];
+}
+
+- (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
+{
+    var resourceBundle = [_bundles objectAtIndex:row];
+    var resource = [[resourceBundle resources] objectAtIndex:0]; // FIXME: shoud not be hard coded to 0.
+    
+    if ([tableColumn identifier] === OLResourcesViewFileNameColumn)
+    {
+        return [resource fileName];
+    }
 }
 
 @end
