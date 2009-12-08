@@ -24,10 +24,6 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 	if (self)
 	{
 	    [self setVertical:NO];
-	    
-		var scrollView = [[CPScrollView alloc] initWithFrame:[self bounds]];
-		[scrollView setAutohidesScrollers:YES];
-		[scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 		
 		// create the resourceTableView
 		_resourceTableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];

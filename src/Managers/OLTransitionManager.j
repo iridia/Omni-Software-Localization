@@ -34,7 +34,7 @@
     
     [_delegate showView:[resourceBundleController view]];
 
-    [resourceBundleController loadBundles];
+    // [resourceBundleController loadBundles];
 }
 
 @end

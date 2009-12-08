@@ -14,7 +14,6 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 	CPArray _bundles @accessors(property=bundles);
 	OLResourceBundle _editingBundle @accessors(property=editingBundle);
     OLResource _editingResource;
-    CPTableView tableView;
 }
 
 - (void)init
@@ -30,12 +29,17 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 - (void)awakeFromCib
 {
-    var scrollView = [tableView superview];
-    [scrollView setBounds:CGRectMake(0,0,400,200)];
+    [self loadBundles];
 
-    [tableView setDataSource:self];
+    console.log([[self view] bounds]);
+    var scrollView = [[CPScrollView alloc] initWithFrame:[[self view] bounds]];
+    [scrollView setAutohidesScrollers:YES];
+    [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+    var tableView = [[CPTableView alloc] initWithFrame:[[self view] bounds]];
     [tableView setUsesAlternatingRowBackgroundColors:YES];
     [tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [tableView setDataSource:self];
     [tableView setDelegate:self];
 
     // define the header color
@@ -45,10 +49,14 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 	// add the filename column
 	var column = [[CPTableColumn alloc] initWithIdentifier:OLResourcesViewFileNameColumn];
-	[[column headerView] setStringValue:"Filename"];
+	[column setWidth:CGRectGetWidth([[self view] bounds])];
+	[[column headerView] setStringValue:@"Filename"];
 	[[column headerView] setBackgroundColor:headerColor];
-	[column setWidth:CGRectGetWidth([tableView bounds])];
 	[tableView addTableColumn:column];
+
+    [scrollView setDocumentView:tableView];
+
+    [[self view] addSubview:scrollView];
 }
 
 - (void)loadBundles
