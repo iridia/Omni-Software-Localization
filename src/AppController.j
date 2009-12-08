@@ -13,8 +13,8 @@
 // @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
+@import "Controllers/OLWelcomeWindowController.j"
 @import "Managers/OLTransitionManager.j"
-@import "Views/OLSidebarView.j"
 @import "Views/OLMainView.j"
 @import "Views/OLMenu.j"
 
@@ -22,6 +22,10 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 @implementation AppController : CPObject
 {
+    @outlet CPWindow        theWindow;
+    @outlet CPSplitView     mainSplitView;
+    @outlet CPScrollView    sidebarScrollView;
+    @outlet CPView          mainContentView;
 	OLMainView _mainView;
 	OLToolbarController _toolbarController @accessors(property=toolbarController);
 	OLSidebarController _sidebarController @accessors(property=sidebarController);
@@ -30,26 +34,38 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-	var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask];
-	var contentView = [theWindow contentView];
-	
-    _mainView = [[OLMainView alloc] initWithFrame:[contentView bounds]];
-    [_mainView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-	[_mainView setDelegate:self];
-	
+    // _mainView = [[OLMainView alloc] initWithFrame:[contentView bounds]];
+    // [_mainView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    // [_mainView setDelegate:self];
+
     // setupToolbar(self, theWindow);
-	setupSidebar(self, _mainView, [contentView bounds]);
-	setupContentView(self, _mainView, [contentView bounds]);
-	
-	[contentView addSubview:_mainView];
-	
-	var welcomeController = [[OLWelcomeController alloc] init];
-	[welcomeController setDelegate:self];
-	
-	[theWindow orderFront:self];
-	
-	var menu = [[OLMenu alloc] init];
-	[[CPApplication sharedApplication] setMainMenu:menu];
+    // setupSidebar(self, _mainView, [contentView bounds]);
+    // setupContentView(self, _mainView, [contentView bounds]);
+    
+    // [contentView addSubview:_mainView];
+    
+    // var welcomeController = [[OLWelcomeController alloc] init];
+    // [welcomeController setDelegate:self];
+
+    // Show the welcome window
+    // var welcomeWindowController = [[OLWelcomeWindowController alloc] init];
+    // [welcomeWindowController showWindow:self];
+}
+
+- (void)awakeFromCib
+{
+    // Configure main SplitView
+    [mainSplitView setIsPaneSplitter:YES];
+
+    // Autohide the scrollers here and not in the Cib because it is impossible to
+    // select the scrollView in Atlas again otherwise.
+    [sidebarScrollView setAutohidesScrollers:YES];
+    _sidebarController = [[OLSidebarController alloc] initWithFrame:[[sidebarScrollView contentView] bounds]];
+    [sidebarScrollView setDocumentView:[_sidebarController sidebarOutlineView]];
+
+    // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
+    var menu = [[OLMenu alloc] init];
+    [[CPApplication sharedApplication] setMainMenu:menu];
     [CPMenu setMenuBarVisible:YES];
 }
 
@@ -89,17 +105,10 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 function setupSidebar(self, mainView, frame)
 {
-	var sidebarController = [[OLSidebarController alloc] init];
+	var sidebarController = [[OLSidebarViewController alloc] initWithCibName:@"SidebarView" bundle:[CPBundle mainBundle]]; 
 	[sidebarController setDelegate:self];
 	
-	var sidebar = [[OLSidebarView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight(frame))];
-    [sidebar setBackgroundColor:[CPColor sourceViewColor]];
-    [sidebar setAutoresizingMask:CPViewHeightSizable | CPViewMaxXMargin];
-	[sidebar setDelegate:sidebarController];
-	
-	[sidebarController setSidebarView:sidebar];
-	
-	[mainView setSourceView:sidebar];
+	[mainView setSourceView:[sidebarController view]];
 	[self setSidebarController:sidebarController];
 }
 
