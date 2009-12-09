@@ -1,4 +1,5 @@
 @import <Foundation/CPObject.j>
+
 @import "../models/OLResourceBundle.j"
 @import "../Utilities/OLException.j"
 
@@ -8,7 +9,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
  * The OLResourceBundleController is a controller for the resource bundle view and
  * the decisions on which data to send to the view is made here.
  */
-@implementation OLResourceBundleController : CPViewController
+@implementation OLResourceBundleController : CPObject
 {
 	id _delegate @accessors(property=delegate);
 	CPArray _bundles @accessors(property=bundles);
@@ -16,47 +17,37 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     OLResource _editingResource;
 }
 
-- (void)init
-{
-        return [self initWithCibName:"Resources" bundle:nil externalNameTable:[CPDictionary dictionaryWithObject:self forKey:CPCibOwner]];
-}
-
-- (void)initWithCibName:(CPString)aName bundle:(CPBundle)aBundle externalNameTable:(CPDictionary)anExternalNameTable
-{
-    self = [super initWithCibName:aName bundle:aBundle externalNameTable:anExternalNameTable];
-    return self;
-}
-
 - (void)awakeFromCib
 {
     [self loadBundles];
+    CPLog(@"Bundles: %@", [self bundles]);
 
-    console.log([[self view] bounds]);
-    var scrollView = [[CPScrollView alloc] initWithFrame:[[self view] bounds]];
-    [scrollView setAutohidesScrollers:YES];
-    [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-
-    var tableView = [[CPTableView alloc] initWithFrame:[[self view] bounds]];
-    [tableView setUsesAlternatingRowBackgroundColors:YES];
-    [tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    [tableView setDataSource:self];
-    [tableView setDelegate:self];
-
-    // define the header color
-	var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"button-bezel-center.png"]]];
-
-    [[tableView cornerView] setBackgroundColor:headerColor];
-
-	// add the filename column
-	var column = [[CPTableColumn alloc] initWithIdentifier:OLResourcesViewFileNameColumn];
-	[column setWidth:CGRectGetWidth([[self view] bounds])];
-	[[column headerView] setStringValue:@"Filename"];
-	[[column headerView] setBackgroundColor:headerColor];
-	[tableView addTableColumn:column];
-
-    [scrollView setDocumentView:tableView];
-
-    [[self view] addSubview:scrollView];
+    //     console.log([[self view] bounds]);
+    //     var scrollView = [[CPScrollView alloc] initWithFrame:[[self view] bounds]];
+    //     [scrollView setAutohidesScrollers:YES];
+    //     [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    // 
+    //     var tableView = [[CPTableView alloc] initWithFrame:[[self view] bounds]];
+    //     [tableView setUsesAlternatingRowBackgroundColors:YES];
+    //     [tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    //     [tableView setDataSource:self];
+    //     [tableView setDelegate:self];
+    // 
+    //     // define the header color
+    // var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"button-bezel-center.png"]]];
+    // 
+    //     [[tableView cornerView] setBackgroundColor:headerColor];
+    // 
+    // // add the filename column
+    // var column = [[CPTableColumn alloc] initWithIdentifier:OLResourcesViewFileNameColumn];
+    // [column setWidth:CGRectGetWidth([[self view] bounds])];
+    // [[column headerView] setStringValue:@"Filename"];
+    // [[column headerView] setBackgroundColor:headerColor];
+    // [tableView addTableColumn:column];
+    // 
+    //     [scrollView setDocumentView:tableView];
+    // 
+    //     [[self view] addSubview:scrollView];
 }
 
 - (void)loadBundles

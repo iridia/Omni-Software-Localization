@@ -7,9 +7,10 @@
     CPDictionary    _items;
     CPString        _currentItem;
 
-    @outlet         CPScrollView        sidebarScrollView;
+    @outlet         CPScrollView                sidebarScrollView;
+    @outlet         OLResourceBundleController  resourceBundleController;
 
-    id              _delegate           @accessors(property=delegate);
+    id              _delegate                   @accessors(property=delegate);
 }
 
 - (void)awakeFromCib

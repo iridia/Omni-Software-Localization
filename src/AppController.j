@@ -55,7 +55,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
 
-    console.log(sidebarController);
     [sidebarController setDelegate:self];
 
     // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
