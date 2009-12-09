@@ -8,6 +8,7 @@
  */
 
 @import <Foundation/CPObject.j>
+@import <Foundation/CPWebDAVManager.j>
 
 @import "Categories/CPColor+OLColors.j"
 
@@ -40,13 +41,16 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 {
     // setupToolbar(self, theWindow);
     // setupContentView(self, _mainView, [contentView bounds]);
-    
-    var welcomeController = [[OLWelcomeController alloc] init];
-    [welcomeController setDelegate:self];
+    // 
+    // var welcomeController = [[OLWelcomeController alloc] init];
+    // [welcomeController setDelegate:self];
 
     // Show the welcome window
     // var welcomeWindowController = [[OLWelcomeWindowController alloc] init];
     // [welcomeWindowController showWindow:self];
+
+	var webDavController = [[CPWebDAVManager alloc] init];
+	[webDavController contentsOfDirectoryAtURL:"http://localhost/webdav" includingPropertiesForKeys:[] options:nil block:function(a,b){console.log(b);}];
 }
 
 - (void)awakeFromCib
