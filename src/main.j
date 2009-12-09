@@ -11,7 +11,6 @@
 
 @import "AppController.j"
 
-
 function main(args, namedArgs)
 {
     CPLogRegister(CPLogConsole);

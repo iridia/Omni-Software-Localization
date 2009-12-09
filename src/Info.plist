@@ -8,5 +8,7 @@
 	<string>Project OSL</string>
 	<key>CPPrincipalClass</key>
 	<string>CPApplication</string>
+    <key>Main cib file base name</key>
+    <string>MainMenu.cib</string>
 </dict>
 </plist>
