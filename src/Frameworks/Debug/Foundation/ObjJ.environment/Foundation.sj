@@ -338,7 +338,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["void","id","CPString"])]);
 }
 
-p;9;CPArray.ji;10;CPObject.ji;9;CPRange.ji;14;CPEnumerator.ji;18;CPSortDescriptor.ji;13;CPException.jc;27638;
+p;9;CPArray.ji;10;CPObject.ji;9;CPRange.ji;14;CPEnumerator.ji;18;CPSortDescriptor.ji;13;CPException.jc;27657;
 {var the_class = objj_allocateClassPair(CPEnumerator, "_CPArrayEnumerator"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_array"), new objj_ivar("_index")]);
 objj_registerClassPair(the_class);
@@ -589,8 +589,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $CPArr
 },["id"]), new objj_method(sel_getUid("objectAtIndex:"), function $CPArray__objectAtIndex_(self, _cmd, anIndex)
 { with(self)
 {
-    if (anIndex >= length)
-        objj_msgSend(CPException, "raise:reason:", CPRangeException, "index (" + anIndex + ") beyond bounds (" + length + ")");
+    if (anIndex >= length || anIndex < 0)
+        objj_msgSend(CPException, "raise:reason:", CPRangeException, "index (" + anIndex + ") out of bounds (0 - " + length + ")");
     return self[anIndex];
 }
 },["id","int"]), new objj_method(sel_getUid("objectsAtIndexes:"), function $CPArray__objectsAtIndexes_(self, _cmd, indexes)
@@ -1827,7 +1827,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("alloc"), function $CPD
 }
 objj_data.prototype.isa = CPData;
 
-p;8;CPDate.ji;10;CPObject.ji;10;CPString.jc;5376;
+p;8;CPDate.ji;10;CPObject.ji;10;CPString.jc;7047;
 var CPDateReferenceDate = new Date(Date.UTC(2001,1,1,0,0,0,0));
 {var the_class = objj_allocateClassPair(CPObject, "CPDate"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
@@ -1859,7 +1859,16 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithTimeIntervalSin
 },["id","CPTimeInterval","CPDate"]), new objj_method(sel_getUid("initWithString:"), function $CPDate__initWithString_(self, _cmd, description)
 { with(self)
 {
-    self = new Date(description);
+    var format = /(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}) ([-+])(\d{2})(\d{2})/,
+        d = description.match(new RegExp(format));
+    if (!d || d.length != 10)
+        objj_msgSend(CPException, "raise:reason:", CPInvalidArgumentException, "initWithString: the string must be of YYYY-MM-DD HH:MM:SS ±HHMM format");
+    var date = new Date(d[1], d[2]-1, d[3]),
+        timeZoneOffset = (Number(d[8]) * 60 + Number(d[9])) * (d[7] === '-' ? -1 : 1);
+    date.setHours(d[4]);
+    date.setMinutes(d[5]);
+    date.setSeconds(d[6]);
+    self = new Date(date.getTime() + (timeZoneOffset - date.getTimezoneOffset()) * 60 * 1000);
     return self;
 }
 },["id","CPString"]), new objj_method(sel_getUid("timeIntervalSinceDate:"), function $CPDate__timeIntervalSinceDate_(self, _cmd, anotherDate)
@@ -1910,7 +1919,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithTimeIntervalSin
 },["CPDate","CPDate"]), new objj_method(sel_getUid("description"), function $CPDate__description(self, _cmd)
 { with(self)
 {
-    return self.toString();
+    var hours = Math.floor(self.getTimezoneOffset() / 60),
+        minutes = self.getTimezoneOffset() - hours * 60;
+    return objj_msgSend(CPString, "stringWithFormat:", "%04d-%02d-%02d %02d:%02d:%02d +%02d%02d", self.getFullYear(), self.getMonth()+1, self.getDate(), self.getHours(), self.getMinutes(), self.getSeconds(), hours, minutes);
 }
 },["CPString"])]);
 class_addMethods(meta_class, [new objj_method(sel_getUid("alloc"), function $CPDate__alloc(self, _cmd)
@@ -1954,6 +1965,26 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("alloc"), function $CPD
     return objj_msgSend(objj_msgSend(CPDate, "date"), "timeIntervalSinceReferenceDate");
 }
 },["CPTimeInterval"])]);
+}
+var CPDateTimeKey = "CPDateTimeKey";
+{
+var the_class = objj_getClass("CPDate")
+if(!the_class) objj_exception_throw(new objj_exception(OBJJClassNotFoundException, "*** Could not find definition for class \"CPDate\""));
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $CPDate__initWithCoder_(self, _cmd, aCoder)
+{ with(self)
+{
+    if (self)
+    {
+        self.setTime(objj_msgSend(aCoder, "decodeIntForKey:", CPDateTimeKey));
+    }
+    return self;
+}
+},["id","CPCoder"]), new objj_method(sel_getUid("encodeWithCoder:"), function $CPDate__encodeWithCoder_(self, _cmd, aCoder)
+{ with(self)
+{
+    objj_msgSend(aCoder, "encodeInt:forKey:", self.getTime(), CPDateTimeKey);
+}
+},["void","CPCoder"])]);
 }
 Date.prototype.isa = CPDate;
 
@@ -5761,7 +5792,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
 },["CPRunLoop"])]);
 }
 
-p;7;CPSet.ji;10;CPObject.ji;9;CPArray.ji;10;CPNumber.ji;14;CPEnumerator.jc;11387;
+p;7;CPSet.ji;10;CPObject.ji;9;CPArray.ji;10;CPNumber.ji;14;CPEnumerator.jc;11383;
 {var the_class = objj_allocateClassPair(CPObject, "CPSet"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_contents"), new objj_ivar("_count")]);
 objj_registerClassPair(the_class);
@@ -5852,7 +5883,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $CPSet
 },["id"]), new objj_method(sel_getUid("containsObject:"), function $CPSet__containsObject_(self, _cmd, anObject)
 { with(self)
 {
-    if (_contents[objj_msgSend(anObject, "UID")] && objj_msgSend(_contents[objj_msgSend(anObject, "UID")], "isEqual:", anObject))
+    var obj = _contents[objj_msgSend(anObject, "UID")];
+    if (obj !== undefined && objj_msgSend(obj, "isEqual:", anObject))
         return YES;
     return NO;
 }
@@ -6136,7 +6168,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("sortDescriptorWithKey:
 },["id","CPString","BOOL","SEL"])]);
 }
 
-p;10;CPString.ji;10;CPObject.ji;13;CPException.ji;18;CPSortDescriptor.ji;9;CPValue.jc;14645;
+p;10;CPString.ji;10;CPObject.ji;13;CPException.ji;18;CPSortDescriptor.ji;9;CPValue.jc;15603;
 CPCaseInsensitiveSearch = 1;
 CPLiteralSearch = 2;
 CPBackwardsSearch = 4;
@@ -6349,7 +6381,31 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithString:"), func
     }
     return hash;
 }
-},["unsigned"]), new objj_method(sel_getUid("capitalizedString"), function $CPString__capitalizedString(self, _cmd)
+},["unsigned"]), new objj_method(sel_getUid("commonPrefixWithString:"), function $CPString__commonPrefixWithString_(self, _cmd, aString)
+{ with(self)
+{
+    return objj_msgSend(self, "commonPrefixWithString:options:",  aString,  0);
+}
+},["CPString","CPString"]), new objj_method(sel_getUid("commonPrefixWithString:options:"), function $CPString__commonPrefixWithString_options_(self, _cmd, aString, aMask)
+{ with(self)
+{
+    var len = 0,
+        lhs = self,
+        rhs = aString,
+        min = MIN(objj_msgSend(lhs, "length"), objj_msgSend(rhs, "length"));
+    if (aMask & CPCaseInsensitiveSearch)
+    {
+        lhs = objj_msgSend(lhs, "lowercaseString");
+        rhs = objj_msgSend(rhs, "lowercaseString");
+    }
+    for (; len < min; len++ )
+    {
+        if ( objj_msgSend(lhs, "characterAtIndex:", len) !== objj_msgSend(rhs, "characterAtIndex:", len) )
+            break;
+    }
+    return objj_msgSend(self, "substringToIndex:", len);
+}
+},["CPString","CPString","int"]), new objj_method(sel_getUid("capitalizedString"), function $CPString__capitalizedString(self, _cmd)
 { with(self)
 {
     var parts = self.split(/\b/g);

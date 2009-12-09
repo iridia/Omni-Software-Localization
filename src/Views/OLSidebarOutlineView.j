@@ -22,6 +22,7 @@
 }
 
 /*
+- (void)setSelected:()
 - (void)drawRect:(CGRect)aRect
 {
     // Add drawing code here

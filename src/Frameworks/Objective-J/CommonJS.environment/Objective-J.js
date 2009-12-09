@@ -560,16 +560,16 @@ function class_copyIvarList( aClass)
 {
     return aClass.ivars.slice(0);
 }
-function class_addMethod( aClass, aName, anImplementation, aType)
+function class_addMethod( aClass, aName, anImplementation, types)
 {
     if (aClass.method_hash[aName])
         return NO;
-    var method = new objj_method(aName, anImplementation, aType);
+    var method = new objj_method(aName, anImplementation, types);
     aClass.method_list.push(method);
     aClass.method_dtable[aName] = method;
     method.method_imp.displayName = (((aClass.info & (CLS_META))) ? '+' : '-') + " [" + class_getName(aClass) + ' ' + method_getName(method) + ']';
     if (!((aClass.info & (CLS_META))) && (((aClass.info & (CLS_META))) ? aClass : aClass.isa).isa === (((aClass.info & (CLS_META))) ? aClass : aClass.isa))
-        class_addMethod((((aClass.info & (CLS_META))) ? aClass : aClass.isa), method);
+        class_addMethod((((aClass.info & (CLS_META))) ? aClass : aClass.isa), aName, anImplementation, types);
     return YES;
 }
 function class_addMethods( aClass, methods)
