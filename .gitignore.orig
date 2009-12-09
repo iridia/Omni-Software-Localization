@@ -5,5 +5,7 @@ src/Build
 .htaccess
 REST-config.php
 metrics.txt
+<<<<<<< HEAD
 
-metrics.txt
+=======
+>>>>>>> f9be0ad46d6a9dc8a54e99dd7b4bc283f24de50b

@@ -26,7 +26,7 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
         var oslImageView = [[CPImageView alloc] initWithFrame:CPMakeRect(0, 0, 150.0, 150.0)];
         [oslImageView setFrameOrigin:CPMakePoint((CGRectGetWidth([welcomeTextView bounds]) - 150.0) / 2.0, 10.0)];
 		
-		var oslImage = [[CPImage alloc] initByReferencingFile:@"Resources/logo.png" size:CGSizeMake(150.0, 150.0)];
+		var oslImage = [[CPImage alloc] initByReferencingFile:@"Resources/Images/logo.png" size:CGSizeMake(150.0, 150.0)];
 		[oslImageView setImage:oslImage];
 		
 		var welcomeText = [CPTextField labelWithTitle:@"Welcome to Omni Software Localization!"];
