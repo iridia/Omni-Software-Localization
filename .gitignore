@@ -4,3 +4,5 @@ src/Build
 *.tmproj
 .htaccess
 REST-config.php
+metrics.txt
+
