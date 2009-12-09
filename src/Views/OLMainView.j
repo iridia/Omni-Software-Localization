@@ -17,7 +17,7 @@
         [self setVertical:YES];
         [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 
-        _sourceView = [[CPView alloc] initWithFrame:CGRectMakeZero()];
+        _sourceView = [[CPView alloc] initWithFrame:CGRectMake(0.0, 0.0, 200.0, CGRectGetHeight(frame))];
         [self addSubview:_sourceView];
 
         _currentView = [[CPView alloc] initWithFrame:CGRectMakeZero()];
