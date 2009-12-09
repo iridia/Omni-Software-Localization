@@ -30,6 +30,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     @outlet                 CPView                  mainContentView;
     @outlet                 OLSidebarController     sidebarController;
     @outlet                 CPScrollView            sidebarScrollView;
+    @outlet                 CPButtonBar             sidebarButtonBar;
 
     // OLToolbarController _toolbarController @accessors(property=toolbarController);
     OLContentViewController _contentViewController  @accessors(property=contentViewController);
@@ -108,6 +109,20 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     }
     
     return proposedMax;
+}
+
+// Additional rect for CPButtonBar's handles
+- (CGRect)splitView:(CPSplitView)splitView additionalEffectiveRectOfDividerAtIndex:(int)dividerIndex
+{
+    if (splitView === mainSplitView)
+    {
+        var rect = [sidebarButtonBar frame];
+        var additionalWidth = 20.0;
+        var additionalRect = CGRectMake(rect.origin.x + rect.size.width - additionalWidth, rect.origin.y, additionalWidth, rect.size.height);
+        return additionalRect;
+    }
+
+    return CGRectMakeZero();
 }
 
 @end
