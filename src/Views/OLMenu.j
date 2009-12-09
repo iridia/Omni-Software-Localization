@@ -1,4 +1,5 @@
 @import <AppKit/CPMenu.j>
+
 @import "../Controllers/OLFeedbackController.j"
 @import "../Controllers/OLLoginController.j"
 
@@ -19,7 +20,7 @@
         var feedbackItem = [[CPMenuItem alloc] initWithTitle:@"Send Feedback" action:@selector(showFeedbackWindow:) keyEquivalent:@"f"];
         [feedbackItem setTarget:_feedbackController];
         
-        var feedbackImage = [[CPImage alloc] initWithContentsOfFile:@"Resources/Feedback.png" size:CPMakeSize(24, 24)];
+        var feedbackImage = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Feedback.png" size:CPMakeSize(24, 24)];
         [feedbackItem setImage:feedbackImage];
         [feedbackItem setAlternateImage:feedbackImage];
         
@@ -30,7 +31,7 @@
 		_loginItem = [[CPMenuItem alloc] initWithTitle:@"Login / Register" action:@selector(showLogin:) keyEquivalent:@"l"];
 		[_loginItem setTarget:_loginController];
 		
-		var loginImage = [[CPImage alloc] initWithContentsOfFile:@"Resources/User.png" size:CPMakeSize(24, 24)];
+		var loginImage = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/User.png" size:CPMakeSize(24, 24)];
 		[_loginItem setImage:loginImage];
 		[_loginItem setAlternateImage:loginImage];
 		
