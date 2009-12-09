@@ -4,22 +4,24 @@
 
 @implementation OLSidebarController : CPObject
 {
-    CPOutlineView   _sidebarOutlineView @accessors(property=sidebarOutlineView, readonly);
-    CPDictionary    _items              @accessors(property=items, readonly);
-	CPString        _currentItem;
-	
-	id              _delegate           @accessors(property=delegate);
+    CPOutlineView   _sidebarOutlineView;
+    CPDictionary    _items;
+    CPString        _currentItem;
+
+    id              _delegate           @accessors(property=delegate);
+
+    @outlet         CPScrollView        sidebarScrollView;
 }
 
-- (id)initWithFrame:(CGRect)aRect
+- (void)awakeFromCib
 {
-	if (self = [super init])
-	{
-        _items = [CPDictionary dictionaryWithObjects:[[@"glossary 1"], [@"proj 1", @"proj 2", @"proj 3"]] forKeys:[@"Glossaries", @"Projects"]];
-        _sidebarOutlineView = [[OLSidebarOutlineView alloc] initWithFrame:aRect];
-        [_sidebarOutlineView setDataSource:self];
-	}
-	return self;
+    console.log(_cmd, sidebarScrollView, self);
+    _items = [CPDictionary dictionaryWithObjects:[[@"glossary 1"], [@"proj 1", @"proj 2", @"proj 3"]] forKeys:[@"Glossaries", @"Projects"]];
+    
+    _sidebarOutlineView = [[OLSidebarOutlineView alloc] initWithFrame:[sidebarScrollView bounds]];
+    [_sidebarOutlineView setDataSource:self];
+
+    [sidebarScrollView setDocumentView:_sidebarOutlineView];
 }
 
 - (void)handleMessage:(SEL)aMessage
@@ -56,53 +58,39 @@
 
 - (id)outlineView:(CPOutlineView)outlineView child:(int)index ofItem:(id)item
 {
-    CPLog("outlineView:%@ child:%@ ofItem:%@", outlineView, index, item);
-
     if (item === nil)
     {
         var keys = [_items allKeys];
-        console.log([keys objectAtIndex:index]);
         return [keys objectAtIndex:index];
     }
     else
     {
         var values = [_items objectForKey:item];
-        console.log(values);
-        return "blah";
+        return [values objectAtIndex:index];
     }
 }
 
 - (BOOL)outlineView:(CPOutlineView)outlineView isItemExpandable:(id)item
 {
-    CPLog("outlineView:%@ isItemExpandable:%@", outlineView, item);
-    
     var values = [_items objectForKey:item];
-    console.log(([values count] > 0));
     return ([values count] > 0);
 }
 
 - (int)outlineView:(CPOutlineView)outlineView numberOfChildrenOfItem:(id)item
 {
-    CPLog("outlineView:%@ numberOfChildrenOfItem:%@", outlineView, item);
-
     if (item === nil)
     {
-        console.log([_items count]);
         return [_items count];
     }
     else
     {
         var values = [_items objectForKey:item];
-        console.log([values count]);
         return [values count];
     }
 }
 
 - (id)outlineView:(CPOutlineView)outlineView objectValueForTableColumn:(CPTableColumn)tableColumn byItem:(id)item
 {
-    CPLog("outlineView:%@ objectValueForTableColumn:%@ byItem:%@", outlineView, tableColumn, item);
-
-    console.log(item);
     return item;   
 }
 

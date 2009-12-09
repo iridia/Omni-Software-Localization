@@ -12,8 +12,9 @@
 
         var onlyColumn = [[CPTableColumn alloc] initWithIdentifier:@"OnlyColumn"];
         [onlyColumn setWidth:CGRectGetWidth(aRect)];
-    
+        
         [self addTableColumn:onlyColumn];
+        [self setOutlineTableColumn:onlyColumn];
         [self setHeaderView:nil];
         [self setCornerView:nil];     
     }

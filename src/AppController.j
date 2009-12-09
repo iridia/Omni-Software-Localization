@@ -8,44 +8,40 @@
  */
 
 @import <Foundation/CPObject.j>
+
 @import "Categories/CPColor+OLColors.j"
+
 @import "Controllers/OLContentViewController.j"
 // @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
 @import "Controllers/OLWelcomeWindowController.j"
+
 @import "Managers/OLTransitionManager.j"
-@import "Views/OLMainView.j"
+
 @import "Views/OLMenu.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 @implementation AppController : CPObject
 {
-    @outlet CPWindow        theWindow;
-    @outlet CPSplitView     mainSplitView;
-    @outlet CPScrollView    sidebarScrollView;
-    @outlet CPView          mainContentView;
-	OLMainView _mainView;
-	OLToolbarController _toolbarController @accessors(property=toolbarController);
-	OLSidebarController _sidebarController @accessors(property=sidebarController);
-	OLContentViewController _contentViewController @accessors(property=contentViewController);
+    @outlet                 CPWindow                theWindow;
+    @outlet                 CPSplitView             mainSplitView;
+    @outlet                 CPView                  mainContentView;
+    @outlet                 OLSidebarController     sidebarController;
+    @outlet                 CPScrollView            sidebarScrollView;
+
+    // OLToolbarController _toolbarController @accessors(property=toolbarController);
+    OLContentViewController _contentViewController  @accessors(property=contentViewController);
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-    // _mainView = [[OLMainView alloc] initWithFrame:[contentView bounds]];
-    // [_mainView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    // [_mainView setDelegate:self];
-
     // setupToolbar(self, theWindow);
-    // setupSidebar(self, _mainView, [contentView bounds]);
     // setupContentView(self, _mainView, [contentView bounds]);
     
-    // [contentView addSubview:_mainView];
-    
-    // var welcomeController = [[OLWelcomeController alloc] init];
-    // [welcomeController setDelegate:self];
+    var welcomeController = [[OLWelcomeController alloc] init];
+    [welcomeController setDelegate:self];
 
     // Show the welcome window
     // var welcomeWindowController = [[OLWelcomeWindowController alloc] init];
@@ -60,8 +56,9 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     // Autohide the scrollers here and not in the Cib because it is impossible to
     // select the scrollView in Atlas again otherwise.
     [sidebarScrollView setAutohidesScrollers:YES];
-    _sidebarController = [[OLSidebarController alloc] initWithFrame:[[sidebarScrollView contentView] bounds]];
-    [sidebarScrollView setDocumentView:[_sidebarController sidebarOutlineView]];
+    [sidebarScrollView setHasHorizontalScroller:NO];
+
+    [sidebarController setDelegate:self];
 
     // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
     var menu = [[OLMenu alloc] init];
@@ -91,6 +88,28 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 @end
 
+@implementation AppController (CPSplitViewDelegate)
+
+// Constrain the position of the splitView
+- (CGFloat)splitView:(CPSplitView)splitView constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(int)dividerIndex
+{
+    if (splitView === mainSplitView)
+    {
+        if (proposedPosition < 100.0)
+        {
+            return 100.0;
+        }
+        else if (proposedPosition > 300.0)
+        {
+            return 300.0;
+        }
+    }
+
+    return proposedPosition;
+}
+
+@end
+
 // function setupToolbar(self, theWindow)
 // {
 //     var toolbarController = [[OLToolbarController alloc] initWithFeedbackController:feedbackController];
@@ -102,15 +121,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 //     [theWindow setToolbar:toolbar];
 //  [self setToolbarController:toolbarController];
 // }
-
-function setupSidebar(self, mainView, frame)
-{
-	var sidebarController = [[OLSidebarViewController alloc] initWithCibName:@"SidebarView" bundle:[CPBundle mainBundle]]; 
-	[sidebarController setDelegate:self];
-	
-	[mainView setSourceView:[sidebarController view]];
-	[self setSidebarController:sidebarController];
-}
 
 function setupContentView(self, mainView, frame)
 {
