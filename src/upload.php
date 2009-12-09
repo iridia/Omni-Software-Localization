@@ -1,11 +1,8 @@
 <?php
 
 require_once("xml2json.php");
-require_once "api/CouchDB.php";
 
 $file = utf16_to_utf8(file_get_contents($_FILES['file']['tmp_name']));
-
-$db = new CouchDB('test');
 
 if(isPlist($_FILES['file']['name']))
 {
@@ -42,11 +39,12 @@ function isStrings($name)
 
 function transformStringsToJson($data, $fileName)
 {
-	$data = preg_replace("/((?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:\/\/.*))/", "", $data);
 	$json = "({fileName: \"" . $fileName . "\", fileType: \"strings\", dict: {";
 	$lines = split("\n", $data);
 	$keys = array();
 	$values = array();
+	$comments = array();
+	$current_comment = "";
 	
 	foreach($lines as $line)
 	{
@@ -55,10 +53,16 @@ function transformStringsToJson($data, $fileName)
 			continue;
 		}
 		
+		if(preg_match("/((?:\/\*(?:[^*]|(?:\*+[^*\/]))(.*)*\*+\/)|(?:\/\/.*))/", $line, $regs))
+		{
+			$current_comment = $regs[1];
+		}
+		
 		preg_match("/\"(.+)\"\s*=\s*\"(.+)\";/", $line, $regs);
-				
 		$keys[] = $regs[1];
 		$values[] = $regs[2];
+		$comments[] = $current_comment;
+		$current_comment = "";
 	}
 	
 	$json .= "key:[";
@@ -85,7 +89,33 @@ function transformStringsToJson($data, $fileName)
 		}
 	}
 	
-	$json .= "]}})";
+	$json .= "]}, comments_dict: {";
+	
+	$json .= "key:[";
+	$last_item = end($keys);
+	for($i = 0; $i < count($keys); $i++)
+	{		
+		$json .= "\"" . $keys[$i] . "\"";
+
+		if($keys[$i] != $last_item)
+		{
+			$json .= ",";
+		}
+	}
+	
+	$json .= "], string:[";
+	$last_item = end($comments);
+	for($i = 0; $i < count($comments); $i++)
+	{		
+		$json .= "\"" . $comments[$i] . "\"";
+
+		if($comments[$i] != $last_item)
+		{
+			$json .= ",";
+		}
+	}
+	
+	$json .= "})";
 	
 	return $json;
 }	
