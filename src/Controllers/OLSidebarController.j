@@ -15,8 +15,12 @@
 
 - (void)awakeFromCib
 {
-    _items = [CPDictionary dictionaryWithObjects:[[@"glossary 1"], [@"proj 1", @"proj 2", @"proj 3"]] forKeys:[@"Glossaries", @"Projects"]];
- 
+    _items = [CPDictionary dictionary];
+
+    [self updateResourcesWithResourceBundles:[resourceBundleController bundles]];
+
+    [resourceBundleController addObserver:self forKeyPath:@"bundles" options:CPKeyValueObservingOptionNew context:nil];
+
     // Autohide the scrollers here and not in the Cib because it is impossible to
     // select the scrollView in Atlas again otherwise.
     [sidebarScrollView setAutohidesScrollers:YES];
@@ -29,32 +33,41 @@
     [sidebarScrollView setDocumentView:sidebarOutlineView];
 }
 
+- (void)updateResourcesWithResourceBundles:(CPArray)resourceBundles
+{
+    var resources = [];
+    
+    for (var i = 0; i < [resourceBundles count]; i++)
+    {
+        var resourceBundle = [resourceBundles objectAtIndex:i];
+        
+        [resources addObject:[[[resourceBundle resources] objectAtIndex:0] fileName]];
+    }
+    
+    [_items setObject:resources forKey:@"Resources"];
+}
+
 - (void)handleMessage:(SEL)aMessage
 {
     console.log(aMessage);
-	console.log(_sidebarView);
 	objj_msgSend(_sidebarView, aMessage);
 }
 
 - (void)showResourcesView
 {
-	[_delegate contentViewSendMessage:@selector(showResourcesView)];
+	[_delegate showResourcesView];
 }
 
-- (void)collectionViewDidChangeSelection:(CPCollectionView)aCollectionView
-{
-	var listIndex = [[aCollectionView selectionIndexes] firstIndex];
-	    
-	var item = [_items objectAtIndex:listIndex];
+@end
 
-    // If our selection didn't change, don't do anything.
-    if (_currentItem !== item)
+@implementation OLSidebarController (OLResourceBundleControllerKVO)
+
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
+{
+    if (keyPath === @"bundles")
     {
-        _currentItem = item;
-	    if (item === ResourcesItem)
-    	{
-    		[self showResourcesView];
-    	}
+        alert("CHANGED");
+        [self updateResourcesWithResourceBundles:[object bundles]];
     }
 }
 
@@ -79,7 +92,10 @@
 - (BOOL)outlineView:(CPOutlineView)outlineView isItemExpandable:(id)item
 {
     var values = [_items objectForKey:item];
-    return ([values count] > 0);
+    
+    var isItemExpandable = ([values count] > 0);
+    
+    return isItemExpandable;
 }
 
 - (int)outlineView:(CPOutlineView)outlineView numberOfChildrenOfItem:(id)item
@@ -96,7 +112,7 @@
 }
 
 - (id)outlineView:(CPOutlineView)outlineView objectValueForTableColumn:(CPTableColumn)tableColumn byItem:(id)item
-{
+{    
     return item;   
 }
 
@@ -108,7 +124,15 @@
 {
     var outlineView = [notification object];
     
-    CPLog("%@, %@", outlineView, [outlineView selectedRowIndexes]);
+    var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
+    var item = [outlineView itemAtRow:selectedRow];
+    
+    var parent = [outlineView parentForItem:item];
+    
+    if (parent === @"Resources")
+    {
+        [self showResourcesView];
+    }
 }
 
 @end

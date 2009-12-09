@@ -20,8 +20,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 - (void)awakeFromCib
 {
     [self loadBundles];
-    CPLog(@"Bundles: %@", [self bundles]);
-
+    
     //     console.log([[self view] bounds]);
     //     var scrollView = [[CPScrollView alloc] initWithFrame:[[self view] bounds]];
     //     [scrollView setAutohidesScrollers:YES];

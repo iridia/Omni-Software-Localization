@@ -32,9 +32,11 @@
      
     [_delegate setContentController:resourceBundleController];
     
-    [_delegate showView:[resourceBundleController view]];
-
-    // [resourceBundleController loadBundles];
+    var resourcesView = [[OLResourcesView alloc] initWithFrame:_frame];
+    [resourcesView setDelegate:[_controllers valueForKey:key]];
+    [resourceBundleController addObserver:resourcesView forKeyPath:@"bundles" options:CPKeyValueObservingOptionNew context:nil];
+        
+    [_delegate showView:resourcesView];
 }
 
 @end

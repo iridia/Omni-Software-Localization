@@ -15,10 +15,10 @@
 // @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
-@import "Controllers/OLWelcomeWindowController.j"
+// @import "Controllers/OLWelcomeWindowController.j"
 @import "Controllers/LineItemEditWindowController.j"
 
-@import "Managers/OLTransitionManager.j"
+// @import "Managers/OLTransitionManager.j"
 
 @import "Views/OLMenu.j"
 
@@ -29,21 +29,20 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     @outlet                 CPWindow                theWindow;
     @outlet                 CPSplitView             mainSplitView;
     @outlet                 CPView                  mainContentView;
-    @outlet                 OLSidebarController     sidebarController;
     @outlet                 CPScrollView            sidebarScrollView;
     @outlet                 CPButtonBar             sidebarButtonBar;
 
+    @outlet                 OLSidebarController     sidebarController;
+    @outlet                 OLContentViewController contentViewController;
+
     // OLToolbarController _toolbarController @accessors(property=toolbarController);
-    OLContentViewController _contentViewController  @accessors(property=contentViewController);
+    
+    CPView                  _currentView;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
     // setupToolbar(self, theWindow);
-    // setupContentView(self, _mainView, [contentView bounds]);
-    
-    var welcomeController = [[OLWelcomeController alloc] init];
-    [welcomeController setDelegate:self];
 
     // Show the welcome window
     // var welcomeWindowController = [[OLWelcomeWindowController alloc] init];
@@ -56,28 +55,32 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [mainSplitView setIsPaneSplitter:YES];
 
     [sidebarController setDelegate:self];
+    
+    // setupContentView(self, mainContentView, mainSplitView);
 
     // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
     var menu = [[OLMenu alloc] init];
     [[CPApplication sharedApplication] setMainMenu:menu];
     [CPMenu setMenuBarVisible:YES];
+    
+    var welcomeController = [[OLWelcomeController alloc] init];
+    [welcomeController setDelegate:self];
 }
 
 - (void)sidebarSendMessage:(SEL)aMessage
 {
-    console.log(aMessage, sidebarController, self);
 	[sidebarController showResourcesView];
 }
 
-- (void)contentViewSendMessage:(SEL)aMessage
+- (void)showResourcesView
 {
-    [_contentViewController handleMessage:aMessage];
+    [contentViewController showResourcesView];
 }
 
-- (void)setContentView:(CPView)aView
-{
-    [_mainView setCurrentView:aView];
-}
+// - (void)contentViewSendMessage:(SEL)aMessage
+// {
+//     [_contentViewController handleMessage:aMessage];
+// }
 
 - (void)handleException:(OLException)anException
 {
@@ -136,19 +139,14 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 //  [self setToolbarController:toolbarController];
 // }
 
-function setupContentView(self, mainView, frame)
-{
-	var contentViewSize = CGRectMake(200, 0, CGRectGetWidth(frame) - 200, CGRectGetHeight(frame));
-	
-	var contentViewController = [[OLContentViewController alloc] init];
-	[contentViewController setDelegate:self];
-	
-	var transitionManager = [[OLTransitionManager alloc] initWithFrame:contentViewSize];
-	[contentViewController setTransitionManager:transitionManager];
-	[transitionManager setDelegate:contentViewController];
-	
-    var currentView = [[CPView alloc] initWithFrame:contentViewSize];
-	
-	[mainView setCurrentView:currentView];
-	[self setContentViewController:contentViewController];
-}
+// function setupContentView(self, mainView, mainSplitView)
+// {
+//  var contentViewController = [[OLContentViewController alloc] init];
+//  [contentViewController setDelegate:self];
+//  
+//  var transitionManager = [[OLTransitionManager alloc] initWithFrame:[mainView bounds]];
+//  [contentViewController setTransitionManager:transitionManager];
+//  [transitionManager setDelegate:contentViewController];
+// 
+//  [self setContentViewController:contentViewController];
+// }
