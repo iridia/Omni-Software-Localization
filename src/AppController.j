@@ -54,11 +54,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
 
-    // Autohide the scrollers here and not in the Cib because it is impossible to
-    // select the scrollView in Atlas again otherwise.
-    [sidebarScrollView setAutohidesScrollers:YES];
-    [sidebarScrollView setHasHorizontalScroller:NO];
-
     [sidebarController setDelegate:self];
 
     // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped

@@ -8,15 +8,20 @@
     CPDictionary    _items;
     CPString        _currentItem;
 
-    id              _delegate           @accessors(property=delegate);
-
     @outlet         CPScrollView        sidebarScrollView;
+
+    id              _delegate           @accessors(property=delegate);
 }
 
 - (void)awakeFromCib
 {
     console.log(_cmd, sidebarScrollView, self);
     _items = [CPDictionary dictionaryWithObjects:[[@"glossary 1"], [@"proj 1", @"proj 2", @"proj 3"]] forKeys:[@"Glossaries", @"Projects"]];
+ 
+    // Autohide the scrollers here and not in the Cib because it is impossible to
+    // select the scrollView in Atlas again otherwise.
+    [sidebarScrollView setAutohidesScrollers:YES];
+    [sidebarScrollView setHasHorizontalScroller:NO];
     
     _sidebarOutlineView = [[OLSidebarOutlineView alloc] initWithFrame:[sidebarScrollView bounds]];
     [_sidebarOutlineView setDataSource:self];
