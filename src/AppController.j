@@ -90,22 +90,24 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 @implementation AppController (CPSplitViewDelegate)
 
-// Constrain the position of the splitView
-- (CGFloat)splitView:(CPSplitView)splitView constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(int)dividerIndex
+- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
 {
     if (splitView === mainSplitView)
     {
-        if (proposedPosition < 100.0)
-        {
-            return 100.0;
-        }
-        else if (proposedPosition > 300.0)
-        {
-            return 300.0;
-        }
+        return 100.0;
     }
+    
+    return proposedMin;
+}
 
-    return proposedPosition;
+- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
+{
+    if (splitView === mainSplitView)
+    {
+        return 300.0;
+    }
+    
+    return proposedMax;
 }
 
 @end
