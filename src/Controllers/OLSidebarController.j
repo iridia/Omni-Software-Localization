@@ -30,6 +30,7 @@
 
 - (void)handleMessage:(SEL)aMessage
 {
+    console.log(aMessage);
 	console.log(_sidebarView);
 	objj_msgSend(_sidebarView, aMessage);
 }

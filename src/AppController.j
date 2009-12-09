@@ -16,11 +16,11 @@
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
 @import "Controllers/OLWelcomeWindowController.j"
+@import "Controllers/LineItemEditWindowController.j"
 
 @import "Managers/OLTransitionManager.j"
 
 @import "Views/OLMenu.j"
-@import "Controllers/LineItemEditWindowController.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
@@ -55,6 +55,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
 
+    console.log(sidebarController);
     [sidebarController setDelegate:self];
 
     // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
@@ -65,7 +66,8 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 - (void)sidebarSendMessage:(SEL)aMessage
 {
-	[_sidebarController handleMessage:aMessage];
+    console.log(aMessage, sidebarController, self);
+	[sidebarController showResourcesView];
 }
 
 - (void)contentViewSendMessage:(SEL)aMessage
