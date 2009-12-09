@@ -4,7 +4,6 @@
 
 @implementation OLSidebarController : CPObject
 {
-    CPOutlineView   _sidebarOutlineView;
     CPDictionary    _items;
     CPString        _currentItem;
 
@@ -22,10 +21,11 @@
     [sidebarScrollView setAutohidesScrollers:YES];
     [sidebarScrollView setHasHorizontalScroller:NO];
     
-    _sidebarOutlineView = [[OLSidebarOutlineView alloc] initWithFrame:[sidebarScrollView bounds]];
-    [_sidebarOutlineView setDataSource:self];
+    var sidebarOutlineView = [[OLSidebarOutlineView alloc] initWithFrame:[sidebarScrollView bounds]];
+    [sidebarOutlineView setDataSource:self];
+    [sidebarOutlineView setDelegate:self];
 
-    [sidebarScrollView setDocumentView:_sidebarOutlineView];
+    [sidebarScrollView setDocumentView:sidebarOutlineView];
 }
 
 - (void)handleMessage:(SEL)aMessage
@@ -97,6 +97,17 @@
 - (id)outlineView:(CPOutlineView)outlineView objectValueForTableColumn:(CPTableColumn)tableColumn byItem:(id)item
 {
     return item;   
+}
+
+@end
+
+@implementation OLSidebarController (CPOutlineViewDelegate)
+
+- (void)outlineViewSelectionDidChange:(CPNotification)notification
+{
+    var outlineView = [notification object];
+    
+    CPLog("%@, %@", outlineView, [outlineView selectedRowIndexes]);
 }
 
 @end
