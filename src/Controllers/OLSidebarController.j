@@ -15,7 +15,6 @@
 
 - (void)awakeFromCib
 {
-    console.log(_cmd, sidebarScrollView, self);
     _items = [CPDictionary dictionaryWithObjects:[[@"glossary 1"], [@"proj 1", @"proj 2", @"proj 3"]] forKeys:[@"Glossaries", @"Projects"]];
  
     // Autohide the scrollers here and not in the Cib because it is impossible to
