@@ -37,7 +37,7 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 		[_resourceTableView setDelegate:self];
 		
 		// define the header color
-		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"button-bezel-center.png"]]];
+		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
 		
 		[[_resourceTableView cornerView] setBackgroundColor:headerColor];
 		

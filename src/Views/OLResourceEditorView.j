@@ -34,7 +34,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 		[_lineItemsTableView setDoubleAction:@selector(edit:)];
 				
 		// define the header color
-		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"button-bezel-center.png"]]];
+		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
 		[[_lineItemsTableView cornerView] setBackgroundColor:headerColor];
 		
 		// add the first column
