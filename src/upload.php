@@ -45,6 +45,7 @@ function transformStringsToJson($data, $fileName)
 	$values = array();
 	$comments = array();
 	$current_comment = "";
+	$commenting = false;
 	
 	foreach($lines as $line)
 	{
@@ -53,7 +54,20 @@ function transformStringsToJson($data, $fileName)
 			continue;
 		}
 		
-		if(preg_match("/((?:\/\*(?:[^*]|(?:\*+[^*\/]))(.*)*\*+\/)|(?:\/\/(.*)))/", $line, $regs))
+		if($commenting)
+		{
+			if(preg_match("/(.*)\*\//", $line, $regs))
+			{
+				$commenting = false;
+				$current_comment .= $regs[1];
+			}
+			else
+			{
+				$current_comment .= $line;
+			}
+			continue;
+		}
+		else if(preg_match("/((?:\/\*(.*)(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:\/\/(.*)))/", $line, $regs))
 		{
 			if($regs[2] != "")
 			{
@@ -63,6 +77,13 @@ function transformStringsToJson($data, $fileName)
 			{
 				$current_comment = $regs[3];
 			}
+			continue;
+		}
+		else if(preg_match("/\/\*(.*)/", $line, $regs))
+		{
+			$current_comment = $regs[1];
+			$commenting = true;
+			continue;
 		}
 		
 		preg_match("/\"(.+)\"\s*=\s*\"(.+)\";/", $line, $regs);
