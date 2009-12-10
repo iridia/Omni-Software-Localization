@@ -1,20 +1,41 @@
 @import <Foundation/CPObject.j>
 
+@import "../Views/OLResourcesView.j"
+
 @implementation OLContentViewController : CPObject
 {
 	id _contentController @accessors(property=contentController);
 	id _transitionManager @accessors(property=transitionManager);
 	id _delegate @accessors(property=delegate);
+	
+	OLResourcesView _resourcesView;
+	CPView          _currentView;
+
+    @outlet CPView                      contentView;
+    @outlet OLResourceBundleController  resourceBundleController;
 }
 
-- (void)handleMessage:(SEL)aMessage
+- (void)awakeFromCib
 {
-	objj_msgSend(_transitionManager, aMessage);
+    _resourcesView = [[OLResourcesView alloc] initWithFrame:[contentView bounds]];
+    [_resourcesView setDelegate:resourceBundleController];
+    [_resourcesView setResources:[resourceBundleController bundles]];
+    [resourceBundleController addObserver:_resourcesView forKeyPath:@"bundles" options:CPKeyValueObservingOptionNew context:nil];
 }
 
-- (void)showView:(CPView)aView
+- (void)showResourcesView
 {
-	[_delegate setContentView:aView];
+    if (_currentView !== _resourcesView)
+    {
+        if (_currentView)
+        {
+            [_currentView removeFromSuperview];
+        }
+    
+        _currentView = _resourcesView;
+        [contentView addSubview:_currentView];
+    }
 }
+
 
 @end

@@ -25,10 +25,10 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 	{
 	    [self setVertical:NO];
 	    
-		var scrollView = [[CPScrollView alloc] initWithFrame:[self bounds]];
-		[scrollView setAutohidesScrollers:YES];
-		[scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-		
+        var scrollView = [[CPScrollView alloc] initWithFrame:aFrame];
+        [scrollView setAutohidesScrollers:YES];
+        [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        
 		// create the resourceTableView
 		_resourceTableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];
 		[_resourceTableView setDataSource:self];
@@ -55,7 +55,7 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
         // Create the editingView up front, show it when needed
 		_editingView = [[OLResourceEditorView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)];
 	}
-	
+
 	return self;
 }
 
