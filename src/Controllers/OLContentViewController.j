@@ -18,6 +18,7 @@
 - (void)awakeFromCib
 {
     _resourcesView = [[OLResourcesView alloc] initWithFrame:[contentView bounds]];
+    [_resourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [_resourcesView setDelegate:resourceBundleController];
     [_resourcesView setResources:[resourceBundleController bundles]];
     [resourceBundleController addObserver:_resourcesView forKeyPath:@"bundles" options:CPKeyValueObservingOptionNew context:nil];

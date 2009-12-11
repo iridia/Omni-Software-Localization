@@ -54,6 +54,7 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 
         // Create the editingView up front, show it when needed
 		_editingView = [[OLResourceEditorView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)];
+		[_editingView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 	}
 
 	return self;

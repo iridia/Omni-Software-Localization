@@ -37,6 +37,13 @@
     [sidebarOutlineView setDelegate:self];
 
     [sidebarScrollView setDocumentView:sidebarOutlineView];
+    
+    // Initially show all items as expanded
+    var allTopLevelObjects = [_items allKeys];
+    for (var i = 0; i < [allTopLevelObjects count]; i++)
+    {
+        [sidebarOutlineView expandItem:[allTopLevelObjects objectAtIndex:i]];
+    }
 }
 
 - (void)updateResourcesWithResourceBundles:(CPArray)resourceBundles
@@ -158,14 +165,17 @@
 {
     var outlineView = [notification object];
     
-    var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
-    var item = [outlineView itemAtRow:selectedRow];
-    
-    var parent = [outlineView parentForItem:item];
-    
-    if (parent === @"Resources")
+    if (outlineView === sidebarOutlineView)
     {
-        [self showResourcesView];
+        var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
+        var item = [outlineView itemAtRow:selectedRow];
+
+        var parent = [outlineView parentForItem:item];
+
+        if (parent === @"Resources")
+        {
+            [self showResourcesView];
+        }
     }
 }
 
