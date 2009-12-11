@@ -1,11 +1,14 @@
 @import <Foundation/CPObject.j>
 
+@import "OLProjectController.j"
 @import "../Views/OLSidebarOutlineView.j"
 
 @implementation OLSidebarController : CPObject
 {
-    CPDictionary    _items;
-    CPString        _currentItem;
+    CPDictionary            _items;
+    CPString                _currentItem;
+    OLProjectController     _projectController;
+    OLSidebarOutlineView    sidebarOutlineView;
 
     @outlet         CPScrollView                sidebarScrollView;
     @outlet         OLResourceBundleController  resourceBundleController;
@@ -18,15 +21,18 @@
     _items = [CPDictionary dictionary];
 
     [self updateResourcesWithResourceBundles:[resourceBundleController bundles]];
-
     [resourceBundleController addObserver:self forKeyPath:@"bundles" options:CPKeyValueObservingOptionNew context:nil];
-
+    
+    _projectController = [[OLProjectController alloc] init];
+    [self updateProjectsWithProjects:[_projectController projects]];
+    [_projectController addObserver:self forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
+    
     // Autohide the scrollers here and not in the Cib because it is impossible to
     // select the scrollView in Atlas again otherwise.
     [sidebarScrollView setAutohidesScrollers:YES];
     [sidebarScrollView setHasHorizontalScroller:NO];
     
-    var sidebarOutlineView = [[OLSidebarOutlineView alloc] initWithFrame:[sidebarScrollView bounds]];
+    sidebarOutlineView = [[OLSidebarOutlineView alloc] initWithFrame:[sidebarScrollView bounds]];
     [sidebarOutlineView setDataSource:self];
     [sidebarOutlineView setDelegate:self];
 
@@ -35,16 +41,21 @@
 
 - (void)updateResourcesWithResourceBundles:(CPArray)resourceBundles
 {
-    var resources = [];
+    // var resources = [];
+    // 
+    // for (var i = 0; i < [resourceBundles count]; i++)
+    // {
+    //     var resourceBundle = [resourceBundles objectAtIndex:i];
+    //     
+    //     [resources addObject:[[[resourceBundle resources] objectAtIndex:0] fileName]];
+    // }
     
-    for (var i = 0; i < [resourceBundles count]; i++)
-    {
-        var resourceBundle = [resourceBundles objectAtIndex:i];
-        
-        [resources addObject:[[[resourceBundle resources] objectAtIndex:0] fileName]];
-    }
-    
-    [_items setObject:resources forKey:@"Resources"];
+    [_items setObject:resourceBundles forKey:@"Resources"];
+}
+
+- (void)updateProjectsWithProjects:(CPArray)projects
+{
+    [_items setObject:projects forKey:@"Projects"];
 }
 
 - (void)handleMessage:(SEL)aMessage
@@ -64,11 +75,23 @@
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    if (keyPath === @"bundles")
+    console.log(_cmd, object, change, context);
+    switch (keyPath)
     {
-        alert("CHANGED");
-        [self updateResourcesWithResourceBundles:[object bundles]];
+        case @"bundles":
+            alert("CHANGED");
+            [self updateResourcesWithResourceBundles:[object bundles]];
+            break;
+        case @"projects":
+            console.log(_cmd, object);
+            [self updateProjectsWithProjects:[object projects]];
+            break;
+        default:
+            CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
+            break;
     }
+    
+    [sidebarOutlineView reloadData];
 }
 
 @end
@@ -112,8 +135,19 @@
 }
 
 - (id)outlineView:(CPOutlineView)outlineView objectValueForTableColumn:(CPTableColumn)tableColumn byItem:(id)item
-{    
-    return item;   
+{
+    if ([item isKindOfClass:[OLProject class]])
+    {
+        return [item name];
+    }
+    else if ([item isKindOfClass:[OLResourceBundle class]])
+    {
+        return [[[item resources] objectAtIndex:0] fileName];
+    }
+    else
+    {
+        return item;  
+    }
 }
 
 @end

@@ -57,14 +57,14 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [sidebarController setDelegate:self];
     
     // setupContentView(self, mainContentView, mainSplitView);
-
+    
+    var welcomeController = [[OLWelcomeController alloc] init];
+    [welcomeController setDelegate:self];
+    
     // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
     var menu = [[OLMenu alloc] init];
     [[CPApplication sharedApplication] setMainMenu:menu];
     [CPMenu setMenuBarVisible:YES];
-    
-    var welcomeController = [[OLWelcomeController alloc] init];
-    [welcomeController setDelegate:self];
 }
 
 - (void)sidebarSendMessage:(SEL)aMessage

@@ -5,9 +5,9 @@
  */
 @implementation OLResourceBundle : OLActiveRecord
 {
-	OLLanguage _language @accessors(property=language, readonly);
-	OLResourceBundle _baseBundle @accessors(property=baseBundle);
-	CPArray _resources @accessors(property=resources);
+	OLLanguage          _language   @accessors(property=language, readonly);
+	OLResourceBundle    _baseBundle @accessors(property=baseBundle);
+	CPArray             _resources  @accessors(property=resources);
 }
 
 - (id)init
