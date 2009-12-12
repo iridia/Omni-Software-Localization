@@ -73,7 +73,8 @@
 	
 		if(jsonResponse.fileType == "zip")
 		{
-//			var project = [[OLProject alloc] initWithName:jsonResponse.fileName];
+			console.log([CPApp delegate].sidebarController._projectController);
+			[[CPApp delegate].sidebarController._projectController parseJSONResponse:jsonResponse];
 		}
 		else
 		{

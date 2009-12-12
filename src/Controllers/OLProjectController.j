@@ -22,6 +22,19 @@
     return self;
 }
 
+- (void)parseJSONResponse:(id)aResponse
+{
+	var project = [[OLProject alloc] initWithName:aResponse.fileName];
+
+	for(var i = 0; i < aResponse.resourcebundles.length; i++)
+	{
+		var resourceBundle = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];
+		[project addResourceBundle:resourceBundle];
+	}
+
+	[self addProject:project];
+}
+
 - (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index
 {
     [_projects insertObject:project atIndex:index];

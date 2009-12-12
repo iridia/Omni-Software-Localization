@@ -16,8 +16,14 @@
     if (self = [super init])
     {
         _name = name;
+		_resourceBundles = [CPArray array];
     }
     return self;
+}
+
+- (void)addResourceBundle:(OLResourceBundle)aResourceBundle
+{
+	[_resourceBundles addObject:aResourceBundle];
 }
 
 @end
