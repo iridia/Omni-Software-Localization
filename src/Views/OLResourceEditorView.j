@@ -34,7 +34,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 		[_lineItemsTableView setDoubleAction:@selector(edit:)];
 				
 		// define the header color
-		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"button-bezel-center.png"]]];
+		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
 		[[_lineItemsTableView cornerView] setBackgroundColor:headerColor];
 		
 		// add the first column
@@ -123,14 +123,20 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 - (void)edit:(id)sender
 {
     var _editingRow = [[sender selectedRowIndexes] firstIndex];
+
+    if(_delegate && [_delegate respondsToSelector:@selector(editLineItem:resource:)])
+    {
+        var lineItem = [[_editingResource lineItems] objectAtIndex:_editingRow];
+        [_delegate editLineItem:lineItem resource:_editingResource];
+    }
     
-    var rowRect = [_lineItemsTableView rectOfRow:_editingRow];
-    [_editorTextField setFrameOrigin:CPMakePoint(200.0 - 3.0, rowRect.origin.y + (CGRectGetHeight([_editorTextField bounds]) / 2.0))];
+//    var rowRect = [_lineItemsTableView rectOfRow:_editingRow];
+//    [_editorTextField setFrameOrigin:CPMakePoint(200.0 - 3.0, rowRect.origin.y + (CGRectGetHeight([_editorTextField bounds]) / 2.0))];
     
-    [_editorTextField setStringValue:[[[_editingResource lineItems] objectAtIndex:_editingRow] value]];
-    [self addSubview:_editorTextField];
+//    [_editorTextField setStringValue:[[[_editingResource lineItems] objectAtIndex:_editingRow] value]];
+//    [self addSubview:_editorTextField];
     
-    [[_editorTextField window] makeFirstResponder:_editorTextField]; 
+//    [[_editorTextField window] makeFirstResponder:_editorTextField]; 
 }
 
 - (void)saveResource

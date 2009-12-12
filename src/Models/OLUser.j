@@ -3,7 +3,6 @@
 @implementation OLUser : OLActiveRecord
 {
 	CPString _email @accessors(property=email, readonly);
-	
 }
 
 
