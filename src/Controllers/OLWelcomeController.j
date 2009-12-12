@@ -16,6 +16,7 @@
 
 	CPWindow _welcomeWindow;
 	OLWelcomeView _welcomeView;
+	OLUploadController _uploadController @accessors(property=uploadController);
 
 	id _delegate @accessors(property=delegate);
 }
@@ -60,52 +61,7 @@
 
 - (void)finishedUploadingWithResponse:(CPString)response
 {
-	try
-	{
-		response = response.replace("<pre style=\"word-wrap: break-word; white-space: pre-wrap;\">", "");
-		response = response.replace("\n</pre>", "");
-	
-		console.log(response);
-		
-		var jsonResponse = eval('(' + response + ')');
-	
-		console.log(jsonResponse);
-	
-		if(jsonResponse.fileType == "zip")
-		{
-			console.log([CPApp delegate].sidebarController._projectController);
-			[[CPApp delegate].sidebarController._projectController parseJSONResponse:jsonResponse];
-		}
-		else
-		{
-			var language = [OLLanguage english];
-	
-			_bundle = [[OLResourceBundle alloc] initWithLanguage:language];
-	
-			var resourceLineItems = [[CPArray alloc] init];
-	
-			var fileName = jsonResponse.fileName;
-			var fileType = jsonResponse.fileType;
-			var lineItemKeys = jsonResponse.dict.key;
-			var lineItemStrings = jsonResponse.dict.string;	
-	
-			for(var i = 0; i < [lineItemKeys count]; i++)
-			{
-				[resourceLineItems addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
-			}
-
-			var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
-
-		    [_bundle insertObject:resource inResourcesAtIndex:0];
-
-			[_bundle save];
-			
-		}
-	} 
-	catch (ex)
-	{
-		[OLException raise:"OLWelcomeController" reason:"it couldn't handle the response from the upload."];
-	}
+	[_uploadController handleServerResponse:response];
 }
 
 @end

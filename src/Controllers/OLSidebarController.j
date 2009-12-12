@@ -82,15 +82,12 @@
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    console.log(_cmd, object, change, context);
     switch (keyPath)
     {
         case @"bundles":
-            alert("CHANGED");
             [self updateResourcesWithResourceBundles:[object bundles]];
             break;
         case @"projects":
-            console.log(_cmd, object);
             [self updateProjectsWithProjects:[object projects]];
             break;
         default:

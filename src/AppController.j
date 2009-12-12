@@ -17,6 +17,7 @@
 @import "Controllers/OLWelcomeController.j"
 // @import "Controllers/OLWelcomeWindowController.j"
 @import "Controllers/LineItemEditWindowController.j"
+@import "Controllers/OLUploadController.j"
 
 // @import "Managers/OLTransitionManager.j"
 
@@ -35,6 +36,8 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     @outlet                 OLSidebarController     sidebarController;
     @outlet                 OLContentViewController contentViewController;
 
+	OLUploadController		_uploadController;
+
     // OLToolbarController _toolbarController @accessors(property=toolbarController);
     
     CPView                  _currentView;
@@ -47,6 +50,12 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     // Show the welcome window
     // var welcomeWindowController = [[OLWelcomeWindowController alloc] init];
     // [welcomeWindowController showWindow:self];
+
+	_uploadController = [[OLUploadController alloc] init];
+	
+	var welcomeController = [[OLWelcomeController alloc] init];
+    [welcomeController setDelegate:self];
+	[welcomeController setUploadController:_uploadController];
 }
 
 - (void)awakeFromCib
@@ -57,9 +66,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [sidebarController setDelegate:self];
     
     // setupContentView(self, mainContentView, mainSplitView);
-    
-    var welcomeController = [[OLWelcomeController alloc] init];
-    [welcomeController setDelegate:self];
     
     // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
     var menu = [[OLMenu alloc] init];
