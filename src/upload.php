@@ -12,11 +12,75 @@ else if(isStrings($_FILES['file']['name']))
 {
 	$postArgs = transformStringsToJson($file, $_FILES['file']['name']);
 }
+else if(isZip($_FILES['file']['name']))
+{
+	$postArgs = archiveToJson($file);
+}
 
 header("Content-Type: text/json");
 
 // temporary fix
 echo $postArgs;
+
+function archiveToJson($zipFileContents)
+{
+	$aFileName = "tmpArchive".time().".zip";
+	$theFile = fopen($aFileName, "w");
+	fwrite($theFile, $zipFileContents);
+	fclose($theFile);
+	
+	exec("unzip $aFileName");
+	
+	exec("rm $aFileName");
+	exec("rm -rf __MACOSX");
+	
+	// do stuff here
+	$appName = str_replace(".zip", "", $_FILES['file']['name']);
+	$englishBundle = opendir("$appName/Contents/Resources");
+	$files = array();
+	$files_resources = array();
+	
+	while(false !== ($file = readdir($englishBundle))) {
+		if(isLProj($file)) {
+			$files[] = $file;
+			
+			$bundle = opendir("$appName/Contents/Resources/$file");
+			
+			$resources = array();
+			
+			while(false !== ($anotherFile = readdir($bundle))) {
+				if(isStrings($anotherFile)) {
+					$fileLocation = "$appName/Contents/Resources/$file/".$anotherFile;
+					$resources[] = transformStringsToJson(utf16_to_utf8(file_get_contents($fileLocation)), $fileLocation);
+				}
+			}
+			
+			$files_resources[] = $resources;
+			
+			closedir($bundle);
+		}
+	}
+	
+	closedir($englishBundle);
+	
+	exec("rm -rf \"$appName\"");
+	
+	$value = "({fileType: \"zip\", fileName: \"$appName\", resourcebundles: [";
+	
+	$i = 0; 
+	foreach($files as $file)
+	{
+		$value = $value . "{name: \"$file\", resources: [" . implode(",", $files_resources[$i]) . "]}";
+		$i += 1;
+		if($i != count($files))
+		{
+			$value = $value . ",";
+		}
+	}
+	
+	return $value . "]})";
+}
+
 
 function addFilenameAndType($original, $fileName, $fileType)
 {
@@ -27,6 +91,11 @@ function addFilenameAndType($original, $fileName, $fileType)
 	return substr($modified, 0, strlen($modified)-1);
 }
 
+function isLProj($name)
+{
+	return preg_match("/.lproj/", $name);
+}
+
 function isPlist($name)
 {
 	return preg_match("/.plist/", $name);
@@ -35,6 +104,11 @@ function isPlist($name)
 function isStrings($name)
 {
 	return preg_match("/.strings/", $name);
+}
+
+function isZip($name)
+{
+	return preg_match("/.zip/", $name);
 }
 
 function transformStringsToJson($data, $fileName)

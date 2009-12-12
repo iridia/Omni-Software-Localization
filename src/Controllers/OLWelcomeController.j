@@ -71,27 +71,35 @@
 	
 		console.log(jsonResponse);
 	
-		var language = [OLLanguage english];
-	
-		_bundle = [[OLResourceBundle alloc] initWithLanguage:language];
-	
-		var resourceLineItems = [[CPArray alloc] init];
-	
-		var fileName = jsonResponse.fileName;
-		var fileType = jsonResponse.fileType;
-		var lineItemKeys = jsonResponse.dict.key;
-		var lineItemStrings = jsonResponse.dict.string;	
-	
-		for(var i = 0; i < [lineItemKeys count]; i++)
+		if(jsonResponse.fileType == "zip")
 		{
-			[resourceLineItems addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
+//			var project = [[OLProject alloc] initWithName:jsonResponse.fileName];
 		}
+		else
+		{
+			var language = [OLLanguage english];
+	
+			_bundle = [[OLResourceBundle alloc] initWithLanguage:language];
+	
+			var resourceLineItems = [[CPArray alloc] init];
+	
+			var fileName = jsonResponse.fileName;
+			var fileType = jsonResponse.fileType;
+			var lineItemKeys = jsonResponse.dict.key;
+			var lineItemStrings = jsonResponse.dict.string;	
+	
+			for(var i = 0; i < [lineItemKeys count]; i++)
+			{
+				[resourceLineItems addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
+			}
 
-		var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
+			var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
 
-	    [_bundle insertObject:resource inResourcesAtIndex:0];
+		    [_bundle insertObject:resource inResourcesAtIndex:0];
 
-		[_bundle save];
+			[_bundle save];
+			
+		}
 	} 
 	catch (ex)
 	{
