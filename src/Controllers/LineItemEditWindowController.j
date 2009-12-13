@@ -24,6 +24,14 @@
     return self;
 }
 
+- (void)awakeFromCib
+{
+	[comment setLineBreakMode:CPLineBreakByWordWrapping];
+	[value setLineBreakMode:CPLineBreakByWordWrapping];
+	
+    [[CPApplication sharedApplication] runModalForWindow:[self window]];
+}
+
 - (@action)done:(id)sender
 {
     [[self window] close];
@@ -45,17 +53,26 @@
     }
 }
 
+- (void)windowWillClose:(id)window
+{
+	[[CPApplication sharedApplication] stopModal];
+}
+
 - (void)setLineItem:(OLLineItem)aLineItem
 {
     _lineItem = aLineItem;
     [[self window] setTitle:[aLineItem identifier]];
     [value setStringValue:[aLineItem value]];
+	[comment setStringValue:[aLineItem comment]];
+}
+
+- (void)controlTextDidChange:(CPNotification)aNotification
+{
+    [_lineItem setValue:[value stringValue]];
 }
 
 - (void)controlTextDidEndEditing:(CPNotification)aNotification
 {
-    [_lineItem setValue:[value stringValue]];
-
 	[self saveResource];
 }
 

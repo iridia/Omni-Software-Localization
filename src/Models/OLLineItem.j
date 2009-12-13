@@ -2,22 +2,30 @@
 
 @implementation OLLineItem : OLActiveRecord
 {
-	CPString _identifier 	@accessors(readonly, property=identifier);
-	CPObject _value 		@accessors(property=value);
+	CPString comment		@accessors(readonly);
+	CPString identifier 	@accessors(readonly);
+	CPObject value	 		@accessors;
 }
 
 - (id)initWithIdentifier:(CPString)anIdentifier value:(CPObject)aValue
 {
+	[self initWithIdentifier:anIdentifier value:aValue comment:@"No Comment"];
+}
+
+- (id)initWithIdentifier:(CPString)anIdentifier value:(CPObject)aValue comment:(CPString)aComment
+{
 	if(self = [super init])
 	{
-		_identifier = anIdentifier;
-		_value = aValue;
+		comment = aComment;
+		identifier = anIdentifier;
+		value = aValue;
 	}
 	return self;
 }
 
 @end
 
+var OLLineItemCommentKey = @"OLLineItemCommentKey";
 var OLLineItemIdentifierKey = @"OLLineItemIdentifierKey";
 var OLLineItemValueKey = @"OLLineItemValueKey";
 
@@ -29,8 +37,9 @@ var OLLineItemValueKey = @"OLLineItemValueKey";
     
     if (self)
     {
-        _identifier = [aCoder decodeObjectForKey:OLLineItemIdentifierKey];
-        _value = [aCoder decodeObjectForKey:OLLineItemValueKey];
+		comment = [aCoder decodeObjectForKey:OLLineItemCommentKey];
+        identifier = [aCoder decodeObjectForKey:OLLineItemIdentifierKey];
+        value = [aCoder decodeObjectForKey:OLLineItemValueKey];
     }
     
     return self;
@@ -38,8 +47,9 @@ var OLLineItemValueKey = @"OLLineItemValueKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    [aCoder encodeObject:_identifier forKey:OLLineItemIdentifierKey];
-    [aCoder encodeObject:_value forKey:OLLineItemValueKey];
+	[aCoder encodeObject:comment forKey:OLLineItemCommentKey];
+    [aCoder encodeObject:identifier forKey:OLLineItemIdentifierKey];
+    [aCoder encodeObject:value forKey:OLLineItemValueKey];
 }
 
 @end

@@ -96,11 +96,7 @@
 		for(var j = 0; j < jsonResponse.resourcebundles[i].resources.length; j++)
 		{
 			var theResource = jsonResponse.resourcebundles[i].resources[j];
-			var lineItems = [CPArray array];
-			for(var k = 0; k < theResource.dict.key.length; k++)
-			{
-				[lineItems addObject:[[OLLineItem alloc] initWithIdentifier:theResource.dict.key[k] value:theResource.dict.string[k]]];
-			}
+			var lineItems = [self lineItemsFromResponse:theResource];
 			
 			[resources addObject:[[OLResource alloc] initWithFileName:theResource.fileName fileType:theResource.fileType lineItems:lineItems]];
 		}
@@ -115,21 +111,39 @@
 
 - (void)addResource:(JSObject)jsonResponse toResourceBundle:(OLResourceBundle)resourceBundle
 {
-	var resourceLineItems = [[CPArray alloc] init];
-
 	var fileName = jsonResponse.fileName;
 	var fileType = jsonResponse.fileType;
-	var lineItemKeys = jsonResponse.dict.key;
-	var lineItemStrings = jsonResponse.dict.string;	
-
-	for (var i = 0; i < [lineItemKeys count]; i++)
-	{
-		[resourceLineItems addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
-	}
+	
+	var resourceLineItems = [self lineItemsFromResponse:jsonResponse];
 
 	var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
 	
 	[resourceBundle addResource:resource];
+}
+
+- (void)lineItemsFromResponse:(JSObject)jsonResponse
+{
+	var result = [CPArray array];
+	var lineItemKeys = jsonResponse.dict.key;
+	var lineItemStrings = jsonResponse.dict.string;
+	
+	if(jsonResponse.fileType == "strings")
+	{
+		var lineItemComments = jsonResponse.comments_dict.string;
+
+		for (var i = 0; i < [lineItemKeys count]; i++)
+		{
+			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i] comment:lineItemComments[i]]];
+		}	
+	}
+	else
+	{
+		for (var i = 0; i < [lineItemKeys count]; i++)
+		{
+			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
+		}
+	}
+	return result;
 }
 
 @end
