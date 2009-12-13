@@ -24,6 +24,12 @@
     return self;
 }
 
+- (void)awakeFromCib
+{
+	[comment setLineBreakMode:CPLineBreakByWordWrapping];
+	[value setLineBreakMode:CPLineBreakByWordWrapping];
+}
+
 - (@action)done:(id)sender
 {
     [[self window] close];
@@ -50,6 +56,7 @@
     _lineItem = aLineItem;
     [[self window] setTitle:[aLineItem identifier]];
     [value setStringValue:[aLineItem value]];
+	[comment setStringValue:[aLineItem comment]];
 }
 
 - (void)controlTextDidEndEditing:(CPNotification)aNotification
