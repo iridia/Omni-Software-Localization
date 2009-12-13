@@ -3,15 +3,15 @@
 @import "OLProjectController.j"
 @import "../Views/OLSidebarOutlineView.j"
 
+var OLSidebarProjectsKey = @"Projects";
+
 @implementation OLSidebarController : CPObject
 {
     CPDictionary            _items;
     CPString                _currentItem;
-    OLProjectController     _projectController;
     OLSidebarOutlineView    sidebarOutlineView;
 
     @outlet         CPScrollView                sidebarScrollView;
-    @outlet         OLResourceBundleController  resourceBundleController;
 
     id              _delegate                   @accessors(property=delegate);
 }
@@ -19,13 +19,6 @@
 - (void)awakeFromCib
 {
     _items = [CPDictionary dictionary];
-
-    [self updateResourcesWithResourceBundles:[resourceBundleController bundles]];
-    [resourceBundleController addObserver:self forKeyPath:@"bundles" options:CPKeyValueObservingOptionNew context:nil];
-    
-    _projectController = [[OLProjectController alloc] init];
-    [self updateProjectsWithProjects:[_projectController projects]];
-    [_projectController addObserver:self forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     
     // Autohide the scrollers here and not in the Cib because it is impossible to
     // select the scrollView in Atlas again otherwise.
@@ -46,34 +39,15 @@
     }
 }
 
-- (void)updateResourcesWithResourceBundles:(CPArray)resourceBundles
-{
-    // var resources = [];
-    // 
-    // for (var i = 0; i < [resourceBundles count]; i++)
-    // {
-    //     var resourceBundle = [resourceBundles objectAtIndex:i];
-    //     
-    //     [resources addObject:[[[resourceBundle resources] objectAtIndex:0] fileName]];
-    // }
-    
-    [_items setObject:resourceBundles forKey:@"Resources"];
-}
-
 - (void)updateProjectsWithProjects:(CPArray)projects
 {
-    [_items setObject:projects forKey:@"Projects"];
+    [_items setObject:projects forKey:OLSidebarProjectsKey];
 }
 
 - (void)handleMessage:(SEL)aMessage
 {
     console.log(aMessage);
 	objj_msgSend(_sidebarView, aMessage);
-}
-
-- (void)showResourcesView
-{
-	[_delegate showResourcesView];
 }
 
 @end
@@ -151,28 +125,6 @@
     else
     {
         return item;  
-    }
-}
-
-@end
-
-@implementation OLSidebarController (CPOutlineViewDelegate)
-
-- (void)outlineViewSelectionDidChange:(CPNotification)notification
-{
-    var outlineView = [notification object];
-    
-    if (outlineView === sidebarOutlineView)
-    {
-        var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
-        var item = [outlineView itemAtRow:selectedRow];
-
-        var parent = [outlineView parentForItem:item];
-
-        if (parent === @"Resources")
-        {
-            [self showResourcesView];
-        }
     }
 }
 

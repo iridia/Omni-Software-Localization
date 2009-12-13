@@ -11,52 +11,10 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
  */
 @implementation OLResourceBundleController : CPObject
 {
-	id _delegate @accessors(property=delegate);
+	id delegate @accessors;
 	CPArray _bundles @accessors(property=bundles);
 	OLResourceBundle _editingBundle @accessors(property=editingBundle);
     OLResource _editingResource;
-}
-
-- (void)awakeFromCib
-{
-    [self loadBundles];
-    
-    //     console.log([[self view] bounds]);
-    //     var scrollView = [[CPScrollView alloc] initWithFrame:[[self view] bounds]];
-    //     [scrollView setAutohidesScrollers:YES];
-    //     [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    // 
-    //     var tableView = [[CPTableView alloc] initWithFrame:[[self view] bounds]];
-    //     [tableView setUsesAlternatingRowBackgroundColors:YES];
-    //     [tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    //     [tableView setDataSource:self];
-    //     [tableView setDelegate:self];
-    // 
-    //     // define the header color
-    // var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"button-bezel-center.png"]]];
-    // 
-    //     [[tableView cornerView] setBackgroundColor:headerColor];
-    // 
-    // // add the filename column
-    // var column = [[CPTableColumn alloc] initWithIdentifier:OLResourcesViewFileNameColumn];
-    // [column setWidth:CGRectGetWidth([[self view] bounds])];
-    // [[column headerView] setStringValue:@"Filename"];
-    // [[column headerView] setBackgroundColor:headerColor];
-    // [tableView addTableColumn:column];
-    // 
-    //     [scrollView setDocumentView:tableView];
-    // 
-    //     [[self view] addSubview:scrollView];
-}
-
-- (void)loadBundles
-{
-	try
-	{
-		[self setBundles:[OLResourceBundle list]];
-	} catch (ex) {
-		[OLException raise:"OLResourceBundleController" reason:"it couldn't load the bundles properly."];
-	}
 }
 
 - (void)didSelectBundleAtIndex:(CPInteger)selectedIndex
@@ -67,7 +25,8 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 - (void)didEditResourceForEditingBundle
 {
     [_editingBundle replaceObjectInResourcesAtIndex:0 withObject:_editingResource];
-    [_editingBundle save];
+	console.log(delegate);
+    [delegate save];
 }
 
 - (void)editLineItem:(OLLineItem)aLineItem resource:(OLResource)editingResource
@@ -117,6 +76,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 {
 	return [[_editingResource lineItems] indexOfObject:aLineItem];
 }
+
 - (int)numberOfRowsInTableView:(CPTableView)resourceTableView
 {
     return [_bundles count];
@@ -130,6 +90,23 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     if ([tableColumn identifier] === OLResourcesViewFileNameColumn)
     {
         return [resource fileName];
+    }
+}
+
+@end
+
+@implementation OLResourceBundleController (KVO)
+
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
+{
+	switch (keyPath)
+    {
+        case @"selectedProject":
+			[self setBundles:[[object selectedProject] resourceBundles]];
+            break;
+        default:
+            CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
+            break;
     }
 }
 

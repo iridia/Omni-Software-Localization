@@ -15,11 +15,8 @@
 // @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
-// @import "Controllers/OLWelcomeWindowController.j"
 @import "Controllers/LineItemEditWindowController.j"
 @import "Controllers/OLUploadController.j"
-
-// @import "Managers/OLTransitionManager.j"
 
 @import "Views/OLMenu.j"
 
@@ -35,7 +32,8 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
     @outlet                 OLSidebarController     sidebarController;
     @outlet                 OLContentViewController contentViewController;
-
+	
+	OLProjectController		_projectController;
 	OLUploadController		_uploadController;
 
     // OLToolbarController _toolbarController @accessors(property=toolbarController);
@@ -47,15 +45,19 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 {
     // setupToolbar(self, theWindow);
 
-    // Show the welcome window
-    // var welcomeWindowController = [[OLWelcomeWindowController alloc] init];
-    // [welcomeWindowController showWindow:self];
-
 	_uploadController = [[OLUploadController alloc] init];
 	
 	var welcomeController = [[OLWelcomeController alloc] init];
     [welcomeController setDelegate:self];
 	[welcomeController setUploadController:_uploadController];
+	
+	_projectController = [[OLProjectController alloc] init];
+	[_projectController addObserver:contentViewController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+    [_projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
+
+	[_projectController loadProjects];
+	
+	[contentViewController setResourceViewDelegate:[_projectController resourceBundleController]];
 }
 
 - (void)awakeFromCib
@@ -64,8 +66,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [mainSplitView setIsPaneSplitter:YES];
 
     [sidebarController setDelegate:self];
-    
-    // setupContentView(self, mainContentView, mainSplitView);
     
     // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
     var menu = [[OLMenu alloc] init];
@@ -77,16 +77,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 {
 	[sidebarController showResourcesView];
 }
-
-- (void)showResourcesView
-{
-    [contentViewController showResourcesView];
-}
-
-// - (void)contentViewSendMessage:(SEL)aMessage
-// {
-//     [_contentViewController handleMessage:aMessage];
-// }
 
 - (void)handleException:(OLException)anException
 {
@@ -143,16 +133,4 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 //  
 //     [theWindow setToolbar:toolbar];
 //  [self setToolbarController:toolbarController];
-// }
-
-// function setupContentView(self, mainView, mainSplitView)
-// {
-//  var contentViewController = [[OLContentViewController alloc] init];
-//  [contentViewController setDelegate:self];
-//  
-//  var transitionManager = [[OLTransitionManager alloc] initWithFrame:[mainView bounds]];
-//  [contentViewController setTransitionManager:transitionManager];
-//  [transitionManager setDelegate:contentViewController];
-// 
-//  [self setContentViewController:contentViewController];
 // }

@@ -1,31 +1,56 @@
 @import <Foundation/CPObject.j>
 
+@import "OLResourceBundleController.j"
 @import "../Models/OLProject.j"
 
 // Manages an array of projects
 @implementation OLProjectController : CPObject
 {
-    CPArray     _projects       @accessors(property=projects);
-    id          _delegate       @accessors(property=delegate);
+    CPArray     _projects       	@accessors(property=projects);
+	OLProject	selectedProject		@accessors;
+	
+	OLResourceBundleController	resourceBundleController	@accessors(readonly);
+	
+    id          _delegate       	@accessors(property=delegate);
 }
 
 - (id)init
 {
     if(self = [super init])
-    {
-        var iTunes = [[OLProject alloc] initWithName:@"iTunes"];
-        var safari = [[OLProject alloc] initWithName:@"Safari"];
-        var things = [[OLProject alloc] initWithName:@"Things"];
-        
-        _projects = [iTunes, safari, things];
+    {        
+		_projects = [CPArray array];
 
 		[[CPNotificationCenter defaultCenter]
 			addObserver:self
 			selector:@selector(didReceiveParseServerResponseNotification:)
 			name:@"OLUploadControllerDidParseServerResponse"
 			object:nil];
+		
+		[[CPNotificationCenter defaultCenter]
+			addObserver:self
+			selector:@selector(didReceiveOutlineViewSelectionDidChangeNotification:)
+			name:CPOutlineViewSelectionDidChangeNotification
+			object:nil];
+			
+		resourceBundleController = [[OLResourceBundleController alloc] init];
+		[resourceBundleController setDelegate:self];
+		[self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
     }
     return self;
+}
+
+- (void)loadProjects
+{
+	var projectList = [OLProject list];
+	for (var i = 0; i < [projectList count]; i++)
+	{
+		[self addProject:[projectList objectAtIndex:i]];
+	}
+}
+
+- (void)save
+{
+	[selectedProject save];
 }
 
 - (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index
@@ -36,6 +61,21 @@
 - (void)addProject:(OLProject)project
 {
     [self insertObject:project inProjectsAtIndex:[_projects count]];
+}
+
+- (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
+{
+	var outlineView = [notification object];
+
+	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
+	var item = [outlineView itemAtRow:selectedRow];
+
+	var parent = [outlineView parentForItem:item];
+
+	if (parent === @"Projects")
+	{
+	    [self setSelectedProject:item];
+	}
 }
 
 - (void)didReceiveParseServerResponseNotification:(CPNotification)notification
