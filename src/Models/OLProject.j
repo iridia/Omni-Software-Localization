@@ -21,6 +21,12 @@
     return self;
 }
 
+- (void)resources
+{
+	var defaultResourceBundle = [_resourceBundles objectAtIndex:0]; // FIXME: This should not be hard coded
+	return [defaultResourceBundle resources];
+}
+
 - (void)addResourceBundle:(OLResourceBundle)aResourceBundle
 {
 	[_resourceBundles addObject:aResourceBundle];

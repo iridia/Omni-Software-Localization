@@ -15,10 +15,12 @@
 // @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
-@import "Controllers/LineItemEditWindowController.j"
 @import "Controllers/OLUploadController.j"
+@import "Controllers/OLResourceController.j"
+@import "Controllers/OLLineItemController.j"
 
 @import "Views/OLMenu.j"
+@import "Views/OLResourcesView.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
@@ -36,6 +38,9 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	OLProjectController		projectController;
 	OLUploadController		uploadController;
 	OLResourceController    resourceController;
+	OLLineItemController    lineItemController;
+	
+	OLResourcesView         resourcesView;
 
     // OLToolbarController _toolbarController @accessors(property=toolbarController);
     
@@ -45,7 +50,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
     // setupToolbar(self, theWindow);
-
 	uploadController = [[OLUploadController alloc] init];
 	
 	var welcomeController = [[OLWelcomeController alloc] init];
@@ -55,12 +59,23 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	projectController = [[OLProjectController alloc] init];
 	[projectController addObserver:contentViewController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
-
 	[projectController loadProjects];
 	
 	resourceController = [[OLResourceController alloc] init];
-	[contentViewController setResourcesView:[resourceController resourcesView]];
+    [projectController addObserver:resourceController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
 	
+	lineItemController = [[OLLineItemController alloc] init];
+	[lineItemController setResourcesView:[resourceController resourcesView]];
+	[resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
+	
+	resourcesView = [[OLResourcesView alloc] initWithFrame:[[[CPApp delegate] mainContentView] bounds]];
+    [resourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [resourcesView setResourceController:resourceController];
+    [resourcesView setLineItemController:lineItemController];
+    
+    [resourceController setResourcesView:resourcesView];
+    [lineItemController setResourcesView:resourcesView];
+	[contentViewController setResourcesView:resourcesView];
     // [contentViewController setResourceViewDelegate:[projectController resourceBundleController]];
 }
 
