@@ -5,15 +5,14 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 
 @implementation OLResourceEditorView : CPView
 {
-    OLResource _editingResource @accessors(property=editingResource, readonly);
-    CPTableView _lineItemsTableView;
-    CPScrollView _scrollView;
-    CPTextField _votes;
+    OLResource      _editingResource        @accessors(property=editingResource, readonly);
+    CPTableView     _lineItemsTableView;
+    CPScrollView    _scrollView;
+    CPTextField     _votes;
     
-    CPTextField _editorTextField;
-    CPInteger _editingRow;
+    CPInteger       _editingRow;
     
-    id _delegate @accessors(property=delegate);
+    id              _delegate               @accessors(property=delegate);
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -52,8 +51,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 		
 		[_scrollView setDocumentView:_lineItemsTableView];
 		[self addSubview:_scrollView];
-		
-		// This is bug #72
+
 		var bottomBar = [[CPView alloc] initWithFrame:CGRectMake(0.0, CGRectGetHeight([_scrollView bounds]), CGRectGetWidth(aFrame), 32.0)];
 		[bottomBar setBackgroundColor:[CPColor lightGrayColor]];
 		[bottomBar setAutoresizingMask:CPViewWidthSizable | CPViewMinYMargin];
@@ -80,13 +78,6 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
         [bottomBar addSubview:_votes];
 
         [self addSubview:bottomBar];
-		
-		_editorTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"" width:(CGRectGetWidth(aFrame) - 200.0)];
-		[_editorTextField setEditable:YES];
-		[_editorTextField setDelegate:self];
-		_editingRow = nil;
-		
-		_delegate = nil;
     }
     
     return self;
@@ -129,14 +120,6 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
         var lineItem = [[_editingResource lineItems] objectAtIndex:_editingRow];
         [_delegate editLineItem:lineItem resource:_editingResource];
     }
-    
-//    var rowRect = [_lineItemsTableView rectOfRow:_editingRow];
-//    [_editorTextField setFrameOrigin:CPMakePoint(200.0 - 3.0, rowRect.origin.y + (CGRectGetHeight([_editorTextField bounds]) / 2.0))];
-    
-//    [_editorTextField setStringValue:[[[_editingResource lineItems] objectAtIndex:_editingRow] value]];
-//    [self addSubview:_editorTextField];
-    
-//    [[_editorTextField window] makeFirstResponder:_editorTextField]; 
 }
 
 - (void)saveResource
@@ -145,22 +128,6 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 	{
         [_delegate didEditResourceForEditingBundle:_editingResource];
 	}
-}
-
-- (void)controlTextDidEndEditing:(CPNotification)aNotification
-{
-    var newValue = [_editorTextField stringValue];
-    [[[_editingResource lineItems] objectAtIndex:_editingRow] setValue:newValue];
-
-	[self saveResource];
-	
-	[_editorTextField removeFromSuperview];
-    _editingRow = nil;
-}
-
-- (void)controlTextDidBlur:(CPNotification)aNotification
-{
-    [self controlTextDidEndEditing:aNotification]; // FIXME: This seems wrong, but it works.
 }
 
 - (void)setEditingResource:(OLResource)resource
