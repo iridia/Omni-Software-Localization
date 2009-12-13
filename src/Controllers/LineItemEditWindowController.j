@@ -28,6 +28,8 @@
 {
 	[comment setLineBreakMode:CPLineBreakByWordWrapping];
 	[value setLineBreakMode:CPLineBreakByWordWrapping];
+	
+    [[CPApplication sharedApplication] runModalForWindow:[self window]];
 }
 
 - (@action)done:(id)sender
@@ -51,6 +53,11 @@
     }
 }
 
+- (void)windowWillClose:(id)window
+{
+	[[CPApplication sharedApplication] stopModal];
+}
+
 - (void)setLineItem:(OLLineItem)aLineItem
 {
     _lineItem = aLineItem;
@@ -59,10 +66,13 @@
 	[comment setStringValue:[aLineItem comment]];
 }
 
-- (void)controlTextDidEndEditing:(CPNotification)aNotification
+- (void)controlTextDidChange:(CPNotification)aNotification
 {
     [_lineItem setValue:[value stringValue]];
+}
 
+- (void)controlTextDidEndEditing:(CPNotification)aNotification
+{
 	[self saveResource];
 }
 
