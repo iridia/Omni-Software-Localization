@@ -7,18 +7,18 @@ var OLSidebarProjectsKey = @"Projects";
 
 @implementation OLSidebarController : CPObject
 {
-    CPDictionary            _items;
-    CPString                _currentItem;
+    CPDictionary            items;
     OLSidebarOutlineView    sidebarOutlineView;
-
-    @outlet         CPScrollView                sidebarScrollView;
-
-    id              _delegate                   @accessors(property=delegate);
+    
+    @outlet                 CPScrollView                sidebarScrollView;
 }
 
 - (void)awakeFromCib
 {
-    _items = [CPDictionary dictionary];
+    items = [CPDictionary dictionary];
+    
+    // Want projects to initially show up, even if there are no projects.
+    [self updateProjectsWithProjects:[CPArray array]];
     
     // Autohide the scrollers here and not in the Cib because it is impossible to
     // select the scrollView in Atlas again otherwise.
@@ -32,7 +32,7 @@ var OLSidebarProjectsKey = @"Projects";
     [sidebarScrollView setDocumentView:sidebarOutlineView];
     
     // Initially show all items as expanded
-    var allTopLevelObjects = [_items allKeys];
+    var allTopLevelObjects = [items allKeys];
     for (var i = 0; i < [allTopLevelObjects count]; i++)
     {
         [sidebarOutlineView expandItem:[allTopLevelObjects objectAtIndex:i]];
@@ -41,7 +41,7 @@ var OLSidebarProjectsKey = @"Projects";
 
 - (void)updateProjectsWithProjects:(CPArray)projects
 {
-    [_items setObject:projects forKey:OLSidebarProjectsKey];
+    [items setObject:projects forKey:OLSidebarProjectsKey];
 }
 
 - (void)handleMessage:(SEL)aMessage
@@ -80,19 +80,19 @@ var OLSidebarProjectsKey = @"Projects";
 {
     if (item === nil)
     {
-        var keys = [_items allKeys];
+        var keys = [items allKeys];
         return [keys objectAtIndex:index];
     }
     else
     {
-        var values = [_items objectForKey:item];
+        var values = [items objectForKey:item];
         return [values objectAtIndex:index];
     }
 }
 
 - (BOOL)outlineView:(CPOutlineView)outlineView isItemExpandable:(id)item
 {
-    var values = [_items objectForKey:item];
+    var values = [items objectForKey:item];
     
     var isItemExpandable = ([values count] > 0);
     
@@ -103,11 +103,11 @@ var OLSidebarProjectsKey = @"Projects";
 {
     if (item === nil)
     {
-        return [_items count];
+        return [items count];
     }
     else
     {
-        var values = [_items objectForKey:item];
+        var values = [items objectForKey:item];
         return [values count];
     }
 }
