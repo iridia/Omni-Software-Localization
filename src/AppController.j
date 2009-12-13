@@ -33,39 +33,37 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     @outlet                 OLSidebarController     sidebarController;
     @outlet                 OLContentViewController contentViewController;
 	
-	OLProjectController		_projectController;
-	OLUploadController		_uploadController;
+	OLProjectController		projectController;
+	OLUploadController		uploadController;
 
     // OLToolbarController _toolbarController @accessors(property=toolbarController);
     
-    CPView                  _currentView;
+    CPView                  currentView;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
     // setupToolbar(self, theWindow);
 
-	_uploadController = [[OLUploadController alloc] init];
+	uploadController = [[OLUploadController alloc] init];
 	
 	var welcomeController = [[OLWelcomeController alloc] init];
     [welcomeController setDelegate:self];
-	[welcomeController setUploadController:_uploadController];
+	[welcomeController setUploadController:uploadController];
 	
-	_projectController = [[OLProjectController alloc] init];
-	[_projectController addObserver:contentViewController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
-    [_projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
+	projectController = [[OLProjectController alloc] init];
+	[projectController addObserver:contentViewController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+    [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
 
-	[_projectController loadProjects];
+	[projectController loadProjects];
 	
-	[contentViewController setResourceViewDelegate:[_projectController resourceBundleController]];
+	[contentViewController setResourceViewDelegate:[projectController resourceBundleController]];
 }
 
 - (void)awakeFromCib
 {
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
-
-    [sidebarController setDelegate:self];
     
     // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
     var menu = [[OLMenu alloc] init];
