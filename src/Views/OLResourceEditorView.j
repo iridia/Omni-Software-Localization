@@ -52,7 +52,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 		[_scrollView setDocumentView:_lineItemsTableView];
 		[self addSubview:_scrollView];
 
-		var bottomBar = [[CPView alloc] initWithFrame:CGRectMake(0.0, CGRectGetHeight([_scrollView bounds]), CGRectGetWidth(aFrame), 32.0)];
+		var bottomBar = [[CPView alloc] initWithFrame:CGRectMake(0.0, CGRectGetHeight([_scrollView bounds]) - 28.0, CGRectGetWidth(aFrame), 32.0)];
 		[bottomBar setBackgroundColor:[CPColor lightGrayColor]];
 		[bottomBar setAutoresizingMask:CPViewWidthSizable | CPViewMinYMargin];
 		

@@ -1,24 +1,22 @@
 @import <Foundation/CPObject.j>
 
-@import "OLResourceBundleController.j"
+@import "OLResourceController.j"
 @import "../Models/OLProject.j"
 
 // Manages an array of projects
 @implementation OLProjectController : CPObject
 {
-    CPArray     _projects       	@accessors(property=projects);
-	OLProject	selectedProject		@accessors;
+    CPArray                 projects       	    @accessors;
+	OLProject	            selectedProject		@accessors;
 	
 	OLResourceBundleController	resourceBundleController	@accessors(readonly);
-	
-    id          _delegate       	@accessors(property=delegate);
 }
 
 - (id)init
 {
     if(self = [super init])
     {        
-		_projects = [CPArray array];
+		projects = [CPArray array];
 
 		[[CPNotificationCenter defaultCenter]
 			addObserver:self
@@ -48,19 +46,14 @@
 	}
 }
 
-- (void)save
-{
-	[selectedProject save];
-}
-
 - (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index
 {
-    [_projects insertObject:project atIndex:index];
+    [projects insertObject:project atIndex:index];
 }
 
 - (void)addProject:(OLProject)project
 {
-    [self insertObject:project inProjectsAtIndex:[_projects count]];
+    [self insertObject:project inProjectsAtIndex:[projects count]];
 }
 
 - (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
@@ -137,6 +130,15 @@
 	var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
 	
 	[resourceBundle addResource:resource];
+}
+
+@end
+
+@implementation OLProjectController (OLResourceControllerDelegate)
+
+- (void)save
+{
+	[selectedProject save];
 }
 
 @end
