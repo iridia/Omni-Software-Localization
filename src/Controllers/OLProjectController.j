@@ -122,21 +122,39 @@
 
 - (void)addResource:(JSObject)jsonResponse toResourceBundle:(OLResourceBundle)resourceBundle
 {
-	var resourceLineItems = [[CPArray alloc] init];
-
 	var fileName = jsonResponse.fileName;
 	var fileType = jsonResponse.fileType;
-	var lineItemKeys = jsonResponse.dict.key;
-	var lineItemStrings = jsonResponse.dict.string;	
-
-	for (var i = 0; i < [lineItemKeys count]; i++)
-	{
-		[resourceLineItems addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
-	}
+	
+	resourceLineItems = [self lineItemsFromResponse:jsonResponse];
 
 	var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
 	
 	[resourceBundle addResource:resource];
+}
+
+- (void)lineItemsFromResponse:(JSObject)jsonResponse
+{
+	var result = [CPArray array];
+	var lineItemKeys = jsonResponse.dict.key;
+	var lineItemStrings = jsonResponse.dict.string;
+	
+	if(jsonResponse.fileType == "strings")
+	{
+		var lineItemComments = jsonResponse.comment_dict.string;
+
+		for (var i = 0; i < [lineItemKeys count]; i++)
+		{
+			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i] comment:lineItemComment[i]]];
+		}
+	}
+	else
+	{
+		for (var i = 0; i < [lineItemKeys count]; i++)
+		{
+			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
+		}
+	}
+	return result;
 }
 
 @end
