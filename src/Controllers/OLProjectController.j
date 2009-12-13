@@ -6,10 +6,10 @@
 // Manages an array of projects
 @implementation OLProjectController : CPObject
 {
-    CPArray                 projects       	    @accessors;
-	OLProject	            selectedProject		@accessors;
+    CPArray                     projects       	            @accessors;
+	OLProject	                selectedProject		        @accessors;
 	
-	OLResourceBundleController	resourceBundleController	@accessors(readonly);
+    // OLResourceBundleController   resourceBundleController    @accessors(readonly);
 }
 
 - (id)init
@@ -30,9 +30,9 @@
 			name:CPOutlineViewSelectionDidChangeNotification
 			object:nil];
 			
-		resourceBundleController = [[OLResourceBundleController alloc] init];
-		[resourceBundleController setDelegate:self];
-		[self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+        // resourceBundleController = [[OLResourceBundleController alloc] init];
+        // [resourceBundleController setDelegate:self];
+        // [self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
     }
     return self;
 }

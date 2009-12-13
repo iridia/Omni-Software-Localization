@@ -3,23 +3,31 @@
 @import "../models/OLResourceBundle.j"
 @import "../Utilities/OLException.j"
 
-var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
-
 /*!
  * The OLResourceBundleController is a controller for the resource bundle view and
  * the decisions on which data to send to the view is made here.
  */
 @implementation OLResourceBundleController : CPObject
 {
-	id delegate @accessors;
-	CPArray _bundles @accessors(property=bundles);
-	OLResourceBundle _editingBundle @accessors(property=editingBundle);
-    OLResource _editingResource;
+	CPArray             resourceBundles     @accessors;
+    // OLResourceBundle    _editingBundle      @accessors(property=editingBundle);
+    // OLResource          _editingResource;
+    
+	id                  delegate            @accessors;
+}
+
+- (id)init
+{
+    if (self = [super init])
+    {
+        resourceBundles = [CPArray array];
+    }
+    return self;
 }
 
 - (void)didSelectBundleAtIndex:(CPInteger)selectedIndex
 {	
-    [self setEditingBundle:[_bundles objectAtIndex:selectedIndex]];
+    [self setEditingBundle:[resourceBundles objectAtIndex:selectedIndex]];
 }
 
 - (void)didEditResourceForEditingBundle
@@ -79,12 +87,12 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 - (int)numberOfRowsInTableView:(CPTableView)resourceTableView
 {
-    return [_bundles count];
+    return [resourceBundles count];
 }
 
 - (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
-    var resourceBundle = [_bundles objectAtIndex:row];
+    var resourceBundle = [resourceBundles objectAtIndex:row];
     var resource = [[resourceBundle resources] objectAtIndex:0]; // FIXME: shoud not be hard coded to 0.
     
     if ([tableColumn identifier] === OLResourcesViewFileNameColumn)

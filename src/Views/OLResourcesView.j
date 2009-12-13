@@ -12,6 +12,8 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 	id _delegate @accessors(property=delegate);
     CPArray     _resources @accessors(property=resources);
     CPTableView _resourceTableView @accessors(property=resourceTableView);
+    
+    OLResourceController        resourceController;
 
     OLResourceEditorView _editingView;
     BOOL _isEditing @accessors(property=isEditing);
@@ -31,10 +33,10 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
         
 		// create the resourceTableView
 		_resourceTableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];
-		[_resourceTableView setDataSource:self];
+        // [_resourceTableView setDataSource:self];
 		[_resourceTableView setUsesAlternatingRowBackgroundColors:YES];
 		[_resourceTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-		[_resourceTableView setDelegate:self];
+        // [_resourceTableView setDelegate:self];
 		
 		// define the header color
 		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
@@ -69,42 +71,26 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
     }
 }
 
+- (void)setResourceController:(OLResourceController)aResourceController
+{
+    if (aResourceController !== resourceController)
+    {
+        resourceController = aResourceController;
+        [_resourceTableView setDataSource:resourceController];
+        [_resourceTableView setDelegate:resourceController];
+    }
+}
+
 - (void)setDelegate:(id)aDelegate
 {
     if (aDelegate !== _delegate)
     {
-        _delegate = aDelegate;
-        [_delegate addObserver:_editingView forKeyPath:@"editingBundle" options:CPKeyValueObservingOptionNew context:nil];
-        [_delegate addObserver:_editingView forKeyPath:@"editingBundle.resources" options:CPKeyValueObservingOptionNew context:nil];
-    	[_editingView setDelegate:_delegate];
+        // _delegate = aDelegate;
+        // [_delegate addObserver:_editingView forKeyPath:@"editingBundle" options:CPKeyValueObservingOptionNew context:nil];
+        // [_delegate addObserver:_editingView forKeyPath:@"editingBundle.resources" options:CPKeyValueObservingOptionNew context:nil];
+        // [_editingView setDelegate:_delegate];
     }
 }
-
-@end
-
-@implementation OLResourcesView (CPTableViewDataSource)
-
-- (int)numberOfRowsInTableView:(CPTableView)resourceTableView
-{
-    return [_resources count];
-}
-
-- (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
-{
-    var resourceBundle = [_resources objectAtIndex:row];
-    var resource = [[resourceBundle resources] objectAtIndex:0]; // FIXME: shoud not be hard coded to 0.
-    
-    if ([tableColumn identifier] === OLResourcesViewFileNameColumn)
-    {
-        return [resource fileName];
-    }
-}
-
-// This is not yet implemented in capp :(
-// - (id)tableView:(CPTableView)tableView heightOfRow:(int)row
-// {
-//     return 60.0;
-// }
 
 @end
 

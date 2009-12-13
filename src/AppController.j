@@ -26,15 +26,16 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 {
     @outlet                 CPWindow                theWindow;
     @outlet                 CPSplitView             mainSplitView;
-    @outlet                 CPView                  mainContentView;
+    @outlet                 CPView                  mainContentView         @accessors(readonly);
     @outlet                 CPScrollView            sidebarScrollView;
     @outlet                 CPButtonBar             sidebarButtonBar;
 
     @outlet                 OLSidebarController     sidebarController;
-    @outlet                 OLContentViewController contentViewController;
+    @outlet                 OLContentViewController contentViewController   @accessors(readonly);
 	
 	OLProjectController		projectController;
 	OLUploadController		uploadController;
+	OLResourceController    resourceController;
 
     // OLToolbarController _toolbarController @accessors(property=toolbarController);
     
@@ -57,7 +58,10 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 	[projectController loadProjects];
 	
-	[contentViewController setResourceViewDelegate:[projectController resourceBundleController]];
+	resourceController = [[OLResourceController alloc] init];
+	[contentViewController setResourcesView:[resourceController resourcesView]];
+	
+    // [contentViewController setResourceViewDelegate:[projectController resourceBundleController]];
 }
 
 - (void)awakeFromCib
