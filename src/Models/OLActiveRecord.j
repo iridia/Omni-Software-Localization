@@ -145,20 +145,26 @@
 	{
 	    var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:NO]];
 		[urlRequest setHTTPMethod:"PUT"];
+		
+		console.log("Here1", self);
 
 	    var archivedData = [[CPKeyedArchiver archivedDataWithRootObject:self] string];
+		
+		console.log("Here2");
 	    var jsonedData = JSON.stringify({"archive":archivedData});
+		console.log("Here3");
 	    [urlRequest setHTTPBody:jsonedData];
 	
 		if ([_delegate respondsToSelector:@selector(willCreateRecord:)])
 		{
 		    [_delegate willCreateRecord:self];
 		}
-	
+		
 		_createConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
 	}
 	catch(ex)
 	{
+		console.log(ex);
 		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
 			reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
 
