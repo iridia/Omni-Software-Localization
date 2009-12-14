@@ -9,7 +9,7 @@
 	CPString		_fileName	@accessors(readonly, property=fileName);
 	CPString		_fileType	@accessors(readonly, property=fileType);
 	CPArray			_lineItems  @accessors(readonly, property=lineItems);
-	CPNumber       	_votes		@accessors(readonly, property=votes);
+	CPDictionary   	votes		@accessors(readonly);
 }
 
 
@@ -26,19 +26,39 @@
 		_fileName = fileName;
 		_fileType = fileType;
 		_lineItems = someLineItems;
-		_votes = 0;
+		votes = [CPDictionary dictionary];
 	}
 	return self;
 }
 
-- (void)voteUp
+- (void)voteUp:(OLUser)user
 {
-    _votes++;
+    if (user)
+    {
+        [votes setObject:1 forKey:[user recordID]];
+    }
 }
 
-- (void)voteDown
+- (void)voteDown:(OLUser)user
 {
-    _votes--;
+    if (user)
+    {
+        [votes setObject:-1 forKey:[user recordID]];
+    }
+}
+
+- (int)numberOfVotes
+{
+    var users = [votes allKeys];
+    
+    var numVotes = 0;
+    
+    for (var i = 0; i < [users count]; i++)
+    {
+        numVotes += [votes objectForKey:[users objectAtIndex:i]];
+    }
+
+    return numVotes;
 }
 
 @end
@@ -60,7 +80,7 @@ var OLResourceVotesKey = @"OLResourceVotesKey";
         _fileName = [aCoder decodeObjectForKey:OLResourceFileNameKey];
         _fileType = [aCoder decodeObjectForKey:OLResourceFileTypeKey];
         _lineItems = [aCoder decodeObjectForKey:OLResourceLineItemsKey];
-		_votes = [aCoder decodeObjectForKey:OLResourceVotesKey] || 0;
+		votes = [aCoder decodeObjectForKey:OLResourceVotesKey];
     }
     
     return self;
@@ -71,7 +91,7 @@ var OLResourceVotesKey = @"OLResourceVotesKey";
     [aCoder encodeObject:_fileName forKey:OLResourceFileNameKey];
     [aCoder encodeObject:_fileType forKey:OLResourceFileTypeKey];
     [aCoder encodeObject:_lineItems forKey:OLResourceLineItemsKey];
-	[aCoder encodeObject:_votes forKey:OLResourceVotesKey];
+	[aCoder encodeObject:votes forKey:OLResourceVotesKey];
 }
 
 @end

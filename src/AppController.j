@@ -15,10 +15,12 @@
 // @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
-@import "Controllers/LineItemEditWindowController.j"
 @import "Controllers/OLUploadController.j"
+@import "Controllers/OLResourceController.j"
+@import "Controllers/OLLineItemController.j"
 
 @import "Views/OLMenu.j"
+@import "Views/OLResourcesView.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
@@ -26,15 +28,19 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 {
     @outlet                 CPWindow                theWindow;
     @outlet                 CPSplitView             mainSplitView;
-    @outlet                 CPView                  mainContentView;
+    @outlet                 CPView                  mainContentView         @accessors(readonly);
     @outlet                 CPScrollView            sidebarScrollView;
     @outlet                 CPButtonBar             sidebarButtonBar;
 
     @outlet                 OLSidebarController     sidebarController;
-    @outlet                 OLContentViewController contentViewController;
+    @outlet                 OLContentViewController contentViewController   @accessors(readonly);
 	
 	OLProjectController		projectController;
 	OLUploadController		uploadController;
+	OLResourceController    resourceController;
+	OLLineItemController    lineItemController;
+	
+	OLResourcesView         resourcesView;
 
     // OLToolbarController _toolbarController @accessors(property=toolbarController);
     
@@ -44,7 +50,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
     // setupToolbar(self, theWindow);
-
 	uploadController = [[OLUploadController alloc] init];
 	
 	var welcomeController = [[OLWelcomeController alloc] init];
@@ -54,10 +59,24 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	projectController = [[OLProjectController alloc] init];
 	[projectController addObserver:contentViewController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
-
 	[projectController loadProjects];
 	
-	[contentViewController setResourceViewDelegate:[projectController resourceBundleController]];
+	resourceController = [[OLResourceController alloc] init];
+    [projectController addObserver:resourceController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+	
+	lineItemController = [[OLLineItemController alloc] init];
+	[lineItemController setResourcesView:[resourceController resourcesView]];
+	[resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
+	
+	resourcesView = [[OLResourcesView alloc] initWithFrame:[[[CPApp delegate] mainContentView] bounds]];
+    [resourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [resourcesView setResourceController:resourceController];
+    [resourcesView setLineItemController:lineItemController];
+    [[resourcesView editingView] setVoteTarget:resourceController downAction:@selector(voteDown:) upAction:@selector(voteUp:)];
+    
+    [resourceController setResourcesView:resourcesView];
+    [lineItemController setResourcesView:resourcesView];
+	[contentViewController setResourcesView:resourcesView];
 }
 
 - (void)awakeFromCib

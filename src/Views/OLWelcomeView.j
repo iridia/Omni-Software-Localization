@@ -51,7 +51,7 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
 		[importButton setTitle:@"Import"];
 		[importButton sizeToFit];
 		[importButton setDelegate:self];
-		[importButton setURL:@"upload.php"];
+		[importButton setURL:@"Upload/upload.php"];
 		[importButton setCenter:CPMakePoint(CGRectGetWidth([quickLinksView bounds]) / 2.0, 40.0)];
 		
         var importText = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([quickLinksView bounds]) - 10.0, 48.0)];

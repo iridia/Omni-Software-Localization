@@ -26,18 +26,7 @@
 		var cancelButton = [CPButton buttonWithTitle:@"Cancel"];
 		_registrationFailed = [CPTextField labelWithTitle:"That's not a valid email address!"];
 		[_registrationFailed setTextColor:[CPColor redColor]];
-		
-		/*
-		var passwordText = [CPTextField labelWithTitle:@"Password"];
-		var passwordField = [CPTextField roundedTextFieldWithStringValue:@"" placeholder:@"Password" width:200];
-		
-		var emailText = [CPTextField labelWithTitle:@"Email Address"];
-		var emailField = [CPTextField roundedTextFieldWithStringValue:@"" placeholder:@"Email" width:200];
-		
-		var nameText = [CPTextField labelWithTitle:@"Name"];
-		var nameField = [CPTextField roundedTextFieldWithStringValue:@"" placeholder:@"First,Last" width:200];
-		
-		*/		
+
 		[self setBackgroundColor: [CPColor sourceViewColor]];
 		var views = [usernameText, _userNameField, registerButton, cancelButton];
         [self addViews:views to:contentView];

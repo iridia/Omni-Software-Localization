@@ -4,24 +4,12 @@
 
 @implementation OLContentViewController : CPObject
 {
-	id _delegate @accessors(property=delegate);
+	id                          _delegate       @accessors(property=delegate);
 	
-	OLResourcesView 			_resourcesView;
 	CPView          			_currentView;
+	CPView                      resourcesView   @accessors;
 
-    @outlet 					CPView						contentView;
-}
-
-- (void)awakeFromCib
-{
-	_resourcesView = [[OLResourcesView alloc] initWithFrame:[contentView bounds]];
-    [_resourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-}
-
-- (void)setResourceViewDelegate:(id)delegate
-{
-	[_resourcesView setDelegate:delegate];
-    [delegate addObserver:_resourcesView forKeyPath:@"bundles" options:CPKeyValueObservingOptionNew context:nil];
+    @outlet 					CPView			contentView;
 }
 
 - (void)setCurrentView:(CPView)aView
@@ -44,7 +32,7 @@
     switch (keyPath)
     {
         case @"selectedProject":
-			[self setCurrentView:_resourcesView];
+			[self setCurrentView:resourcesView];
             break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);

@@ -39,17 +39,17 @@
 
 - (@action)next:(id)sender
 {
-    if(_delegate && [_delegate respondsToSelector:@selector(nextLineItem:)])
+    if([_delegate respondsToSelector:@selector(nextLineItem)])
     {
-        [self setLineItem:[_delegate nextLineItem:_lineItem]];
+        [_delegate nextLineItem];
     }
 }
 
 - (@action)previous:(id)sender
 {
-    if(_delegate && [_delegate respondsToSelector:@selector(previousLineItem:)])
+    if([_delegate respondsToSelector:@selector(previousLineItem)])
     {
-        [self setLineItem:[_delegate previousLineItem:_lineItem]];
+        [_delegate previousLineItem];
     }
 }
 
@@ -83,10 +83,26 @@
 
 - (void)saveResource
 {
-    if ([_delegate respondsToSelector:@selector(didEditResourceForEditingBundle)])
-	{
-        [_delegate didEditResourceForEditingBundle];
-	}
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:@"OLProjectDidChangeNotification"
+        object:_lineItem];
+}
+
+@end
+
+@implementation OLLineItemEditWindowController (KVO)
+
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
+{
+    switch (keyPath)
+    {
+        case @"selectedLineItem":
+            [self setLineItem:[object selectedLineItem]];
+            break;
+        default:
+            CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
+            break;
+    }
 }
 
 @end

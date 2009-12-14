@@ -6,10 +6,8 @@
 // Manages an array of projects
 @implementation OLProjectController : CPObject
 {
-    CPArray                 projects       	    @accessors;
-	OLProject	            selectedProject		@accessors;
-	
-	OLResourceBundleController	resourceBundleController	@accessors(readonly);
+    CPArray                     projects       	            @accessors;
+	OLProject	                selectedProject		        @accessors;
 }
 
 - (id)init
@@ -30,9 +28,11 @@
 			name:CPOutlineViewSelectionDidChangeNotification
 			object:nil];
 			
-		resourceBundleController = [[OLResourceBundleController alloc] init];
-		[resourceBundleController setDelegate:self];
-		[self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+		[[CPNotificationCenter defaultCenter]
+		    addObserver:self
+		    selector:@selector(didReceiveProjectDidChangeNotification:)
+		    name:@"OLProjectDidChangeNotification"
+		    object:nil];
     }
     return self;
 }
@@ -56,43 +56,14 @@
     [self insertObject:project inProjectsAtIndex:[projects count]];
 }
 
-- (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
-{
-	var outlineView = [notification object];
-
-	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
-	var item = [outlineView itemAtRow:selectedRow];
-
-	var parent = [outlineView parentForItem:item];
-
-	if (parent === @"Projects")
-	{
-	    [self setSelectedProject:item];
-	}
-}
-
-- (void)didReceiveParseServerResponseNotification:(CPNotification)notification
-{
-	var jsonResponse = [[notification object] jsonResponse];
-	
-	if (jsonResponse.fileType === @"zip")
-	{
-		[self createNewProject:jsonResponse]
-	}
-	else
-	{
-		[self addResource:jsonResponse toResourceBundle:nil];
-	}
-}
-
 - (void)createNewProject:(JSObject)jsonResponse
 {	
 	var project = [[OLProject alloc] initWithName:jsonResponse.fileName];
 
+	var resources = [CPArray array];
+
 	for(var i = 0; i < jsonResponse.resourcebundles.length; i++)
-	{
-		var resources = [CPArray array];
-		
+	{		
 		for(var j = 0; j < jsonResponse.resourcebundles[i].resources.length; j++)
 		{
 			var theResource = jsonResponse.resourcebundles[i].resources[j];
@@ -100,10 +71,10 @@
 			
 			[resources addObject:[[OLResource alloc] initWithFileName:theResource.fileName fileType:theResource.fileType lineItems:lineItems]];
 		}
-		
-		var resourceBundle = [[OLResourceBundle alloc] initWithResources:resources language:[OLLanguage english]];
-		[project addResourceBundle:resourceBundle];
 	}
+	
+	var resourceBundle = [[OLResourceBundle alloc] initWithResources:resources language:[OLLanguage english]];
+	[project addResourceBundle:resourceBundle];
 
 	[self addProject:project];
 	[project save];
@@ -119,6 +90,43 @@
 	var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
 	
 	[resourceBundle addResource:resource];
+}
+
+- (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
+{
+	var outlineView = [notification object];
+
+	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
+	var item = [outlineView itemAtRow:selectedRow];
+
+	var parent = [outlineView parentForItem:item];
+
+	if (parent === @"Projects")
+	{
+	    if (selectedProject !== item)
+	    {
+    	    [self setSelectedProject:item];
+        }
+	}
+}
+
+- (void)didReceiveParseServerResponseNotification:(CPNotification)notification
+{
+	var jsonResponse = [[notification object] jsonResponse];
+
+	if (jsonResponse.fileType === @"zip")
+	{
+		[self createNewProject:jsonResponse]
+	}
+	else
+	{
+		[self addResource:jsonResponse toResourceBundle:nil];
+	}
+}
+
+- (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
+{
+    [selectedProject save];
 }
 
 - (void)lineItemsFromResponse:(JSObject)jsonResponse
@@ -144,15 +152,6 @@
 		}
 	}
 	return result;
-}
-
-@end
-
-@implementation OLProjectController (OLResourceControllerDelegate)
-
-- (void)save
-{
-	[selectedProject save];
 }
 
 @end

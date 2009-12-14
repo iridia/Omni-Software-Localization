@@ -5,14 +5,12 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 
 @implementation OLResourceEditorView : CPView
 {
-    OLResource      _editingResource        @accessors(property=editingResource, readonly);
-    CPTableView     _lineItemsTableView;
+    CPTableView     _lineItemsTableView     @accessors(property=lineItemsTableView, readonly);
     CPScrollView    _scrollView;
-    CPTextField     _votes;
+    CPTextField     _votes                  @accessors(property=votes, readonly);
     
-    CPInteger       _editingRow;
-    
-    id              _delegate               @accessors(property=delegate);
+    CPButton        voteDownButton;
+    CPButton        voteUpButton;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -26,11 +24,8 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 		[_scrollView setAutoresizingMask:CPViewWidthSizable | CPViewMaxYMargin];
 		
 		_lineItemsTableView = [[CPTableView alloc] initWithFrame:[_scrollView bounds]];
-		[_lineItemsTableView setDataSource:self];
 		[_lineItemsTableView setUsesAlternatingRowBackgroundColors:YES];
 		[_lineItemsTableView setAutoresizingMask:CPViewWidthSizable | CPViewWidthSizable];
-		[_lineItemsTableView setTarget:self];
-		[_lineItemsTableView setDoubleAction:@selector(edit:)];
 				
 		// define the header color
 		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
@@ -52,18 +47,18 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 		[_scrollView setDocumentView:_lineItemsTableView];
 		[self addSubview:_scrollView];
 
-		var bottomBar = [[CPView alloc] initWithFrame:CGRectMake(0.0, CGRectGetHeight([_scrollView bounds]) - 28.0, CGRectGetWidth(aFrame), 32.0)];
+		var bottomBar = [[CPView alloc] initWithFrame:CGRectMake(0.0, CGRectGetHeight([_scrollView bounds]), CGRectGetWidth(aFrame), 32.0)];
 		[bottomBar setBackgroundColor:[CPColor lightGrayColor]];
 		[bottomBar setAutoresizingMask:CPViewWidthSizable | CPViewMinYMargin];
 		
-		var voteUpButton = [CPButton buttonWithTitle:@"Vote Up"];
+		voteUpButton = [CPButton buttonWithTitle:@"Vote Up"];
 		[voteUpButton setAutoresizingMask:CPViewMaxXMargin];
 		[voteUpButton setFrameOrigin:CPMakePoint(10.0, 4.0)];
         [voteUpButton setTarget:self];
         [voteUpButton setAction:@selector(voteUp:)];
         [bottomBar addSubview:voteUpButton];
         
-        var voteDownButton = [CPButton buttonWithTitle:@"Vote Down"];
+        voteDownButton = [CPButton buttonWithTitle:@"Vote Down"];
         [voteDownButton setAutoresizingMask:CPViewMaxXMargin];
         [voteDownButton setTarget:self];
         [voteDownButton setAction:@selector(voteDown:)];
@@ -83,101 +78,32 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
     return self;
 }
 
-- (void)voteUp:(id)sender
+- (void)setVoteTarget:(id)target downAction:(SEL)downAction upAction:(SEL)upAction
 {
-    if ([_delegate respondsToSelector:@selector(voteUpResource:)])
-    {
-        [_delegate voteUpResource:_editingResource];
-    }
+    [voteDownButton setTarget:target];
+    [voteUpButton setTarget:target];
     
-    [self saveResource];
-    [self reloadVotes];
+    [voteDownButton setAction:downAction];
+    [voteUpButton setAction:upAction];
 }
 
-- (void)voteDown:(id)sender
-{
-    if ([_delegate respondsToSelector:@selector(voteDownResource:)])
-    {
-        [_delegate voteDownResource:_editingResource];
-    }
-    
-    [self saveResource];
-    [self reloadVotes];
-}
+@end
 
-- (void)reloadVotes
-{
-    [_votes setStringValue:@"Votes: " + [_editingResource votes]];
-    [_votes sizeToFit];
-}
+@implementation CPTableView (DoubleClick)
 
-- (void)edit:(id)sender
+- (void)mouseDown:(CPEvent)anEvent
 {
-    var _editingRow = [[sender selectedRowIndexes] firstIndex];
-
-    if(_delegate && [_delegate respondsToSelector:@selector(editLineItem:resource:)])
-    {
-        var lineItem = [[_editingResource lineItems] objectAtIndex:_editingRow];
-        [_delegate editLineItem:lineItem resource:_editingResource];
-    }
-}
-
-- (void)saveResource
-{
-    if ([_delegate respondsToSelector:@selector(didEditResourceForEditingBundle:)])
+    if ([anEvent clickCount] == 2)
 	{
-        [_delegate didEditResourceForEditingBundle:_editingResource];
+		var index = [[self selectedRowIndexes] firstIndex];
+		
+		if(index >= 0)
+		{
+			objj_msgSend([self target], [self doubleAction], self);	
+		}
 	}
-}
 
-- (void)setEditingResource:(OLResource)resource
-{
-    if (_editingResource !== resource)
-    {
-        _editingResource = resource;
-        [self reloadVotes];
-    }
-    
-    [_lineItemsTableView reloadData];
-}
-
-@end
-
-@implementation OLResourceEditorView (CPTableViewDataSource)
-
-- (int)numberOfRowsInTableView:(CPTableView)resourceTableView
-{
-    return [[_editingResource lineItems] count];
-}
-
-- (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
-{
-    if ([tableColumn identifier] === OLResourceEditorViewIdentifierColumnHeader)
-    {
-        return [[[_editingResource lineItems] objectAtIndex:row] identifier];
-    }
-    else if ([tableColumn identifier] === OLResourceEditorViewValueColumnHeader)
-    {
-        return [[[_editingResource lineItems] objectAtIndex:row] value];
-    }
-}
-
-@end
-
-@implementation OLResourceEditorView (KVO)
-
-- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
-{
-    if (keyPath === @"editingBundle")
-    {
-        var resource = [[[change objectForKey:CPKeyValueChangeNewKey] resources] objectAtIndex:0]; // FIXME: should not be hardcoded
-        [self setEditingResource:resource];
-    }
-    else if (keyPath === @"editingBundle.resources")
-    {
-        var resource = [[[object editingBundle] resources] objectAtIndex:0]; // FIXME: should not be hardcoded
-        [self setEditingResource:resource];
-    }
+	[super mouseDown:anEvent];
 }
 
 @end
