@@ -62,6 +62,7 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 {
     [_resourceTableView setDataSource:aResourceController];
     [_resourceTableView setDelegate:aResourceController];
+    resourceController = aResourceController;
 }
 
 - (void)setLineItemController:(OLLineItemsController)aLineItemsController
@@ -88,6 +89,12 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
         [_editingView removeFromSuperview];
         [self setNeedsDisplay:YES];
     }
+}
+
+- (void)reloadVotes
+{
+    [[_editingView votes] setStringValue:@"Votes: " + [[resourceController selectedResource] numberOfVotes]];
+    [[_editingView votes] sizeToFit];
 }
 
 @end

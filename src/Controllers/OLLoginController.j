@@ -32,6 +32,10 @@
 {
 	[_loginWindow close];
 	[_delegate updateLoginItemWithTitle:makeLoggedInTitle(aUser)];
+	
+	var sessionManager = [CPUserSessionManager defaultManager];
+	[sessionManager setStatus:CPUserSessionLoggedInStatus];
+	[sessionManager setUserIdentifier:[aUser recordID]];
 }
 
 - (void)loginFailed
@@ -90,8 +94,7 @@
 - (void)hasRegistered:(OLUser)aUser
 {
 	[aUser save];
-	[_delegate updateLoginItemWithTitle:makeLoggedInTitle(aUser)];
-	
+	[self hasLoggedIn:aUser];
 	[_registerWindow close];
 }
 

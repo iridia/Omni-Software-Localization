@@ -32,8 +32,8 @@
 			
 		[[CPNotificationCenter defaultCenter]
 		    addObserver:self
-		    selector:@selector(didReceiveLineItemValueDidChangeNotification:)
-		    name:@"OLLineItemValueDidChangeNotification"
+		    selector:@selector(didReceiveProjectDidChangeNotification:)
+		    name:@"OLProjectDidChangeNotification"
 		    object:nil];
     }
     return self;
@@ -126,7 +126,7 @@
 	}
 }
 
-- (void)didReceiveLineItemValueDidChangeNotification:(CPNotification)notification
+- (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
 {
     [selectedProject save];
 }

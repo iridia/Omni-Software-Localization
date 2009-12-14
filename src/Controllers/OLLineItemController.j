@@ -21,8 +21,8 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 	    
     	[[CPNotificationCenter defaultCenter]
     	    addObserver:self
-    	    selector:@selector(didReceiveLineItemValueDidChangeNotification:)
-    	    name:@"OLLineItemValueDidChangeNotification"
+    	    selector:@selector(didReceiveProjectDidChangeNotification:)
+    	    name:@"OLProjectDidChangeNotification"
     	    object:nil];
 	}
 	return self;
@@ -64,7 +64,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
     [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:previousIndex] byExtendingSelection:NO];
 }
 
-- (void)didReceiveLineItemValueDidChangeNotification:(CPNotification)notification
+- (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
 {
     [[[resourcesView editingView] lineItemsTableView] reloadData];
 }
@@ -84,6 +84,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
                 lineItems = [[object selectedResource] lineItems];
                 [[[resourcesView editingView] lineItemsTableView] reloadData];
                 [resourcesView showLineItemsTableView];
+    			[resourcesView reloadVotes];
             }
             else
             {

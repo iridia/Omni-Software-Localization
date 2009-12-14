@@ -20,6 +20,30 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     return self;
 }
 
+- (void)voteUp:(id)sender
+{
+    var userId = [[CPUserSessionManager defaultManager] userIdentifier];
+    var user = [OLUser findByRecordID:userId];
+    [selectedResource voteUp:user];
+    [resourcesView reloadVotes];
+    
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:@"OLProjectDidChangeNotification"
+        object:self];
+}
+
+- (void)voteDown:(id)sender
+{
+    var userId = [[CPUserSessionManager defaultManager] userIdentifier];
+    var user = [OLUser findByRecordID:userId];
+    [selectedResource voteDown:user];
+    [resourcesView reloadVotes];
+
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:@"OLProjectDidChangeNotification"
+        object:self];
+}
+
 @end
 
 @implementation OLResourceController (OLResourceBundleControllerKVO)

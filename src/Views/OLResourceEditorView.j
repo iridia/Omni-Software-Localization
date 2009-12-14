@@ -5,14 +5,12 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 
 @implementation OLResourceEditorView : CPView
 {
-    OLResource      _editingResource        @accessors(property=editingResource, readonly);
     CPTableView     _lineItemsTableView     @accessors(property=lineItemsTableView, readonly);
     CPScrollView    _scrollView;
-    CPTextField     _votes;
+    CPTextField     _votes                  @accessors(property=votes, readonly);
     
-    CPInteger       _editingRow;
-    
-    id              _delegate               @accessors(property=delegate);
+    CPButton        voteDownButton;
+    CPButton        voteUpButton;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -53,14 +51,14 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 		[bottomBar setBackgroundColor:[CPColor lightGrayColor]];
 		[bottomBar setAutoresizingMask:CPViewWidthSizable | CPViewMinYMargin];
 		
-		var voteUpButton = [CPButton buttonWithTitle:@"Vote Up"];
+		voteUpButton = [CPButton buttonWithTitle:@"Vote Up"];
 		[voteUpButton setAutoresizingMask:CPViewMaxXMargin];
 		[voteUpButton setFrameOrigin:CPMakePoint(10.0, 4.0)];
         [voteUpButton setTarget:self];
         [voteUpButton setAction:@selector(voteUp:)];
         [bottomBar addSubview:voteUpButton];
         
-        var voteDownButton = [CPButton buttonWithTitle:@"Vote Down"];
+        voteDownButton = [CPButton buttonWithTitle:@"Vote Down"];
         [voteDownButton setAutoresizingMask:CPViewMaxXMargin];
         [voteDownButton setTarget:self];
         [voteDownButton setAction:@selector(voteDown:)];
@@ -80,32 +78,13 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
     return self;
 }
 
-- (void)voteUp:(id)sender
+- (void)setVoteTarget:(id)target downAction:(SEL)downAction upAction:(SEL)upAction
 {
-    if ([_delegate respondsToSelector:@selector(voteUpResource:)])
-    {
-        [_delegate voteUpResource:_editingResource];
-    }
+    [voteDownButton setTarget:target];
+    [voteUpButton setTarget:target];
     
-    [self saveResource];
-    [self reloadVotes];
-}
-
-- (void)voteDown:(id)sender
-{
-    if ([_delegate respondsToSelector:@selector(voteDownResource:)])
-    {
-        [_delegate voteDownResource:_editingResource];
-    }
-    
-    [self saveResource];
-    [self reloadVotes];
-}
-
-- (void)reloadVotes
-{
-    [_votes setStringValue:@"Votes: " + [_editingResource votes]];
-    [_votes sizeToFit];
+    [voteDownButton setAction:downAction];
+    [voteUpButton setAction:upAction];
 }
 
 @end

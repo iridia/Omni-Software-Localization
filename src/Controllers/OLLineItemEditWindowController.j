@@ -84,7 +84,7 @@
 - (void)saveResource
 {
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLLineItemValueDidChangeNotification"
+        postNotificationName:@"OLProjectDidChangeNotification"
         object:_lineItem];
 }
 

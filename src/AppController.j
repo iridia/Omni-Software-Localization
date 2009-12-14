@@ -72,11 +72,11 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [resourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [resourcesView setResourceController:resourceController];
     [resourcesView setLineItemController:lineItemController];
+    [[resourcesView editingView] setVoteTarget:resourceController downAction:@selector(voteDown:) upAction:@selector(voteUp:)];
     
     [resourceController setResourcesView:resourcesView];
     [lineItemController setResourcesView:resourcesView];
 	[contentViewController setResourcesView:resourcesView];
-    // [contentViewController setResourceViewDelegate:[projectController resourceBundleController]];
 }
 
 - (void)awakeFromCib
