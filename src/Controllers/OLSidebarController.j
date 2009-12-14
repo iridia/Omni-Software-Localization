@@ -4,6 +4,7 @@
 @import "../Views/OLSidebarOutlineView.j"
 
 var OLSidebarProjectsKey = @"Projects";
+var OLSidebarGlossariesKey = @"Glossaries";
 
 @implementation OLSidebarController : CPObject
 {
@@ -19,6 +20,7 @@ var OLSidebarProjectsKey = @"Projects";
     
     // Want projects to initially show up, even if there are no projects.
     [self updateProjectsWithProjects:[CPArray array]];
+	[self updateGlossaries:[CPArray array]];
     
     // Autohide the scrollers here and not in the Cib because it is impossible to
     // select the scrollView in Atlas again otherwise.
@@ -37,6 +39,11 @@ var OLSidebarProjectsKey = @"Projects";
     {
         [sidebarOutlineView expandItem:[allTopLevelObjects objectAtIndex:i]];
     }
+}
+
+- (void)updateGlossaries:(CPArray)glossaries
+{
+	[items setObject:glossaries forKey:OLSidebarGlossariesKey];
 }
 
 - (void)updateProjectsWithProjects:(CPArray)projects
