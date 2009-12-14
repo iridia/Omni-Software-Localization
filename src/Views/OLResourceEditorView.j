@@ -103,7 +103,6 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 		}
 	}
 
-
 	[super mouseDown:anEvent];
 }
 
