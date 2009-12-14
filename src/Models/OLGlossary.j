@@ -2,8 +2,8 @@
 
 @implementation OLGlossary : OLActiveRecord
 {
-	CPArray listOfLineItems;
-	CPString glossaryName;
+	CPArray		lineItems;
+	CPString	name;
 }
 
 -(id)init
@@ -15,8 +15,8 @@
 {
 	if (self = [super init])
 	{
-		glossaryName = aName;
-		listOfLineItems = [CPArray array];
+		name = aName;
+		lineItems = [CPArray array];
 	}
 	
 	return self;
@@ -24,7 +24,7 @@
 
 -(void)addLineItem:(OLLineItem)aLineItem
 {
-	[listOfLineItems addObject:aLineItem];
+	[lineItems addObject:aLineItem];
 }
 
 @end
