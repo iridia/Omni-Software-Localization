@@ -8,8 +8,6 @@
 {
     CPArray                     projects       	            @accessors;
 	OLProject	                selectedProject		        @accessors;
-	
-    // OLResourceBundleController   resourceBundleController    @accessors(readonly);
 }
 
 - (id)init

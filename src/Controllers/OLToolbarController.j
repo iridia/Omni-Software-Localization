@@ -10,8 +10,6 @@ var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
 
 - (id)init
 {
-    console.warn("You should really be initializing this.");
-    
     return [self initWithFeedbackController:nil];
 }
 

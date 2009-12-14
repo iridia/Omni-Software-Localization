@@ -12,16 +12,6 @@
     @outlet 					CPView			contentView;
 }
 
-- (void)awakeFromCib
-{
-}
-
-// - (void)setResourceViewDelegate:(id)delegate
-// {
-//  [_resourcesView setDelegate:delegate];
-//     [delegate addObserver:_resourcesView forKeyPath:@"bundles" options:CPKeyValueObservingOptionNew context:nil];
-// }
-
 - (void)setCurrentView:(CPView)aView
 {
 	if (_currentView)
