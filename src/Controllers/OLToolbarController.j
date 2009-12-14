@@ -1,11 +1,18 @@
 @import <AppKit/CPToolbar.j>
 
 var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
+var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
+var OLAddProjectToolbarItemIdentifier = @"OLAddProjectToolbarItemIdentifier";
+var OLAddGlossaryToolbarItemIdentifier = @"OLAddGlossaryToolbarItemIdentifier";
 
 @implementation OLToolbarController : CPObject
 {
-    OLFeedbackController _feedbackController;
-	id _delegate @accessors(property=delegate);
+    OLFeedbackController feedbackController;
+    OLProjectController  projectController;
+    OLLoginController    loginController;
+    OLGlossaryController glossaryController;
+    CPMenuItem           loginMenuItem;
+    CPToolbar            toolbar @accessors;
 }
 
 - (id)init
@@ -13,13 +20,23 @@ var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
     return [self initWithFeedbackController:nil];
 }
 
-- (id)initWithFeedbackController:(OLFeedbackController)feedbackController
+- (id)initWithFeedbackController:(OLFeedbackController)aFeedbackController loginController:(OLLoginController)aLoginController
+        projectController:(OLProjectController)aProjectController glossaryController:(OLGlossaryController)aGlossaryController
 {
     self = [super init];
     
     if (self)
     {
-        _feedbackController = feedbackController;
+        feedbackController = aFeedbackController;
+        loginController = aLoginController;
+        projectController = aProjectController;
+        glossaryController = aGlossaryController;
+        
+        [[CPNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(updateLoginInfo:)
+            name:@"OLLoginDidLogin"
+            object:nil];
     }
     
     return self;
@@ -32,30 +49,80 @@ var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
 
 - (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)toolbar
 {
-    return [CPToolbarFlexibleSpaceItemIdentifier, OLFeedbackToolbarItemIdentifier];
+    return [OLAddProjectToolbarItemIdentifier, OLAddGlossaryToolbarItemIdentifier, CPToolbarFlexibleSpaceItemIdentifier, 
+                OLLoginToolbarItemIdentifier, OLFeedbackToolbarItemIdentifier];
 }
 
 - (CPToolbarItem)toolbar:(CPToolbar)toolbar itemForItemIdentifier:(CPString)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
 {
-    var toolbarItem = [[CPToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
+    var menuItem = [[CPToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
     
     if (itemIdentifier === OLFeedbackToolbarItemIdentifier)
     {
-        var feedbackButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/FeedbackButton.png" size:CPSizeMake(30, 25)];
+        var feedbackButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Feedback.png" size:CPSizeMake(32, 32)];
 
-        var feedbackButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/FeedbackButtonPushed.png" size:CPSizeMake(30, 25)];
+        var feedbackButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Feedback.png" size:CPSizeMake(32, 32)];
             
-        [toolbarItem setImage:feedbackButton];
-        [toolbarItem setAlternateImage:feedbackButtonPushed];
-        [toolbarItem setMinSize:CGSizeMake(32, 32)];
-        [toolbarItem setMaxSize:CGSizeMake(32, 32)];
-        [toolbarItem setLabel:"Send Feedback"];
+        [menuItem setImage:feedbackButton];
+        [menuItem setAlternateImage:feedbackButtonPushed];
+        [menuItem setMinSize:CGSizeMake(32, 32)];
+        [menuItem setMaxSize:CGSizeMake(32, 32)];
+        [menuItem setLabel:"Send Feedback"];
         
-        [toolbarItem setTarget:_feedbackController];
-        [toolbarItem setAction:@selector(showFeedbackWindow:)];
+        [menuItem setTarget:feedbackController];
+        [menuItem setAction:@selector(showFeedbackWindow:)];
+    }
+    else if(itemIdentifier === OLLoginToolbarItemIdentifier)
+    {
+        var loginButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/User.png" size:CPSizeMake(32, 32)];
+        var loginButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/User.png" size:CPSizeMake(32, 32)];
+            
+        [menuItem setImage:loginButton];
+        [menuItem setAlternateImage:loginButton];
+        [menuItem setMinSize:CGSizeMake(32, 32)];
+        [menuItem setMaxSize:CGSizeMake(32, 32)];
+        [menuItem setLabel:"Login / Register"];
+
+        [menuItem setTarget:loginController];
+        [menuItem setAction:@selector(showLogin:)];
+        
+        loginMenuItem = menuItem;
+    }
+    else if(itemIdentifier === OLAddProjectToolbarItemIdentifier)
+    {
+        var addProjectButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Monitor.png" size:CPSizeMake(32, 32)];
+        var addProjectButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Monitor.png" size:CPSizeMake(32, 32)];
+
+        [menuItem setImage:addProjectButton];
+        [menuItem setAlternateImage:addProjectButtonPushed];
+        [menuItem setMinSize:CGSizeMake(32, 32)];
+        [menuItem setMaxSize:CGSizeMake(32, 32)];
+        [menuItem setLabel:"Add Project"];
+        
+    }
+    else if(itemIdentifier === OLAddGlossaryToolbarItemIdentifier)
+    {
+        var glossaryButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Globe.png" size:CPSizeMake(32, 32)];
+        var glossaryButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Globe.png" size:CPSizeMake(32, 32)];
+
+        [menuItem setImage:glossaryButton];
+        [menuItem setAlternateImage:glossaryButtonPushed];
+        [menuItem setMinSize:CGSizeMake(32, 32)];
+        [menuItem setMaxSize:CGSizeMake(32, 32)];
+        [menuItem setLabel:"Add Glossary"];
+                // 
+                // [menuItem setTarget:_feedbackController];
+                // [menuItem setAction:@selector(showFeedbackWindow:)];
     }
 
-    return toolbarItem;
+    return menuItem;
+}
+
+- (void)updateLoginInfo:(CPNotification)notification
+{
+    var name = [[OLUser findByRecordID:[[CPUserSessionManager defaultManager] userIdentifier]] email];
+    var theItem = [toolbar visibleItems][3];
+    alert(@"Welcome, " +  name);
 }
 
 @end
