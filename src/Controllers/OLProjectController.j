@@ -108,6 +108,10 @@
     	    [self setSelectedProject:item];
         }
 	}
+	else
+	{
+	    [self setSelectedProject:nil];
+	}
 }
 
 - (void)didReceiveParseServerResponseNotification:(CPNotification)notification

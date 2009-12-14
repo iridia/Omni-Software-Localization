@@ -2,11 +2,15 @@
 
 @import "../Models/OLGlossary.j"
 
+var OLGlossaryViewIdentifierColumnHeader = @"OLGlossaryViewIdentifierColumnHeader";
+var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
+
 // Manages an array of glossaries
 @implementation OLGlossaryController : CPObject
 {
-    CPArray                     glossaries     	            @accessors;
-	OLGlossary	                selectedGlossary	        @accessors;
+    CPArray             glossaries     	    @accessors;
+	OLGlossary	        selectedGlossary	@accessors;
+	OLGlossariesView    glossariesView      @accessors;
 }
 
 - (id)init
@@ -38,7 +42,7 @@
 	{
 		[self addGlossary:[glossariesList objectAtIndex:i]];
 	}
-}x
+}
 
 - (void)insertObject:(OLGlossary)glossary inGlossariesAtIndex:(int)index
 {
@@ -52,27 +56,21 @@
 
 - (void)createNewGlossary:(JSObject)jsonResponse
 {	
-//	var project = [[OLProject alloc] initWithName:jsonResponse.fileName];
-//
-//	var resources = [CPArray array];
-//
-//	for(var i = 0; i < jsonResponse.resourcebundles.length; i++)
-//	{		
-//		for(var j = 0; j < jsonResponse.resourcebundles[i].resources.length; j++)
-//		{
-//			var theResource = jsonResponse.resourcebundles[i].resources[j];
-//			var lineItems = [self lineItemsFromResponse:theResource];
-//			
-//			[resources addObject:[[OLResource alloc] initWithFileName:theResource.fileName fileType:theResource.fileType lineItems:lineItems]];
-//		}
-//	}
-//	
-//	var resourceBundle = [[OLResourceBundle alloc] initWithResources:resources language:[OLLanguage english]];
-//	[project addResourceBundle:resourceBundle];
-//
-//	[self addProject:project];
-//	[project save];
-	alert(_cmd);
+    var glossary = [[OLGlossary alloc] initWithName:jsonResponse.fileName];
+
+    var lineItems = [CPArray array];
+    
+    var keys = jsonResponse.dict.key;
+    var values = jsonResponse.dict.string;
+    
+    for(var i = 0; i < keys.length; i++)
+    {
+        var lineItem = [[OLLineItem alloc] initWithIdentifier:keys[i] value:values[i] comment:nil];
+        [glossary addLineItem:lineItem];
+    }
+    
+    [self addGlossary:glossary];
+    [glossary save];
 }
 
 - (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
@@ -84,10 +82,17 @@
 
 	var parent = [outlineView parentForItem:item];
 
-	if (item === @"Glossaries")
+	if (parent === @"Glossaries")
 	{
-		alert("hi");
-		[self setSelectedGlossary:item];
+	    if (item !== selectedGlossary)
+	    {
+    		[self setSelectedGlossary:item];
+    		[[[self glossariesView] tableView] reloadData];
+    	}
+	}
+	else
+	{
+	    [self setSelectedGlossary:nil];
 	}
 }
 
@@ -132,18 +137,18 @@
 
 - (int)numberOfRowsInTableView:(CPTableView)resourceTableView
 {
-    return [glossaries count];
+    return [[selectedGlossary lineItems] count];
 }
 
 - (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
 	var lineItem = [[selectedGlossary lineItems] objectAtIndex:row];
 	
-    if ([tableColumn identifier] === OLResourceEditorViewIdentifierColumnHeader)
+    if ([tableColumn identifier] === OLGlossaryViewIdentifierColumnHeader)
     {
         return [lineItem identifier];
     }
-    else if ([tableColumn identifier] === OLResourceEditorViewValueColumnHeader)
+    else if ([tableColumn identifier] === OLGlossaryViewValueColumnHeader)
     {
         return [lineItem value];
     }

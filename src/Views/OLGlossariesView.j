@@ -5,7 +5,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 
 @implementation OLGlossariesView : CPView
 {
-	CPTableView		tableView;
+	CPTableView		tableView   @accessors(readonly);
 }
 
 - (id)initWithFrame:(CGRect)frame

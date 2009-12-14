@@ -65,8 +65,8 @@ var OLSidebarGlossariesKey = @"Glossaries";
 {
     switch (keyPath)
     {
-        case @"bundles":
-            [self updateResourcesWithResourceBundles:[object bundles]];
+        case @"glossaries":
+            [self updateGlossaries:[object glossaries]];
             break;
         case @"projects":
             [self updateProjectsWithProjects:[object projects]];
@@ -121,13 +121,9 @@ var OLSidebarGlossariesKey = @"Glossaries";
 
 - (id)outlineView:(CPOutlineView)outlineView objectValueForTableColumn:(CPTableColumn)tableColumn byItem:(id)item
 {
-    if ([item isKindOfClass:[OLProject class]])
+    if ([item isKindOfClass:[OLProject class]] || [item isKindOfClass:[OLGlossary class]])
     {
         return [item name];
-    }
-    else if ([item isKindOfClass:[OLResourceBundle class]])
-    {
-        return [[[item resources] objectAtIndex:0] fileName];
     }
     else
     {

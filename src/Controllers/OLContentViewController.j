@@ -31,10 +31,18 @@
     switch (keyPath)
     {
         case @"selectedProject":
-			[self setCurrentView:resourcesView];
+            var selectedProject = [object selectedProject];
+            if (selectedProject)
+            {
+    			[self setCurrentView:resourcesView];
+    		}
             break;
 		case @"selectedGlossary":
-			[self setCurrentView:glossariesView];
+		    var selectedGlossary = [object selectedGlossary];
+		    if (selectedGlossary)
+		    {
+		       [self setCurrentView:glossariesView];
+		    }
 			break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
