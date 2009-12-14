@@ -21,11 +21,11 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
     {     
         _scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) -  32.0)];
 		[_scrollView setAutohidesScrollers:YES];
-		[_scrollView setAutoresizingMask:CPViewWidthSizable | CPViewMaxYMargin];
+		[_scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 		
 		_lineItemsTableView = [[CPTableView alloc] initWithFrame:[_scrollView bounds]];
 		[_lineItemsTableView setUsesAlternatingRowBackgroundColors:YES];
-		[_lineItemsTableView setAutoresizingMask:CPViewWidthSizable | CPViewWidthSizable];
+		[_lineItemsTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 				
 		// define the header color
 		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
