@@ -19,7 +19,7 @@ var OLSidebarGlossariesKey = @"Glossaries";
     items = [CPDictionary dictionary];
     
     // Want projects to initially show up, even if there are no projects.
-    [self updateProjectsWithProjects:[CPArray array]];
+    [self updateProjects:[CPArray array]];
 	[self updateGlossaries:[CPArray array]];
     
     // Autohide the scrollers here and not in the Cib because it is impossible to
@@ -32,29 +32,18 @@ var OLSidebarGlossariesKey = @"Glossaries";
     [sidebarOutlineView setDelegate:self];
 
     [sidebarScrollView setDocumentView:sidebarOutlineView];
-    
-    // Initially show all items as expanded
-    var allTopLevelObjects = [items allKeys];
-    for (var i = 0; i < [allTopLevelObjects count]; i++)
-    {
-        [sidebarOutlineView expandItem:[allTopLevelObjects objectAtIndex:i]];
-    }
 }
 
 - (void)updateGlossaries:(CPArray)glossaries
 {
 	[items setObject:glossaries forKey:OLSidebarGlossariesKey];
+	[sidebarOutlineView expandItem:OLSidebarGlossariesKey];
 }
 
-- (void)updateProjectsWithProjects:(CPArray)projects
+- (void)updateProjects:(CPArray)projects
 {
     [items setObject:projects forKey:OLSidebarProjectsKey];
-}
-
-- (void)handleMessage:(SEL)aMessage
-{
-    console.log(aMessage);
-	objj_msgSend(_sidebarView, aMessage);
+    [sidebarOutlineView expandItem:OLSidebarProjectsKey];
 }
 
 @end
@@ -69,7 +58,7 @@ var OLSidebarGlossariesKey = @"Glossaries";
             [self updateGlossaries:[object glossaries]];
             break;
         case @"projects":
-            [self updateProjectsWithProjects:[object projects]];
+            [self updateProjects:[object projects]];
             break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
