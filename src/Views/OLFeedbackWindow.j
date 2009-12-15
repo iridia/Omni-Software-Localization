@@ -9,7 +9,7 @@
     CPView _submittedFeedbackView;
     CPView _currentView; // Keeps track of the current content view
     
-    CPTextField _emailTextField;
+    CPTextField _emailTextField @accessors(property=emailTextField, readonly);
     CPPopUpButton _feedbackTypePopUpButton;
     CPTextField _feedbackTextView;
     
