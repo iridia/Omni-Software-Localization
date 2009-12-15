@@ -16,9 +16,24 @@
     {
         _feedbackWindow = [[OLFeedbackWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 300) styleMask:CPTitledWindowMask];
         [_feedbackWindow setDelegate:self];
+        
+        [[CPNotificationCenter defaultCenter]
+			addObserver:self
+			selector:@selector(userDidChange:)
+			name:CPUserSessionManagerUserIdentifierDidChangeNotification
+			object:nil];
     }
     
     return self;
+}
+
+- (void)userDidChange:(CPNotification)notification
+{
+    var user = [OLUser findByRecordID:[[CPUserSessionManager defaultManager] userIdentifier]];
+    if (user)
+    {
+        [[_feedbackWindow emailTextField] setStringValue:[user email]];  
+    } 
 }
 
 - (void)showFeedbackWindow:(id)sender
