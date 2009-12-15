@@ -1,6 +1,5 @@
 @import <Foundation/CPObject.j>
 
-@import "OLProjectController.j"
 @import "../Views/OLSidebarOutlineView.j"
 
 var OLSidebarProjectsKey = @"Projects";

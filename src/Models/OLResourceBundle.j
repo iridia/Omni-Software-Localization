@@ -1,5 +1,8 @@
 @import "OLActiveRecord.j"
 
+@import "OLResource.j"
+@import "OLLanguage.j"
+
 /*!
  * The OLResourceBundle represents a bundle of resources of a specific language.
  */

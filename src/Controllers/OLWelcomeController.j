@@ -1,9 +1,5 @@
 @import <Foundation/CPObject.j>
 @import "../views/OLWelcomeView.j"
-@import "../models/OLResourceBundle.j"
-@import "../models/OLLanguage.j"
-@import "../models/OLResource.j"
-@import "../models/OLLineItem.j"
 
 /*!
  * The OLWelcomeController is a controller for the welcome views that decides
@@ -11,13 +7,9 @@
  */
 @implementation OLWelcomeController : CPObject
 {
-	OLResourceBundle _bundle @accessors(property=bundle, readonly);
-
 	CPWindow _welcomeWindow;
 	OLWelcomeView _welcomeView;
 	OLUploadController _uploadController @accessors(property=uploadController);
-
-	id _delegate @accessors(property=delegate);
 }
 
 - (id)init

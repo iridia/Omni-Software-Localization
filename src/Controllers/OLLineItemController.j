@@ -2,6 +2,7 @@
 
 @import "OLLineItemEditWindowController.j"
 @import "../Views/OLResourcesView.j"
+@import "../Models/OLLineItem.j"
 
 var OLResourceEditorViewIdentifierColumnHeader = @"OLResourceEditorViewIdentifierColumnHeader";
 var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHeader";

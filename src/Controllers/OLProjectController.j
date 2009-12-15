@@ -1,6 +1,5 @@
 @import <Foundation/CPObject.j>
 
-@import "OLResourceController.j"
 @import "../Models/OLProject.j"
 
 // Manages an array of projects

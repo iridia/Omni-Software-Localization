@@ -11,15 +11,16 @@
 
 @import "Categories/CPColor+OLColors.j"
 
+@import "Controllers/OLProjectController.j"
+@import "Controllers/OLLineItemController.j"
+@import "Controllers/OLResourceController.j"
+@import "Controllers/OLGlossaryController.j"
+
 @import "Controllers/OLContentViewController.j"
 @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
 @import "Controllers/OLUploadController.j"
-@import "Controllers/OLResourceController.j"
-@import "Controllers/OLLineItemController.j"
-@import "Controllers/OLGlossaryController.j"
-@import "Controllers/OLUploadWindowController.j"
 
 @import "Views/OLMenu.j"
 @import "Views/OLResourcesView.j"
@@ -39,7 +40,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     @outlet						OLContentViewController contentViewController;
 	
 	OLProjectController			projectController;
-	OLUploadController			uploadController;
 	OLResourceController		resourceController;
 	OLLineItemController		lineItemController;
 	OLGlossaryController		glossaryController;
@@ -47,13 +47,11 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	OLResourcesView				resourcesView;
 	OLGlossariesView			glossariesView;
 
-    OLToolbarController     _toolbarController @accessors(property=toolbarController);
+    OLToolbarController         toolbarController @accessors(property=toolbarController);
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-	uploadController = [[OLUploadController alloc] init];
-	
     // var welcomeController = [[OLWelcomeController alloc] init];
     //     [welcomeController setDelegate:self];
     // [welcomeController setUploadController:uploadController];
@@ -104,7 +102,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [mainSplitView setIsPaneSplitter:YES];
     
     var menu = [[OLMenu alloc] init];
-    // [[CPApplication sharedApplication] setMainMenu:menu];
+    [[CPApplication sharedApplication] setMainMenu:menu];
     [CPMenu setMenuBarVisible:YES];
 }
 

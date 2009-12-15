@@ -1,5 +1,7 @@
 @import "OLActiveRecord.j"
 
+@import "OLLineItem.j"
+
 /*!
  * OLResource is a representation of a single resource. It is a member of a
  * set that could possibly belong to an OLBundle.

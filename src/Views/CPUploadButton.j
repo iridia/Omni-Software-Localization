@@ -53,7 +53,6 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
         
         _fileUploadElement.onclick = function(aDOMEvent)
         {
-            console.log("onclick", aDOMEvent);
             aDOMEvent = aDOMEvent || window.event;
             
             var x = aDOMEvent.clientX,
@@ -77,7 +76,6 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
         
         _fileUploadElement.onmousedown = function(aDOMEvent)
         {
-            console.log("onmousedown", aDOMEvent);
             aDOMEvent = aDOMEvent || window.event;
             
             var x = aDOMEvent.clientX,
@@ -101,7 +99,6 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
  
         _mouseUpCallback = function(aDOMEvent)
         {
-            console.log("mouseUpCallback", aDOMEvent);
             if (document.removeEventListener)
             {
                 document.removeEventListener(CPDOMEventMouseUp, _mouseUpCallback, NO);
@@ -126,7 +123,6 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
         _mouseMovedCallback = function(aDOMEvent)
         {
             //ASSERT(mouse is down)
-            console.log("mouseMovedCallback", aDOMEvent);
             aDOMEvent = aDOMEvent || window.event;
             
             var x = aDOMEvent.clientX,
@@ -239,7 +235,6 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
  
 - (void)submit
 {
-    console.log(_cmd);
     _uploadForm.target = "FRAME_"+(new Date());
  
     //remove existing parameters

@@ -1,5 +1,7 @@
 @import "OLActiveRecord.j"
 
+@import "OLResourceBundle.j"
+
 @implementation OLProject : OLActiveRecord
 {
     CPString    _name               @accessors(property=name);

@@ -1,6 +1,7 @@
 @import <Foundation/CPObject.j>
 
 @import "../Views/OLResourcesView.j"
+@import "../Models/OLResource.j"
 
 var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 

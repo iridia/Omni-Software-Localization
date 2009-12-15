@@ -2,11 +2,13 @@
 
 @import "../Controllers/OLFeedbackController.j"
 @import "../Controllers/OLLoginController.j"
+@import "../Controllers/OLUploadWindowController.j"
 
 @implementation OLMenu : CPMenu
 {
     OLFeedbackController _feedbackController;
 	OLLoginController _loginController;
+	OLUploadWindowController uploadWindowController;
 	CPMenuItem _loginItem;
 }
 
@@ -27,6 +29,8 @@
         
         [self addItem:fileMenu];
         [self addItem:[CPMenuItem separatorItem]];
+        
+        uploadWindowController = [[OLUploadWindowController alloc] init];
     }
     
     return self;
@@ -34,7 +38,7 @@
 
 - (void)new:(id)sender
 {
-    alert("Hello World!");
+    [uploadWindowController startUpload];
 }
 
 - (void)updateLoginItemWithTitle:(CPString)aTitle
