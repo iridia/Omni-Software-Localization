@@ -5,3 +5,4 @@ src/Build
 .htaccess
 REST-config.php
 metrics.txt
+*/Upload/log.txt
