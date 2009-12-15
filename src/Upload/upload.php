@@ -3,44 +3,65 @@
 require_once("xml2json.php");
 
 $file = utf16_to_utf8(file_get_contents($_FILES['file']['tmp_name']));
+$log = fopen("log.txt", "a");
+// fwrite($log, "starting\n");
+// fwrite($log, "##" . $_FILES['file']['name'] . "##\n");
 
 if(isPlist($_FILES['file']['name']))
 {
+    // fwrite($log, "is a plist\n");
 	$postArgs = addFilenameAndType(xml2json::transformXmlStringToJson($file), $_FILES['file']['name'], "plist");
 }
 else if(isStrings($_FILES['file']['name']))
 {
+    // fwrite($log, "is a strings\n");
 	$postArgs = transformStringsToJson($file, $_FILES['file']['name']);
 }
 else if(isZip($_FILES['file']['name']))
 {
-	$postArgs = archiveToJson($file);
+    // fwrite($log, "is a zip\n");
+	$postArgs = archiveToJson($file, $log);
 }
+
+fclose($log);
 
 header("Content-Type: text/json");
 
 // temporary fix
 echo $postArgs;
 
-function archiveToJson($zipFileContents)
+function archiveToJson($zipFileContents, $log)
 {
 	$aFileName = "tmpArchive".time().".zip";
 	$theFile = fopen($aFileName, "w");
+	
+	
+    // fwrite($log, "opened archive\n");
+	
 	fwrite($theFile, $zipFileContents);
 	fclose($theFile);
 	
+	
+    // fwrite($log, "rewrote archive, about to unzip\n");
+    
 	exec("unzip $aFileName");
+	
+    // fwrite($log, "unzipped, removing\n");
 	
 	exec("rm $aFileName");
 	exec("rm -rf __MACOSX");
 	
-	// do stuff here
+    // fwrite($log, "removed, starting parsing\n");
+	
 	$appName = str_replace(".zip", "", $_FILES['file']['name']);
 	$englishBundle = opendir("$appName/Contents/Resources");
 	$files = array();
 	$files_resources = array();
 	
+    // fwrite($log, "starting file by file parsing\n");
+	
 	while(false !== ($file = readdir($englishBundle))) {
+        // fwrite($log, $file);
 		if(isLProj($file)) {
 			$files[] = $file;
 			
@@ -61,11 +82,16 @@ function archiveToJson($zipFileContents)
 		}
 	}
 	
+	
+    // fwrite($log, "parsed file by file\n");
+	
 	closedir($englishBundle);
 	
 	exec("rm -rf \"$appName\"");
 	
-	$value = "({fileType: \"zip\", fileName: \"$appName\", resourcebundles: [";
+	$value = "({\"fileType\": \"zip\", \"fileName\": \"$appName\", \"resourcebundles\": [";
+	
+    // fwrite($log, "returning value\n");
 	
 	$i = 0; 
 	foreach($files as $file)
@@ -77,6 +103,8 @@ function archiveToJson($zipFileContents)
 			$value = $value . ",";
 		}
 	}
+	
+    // fwrite($log, $value);
 	
 	return $value . "]})";
 }
@@ -113,7 +141,8 @@ function isZip($name)
 
 function transformStringsToJson($data, $fileName)
 {
-	$json = "({fileName: \"" . $fileName . "\", fileType: \"strings\", dict: {";
+    $data = str_replace("\”", "”", $data);
+	$json = "({\"fileName\": \"" . $fileName . "\", \"fileType\": \"strings\", \"dict\": {";
 	$lines = split("\n", $data);
 	$keys = array();
 	$values = array();
@@ -168,24 +197,23 @@ function transformStringsToJson($data, $fileName)
 	}
 	
 	$json .= "key:[";
-	$last_item = end($keys);
 	for($i = 0; $i < count($keys); $i++)
 	{		
 		$json .= "\"" . $keys[$i] . "\"";
 
-		if($keys[$i] != $last_item)
+		if($i != count($keys)-1)
 		{
 			$json .= ",";
 		}
 	}
 	
 	$json .= "], string:[";
-	$last_item = end($values);
 	for($i = 0; $i < count($values); $i++)
 	{		
+	    $values[$i] = str_replace("\\&", "&", $values[$i]);
 		$json .= "\"" . $values[$i] . "\"";
 
-		if($values[$i] != $last_item)
+		if($i != count($values)-1)
 		{
 			$json .= ",";
 		}
@@ -194,12 +222,11 @@ function transformStringsToJson($data, $fileName)
 	$json .= "]}, comments_dict: {";
 	
 	$json .= "key:[";
-	$last_item = end($keys);
 	for($i = 0; $i < count($keys); $i++)
 	{		
 		$json .= "\"" . $keys[$i] . "\"";
 
-		if($keys[$i] != $last_item)
+		if($i != count($keys)-1)
 		{
 			$json .= ",";
 		}
@@ -208,6 +235,7 @@ function transformStringsToJson($data, $fileName)
 	$json .= "], string:[";
 	for($i = 0; $i < count($comments); $i++)
 	{		
+	    $comments[$i] = str_replace("\"", "\\\"", $comments[$i]);
 		$json .= "\"" . $comments[$i] . "\"";
 
 		if($i != count($comments)-1)

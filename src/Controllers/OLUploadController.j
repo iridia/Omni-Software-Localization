@@ -14,7 +14,7 @@ var OLUploadControllerDidParseServerResponse = @"OLUploadControllerDidParseServe
 		aResponse = aResponse.replace("<pre style=\"word-wrap: break-word; white-space: pre-wrap;\">", "");
 		aResponse = aResponse.replace("\n</pre>", "");
 	
-		// console.log(aResponse);
+		console.log(aResponse);
 		
 		_jsonResponse = eval('(' + aResponse + ')');
 	
