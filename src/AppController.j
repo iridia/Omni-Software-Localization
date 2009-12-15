@@ -112,23 +112,13 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 @implementation AppController (CPSplitViewDelegate)
 
 - (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
-{
-    if (splitView === mainSplitView)
-    {
-        return 100.0;
-    }
-    
-    return proposedMin;
+{    
+    return proposedMin + 100.0;
 }
 
 - (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
 {
-    if (splitView === mainSplitView)
-    {
-        return 300.0;
-    }
-    
-    return proposedMax;
+    return 300.0;
 }
 
 // Additional rect for CPButtonBar's handles

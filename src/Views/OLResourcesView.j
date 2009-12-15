@@ -7,14 +7,10 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 
 @implementation OLResourcesView : CPSplitView
 {
-	id _delegate @accessors(property=delegate);
-    CPArray     _resources @accessors(property=resources);
-    CPTableView _resourceTableView @accessors(property=resourceTableView);
-    
-    OLResourceController        resourceController;
-
-    OLResourceEditorView _editingView   @accessors(property=editingView, readonly);
-    BOOL _isEditing @accessors(property=isEditing);
+    CPTableView             resourceTableView   @accessors(property=resourceTableView);
+    OLResourceEditorView    editingView         @accessors(property=editingView, readonly);
+    OLResourceController    resourceController;
+    BOOL                    isEditing;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -24,35 +20,37 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 	if (self)
 	{
 	    [self setVertical:NO];
+	    [self setDelegate:self];
 	    
         var scrollView = [[CPScrollView alloc] initWithFrame:aFrame];
         [scrollView setAutohidesScrollers:YES];
         [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
 		// create the resourceTableView
-		_resourceTableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];
-		[_resourceTableView setUsesAlternatingRowBackgroundColors:YES];
-		[_resourceTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+		resourceTableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];
+		[resourceTableView setUsesAlternatingRowBackgroundColors:YES];
+		[resourceTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 		
 		// define the header color
 		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
 		
-		[[_resourceTableView cornerView] setBackgroundColor:headerColor];
+		[[resourceTableView cornerView] setBackgroundColor:headerColor];
 		
 		// add the filename column
 		var column = [[CPTableColumn alloc] initWithIdentifier:OLResourcesViewFileNameColumn];
 		[[column headerView] setStringValue:"Filename"];
 		[[column headerView] setBackgroundColor:headerColor];
 		[column setWidth:CGRectGetWidth(aFrame)];
-		[_resourceTableView addTableColumn:column];
+		[resourceTableView addTableColumn:column];
 		
-		[scrollView setDocumentView:_resourceTableView];
+		[scrollView setDocumentView:resourceTableView];
 		
 		[self addSubview:scrollView];
 
         // Create the editingView up front, show it when needed
-		_editingView = [[OLResourceEditorView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)];
-		[_editingView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+		editingView = [[OLResourceEditorView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)];
+		[editingView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        // [self addSubview:editingView];
 	}
 
 	return self;
@@ -60,41 +58,65 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 
 - (void)setResourceController:(OLResourceController)aResourceController
 {
-    [_resourceTableView setDataSource:aResourceController];
-    [_resourceTableView setDelegate:aResourceController];
+    [resourceTableView setDataSource:aResourceController];
+    [resourceTableView setDelegate:aResourceController];
     resourceController = aResourceController;
 }
 
 - (void)setLineItemController:(OLLineItemsController)aLineItemsController
 {
-    [[_editingView lineItemsTableView] setDataSource:aLineItemsController];
-    [[_editingView lineItemsTableView] setDelegate:aLineItemsController];
-    [[_editingView lineItemsTableView] setTarget:aLineItemsController];
-	[[_editingView lineItemsTableView] setDoubleAction:@selector(editSelectedLineItem:)];
+    [[editingView lineItemsTableView] setDataSource:aLineItemsController];
+    [[editingView lineItemsTableView] setDelegate:aLineItemsController];
+    [[editingView lineItemsTableView] setTarget:aLineItemsController];
+	[[editingView lineItemsTableView] setDoubleAction:@selector(editSelectedLineItem:)];
 }
 
 - (void)showLineItemsTableView
 {
-    if (![_editingView isDescendantOf:self])
+    if (![editingView isDescendantOf:self])
     {
-        [self addSubview:_editingView];
+        [self addSubview:editingView];
         [self setNeedsDisplay:YES];
     }
 }
 
 - (void)hideLineItemsTableView
 {
-    if ([_editingView isDescendantOf:self])
+    if ([editingView isDescendantOf:self])
     {
-        [_editingView removeFromSuperview];
+        [editingView removeFromSuperview];
         [self setNeedsDisplay:YES];
     }
 }
 
 - (void)reloadVotes
 {
-    [[_editingView votes] setStringValue:@"Votes: " + [[resourceController selectedResource] numberOfVotes]];
-    [[_editingView votes] sizeToFit];
+    [[editingView votes] setStringValue:@"Votes: " + [[resourceController selectedResource] numberOfVotes]];
+    [[editingView votes] sizeToFit];
+}
+
+@end
+
+@implementation OLResourcesView (CPSplitViewDelegate)
+
+- (BOOL)splitView:(CPSplitView)splitView canCollapseSubview:(CPView)subview
+{
+    return YES;
+}
+
+- (BOOL)splitView:(CPSplitView)splitView shouldCollapseSubview:(CPView)subview forDoubleClickOnDividerAtIndex:(int)index
+{
+    return YES;
+}
+
+- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
+{    
+    return proposedMin + 150.0;
+}
+
+- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
+{
+    return proposedMax - 150.0;
 }
 
 @end
