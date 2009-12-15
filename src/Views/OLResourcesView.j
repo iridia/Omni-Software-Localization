@@ -7,9 +7,8 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 
 @implementation OLResourcesView : CPSplitView
 {
-    CPTableView             resourceTableView   @accessors(property=resourceTableView);
-    OLResourceEditorView    editingView         @accessors(property=editingView, readonly);
-    OLResourceController    resourceController;
+    CPTableView             resourceTableView   @accessors(readonly);
+    OLResourceEditorView    editingView         @accessors(readonly);
     BOOL                    isEditing;
 }
 
@@ -50,7 +49,8 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
         // Create the editingView up front, show it when needed
 		editingView = [[OLResourceEditorView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)];
 		[editingView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-        // [self addSubview:editingView];
+        [self addSubview:editingView];
+        [self setPosition:[self maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
 	}
 
 	return self;
@@ -60,7 +60,6 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 {
     [resourceTableView setDataSource:aResourceController];
     [resourceTableView setDelegate:aResourceController];
-    resourceController = aResourceController;
 }
 
 - (void)setLineItemController:(OLLineItemsController)aLineItemsController
@@ -73,25 +72,22 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 
 - (void)showLineItemsTableView
 {
-    if (![editingView isDescendantOf:self])
+    if (!isEditing)
     {
-        [self addSubview:editingView];
-        [self setNeedsDisplay:YES];
+        isEditing = YES;
+        [self setPosition:([self maxPossiblePositionOfDividerAtIndex:0] - 150.0) ofDividerAtIndex:0];
     }
 }
 
 - (void)hideLineItemsTableView
 {
-    if ([editingView isDescendantOf:self])
-    {
-        [editingView removeFromSuperview];
-        [self setNeedsDisplay:YES];
-    }
+    isEditing = NO;
+    [self setPosition:[self maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
 }
 
-- (void)reloadVotes
+- (void)setVoteCount:(int)votes
 {
-    [[editingView votes] setStringValue:@"Votes: " + [[resourceController selectedResource] numberOfVotes]];
+    [[editingView votes] setStringValue:@"Votes: " + votes];
     [[editingView votes] sizeToFit];
 }
 
@@ -101,21 +97,30 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
 
 - (BOOL)splitView:(CPSplitView)splitView canCollapseSubview:(CPView)subview
 {
-    return YES;
+    return isEditing;
 }
 
 - (BOOL)splitView:(CPSplitView)splitView shouldCollapseSubview:(CPView)subview forDoubleClickOnDividerAtIndex:(int)index
 {
-    return YES;
+    return isEditing;
 }
 
 - (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
-{    
+{
+    if (!isEditing)
+    {
+        return [self maxPossiblePositionOfDividerAtIndex:dividerIndex];
+    }
     return proposedMin + 150.0;
 }
 
 - (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
 {
+    if (!isEditing)
+    {
+        return proposedMax;
+    }
+    
     return proposedMax - 150.0;
 }
 

@@ -25,7 +25,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     var userId = [[CPUserSessionManager defaultManager] userIdentifier];
     var user = [OLUser findByRecordID:userId];
     [selectedResource voteUp:user];
-    [resourcesView reloadVotes];
+    [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
     
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLProjectDidChangeNotification"
@@ -37,7 +37,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     var userId = [[CPUserSessionManager defaultManager] userIdentifier];
     var user = [OLUser findByRecordID:userId];
     [selectedResource voteDown:user];
-    [resourcesView reloadVotes];
+    [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
 
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLProjectDidChangeNotification"
@@ -98,6 +98,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     if (selectedRow >= 0)
     {
         selectedResource = [resources objectAtIndex:selectedRow];
+        [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
     }
     
     [self setSelectedResource:selectedResource];

@@ -30,12 +30,12 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 {
     @outlet						CPWindow                theWindow;
     @outlet						CPSplitView             mainSplitView;
-    @outlet						CPView                  mainContentView         @accessors(readonly);
+    @outlet						CPView                  mainContentView;
     @outlet						CPScrollView            sidebarScrollView;
     @outlet						CPButtonBar             sidebarButtonBar;
 
     @outlet						OLSidebarController     sidebarController;
-    @outlet						OLContentViewController contentViewController   @accessors(readonly);
+    @outlet						OLContentViewController contentViewController;
 	
 	OLProjectController			projectController;
 	OLUploadController			uploadController;
@@ -61,7 +61,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	projectController = [[OLProjectController alloc] init];
 	[projectController addObserver:contentViewController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
-    [projectController loadProjects];
 	
 	resourceController = [[OLResourceController alloc] init];
     [projectController addObserver:resourceController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
@@ -83,12 +82,14 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	glossaryController = [[OLGlossaryController alloc] init];
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
 	[glossaryController addObserver:contentViewController forKeyPath:@"selectedGlossary" options:CPKeyValueObservingOptionNew context:nil];
-	[glossaryController loadGlossaries];
 	
 	glossariesView = [[OLGlossariesView alloc] initWithFrame:[mainContentView bounds]];
 	[glossariesView setGlossaryController:glossaryController];
 	[contentViewController setGlossariesView:glossariesView];
 	[glossaryController setGlossariesView:glossariesView];
+	
+    [projectController loadProjects];
+	[glossaryController loadGlossaries];
 }
 
 - (void)awakeFromCib

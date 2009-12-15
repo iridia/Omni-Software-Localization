@@ -84,7 +84,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
                 lineItems = [[object selectedResource] lineItems];
                 [[[resourcesView editingView] lineItemsTableView] reloadData];
                 [resourcesView showLineItemsTableView];
-    			[resourcesView reloadVotes];
+    			[resourcesView setVoteCount:[selectedResource numberOfVotes]];
             }
             else
             {
