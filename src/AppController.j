@@ -19,6 +19,7 @@
 @import "Controllers/OLResourceController.j"
 @import "Controllers/OLLineItemController.j"
 @import "Controllers/OLGlossaryController.j"
+@import "Controllers/OLUploadWindowController.j"
 
 @import "Views/OLMenu.j"
 @import "Views/OLResourcesView.j"
@@ -54,9 +55,11 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     // setupToolbar(self, theWindow);
 	uploadController = [[OLUploadController alloc] init];
 	
-	var welcomeController = [[OLWelcomeController alloc] init];
-    [welcomeController setDelegate:self];
-	[welcomeController setUploadController:uploadController];
+    // var welcomeController = [[OLWelcomeController alloc] init];
+    //     [welcomeController setDelegate:self];
+    // [welcomeController setUploadController:uploadController];
+    
+    var uploadWindowController = [[OLUploadWindowController alloc] init];
 	
 	projectController = [[OLProjectController alloc] init];
 	[projectController addObserver:contentViewController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
@@ -99,7 +102,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     
     // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
     var menu = [[OLMenu alloc] init];
-    [[CPApplication sharedApplication] setMainMenu:menu];
+    // [[CPApplication sharedApplication] setMainMenu:menu];
     [CPMenu setMenuBarVisible:YES];
 }
 
