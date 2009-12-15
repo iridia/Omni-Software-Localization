@@ -31,11 +31,14 @@
 - (void)hasLoggedIn:(OLUser)aUser
 {
 	[_loginWindow close];
-	[_delegate updateLoginItemWithTitle:makeLoggedInTitle(aUser)];
 	
 	var sessionManager = [CPUserSessionManager defaultManager];
 	[sessionManager setStatus:CPUserSessionLoggedInStatus];
 	[sessionManager setUserIdentifier:[aUser recordID]];
+    
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:@"OLLoginDidLogin"
+        object:self];
 }
 
 - (void)loginFailed
