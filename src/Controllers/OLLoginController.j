@@ -97,8 +97,8 @@
 - (void)hasRegistered:(OLUser)aUser
 {
 	[aUser save];
-	[self hasLoggedIn:aUser];
 	[_registerWindow close];
+	[self showLogin:self];
 }
 
 - (void)registrationFailed

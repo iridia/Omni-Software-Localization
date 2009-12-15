@@ -11,6 +11,7 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
     OLGlossaryController glossaryController;
     CPMenuItem           loginMenuItem;
     CPToolbar            toolbar @accessors;
+    CPString             loginValue;
 }
 
 - (id)init
@@ -29,6 +30,7 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
         loginController = aLoginController;
         projectController = aProjectController;
         glossaryController = aGlossaryController;
+        loginValue = "Login / Register";
         
         [[CPNotificationCenter defaultCenter]
             addObserver:self
@@ -78,7 +80,7 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
         [menuItem setAlternateImage:loginButton];
         [menuItem setMinSize:CGSizeMake(32, 32)];
         [menuItem setMaxSize:CGSizeMake(32, 32)];
-        [menuItem setLabel:"Login / Register"];
+        [menuItem setLabel:loginValue];
 
         [menuItem setTarget:loginController];
         [menuItem setAction:@selector(showLogin:)];
@@ -92,8 +94,8 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
 - (void)updateLoginInfo:(CPNotification)notification
 {
     var name = [[OLUser findByRecordID:[[CPUserSessionManager defaultManager] userIdentifier]] email];
-    var theItem = [toolbar visibleItems][3];
-    alert(@"Welcome, " +  name);
+    loginValue = "Welcome, " + name;
+    [toolbar _reloadToolbarItems];
 }
 
 @end
