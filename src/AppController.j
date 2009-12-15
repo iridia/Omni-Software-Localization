@@ -12,7 +12,7 @@
 @import "Categories/CPColor+OLColors.j"
 
 @import "Controllers/OLContentViewController.j"
-// @import "Controllers/OLToolbarController.j"
+@import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
 @import "Controllers/OLUploadController.j"
@@ -46,12 +46,11 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	OLResourcesView				resourcesView;
 	OLGlossariesView			glossariesView;
 
-    // OLToolbarController _toolbarController @accessors(property=toolbarController);
+    OLToolbarController     _toolbarController @accessors(property=toolbarController);
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-    // setupToolbar(self, theWindow);
 	uploadController = [[OLUploadController alloc] init];
 	
 	var welcomeController = [[OLWelcomeController alloc] init];
@@ -90,6 +89,10 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	
     [projectController loadProjects];
 	[glossaryController loadGlossaries];
+	
+	var loginController = [[OLLoginController alloc] init];
+	
+    setupToolbar(self, theWindow, loginController, projectController, nil);
 }
 
 - (void)awakeFromCib
@@ -97,7 +100,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
     
-    // Setup the menubar. Once Atlas has menu editing, this can probably be scrapped
     var menu = [[OLMenu alloc] init];
     [[CPApplication sharedApplication] setMainMenu:menu];
     [CPMenu setMenuBarVisible:YES];
@@ -138,14 +140,16 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 @end
 
-// function setupToolbar(self, theWindow)
-// {
-//     var toolbarController = [[OLToolbarController alloc] initWithFeedbackController:feedbackController];
-//     [toolbarController setDelegate:self];
-// 
-//  var toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
-//  [toolbar setDelegate:toolbarController];
-//  
-//     [theWindow setToolbar:toolbar];
-//  [self setToolbarController:toolbarController];
-// }
+function setupToolbar(self, theWindow, loginController, projectController, glossaryController)
+{
+    var feedbackController = [[OLFeedbackController alloc] init];
+    var toolbarController = [[OLToolbarController alloc] initWithFeedbackController:feedbackController loginController:loginController
+            projectController:projectController glossaryController:glossaryController];
+
+    var toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
+    [toolbar setDelegate:toolbarController];
+    [toolbarController setToolbar:toolbar];
+ 
+    [theWindow setToolbar:toolbar];
+    [self setToolbarController:toolbarController];
+}

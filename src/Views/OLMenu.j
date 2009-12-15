@@ -16,29 +16,25 @@
     
     if (self)
     {
-        _feedbackController = [[OLFeedbackController alloc] init];
-        var feedbackItem = [[CPMenuItem alloc] initWithTitle:@"Send Feedback" action:@selector(showFeedbackWindow:) keyEquivalent:@"f"];
-        [feedbackItem setTarget:_feedbackController];
+        var fileMenu = [[CPMenuItem alloc] initWithTitle:@"File" action:nil keyEquivalent:nil];
+        var fileSubmenu = [[CPMenu alloc] initWithTitle:@"FileMenu"];
+        var newItem = [[CPMenuItem alloc] initWithTitle:@"New..." action:@selector(new:) keyEquivalent:"N"];
         
-        var feedbackImage = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Feedback.png" size:CPMakeSize(24, 24)];
-        [feedbackItem setImage:feedbackImage];
-        [feedbackItem setAlternateImage:feedbackImage];
+        [fileSubmenu addItem:newItem];
         
-        [self insertItem:feedbackItem atIndex:0];
-
-		_loginController = [[OLLoginController alloc] init];
-		[_loginController setDelegate:self];
-		_loginItem = [[CPMenuItem alloc] initWithTitle:@"Login / Register" action:@selector(showLogin:) keyEquivalent:@"l"];
-		[_loginItem setTarget:_loginController];
-		
-		var loginImage = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/User.png" size:CPMakeSize(24, 24)];
-		[_loginItem setImage:loginImage];
-		[_loginItem setAlternateImage:loginImage];
-		
-		[self insertItem:_loginItem atIndex:1];
+        [newItem setTarget:self];
+        [fileMenu setSubmenu:fileSubmenu];
+        
+        [self addItem:fileMenu];
+        [self addItem:[CPMenuItem separatorItem]];
     }
     
     return self;
+}
+
+- (void)new:(id)sender
+{
+    alert("Hello World!");
 }
 
 - (void)updateLoginItemWithTitle:(CPString)aTitle

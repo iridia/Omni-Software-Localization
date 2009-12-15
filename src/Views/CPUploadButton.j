@@ -51,8 +51,33 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
         _fileUploadElement.type = "file";
         _fileUploadElement.name = "file";
         
+        _fileUploadElement.onclick = function(aDOMEvent)
+        {
+            console.log("onclick", aDOMEvent);
+            aDOMEvent = aDOMEvent || window.event;
+            
+            var x = aDOMEvent.clientX,
+                y = aDOMEvent.clientY,
+                theWindow = [self window];
+            
+            [CPApp sendEvent:[CPEvent mouseEventWithType:CPLeftMouseDown location:[theWindow convertBridgeToBase:CGPointMake(x, y)]
+                modifierFlags:0 timestamp:0 windowNumber:[theWindow windowNumber] context:nil eventNumber:-1 clickCount:1 pressure:0]];
+            
+            if (document.addEventListener)
+            {
+                document.addEventListener(CPDOMEventMouseUp, _mouseUpCallback, NO);
+                document.addEventListener(CPDOMEventMouseMoved, _mouseMovedCallback, NO);
+            }
+            else if(document.attachEvent)
+            {
+                document.attachEvent("on" + CPDOMEventMouseUp, _mouseUpCallback);
+                document.attachEvent("on" + CPDOMEventMouseMoved, _mouseMovedCallback);
+            }
+        }
+        
         _fileUploadElement.onmousedown = function(aDOMEvent)
-        {    
+        {
+            console.log("onmousedown", aDOMEvent);
             aDOMEvent = aDOMEvent || window.event;
             
             var x = aDOMEvent.clientX,
@@ -76,6 +101,7 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
  
         _mouseUpCallback = function(aDOMEvent)
         {
+            console.log("mouseUpCallback", aDOMEvent);
             if (document.removeEventListener)
             {
                 document.removeEventListener(CPDOMEventMouseUp, _mouseUpCallback, NO);
@@ -100,7 +126,7 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
         _mouseMovedCallback = function(aDOMEvent)
         {
             //ASSERT(mouse is down)
-            
+            console.log("mouseMovedCallback", aDOMEvent);
             aDOMEvent = aDOMEvent || window.event;
             
             var x = aDOMEvent.clientX,
@@ -212,7 +238,8 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
 }
  
 - (void)submit
-{        
+{
+    console.log(_cmd);
     _uploadForm.target = "FRAME_"+(new Date());
  
     //remove existing parameters
