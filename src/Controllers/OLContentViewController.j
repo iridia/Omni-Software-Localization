@@ -3,13 +3,12 @@
 @import "../Views/OLResourcesView.j"
 
 @implementation OLContentViewController : CPObject
-{
-	id                          _delegate       @accessors(property=delegate);
-	
-	CPView          			_currentView;
-	CPView                      resourcesView   @accessors;
+{	
+	CPView			_currentView;
+	CPView			resourcesView   @accessors;
+	CPView			glossariesView	@accessors;
 
-    @outlet 					CPView			contentView;
+    @outlet 		CPView			contentView;
 }
 
 - (void)setCurrentView:(CPView)aView
@@ -32,8 +31,19 @@
     switch (keyPath)
     {
         case @"selectedProject":
-			[self setCurrentView:resourcesView];
+            var selectedProject = [object selectedProject];
+            if (selectedProject)
+            {
+    			[self setCurrentView:resourcesView];
+    		}
             break;
+		case @"selectedGlossary":
+		    var selectedGlossary = [object selectedGlossary];
+		    if (selectedGlossary)
+		    {
+		       [self setCurrentView:glossariesView];
+		    }
+			break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
             break;
