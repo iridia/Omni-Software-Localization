@@ -4,7 +4,7 @@
 
 @implementation OLContentViewController : CPObject
 {	
-	CPView			_currentView;
+	CPView			currentView;
 	CPView			resourcesView   @accessors;
 	CPView			glossariesView	@accessors;
 
@@ -13,13 +13,17 @@
 
 - (void)setCurrentView:(CPView)aView
 {
-	if (_currentView)
+    if (currentView !== aView)
     {
-        [_currentView removeFromSuperview];
-    }
+    	if (currentView)
+        {
+            [currentView removeFromSuperview];
+        }
 
-    _currentView = aView;
-    [contentView addSubview:_currentView];
+        currentView = aView;
+        [currentView setFrame:[contentView bounds]];
+        [contentView addSubview:currentView];
+    }
 }
 
 @end
