@@ -2,8 +2,6 @@
 
 var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
 var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
-var OLAddProjectToolbarItemIdentifier = @"OLAddProjectToolbarItemIdentifier";
-var OLAddGlossaryToolbarItemIdentifier = @"OLAddGlossaryToolbarItemIdentifier";
 
 @implementation OLToolbarController : CPObject
 {
@@ -49,8 +47,7 @@ var OLAddGlossaryToolbarItemIdentifier = @"OLAddGlossaryToolbarItemIdentifier";
 
 - (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)toolbar
 {
-    return [OLAddProjectToolbarItemIdentifier, OLAddGlossaryToolbarItemIdentifier, CPToolbarFlexibleSpaceItemIdentifier, 
-                OLLoginToolbarItemIdentifier, OLFeedbackToolbarItemIdentifier];
+    return [CPToolbarFlexibleSpaceItemIdentifier, OLLoginToolbarItemIdentifier, OLFeedbackToolbarItemIdentifier];
 }
 
 - (CPToolbarItem)toolbar:(CPToolbar)toolbar itemForItemIdentifier:(CPString)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
@@ -88,33 +85,7 @@ var OLAddGlossaryToolbarItemIdentifier = @"OLAddGlossaryToolbarItemIdentifier";
         
         loginMenuItem = menuItem;
     }
-    else if(itemIdentifier === OLAddProjectToolbarItemIdentifier)
-    {
-        var addProjectButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Monitor.png" size:CPSizeMake(32, 32)];
-        var addProjectButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Monitor.png" size:CPSizeMake(32, 32)];
-
-        [menuItem setImage:addProjectButton];
-        [menuItem setAlternateImage:addProjectButtonPushed];
-        [menuItem setMinSize:CGSizeMake(32, 32)];
-        [menuItem setMaxSize:CGSizeMake(32, 32)];
-        [menuItem setLabel:"Add Project"];
-        
-    }
-    else if(itemIdentifier === OLAddGlossaryToolbarItemIdentifier)
-    {
-        var glossaryButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Globe.png" size:CPSizeMake(32, 32)];
-        var glossaryButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Globe.png" size:CPSizeMake(32, 32)];
-
-        [menuItem setImage:glossaryButton];
-        [menuItem setAlternateImage:glossaryButtonPushed];
-        [menuItem setMinSize:CGSizeMake(32, 32)];
-        [menuItem setMaxSize:CGSizeMake(32, 32)];
-        [menuItem setLabel:"Add Glossary"];
-                // 
-                // [menuItem setTarget:_feedbackController];
-                // [menuItem setAction:@selector(showFeedbackWindow:)];
-    }
-
+    
     return menuItem;
 }
 

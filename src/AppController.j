@@ -86,6 +86,10 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 {
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
+    
+    var menu = [[OLMenu alloc] init];
+    [[CPApplication sharedApplication] setMainMenu:menu];
+    [CPMenu setMenuBarVisible:YES];
 }
 
 - (void)sidebarSendMessage:(SEL)aMessage
