@@ -119,9 +119,7 @@
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"GET"];
 	
-		var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
-	
-		return rootObject;
+    	_getConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
 	}
 	catch(ex)
 	{
@@ -255,10 +253,10 @@
         		var archivedData = [CPData dataWithString:archivedString];
         		var rootObject = [CPKeyedUnarchiver unarchiveObjectWithData:archivedData];
 
-        		[rootObject setRevision:response._rev];
-        		[rootObject setRecordID:response._id];
+        		[rootObject setRevision:json._rev];
+        		[rootObject setRecordID:json._id];
         		
-        		getCallback(rootObject);
+        		//getCallback(rootObject);
 	            break;
 	        default:
 	            break;
