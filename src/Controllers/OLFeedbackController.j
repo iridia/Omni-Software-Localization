@@ -29,11 +29,13 @@
 
 - (void)userDidChange:(CPNotification)notification
 {
-    var user = [OLUser findByRecordID:[[CPUserSessionManager defaultManager] userIdentifier]];
-    if (user)
+    [OLUser findByRecordID:[[CPUserSessionManager defaultManager] userIdentifier] withCallback:function(user)
     {
-        [[_feedbackWindow emailTextField] setStringValue:[user email]];  
-    } 
+        if(user)
+        {
+            [[_feedbackWindow emailTextField] setStringValue:[user email]];
+        }
+    }];
 }
 
 - (void)showFeedbackWindow:(id)sender

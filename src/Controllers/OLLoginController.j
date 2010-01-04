@@ -30,11 +30,11 @@
 
 - (void)hasLoggedIn:(OLUser)aUser
 {
-	[_loginWindow close];
-	
-	var sessionManager = [CPUserSessionManager defaultManager];
-	[sessionManager setStatus:CPUserSessionLoggedInStatus];
-	[sessionManager setUserIdentifier:[aUser recordID]];
+    [_loginWindow close];
+    
+    var sessionManager = [CPUserSessionManager defaultManager];
+    [sessionManager setStatus:CPUserSessionLoggedInStatus];
+    [sessionManager setUserIdentifier:[aUser recordID]];
     
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLLoginDidLogin"
@@ -50,11 +50,11 @@
 {
 	[self willLogin];
 	var foundUser = NO;
-	[OLUser listWithCallback:function(user){if([[anotherUser email] isEqualToString:[userInfo objectForKey:@"username"]])
+	[OLUser listWithCallback:function(user){if([[user email] isEqualToString:[userInfo objectForKey:@"username"]])
 	    {
 	        foundUser = YES;
 	        [self hasLoggedIn:user];
-	    }} finalCallback:function(){if(!foundUser){[self loginFailed]}}];
+	    }} finalCallback:function(){if(!foundUser){[self loginFailed];}}];
 }
 
 - (void)showRegister

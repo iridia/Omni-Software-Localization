@@ -256,7 +256,22 @@
         		[rootObject setRevision:json._rev];
         		[rootObject setRecordID:json._id];
         		
-        		//getCallback(rootObject);
+        		try
+        		{
+        		    getCallback(rootObject);
+    		    }
+    		    catch(ex)
+    		    {
+            		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+            			reason:"the provided callback threw an error" userInfo:[CPDictionary dictionary]];
+
+            		///[exception setClassWithError:""+[self class]];
+            		[exception setMethodWithError:@"get"];
+            		//[exception setAdditionalInformation:ex];
+
+            		[exception raise];
+    		    }
+    		    
 	            break;
 	        default:
 	            break;

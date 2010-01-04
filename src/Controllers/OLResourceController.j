@@ -24,25 +24,27 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 - (void)voteUp:(id)sender
 {
     var userId = [[CPUserSessionManager defaultManager] userIdentifier];
-    var user = [OLUser findByRecordID:userId];
-    [selectedResource voteUp:user];
-    [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
-    
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLProjectDidChangeNotification"
-        object:self];
+    [OLUser findByRecordID:userId withCallback:function(user){
+        [selectedResource voteUp:user];
+        [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
+
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLProjectDidChangeNotification"
+            object:self];
+    }];
 }
 
 - (void)voteDown:(id)sender
 {
     var userId = [[CPUserSessionManager defaultManager] userIdentifier];
-    var user = [OLUser findByRecordID:userId];
-    [selectedResource voteDown:user];
-    [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
+    [OLUser findByRecordID:userId withCallback:function(user){
+        [selectedResource voteDown:user];
+        [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
 
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLProjectDidChangeNotification"
-        object:self];
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLProjectDidChangeNotification"
+            object:self];
+    }];
 }
 
 @end

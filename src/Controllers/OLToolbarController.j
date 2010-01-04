@@ -93,9 +93,11 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
 
 - (void)updateLoginInfo:(CPNotification)notification
 {
-    var name = [[OLUser findByRecordID:[[CPUserSessionManager defaultManager] userIdentifier]] email];
-    loginValue = "Welcome, " + name;
-    [toolbar _reloadToolbarItems];
+    [OLUser findByRecordID:[[CPUserSessionManager defaultManager] userIdentifier] withCallback:function(user)
+        {
+            loginValue = "Welcome, " + [user email]; 
+            [toolbar _reloadToolbarItems];
+        }];
 }
 
 @end
