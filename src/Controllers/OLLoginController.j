@@ -49,25 +49,12 @@
 - (void)didSubmitLogin:(CPDictionary)userInfo
 {
 	[self willLogin];
-	var users = [OLUser list];
 	var foundUser = NO;
-	var theUser;
-
-	theUser = [users findBy:function(anotherUser){
-		if([[anotherUser email] isEqualToString:[userInfo objectForKey:@"username"]])
-		{
-			foundUser = YES;
-			return anotherUser;
-		}}];
-
-	if(!foundUser)
-	{
-		[self loginFailed];
-	}
-	else
-	{
-		[self hasLoggedIn:theUser];
-	}
+	[OLUser listWithCallback:function(user){if([[anotherUser email] isEqualToString:[userInfo objectForKey:@"username"]])
+	    {
+	        foundUser = YES;
+	        [self hasLoggedIn:user];
+	    }} finalCallback:function(){if(!foundUser){[self loginFailed]}}];
 }
 
 - (void)showRegister

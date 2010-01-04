@@ -38,11 +38,7 @@
 
 - (void)loadProjects
 {
-	var projectList = [OLProject list];
-	for (var i = 0; i < [projectList count]; i++)
-	{
-		[self addProject:[projectList objectAtIndex:i]];
-	}
+	[OLProject listWithCallback:function(project){[self addProject:project];}];
 }
 
 - (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index

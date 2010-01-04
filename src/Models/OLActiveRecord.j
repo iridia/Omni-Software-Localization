@@ -9,29 +9,59 @@
 
 	CPURLConnection _saveConnection;
 	CPURLConnection _createConnection;
+	CPURLConnection _getConnection;
+	CPURLConnection _listConnection;
+	
+	Function getCallback;
 	
 	id _delegate @accessors(property=delegate);
 }
 
 + (CPArray)list
 {
+    var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+    	reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
+	
+    //[exception setClassWithError:[self class]];
+    [exception setMethodWithError:@"list"];
+    //[exception setAdditionalInformation:"List is deprecated, use listWithCallback"];
+
+    [exception raise];
+}
+
++ (void)listWithCallback:(Function)callback
+{
+    [self listWithCallback:callback finalCallback:function(){}];
+}
+
+/*
+ * This has a special callback requirement. Because we want our lists to load when available (rather than when all are loaded)
+ * we need this callback to ADD to a list rather than SET a list. Expect a single record as an argument!
+ */
++ (void)listWithCallback:(Function)callback finalCallback:(Function)finalCallback
+{
 	try
 	{
-		var records = [CPArray array];
-	
 		var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
 	    var url = @"api/" + modifiedClassName + "/_all_docs";
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 		var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
+		var numberCalledBack = 0;
 	
 		var data = eval('(' + JSONresponse.string + ')');
 	
 		for(var i = 0; i < [data.rows count]; i++)
 		{
-			[records addObject:[self findByRecordID:data.rows[i].id]];
+			[self findByRecordID:data.rows[i].id withCallback:function(user)
+			{
+			    callback(user); 
+			    numberCalledBack++; 
+			    if(numberCalledBack == [data.rows count]) 
+			    {
+			        finalCallback();
+			    }
+			}];
 		}
-
-		return records;
 	}
 	catch(ex)
 	{
@@ -48,12 +78,11 @@
 	}
 }
 
-+ (OLActiveRecord)findByRecordID:(CPString)aRecordID
++ (void)findByRecordID:(CPString)aRecordID withCallback:(Function)callback
 {
 	var record = [[self alloc] init];
 	[record setRecordID:aRecordID];
-	var newRecord = [record get];
-	return newRecord;
+	[record getWithCallback:callback];
 }
 
 - (id)init
@@ -72,22 +101,25 @@
 
 - (id)get
 {
+	var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+		reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
+		
+	//[exception setClassWithError:[self class]];
+	[exception setMethodWithError:@"get"];
+	//[exception setAdditionalInformation:"Get is deprecated, use getWithCallback"];
+	
+	[exception raise];
+}
+
+- (void)getWithCallback:(Function)callback
+{
 	try
 	{
+	    getCallback = callback;
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"GET"];
 	
 		var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
-	
-		var response = eval('(' + JSONresponse.string + ')');
-	
-		// Unarchive the data
-		var archivedString = response.archive;
-		var archivedData = [CPData dataWithString:archivedString];
-		var rootObject = [CPKeyedUnarchiver unarchiveObjectWithData:archivedData];
-	
-		[rootObject setRevision:response._rev];
-		[rootObject setRecordID:response._id];
 	
 		return rootObject;
 	}
@@ -216,6 +248,17 @@
 	            break;
 	        case _saveConnection:
 	            _revision = json["rev"] || _revision;
+	            break;
+	        case _getConnection:
+        		// Unarchive the data
+        		var archivedString = json.archive;
+        		var archivedData = [CPData dataWithString:archivedString];
+        		var rootObject = [CPKeyedUnarchiver unarchiveObjectWithData:archivedData];
+
+        		[rootObject setRevision:response._rev];
+        		[rootObject setRecordID:response._id];
+        		
+        		getCallback(rootObject);
 	            break;
 	        default:
 	            break;

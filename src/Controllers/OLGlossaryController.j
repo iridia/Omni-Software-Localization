@@ -37,11 +37,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 
 - (void)loadGlossaries
 {
-	var glossariesList = [OLGlossary list];
-	for (var i = 0; i < [glossariesList count]; i++)
-	{
-		[self addGlossary:[glossariesList objectAtIndex:i]];
-	}
+	var glossariesList = [OLGlossary listWithCallback:function(glossary){[self addGlossary:glossary];}];
 }
 
 - (void)insertObject:(OLGlossary)glossary inGlossariesAtIndex:(int)index
