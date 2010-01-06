@@ -11,6 +11,8 @@
 
 - (id)initWithWindowCibName:(CPString)aName
 {
+	[value setTarget:self];
+	[value setAction:@selector(done:)]
     return [self initWithWindowCibName:aName lineItem:[[OLLineItem alloc] 
         initWithIdentifier:@"Error" value:@"There was an error in the code."]];
 }
