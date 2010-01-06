@@ -17,7 +17,7 @@
 
 - (void)testThatOLActiveRecordDoesFindByRecordId
 {
-	[self assertNotNull:[OLActiveRecord findByRecordID:@"aRecordId"]];
+	[self assertNotNull:[OLActiveRecord findByRecordID:@"aRecordId" withCallback:function(){}]];
 }
 
 - (void)testThatOLActiveRecordDoesGet
