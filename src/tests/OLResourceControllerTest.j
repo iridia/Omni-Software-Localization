@@ -1,4 +1,4 @@
-@import "../Controllers/OLResourceControllerTest.j"
+@import "../Controllers/OLResourceController.j"
 
 @implementation OLResourceControllerTest : OJTestCase
 
