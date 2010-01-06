@@ -16,7 +16,7 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
 
 - (id)init
 {
-    return [self initWithFeedbackController:nil];
+    return [self initWithFeedbackController:nil loginController:nil projectController:nil glossaryController:nil];
 }
 
 - (id)initWithFeedbackController:(OLFeedbackController)aFeedbackController loginController:(OLLoginController)aLoginController
