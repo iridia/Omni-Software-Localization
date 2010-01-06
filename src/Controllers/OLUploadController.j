@@ -14,13 +14,13 @@ var OLUploadControllerDidParseServerResponse = @"OLUploadControllerDidParseServe
 		aResponse = aResponse.replace("<pre style=\"word-wrap: break-word; white-space: pre-wrap;\">", "");
 		aResponse = aResponse.replace("\n</pre>", "");
 	
-		console.log(aResponse);
+        // console.log(aResponse);
 		
-		_jsonResponse = eval('(' + aResponse + ')');
-	
+        _jsonResponse = eval('(' + aResponse + ')');
+        
 		// console.log(_jsonResponse);
 		
-		[[CPNotificationCenter defaultCenter] postNotificationName:OLUploadControllerDidParseServerResponse object:self];
+        [[CPNotificationCenter defaultCenter] postNotificationName:OLUploadControllerDidParseServerResponse object:self];
 	} 
 	catch (ex)
 	{
