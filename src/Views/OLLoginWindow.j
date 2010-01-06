@@ -21,6 +21,11 @@
 		
         var loginText = [CPTextField labelWithTitle:@"Login"];
 		_userNameField = [CPTextField roundedTextFieldWithStringValue:@"" placeholder:@"E-mail address" width:200];
+		
+		//sets the action for default enter key.
+		[_userNameField setTarget:self];
+		[_userNameField setAction:@selector(login:)]
+		
 		// Uncomment once DB supports passwords.
 		//var passwordText = [CPTextField labelWithTitle:@"Import localizable files in order for them to be translated!"];
 		var loginButton = [CPButton  buttonWithTitle:@"Login"];

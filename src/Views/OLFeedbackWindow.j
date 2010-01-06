@@ -64,6 +64,8 @@
 	    [_feedbackTextView setEditable:YES];
 		[_feedbackTextView setBezeled:YES];
 		[_feedbackTextView setLineBreakMode:CPLineBreakByWordWrapping];
+		[_feedbackTextView setTarget:self];
+		[_feedbackTextView setAction:@selector(submitFeedback:)]
         [_feedbackView addSubview:_feedbackTextView];
         
         _submitButton = [CPButton buttonWithTitle:@"Submit Feedback"];
