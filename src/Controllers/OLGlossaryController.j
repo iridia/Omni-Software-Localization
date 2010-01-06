@@ -1,4 +1,5 @@
 @import <Foundation/CPObject.j>
+@import <AppKit/CPOutlineView.j>
 
 @import "../Models/OLGlossary.j"
 
