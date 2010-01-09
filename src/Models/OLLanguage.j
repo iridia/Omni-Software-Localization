@@ -19,6 +19,17 @@
 	return [_name isEqualToString:[otherLanguage name]];
 }
 
++ (OLLanguage)languageFromLProj:(CPString)lproj
+{
+    lproj = [lproj stringByReplacingOccurrencesOfString:@".lproj" withString:@""];
+    if(![languageMapping objectForKey:lproj])
+    {
+        return [[OLLanguage alloc] initWithName:lproj];
+    }
+    
+    return [languageMapping objectForKey:lproj];
+}
+
 + (OLLanguage)english {	return [[OLLanguage alloc] initWithName:@"English"]; }
 + (OLLanguage)french {	return [[OLLanguage alloc] initWithName:@"French"]; }
 + (OLLanguage)spanish {	return [[OLLanguage alloc] initWithName:@"Spanish"]; }
@@ -50,3 +61,11 @@ var OLLanguageNameKey = @"OLLanguageNameKey";
 }
 
 @end
+
+var languageMapping = [CPDictionary dictionary];
+[languageMapping setObject:[OLLanguage english] forKey:@"English"];
+[languageMapping setObject:[OLLanguage french] forKey:@"French"];
+[languageMapping setObject:[OLLanguage spanish] forKey:@"Spanish"];
+[languageMapping setObject:[OLLanguage german] forKey:@"German"];
+[languageMapping setObject:[OLLanguage arabic] forKey:@"ar"];
+[languageMapping setObject:[OLLanguage japanese] forKey:@"Japanese"];
