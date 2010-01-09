@@ -4,6 +4,7 @@
 
 var OLSidebarProjectsKey = @"Projects";
 var OLSidebarGlossariesKey = @"Glossaries";
+var OLSidebarCommunityKey = @"Community";
 
 @implementation OLSidebarController : CPObject
 {
@@ -20,6 +21,7 @@ var OLSidebarGlossariesKey = @"Glossaries";
     // Want projects to initially show up, even if there are no projects.
     [self updateProjects:[CPArray array]];
 	[self updateGlossaries:[CPArray array]];
+	[self updateCommunity:[CPArray array]];
     
     // Autohide the scrollers here and not in the Cib because it is impossible to
     // select the scrollView in Atlas again otherwise.
@@ -45,6 +47,12 @@ var OLSidebarGlossariesKey = @"Glossaries";
     [sidebarOutlineView expandItem:OLSidebarProjectsKey];
 }
 
+-(void)updateCommunity:(CPArray)community
+{
+    [items setObject:community forKey:OLSidebarCommunityKey];
+    [sidebarOutlineView expandItem:OLSidebarCommunityKey];
+}
+
 @end
 
 @implementation OLSidebarController (OLResourceBundleControllerKVO)
@@ -58,6 +66,9 @@ var OLSidebarGlossariesKey = @"Glossaries";
             break;
         case @"projects":
             [self updateProjects:[object projects]];
+            break;
+        case @"community":
+            [self updateCommunity:[object community]];
             break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
