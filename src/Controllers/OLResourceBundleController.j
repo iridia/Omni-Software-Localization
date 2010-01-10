@@ -3,7 +3,7 @@
 @implementation OLResourceBundleController : CPObject
 {
     CPArray             resourceBundles             @accessors(readonly);
-    CPResourceBundle    selectedResourceBundle      @accessors(readonly);
+    CPResourceBundle    selectedResourceBundle      @accessors;
     CPView              resourcesView               @accessors;
     CPString            projectName                 @accessors(readonly);
 }
@@ -31,19 +31,19 @@
         if([[OLLanguage english] equals:[[resourceBundles objectAtIndex:i] language]])
         {
             found = true;
-            selectedResourceBundle = [resourceBundles objectAtIndex:i];
+            [self setSelectedResourceBundle:[resourceBundles objectAtIndex:i]];
         }
     }
     
     if(!found)
     {
-        selectedResourceBundle = [resourceBundles objectAtIndex:0];
+        [self setSelectedResourceBundle:[resourceBundles objectAtIndex:0]];
     }
 }
 
 - (void)selectedResourceBundleDidChange:(CPPopUpButton)aButton
 {
-    selectedResourceBundle = [resourceBundles objectAtIndex:[aButton indexOfSelectedItem]];
+    [self setSelectedResourceBundle:[resourceBundles objectAtIndex:[aButton indexOfSelectedItem]]];
 }
 
 - (CPNumber)indexOfSelectedResourceBundle

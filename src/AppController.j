@@ -67,7 +67,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [projectController addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
 	
 	resourceController = [[OLResourceController alloc] init];
-    [projectController addObserver:resourceController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+    [resourceBundleController addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
 	
 	lineItemController = [[OLLineItemController alloc] init];
 	[lineItemController setResourcesView:[resourceController resourcesView]];
