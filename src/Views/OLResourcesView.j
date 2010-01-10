@@ -1,127 +1,84 @@
-@import <AppKit/CPSplitView.j>
+@import <AppKit/CPView.j>
 
-@import "OLResourceEditorView.j"
+@import "OLResourcesSplitView.j"
 
-var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
-var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
-
-@implementation OLResourcesView : CPSplitView
+@implementation OLResourcesView : CPView
 {
-    CPTableView             resourceTableView   @accessors(readonly);
-    OLResourceEditorView    editingView         @accessors(readonly);
-    BOOL                    isEditing;
+    OLResourcesView resourcesView;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
 {
-	self = [super initWithFrame:aFrame];
-	
-	if (self)
-	{
-	    [self setVertical:NO];
-	    [self setDelegate:self];
-	    
-        var scrollView = [[CPScrollView alloc] initWithFrame:aFrame];
-        [scrollView setAutohidesScrollers:YES];
-        [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    self = [super initWithFrame:aFrame];
+    if(self)
+    {
+        var splitViewSize = CGRectMake(0, 40, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame)-99);
+    
+        resourcesView = [[OLResourcesSplitView alloc] initWithFrame:splitViewSize];
+        console.log(self, resourcesView);
+        [self addSubview:resourcesView];
         
-		// create the resourceTableView
-		resourceTableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];
-		[resourceTableView setUsesAlternatingRowBackgroundColors:YES];
-		[resourceTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-		
-		// define the header color
-		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
-		
-		[[resourceTableView cornerView] setBackgroundColor:headerColor];
-		
-		// add the filename column
-		var column = [[CPTableColumn alloc] initWithIdentifier:OLResourcesViewFileNameColumn];
-		[[column headerView] setStringValue:"Filename"];
-		[[column headerView] setBackgroundColor:headerColor];
-		[column setWidth:CGRectGetWidth(aFrame)];
-		[resourceTableView addTableColumn:column];
-		
-		[scrollView setDocumentView:resourceTableView];
-		
-		[self addSubview:scrollView];
-
-        // Create the editingView up front, show it when needed
-		editingView = [[OLResourceEditorView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)];
-		[editingView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-        [self addSubview:editingView];
-        [self setPosition:[self maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
-	}
-
-	return self;
+        var titleBar = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(aFrame), 40)];
+        [titleBar setBackgroundColor:[CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/_CPToolbarViewBackground.png"]]]];
+        
+        var popUpButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0, 0, 150, 25)];
+        [popUpButton addItemsWithTitles:["English", "French", "German"]];
+        [popUpButton setCenter:CGPointMake(CGRectGetWidth(aFrame)-90, 20)];
+        
+        [titleBar addSubview:popUpButton];
+        
+        var title = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, 200, 25)];
+        
+        [title setFont:[CPFont boldSystemFontOfSize:20.0]];
+        [title setStringValue:@"Dictionary"];
+        [title setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
+        [title setTextShadowOffset:CGSizeMake(0.0, 1.5)];
+        [title setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
+        
+        [title sizeToFit];
+        
+        [title setCenter:CPPointMake(CGRectGetWidth(aFrame)/2, 20)];
+        
+        [self addSubview:titleBar];
+        [self addSubview:title];
+    }
+    
+    return self;
 }
 
-- (void)setResourceController:(OLResourceController)aResourceController
+- (void)setResourceController:(OLResourceController)resourceController
 {
-    [resourceTableView setDataSource:aResourceController];
-    [resourceTableView setDelegate:aResourceController];
+    [resourcesView setResourceController:resourceController];
 }
 
 - (void)setLineItemController:(OLLineItemsController)aLineItemsController
 {
-    [[editingView lineItemsTableView] setDataSource:aLineItemsController];
-    [[editingView lineItemsTableView] setDelegate:aLineItemsController];
-    [[editingView lineItemsTableView] setTarget:aLineItemsController];
-	[[editingView lineItemsTableView] setDoubleAction:@selector(editSelectedLineItem:)];
+    [resourcesView setLineItemController:aLineItemsController];
+}
+
+- (void)editingView
+{
+    return [resourcesView editingView];
+}
+
+- (void)resourceTableView
+{
+    return [resourcesView resourceTableView];
 }
 
 - (void)showLineItemsTableView
 {
-    if (!isEditing)
-    {
-        isEditing = YES;
-        [self setPosition:([self maxPossiblePositionOfDividerAtIndex:0] - 150.0) ofDividerAtIndex:0];
-    }
+    [resourcesView showLineItemsTableView];
 }
 
 - (void)hideLineItemsTableView
 {
-    isEditing = NO;
-    [self setPosition:[self maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
+    [resourcesView hideLineItemsTableView];
 }
 
 - (void)setVoteCount:(int)votes
 {
-    [[editingView votes] setStringValue:@"Votes: " + votes];
-    [[editingView votes] sizeToFit];
-}
-
-@end
-
-@implementation OLResourcesView (CPSplitViewDelegate)
-
-- (BOOL)splitView:(CPSplitView)splitView canCollapseSubview:(CPView)subview
-{
-    return isEditing;
-}
-
-- (BOOL)splitView:(CPSplitView)splitView shouldCollapseSubview:(CPView)subview forDoubleClickOnDividerAtIndex:(int)index
-{
-    return isEditing;
-}
-
-- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
-{
-    if (!isEditing)
-    {
-        return [self maxPossiblePositionOfDividerAtIndex:dividerIndex];
-    }
-    return proposedMin + 150.0;
-}
-
-- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
-{
-    if (!isEditing)
-    {
-        return proposedMax;
-    }
-    
-    return proposedMax - 150.0;
+    [resourcesView setVoteCount:votes];
 }
 
 @end

@@ -69,7 +69,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[lineItemController setResourcesView:[resourceController resourcesView]];
 	[resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
 	
-	resourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
+    resourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
     [resourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [resourcesView setResourceController:resourceController];
     [resourcesView setLineItemController:lineItemController];

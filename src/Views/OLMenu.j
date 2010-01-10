@@ -22,6 +22,10 @@
         var fileSubmenu = [[CPMenu alloc] initWithTitle:@"FileMenu"];
         var newItem = [[CPMenuItem alloc] initWithTitle:@"New..." action:@selector(new:) keyEquivalent:"N"];
         
+        console.log([newItem keyEquivalentModifierMask]);
+        [newItem setKeyEquivalentModifierMask:CPCommandKeyMask | CPShiftKeyMask];
+        console.log([newItem keyEquivalentModifierMask]);
+        
         [fileSubmenu addItem:newItem];
         
         [newItem setTarget:self];
