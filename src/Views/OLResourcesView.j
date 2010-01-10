@@ -5,6 +5,8 @@
 @implementation OLResourcesView : CPView
 {
     OLResourcesView resourcesView;
+    CPPopUpButton   popUpButton;
+    CPTextField     title;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -21,29 +23,49 @@
         var titleBar = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(aFrame), 40)];
         [titleBar setBackgroundColor:[CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/_CPToolbarViewBackground.png"]]]];
         
-        var popUpButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0, 0, 150, 25)];
+        popUpButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0, 0, 150, 25)];
         [popUpButton addItemsWithTitles:["English", "French", "German"]];
         [popUpButton setCenter:CGPointMake(CGRectGetWidth(aFrame)-90, 20)];
         
         [titleBar addSubview:popUpButton];
         
-        var title = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, 200, 25)];
+        title = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, 200, 25)];
         
         [title setFont:[CPFont boldSystemFontOfSize:20.0]];
-        [title setStringValue:@"Dictionary"];
         [title setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
         [title setTextShadowOffset:CGSizeMake(0.0, 1.5)];
         [title setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
         
-        [title sizeToFit];
-        
-        [title setCenter:CPPointMake(CGRectGetWidth(aFrame)/2, 20)];
+        [title setStringValue:@"None"];
         
         [self addSubview:titleBar];
         [self addSubview:title];
     }
     
     return self;
+}
+
+- (void)setUpTitle:(CPString)value
+{
+    [title setStringValue:value];
+    
+    [title sizeToFit];
+    
+    [title setCenter:CPPointMake(CGRectGetWidth([self frame])/2, 20)];
+}
+
+- (void)reloadData:(OLResourceBundleController)resourceBundleController
+{
+    [popUpButton removeAllItems];
+    [popUpButton addItemsWithTitles:[resourceBundleController titlesOfResourceBundles]];
+    [popUpButton selectItemAtIndex:[resourceBundleController indexOfSelectedResourceBundle]];
+    [self setUpTitle:[resourceBundleController projectName]];
+}
+
+- (void)setResourceBundleController:(OLResourceBundleController)resourceBundleController
+{
+    [popUpButton setTarget:resourceBundleController];
+    [popUpButton setAction:@selector(selectedResourceBundleDidChange:)]
 }
 
 - (void)setResourceController:(OLResourceController)resourceController

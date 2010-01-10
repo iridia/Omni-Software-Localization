@@ -4,17 +4,14 @@
 {
     CPArray             resourceBundles             @accessors(readonly);
     CPResourceBundle    selectedResourceBundle      @accessors(readonly);
+    CPView              resourcesView               @accessors;
+    CPString            projectName                 @accessors(readonly);
 }
 
 - (id)init
 {
     if(self = [super init])
     {
-        [[CPNotificationCenter defaultCenter]
-            addObserver:self
-            selector:@selector(didReceiveOLResourceBundleDidChangeNotification:)
-            name:@"OLResourceBundleDidChangeNotification"
-            object:nil];
     }
     return self;
 }
@@ -44,11 +41,53 @@
     }
 }
 
-- (void)didReceiveOLResourceBundleDidChangeNotification:(CPNotification)aNotification
+- (void)selectedResourceBundleDidChange:(CPPopUpButton)aButton
 {
-    var view = [aNotification object];
+    selectedResourceBundle = [resourceBundles objectAtIndex:[aButton indexOfSelectedItem]];
+}
+
+- (CPNumber)indexOfSelectedResourceBundle
+{
+    for(var i = 0; i < [resourceBundles count]; i++)
+    {
+        if(selectedResourceBundle === [resourceBundles objectAtIndex:i])
+        {
+            return i;
+        }
+    }
     
-    selectedResourceBundle = [resourceBundles objectAtIndex:[view selectedResourceBundleIndex]];
+    return -1;
+}
+
+- (CPArray)titlesOfResourceBundles
+{
+    var result = [CPArray array];
+    
+    for(var i = 0; i < [resourceBundles count]; i++)
+    {
+        [result addObject:[[[resourceBundles objectAtIndex:i] language] name]];
+    }
+    
+    return result;
+}
+
+@end
+
+@implementation OLResourceBundleController (OLResourceBundleControllerKVO)
+
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
+{
+    switch (keyPath)
+    {
+        case @"selectedProject":
+            projectName = [[object selectedProject] name];
+            [self setResourceBundles:[[object selectedProject] resourceBundles]];
+			[resourcesView reloadData:self];
+            break;
+        default:
+            CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
+            break;
+    }
 }
 
 @end
