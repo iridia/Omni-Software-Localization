@@ -114,7 +114,12 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 - (void)handleException:(OLException)anException
 {
-    alert("Error!\n"+[anException name]+" threw error "+[anException reason]);
+    
+    alert = [[CPAlert alloc] init];
+    [alert setTitle:@"Application Error"];
+    [alert setMessageText:@"Error!\n"+[anException name]+@" threw error "+[anException reason]];
+    [alert addButtonWithTitle:@"Close"];
+    [alert runModal];
 }
 
 @end
