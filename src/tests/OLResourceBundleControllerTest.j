@@ -9,12 +9,6 @@
     [self assertNotNull:[[OLResourceBundleController alloc] init]];
 }
 
-- (void)testThatOLResourceBundleControllerDoesRegisterNotificationOnInitialize
-{
-    var target = [[OLResourceBundleController alloc] init];
-    [self assert:target registered:@"OLResourceBundleDidChangeNotification"];
-}
-
 - (void)testThatOLResourceBundleControllerDoesSetListOfResourceBundles
 {
     var mockResourceBundle = moq();
@@ -46,55 +40,102 @@
     [self assert:englishBundle equals:[target selectedResourceBundle]];
 }
 
-- (void)testThatOLResourceBundleControllerDoesSetCurrentResourceBundleAccordingToNotification
+- (void)testThatOLResourceBundleControllerDoesSetToIndex0WhenNoEnglish
 {
     var mockResourceBundle = moq();
+    var firstResourceBundle = moq();
+    [firstResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
     [mockResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
-
-    var englishBundle = moq();
-    var resourceBundles = [mockResourceBundle, englishBundle, mockResourceBundle];
-
-    [englishBundle selector:@selector(language) returns:[OLLanguage english]];
- 
-    var value = moq();   
-    [value selector:@selector(selectedResourceBundleIndex) returns:2];
+    
+    var resourceBundles = [firstResourceBundle, mockResourceBundle, mockResourceBundle];
     
     var target = [[OLResourceBundleController alloc] init];
     
     [target setResourceBundles:resourceBundles];
     
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLResourceBundleDidChangeNotification"
-        object:value];
-    
-    [self assert:[[target resourceBundles] objectAtIndex:2] equals:[target selectedResourceBundle]];
+    [self assert:firstResourceBundle equals:[target selectedResourceBundle]];
 }
 
-- (void)assert:(id)target registered:(CPString)aNotification
+- (void)testThatOLResourceBundleControllerDoesSetToSelectedIndexWhenNotifiedOfChange
 {
-    var names = [[CPNotificationCenter defaultCenter]._namedRegistries keyEnumerator];
+    var firstResourceBundle = moq();
+    var secondResourceBundle = moq();
+    [firstResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+    [secondResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
     
-    while (name = [names nextObject])
-    {
-        if([name isEqualToString:aNotification])
-        {
-            var registry = [[CPNotificationCenter defaultCenter]._namedRegistries objectForKey:name];
-            var objects = [registry._objectObservers keyEnumerator];
-            while(object = [objects nextObject])
-            {
-                var observers = [registry._objectObservers objectForKey:object];
-                for(var i = 0; i < [observers count]; i++)
-                {
-                    if(target === [observers[i] observer])
-                    {
-                        return;
-                    }
-                }
-            }
-        }
-    }
+    var aPopUpButton = moq();
     
-    [self fail:@"Target <"+[target description]+"> was not registered with <"+aNotification+">"];
+    [aPopUpButton selector:@selector(indexOfSelectedItem) returns:1];
+    
+    var resourceBundles = [firstResourceBundle, secondResourceBundle];
+    
+    var target = [[OLResourceBundleController alloc] init];
+    
+    [target setResourceBundles:resourceBundles];
+    
+    [self assert:firstResourceBundle equals:[target selectedResourceBundle]];
+    
+    [target selectedResourceBundleDidChange:aPopUpButton];
+    
+    [self assert:secondResourceBundle equals:[target selectedResourceBundle]];
+}
+
+- (void)testThatOLResourceBundleControllerDoesReturnIndexOfSelectedResourceBundle
+{
+    var mockResourceBundle = moq();
+    var firstResourceBundle = moq();
+    [firstResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+    [mockResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+
+    var resourceBundles = [firstResourceBundle, mockResourceBundle, mockResourceBundle];
+
+    var target = [[OLResourceBundleController alloc] init];
+
+    [target setResourceBundles:resourceBundles];
+
+    [self assert:0 equals:[target indexOfSelectedResourceBundle]];
+}
+
+- (void)testThatOLResourceBundleControllerDoesReturnIndexOfSelectedResourceBundleAfterAChange
+{
+    var firstResourceBundle = moq();
+    var secondResourceBundle = moq();
+    [firstResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+    [secondResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+
+    var aPopUpButton = moq();
+
+    [aPopUpButton selector:@selector(indexOfSelectedItem) returns:1];
+
+    var resourceBundles = [firstResourceBundle, secondResourceBundle];
+
+    var target = [[OLResourceBundleController alloc] init];
+
+    [target setResourceBundles:resourceBundles];
+
+    [self assert:firstResourceBundle equals:[target selectedResourceBundle]];
+
+    [target selectedResourceBundleDidChange:aPopUpButton];
+
+    [self assert:1 equals:[target indexOfSelectedResourceBundle]];
+}
+
+- (void)testThatOLResourceBundleControllerDoesReturnTitlesOfResourceBundles
+{
+    var mockResourceBundle = moq();
+    var firstResourceBundle = moq();
+    [firstResourceBundle selector:@selector(language) returns:[OLLanguage german]];
+    [mockResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+
+    var resourceBundles = [firstResourceBundle, mockResourceBundle, mockResourceBundle];
+
+    var target = [[OLResourceBundleController alloc] init];
+
+    [target setResourceBundles:resourceBundles];
+
+    [self assert:@"German" equals:[[target titlesOfResourceBundles] objectAtIndex:0]];
+    [self assert:@"Spanish" equals:[[target titlesOfResourceBundles] objectAtIndex:1]];
+    [self assert:@"Spanish" equals:[[target titlesOfResourceBundles] objectAtIndex:2]];
 }
 
 @end
