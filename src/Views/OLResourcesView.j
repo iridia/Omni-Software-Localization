@@ -24,7 +24,6 @@
         [titleBar setBackgroundColor:[CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/_CPToolbarViewBackground.png"]]]];
         
         popUpButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0, 0, 150, 25)];
-        [popUpButton addItemsWithTitles:["English", "French", "German"]];
         [popUpButton setCenter:CGPointMake(CGRectGetWidth(aFrame)-90, 20)];
         
         [titleBar addSubview:popUpButton];
@@ -35,8 +34,6 @@
         [title setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
         [title setTextShadowOffset:CGSizeMake(0.0, 1.5)];
         [title setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
-        
-        [title setStringValue:@"None"];
         
         [self addSubview:titleBar];
         [self addSubview:title];
@@ -56,6 +53,7 @@
 
 - (void)reloadData:(OLResourceBundleController)resourceBundleController
 {
+    console.log(_cmd);
     [popUpButton removeAllItems];
     [popUpButton addItemsWithTitles:[resourceBundleController titlesOfResourceBundles]];
     [popUpButton selectItemAtIndex:[resourceBundleController indexOfSelectedResourceBundle]];

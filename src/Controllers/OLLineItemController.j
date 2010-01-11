@@ -86,12 +86,12 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
                 [[[resourcesView editingView] lineItemsTableView] reloadData];
                 [resourcesView showLineItemsTableView];
     			[resourcesView setVoteCount:[selectedResource numberOfVotes]];
+                [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:-1] byExtendingSelection:NO];
             }
             else
             {
                 [resourcesView hideLineItemsTableView];
             }
-            [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:-1] byExtendingSelection:NO];
             break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
