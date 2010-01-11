@@ -86,7 +86,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
                 [[[resourcesView editingView] lineItemsTableView] reloadData];
                 [resourcesView showLineItemsTableView];
     			[resourcesView setVoteCount:[selectedResource numberOfVotes]];
-                [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:-1] byExtendingSelection:NO];
+                [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
             }
             else
             {

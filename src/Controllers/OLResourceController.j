@@ -58,7 +58,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
         case @"selectedResourceBundle":
             resources = [[object selectedResourceBundle] resources];
 			[[resourcesView resourceTableView] reloadData];
-			[[resourcesView resourceTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:-1] byExtendingSelection:NO];
+			[[resourcesView resourceTableView] selectRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
 			[self setSelectedResource:nil];
             break;
         default:
