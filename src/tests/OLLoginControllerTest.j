@@ -73,6 +73,8 @@ CPApp._windows = moq();
 - (void)testThatOLLoginControllerDoesRespondToHasLoggedIn
 {
     var target = [[OLLoginController alloc] init];
+    var loginAndRegisterWindowMoq = moq();
+    target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
 	[target hasLoggedIn:moq()];
 	[self assertTrue:YES];
 }
@@ -93,6 +95,8 @@ CPApp._windows = moq();
 - (void)testThatOLLoginControllerDoesSetUserOnHasLoggedIn
 {
     var target = [[OLLoginController alloc] init];
+    var loginAndRegisterWindowMoq = moq();
+    target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
     var mockedUser = moq();
     [mockedUser selector:@selector(recordID) returns:@"123"];
     
