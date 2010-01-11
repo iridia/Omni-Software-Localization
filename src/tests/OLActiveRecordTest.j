@@ -33,13 +33,6 @@
 	[self assertTrue:YES];
 }
 
-- (void)testThatOLActiveRecordDoesCreate
-{
-	var target = [[OLActiveRecord alloc] init];
-	[target _create];
-	[self assertTrue:YES];
-}
-
 - (void)testThatOLActiveRecordDoesRecieveData
 {
 	var target = [[OLActiveRecord alloc] init];

@@ -70,10 +70,10 @@
 
 - (void)hasRegistered:(OLUser)aUser
 {
-     [aUser saveWithCallback:function(user)
-     {
-         [self hasLoggedIn:aUser];
-     }];
+    [aUser saveWithCallback:function(user)
+    {
+     [self hasLoggedIn:aUser];
+    }];
 }
 
 - (void)registrationFailed
