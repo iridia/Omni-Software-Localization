@@ -55,22 +55,19 @@
 {	
 	var project = [[OLProject alloc] initWithName:jsonResponse.fileName];
 
-	var resources = [CPArray array];
-
-	for(var i = 0; i < jsonResponse.resourcebundles.length; i++)
-	{		
-		for(var j = 0; j < jsonResponse.resourcebundles[i].resources.length; j++)
-		{
-			var theResource = jsonResponse.resourcebundles[i].resources[j];
-			var lineItems = [self lineItemsFromResponse:theResource];
-			
-			[resources addObject:[[OLResource alloc] initWithFileName:theResource.fileName fileType:theResource.fileType lineItems:lineItems]];
-		}
-	}
+    for(var i = 0; i < jsonResponse.resourcebundles.length; i++)
+    {        
+        var resources = [CPArray array];
+        for(var j = 0; j < jsonResponse.resourcebundles[i].resources.length; j++)
+        {
+            var theResource = jsonResponse.resourcebundles[i].resources[j];
+            var lineItems = [self lineItemsFromResponse:theResource];
+         
+            [resources addObject:[[OLResource alloc] initWithFileName:theResource.fileName fileType:theResource.fileType lineItems:lineItems]];
+        }
+        [project addResourceBundle:[[OLResourceBundle alloc] initWithResources:resources language:[OLLanguage languageFromLProj:jsonResponse.resourcebundles[i].name]]];
+    }
 	
-	var resourceBundle = [[OLResourceBundle alloc] initWithResources:resources language:[OLLanguage english]];
-	[project addResourceBundle:resourceBundle];
-
 	[self addProject:project];
 	[project save];
 }

@@ -20,7 +20,7 @@
     {
         var fileMenu = [[CPMenuItem alloc] initWithTitle:@"File" action:nil keyEquivalent:nil];
         var fileSubmenu = [[CPMenu alloc] initWithTitle:@"FileMenu"];
-        var newItem = [[CPMenuItem alloc] initWithTitle:@"New..." action:@selector(new:) keyEquivalent:"N"];
+        var newItem = [[CPMenuItem alloc] initWithTitle:@"New..." action:@selector(new:) keyEquivalent:"n"];
         
         [fileSubmenu addItem:newItem];
         

@@ -43,4 +43,46 @@
     [self assertFalse:[target equals:otherLanguage]];
 }
 
+- (void)testThatOLLanguageDoesGetEnglishFromLProj
+{
+    var target = [OLLanguage languageFromLProj:@"English.lproj"];
+    [self assertTrue:[target equals:[OLLanguage english]]];
+}
+
+- (void)testThatOLLanguageDoesGetFrenchFromLProj
+{
+    var target = [OLLanguage languageFromLProj:@"French.lproj"];
+    [self assertTrue:[target equals:[OLLanguage french]]];
+}
+
+- (void)testThatOLLanguageDoesGetSpanishFromLProj
+{
+    var target = [OLLanguage languageFromLProj:@"Spanish.lproj"];
+    [self assertTrue:[target equals:[OLLanguage spanish]]];
+}
+
+- (void)testThatOLLanguageDoesGetGermanFromLProj
+{
+    var target = [OLLanguage languageFromLProj:@"German.lproj"];
+    [self assertTrue:[target equals:[OLLanguage german]]];
+}
+
+- (void)testThatOLLanguageDoesGetArabicFromLProj
+{
+    var target = [OLLanguage languageFromLProj:@"ar.lproj"];
+    [self assertTrue:[target equals:[OLLanguage arabic]]];
+}
+
+- (void)testThatOLLanguageDoesGetJapaneseFromLProj
+{
+    var target = [OLLanguage languageFromLProj:@"Japanese.lproj"];
+    [self assertTrue:[target equals:[OLLanguage japanese]]];
+}
+
+- (void)testThatOLLanguageDoesGetAsdfFromLProj
+{
+    var target = [OLLanguage languageFromLProj:@"asdf.lproj"];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:"asdf"]]];
+}
+
 @end

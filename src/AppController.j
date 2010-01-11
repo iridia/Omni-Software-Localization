@@ -15,6 +15,7 @@
 @import "Controllers/OLLineItemController.j"
 @import "Controllers/OLResourceController.j"
 @import "Controllers/OLGlossaryController.j"
+@import "Controllers/OLResourceBundleController.j"
 
 @import "Controllers/OLContentViewController.j"
 @import "Controllers/OLToolbarController.j"
@@ -61,21 +62,26 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	projectController = [[OLProjectController alloc] init];
 	[projectController addObserver:contentViewController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
+    
+    resourceBundleController = [[OLResourceBundleController alloc] init];
+    [projectController addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
 	
 	resourceController = [[OLResourceController alloc] init];
-    [projectController addObserver:resourceController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+    [resourceBundleController addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
 	
 	lineItemController = [[OLLineItemController alloc] init];
 	[lineItemController setResourcesView:[resourceController resourcesView]];
 	[resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
 	
-	resourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
+    resourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
     [resourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [resourcesView setResourceController:resourceController];
     [resourcesView setLineItemController:lineItemController];
+    [resourcesView setResourceBundleController:resourceBundleController];
     [[resourcesView editingView] setVoteTarget:resourceController downAction:@selector(voteDown:) upAction:@selector(voteUp:)];
     
     [resourceController setResourcesView:resourcesView];
+    [resourceBundleController setResourcesView:resourcesView];
     [lineItemController setResourcesView:resourcesView];
 	[contentViewController setResourcesView:resourcesView];
 	
@@ -108,7 +114,12 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 - (void)handleException:(OLException)anException
 {
-    alert("Error!\n"+[anException name]+" threw error "+[anException reason]);
+    
+    alert = [[CPAlert alloc] init];
+    [alert setTitle:@"Application Error"];
+    [alert setMessageText:@"Error!\n"+[anException name]+@" threw error "+[anException reason]];
+    [alert addButtonWithTitle:@"Close"];
+    [alert runModal];
 }
 
 @end
