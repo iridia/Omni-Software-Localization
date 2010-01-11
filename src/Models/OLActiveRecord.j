@@ -12,7 +12,9 @@
 	CPURLConnection _getConnection;
 	CPURLConnection _listConnection;
 	
-	Function getCallback;
+	Function        getCallback;
+	Function        saveCallback;
+	Function        createCallback;
 	
 	id _delegate @accessors(property=delegate);
 }
@@ -138,9 +140,14 @@
 
 - (void)save
 {
+    [self saveWithCallback:function(){}];
+}
+
+- (void)saveWithCallback:(Function)callback
+{
 	if (!_recordID)
 	{
-        [self _create];
+        [self _createWithCallback:callback];
 	}
 	else
 	{	
@@ -153,6 +160,7 @@
 	        var jsonedData = JSON.stringify({"_rev": _revision, "archive":archivedData});
 	    	[urlRequest setHTTPBody:jsonedData];
 	
+	    	saveCallback = callback;
 	    	_saveConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
 		}
 		catch(ex)
@@ -169,7 +177,7 @@
     }    
 }
 
-- (void)_create
+- (void)_createWithCallback:(Function)callback
 {
 	try
 	{
@@ -190,6 +198,7 @@
 		    [_delegate willCreateRecord:self];
 		}
 		
+		createCallback = callback;
 		_createConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
 	}
 	catch(ex)
@@ -243,9 +252,11 @@
 	        	{
 	        	    [_delegate didCreateRecord:self];
 	        	}
+	        	createCallback(self);
 	            break;
 	        case _saveConnection:
 	            _revision = json["rev"] || _revision;
+	            saveCallback(self);
 	            break;
 	        case _getConnection:
         		// Unarchive the data

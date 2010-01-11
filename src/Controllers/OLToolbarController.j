@@ -35,7 +35,7 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(updateLoginInfo:)
-            name:@"OLLoginDidLogin"
+            name:CPUserSessionManagerUserIdentifierDidChangeNotification
             object:nil];
     }
     
@@ -83,7 +83,7 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
         [menuItem setLabel:loginValue];
 
         [menuItem setTarget:loginController];
-        [menuItem setAction:@selector(showLogin:)];
+        [menuItem setAction:@selector(showLoginAndRegisterWindow:)];
         
         loginMenuItem = menuItem;
     }
