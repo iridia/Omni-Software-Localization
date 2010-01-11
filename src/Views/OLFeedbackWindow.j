@@ -1,6 +1,7 @@
 @import <AppKit/CPWindow.j>
 
-@import "../models/OLFeedback.j"
+@import "../Models/OLFeedback.j"
+@import "../Categories/CPView+Positioning.j"
 
 @implementation OLFeedbackWindow : CPWindow
 {
@@ -42,31 +43,27 @@
         [_feedbackView addSubview:_emailTextField];
         
         var feedbackTypeLabel = [CPTextField labelWithTitle:@"Type of feedback:"];
-        [feedbackTypeLabel setFrameOrigin:CPMakePoint(0, calculateNextYPosition(_emailTextField, 5))];
-        [_feedbackView addSubview:feedbackTypeLabel];
+        [_feedbackView addSubview:feedbackTypeLabel positioned:CPViewBelow relativeTo:_emailTextField withPadding:5];
         
         _feedbackTypePopUpButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([_feedbackView bounds]), 24)];
-        [_feedbackTypePopUpButton setFrameOrigin:CPMakePoint(0, calculateNextYPosition(feedbackTypeLabel))];
         var feedbackTypes = [@"Bug Report", @"Comment", @"Question", @"Suggestion"];
         [_feedbackTypePopUpButton addItemsWithTitles:feedbackTypes];
         [_feedbackTypePopUpButton setTarget:self];
         [_feedbackTypePopUpButton setAction:@selector(feedbackTypeDidChange:)];
-        [_feedbackView addSubview:_feedbackTypePopUpButton];
+        [_feedbackView addSubview:_feedbackTypePopUpButton positioned:CPViewBelow relativeTo:feedbackTypeLabel withPadding:0];
         
         _feedbackTextLabel = [CPTextField labelWithTitle:@""];
         [self feedbackTypeDidChange:_feedbackTypePopUpButton];
-        [_feedbackTextLabel setFrameOrigin:CPMakePoint(0, calculateNextYPosition(_feedbackTypePopUpButton, 5))];
-        [_feedbackView addSubview:_feedbackTextLabel];
+        [_feedbackView addSubview:_feedbackTextLabel positioned:CPViewBelow relativeTo:_feedbackTypePopUpButton withPadding:5];
         
         _feedbackTextView = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([_feedbackView bounds]), 130)];
-        [_feedbackTextView setFrameOrigin:CPMakePoint(0, calculateNextYPosition(_feedbackTextLabel))];
         [_feedbackTextView setFont:inputFont];
 	    [_feedbackTextView setEditable:YES];
 		[_feedbackTextView setBezeled:YES];
 		[_feedbackTextView setLineBreakMode:CPLineBreakByWordWrapping];
 		[_feedbackTextView setTarget:self];
 		[_feedbackTextView setAction:@selector(submitFeedback:)]
-        [_feedbackView addSubview:_feedbackTextView];
+        [_feedbackView addSubview:_feedbackTextView positioned:CPViewBelow relativeTo:_feedbackTextLabel withPadding:0];
         
         _submitButton = [CPButton buttonWithTitle:@"Submit Feedback"];
         [_submitButton setTarget:self];
@@ -152,16 +149,14 @@ function createSubmittingFeedbackView(self, contentView)
     var sendingText = [CPTextField labelWithTitle:@"Sending feedback..."];
     [sendingText setFont:[CPFont boldSystemFontOfSize:18.0]];
     [sendingText sizeToFit];
-    [sendingText setFrameOrigin:calculateCenter(view, sendingText)];
-    [view addSubview:sendingText];
+    [view addSubview:sendingText positioned:CPViewWidthCentered | CPViewHeightCentered relativeTo:view withPadding:0];
     
     var indeterminateProgressIndicator = [[CPProgressIndicator alloc] initWithFrame:CGRectMakeZero()];
     [indeterminateProgressIndicator setIndeterminate:YES];
     [indeterminateProgressIndicator setStyle:CPProgressIndicatorSpinningStyle];
     [indeterminateProgressIndicator sizeToFit];
-    [indeterminateProgressIndicator setFrameOrigin:CPMakePoint((CGRectGetWidth([view bounds]) / 2.0) - (CGRectGetWidth([indeterminateProgressIndicator bounds]) / 2.0), calculateNextYPosition(sendingText))];
-    [view addSubview:indeterminateProgressIndicator];
-    
+    [view addSubview:indeterminateProgressIndicator positioned:CPViewBelow | CPViewWidthCentered relativeTo:sendingText withPadding:0];
+
     return view;
 }
 
@@ -172,26 +167,12 @@ function createSubmittedFeedbackView(self, contentView)
     var thankYouText = [CPTextField labelWithTitle:@"Thanks for your feedback!"];
     [thankYouText setFont:[CPFont boldSystemFontOfSize:18.0]];
     [thankYouText sizeToFit];
-    [thankYouText setFrameOrigin:calculateCenter(view, thankYouText)];
-    [view addSubview:thankYouText];
+    [view addSubview:thankYouText positioned:CPViewWidthCentered | CPViewHeightCentered relativeTo:view withPadding:0];
     
     var closeButton = [CPButton buttonWithTitle:@"Close"];
     [closeButton setTarget:self];
     [closeButton setAction:@selector(cancel:)];
-    [closeButton setFrameOrigin:CPMakePoint((CGRectGetWidth([view bounds]) / 2.0) - (CGRectGetWidth([closeButton bounds]) / 2.0), calculateNextYPosition(thankYouText))];
-    [view addSubview:closeButton];
+    [view addSubview:closeButton positioned:CPViewBelow | CPViewWidthCentered relativeTo:thankYouText withPadding:0];
     
     return view;
-}
-
-function calculateNextYPosition(previousView, padding)
-{
-    padding = padding || 0;
-    return CGRectGetHeight([previousView bounds]) + [previousView frame].origin.y + padding;
-}
-
-function calculateCenter(viewRelativeTo, view)
-{
-    return CPMakePoint((CGRectGetWidth([viewRelativeTo bounds]) / 2.0) - (CGRectGetWidth([view bounds]) / 2.0),
-        (CGRectGetHeight([viewRelativeTo bounds]) / 2.0) - CGRectGetHeight([view bounds]));
 }
