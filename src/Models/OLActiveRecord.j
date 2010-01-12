@@ -1,5 +1,7 @@
 @import <Foundation/CPObject.j>
-@import <Foundation/CPKeyedArchiver.j>
+
+@import "../Utilities/OLJSONKeyedArchiver.j"
+@import "../Utilities/OLJSONKeyedUnarchiver.j"
 @import "../Utilities/OLException.j"
 
 @implementation OLActiveRecord : CPObject
@@ -156,9 +158,10 @@
 			var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 			[urlRequest setHTTPMethod:"POST"];
 		
-	        var archivedData = [[CPKeyedArchiver archivedDataWithRootObject:self] string];
-	        var jsonedData = JSON.stringify({"_rev": _revision, "archive":archivedData});
-	    	[urlRequest setHTTPBody:jsonedData];
+	        var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
+	        archivedJSON["_rev"] = _revision;
+	        
+	    	[urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
 	
 	    	saveCallback = callback;
 	    	_saveConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
@@ -183,15 +186,9 @@
 	{
 	    var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:NO]];
 		[urlRequest setHTTPMethod:"PUT"];
-		
-		console.log("Here1", self);
 
-	    var archivedData = [[CPKeyedArchiver archivedDataWithRootObject:self] string];
-		
-		console.log("Here2");
-	    var jsonedData = JSON.stringify({"archive":archivedData});
-		console.log("Here3");
-	    [urlRequest setHTTPBody:jsonedData];
+	    var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
+	    [urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
 	
 		if ([_delegate respondsToSelector:@selector(willCreateRecord:)])
 		{
@@ -260,9 +257,7 @@
 	            break;
 	        case _getConnection:
         		// Unarchive the data
-        		var archivedString = json.archive;
-        		var archivedData = [CPData dataWithString:archivedString];
-        		var rootObject = [CPKeyedUnarchiver unarchiveObjectWithData:archivedData];
+        		var rootObject = [OLJSONKeyedUnarchiver unarchiveObjectWithData:json];
 
         		[rootObject setRevision:json._rev];
         		[rootObject setRecordID:json._id];
