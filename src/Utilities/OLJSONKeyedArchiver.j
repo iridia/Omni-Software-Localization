@@ -1,6 +1,6 @@
 @import <Foundation/CPCoder.j>
 
-var OLJSONKeyedUnarchiverClassKey = @"$$CLASS$$";
+var OLJSONKeyedArchiverClassKey = @"$$CLASS$$";
 
 @implementation OLJSONKeyedArchiver : CPCoder
 {
@@ -31,59 +31,61 @@ var OLJSONKeyedUnarchiverClassKey = @"$$CLASS$$";
     return self;
 }
 
-- (void)encodeObject:(id)anObject forKey:(CPString)aKey
+- (void)encodeObject:(id)objectToEncode forKey:(CPString)aKey
 {
-    _json[aKey] = [self _encodeObject:anObject];
+    _json[aKey] = [self _encodeObject:objectToEncode];
 }
 
-- (id)_encodeObject:(id)anObject
+- (JSON)_encodeObject:(id)objectToEncode
 {
-    var theType = typeof anObject;
-    if (theType === "string" || theType === "number" || theType === "boolean")
+    var encodedJSON = {};
+    
+    if ([self _isObjectAPrimitive:objectToEncode])  // Primitives
     {
-        return anObject;
+        encodedJSON = objectToEncode;
     }
-    else if (anObject === null)
+    else if ([objectToEncode isKindOfClass:[CPArray class]]) // Override CPArray's default encoding because we want native JS Objects
     {
-        return null;
-    }
-    else if ([anObject isKindOfClass:[CPArray class]])
-    {
-        var theObject = [];
-        for (var i = 0; i < [anObject count]; i++)
+        var encodedArray = [];
+        for (var i = 0; i < [objectToEncode count]; i++)
         {
-            theObject[i] = [self _encodeObject:[anObject objectAtIndex:i]];
+            encodedArray[i] = [self _encodeObject:[objectToEncode objectAtIndex:i]];
         }
-        return theObject;
+        encodedJSON = encodedArray;
     }
-    else
+    else // Capp. objects
     {
-        var json = {};
-        var archiver = [[[self class] alloc] initForWritingWithMutableData:json];
-
-        [anObject encodeWithCoder:archiver];
-        json[OLJSONKeyedUnarchiverClassKey] = CPStringFromClass([anObject class]);
-
-        return json;
+        var archiver = [[[self class] alloc] initForWritingWithMutableData:encodedJSON];
+        
+        encodedJSON[OLJSONKeyedArchiverClassKey] = CPStringFromClass([objectToEncode class]);
+        [objectToEncode encodeWithCoder:archiver];
     }
+
+    return encodedJSON;
 }
 
 - (void)encodeNumber:(int)aNumber forKey:(CPString)aKey
 {
-    _json[aKey] = aNumber;
+    [self encodeObject:aNumber forKey:aKey];
 }
 
-- (void)_encodeDictionaryOfObjects:(CPDictionary)aDictionary forKey:(CPString)aKey
+- (JSON)_encodeDictionaryOfObjects:(CPDictionary)dictionaryToEncode forKey:(CPString)aKey
 {
-    var theObject = {};
-    theObject[OLJSONKeyedUnarchiverClassKey] = CPStringFromClass([aDictionary class]);
+    var encodedDictionary = {};
     
-    var keys = [aDictionary allKeys];
+    var keys = [dictionaryToEncode allKeys];
     for (var i = 0; i < [keys count]; i++)
     {
-        theObject[keys[i]] = [self _encodeObject:[aDictionary objectForKey:keys[i]]];
+        encodedDictionary[keys[i]] = [self _encodeObject:[dictionaryToEncode objectForKey:keys[i]]];
     }
-    return theObject;
+    
+    _json[aKey] = encodedDictionary;
+}
+
+- (BOOL)_isObjectAPrimitive:(id)anObject
+{
+    var typeOfObject = typeof(anObject);
+    return (typeOfObject === "string" || typeOfObject === "number" || typeOfObject === "boolean" || anObject === null);
 }
 
 @end

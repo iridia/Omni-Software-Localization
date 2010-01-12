@@ -28,49 +28,55 @@ var OLJSONKeyedUnarchiverClassKey = @"$$CLASS$$";
     return [self _decodeObject:_json[aKey]];
 }
 
-- (id)_decodeObject:(JSON)anObject
+- (id)_decodeObject:(JSON)encodedJSON
 {
-    var theType = typeof anObject;
-    if (theType === "string" || theType === "number" || theType === "boolean")
+    var decodedObject = nil;
+    
+    if ([self _isJSONAPrimitive:encodedJSON]) // Primitives
     {
-        return anObject;
+        decodedObject = encodedJSON;
     }
-    else if (anObject === null)
+    else if (encodedJSON.constructor.toString().indexOf("Array") !== -1) // Handle arrays separately of its own decoding
     {
-        return null;
-    }
-    else if (anObject.constructor.toString().indexOf("Array") !== -1)
-    {
-        for (var i = 0; i < [anObject count]; i++)
+        var array = encodedJSON;
+        for (var i = 0; i < [array count]; i++)
         {
-           anObject[i] = [self _decodeObject:[anObject objectAtIndex:i]];
+           array[i] = [self _decodeObject:[array objectAtIndex:i]];
         }
-        return anObject;
-    }
-    else
-    {
-        var unarchiver = [[[self class] alloc] initForReadingWithData:anObject];
         
-        var theClass = CPClassFromString(anObject[OLJSONKeyedUnarchiverClassKey]);
-        var object = [[theClass alloc] initWithCoder:unarchiver];
-
-        return object;
+        decodedObject = array;
     }
+    else // Capp. objects
+    {
+        var unarchiver = [[[self class] alloc] initForReadingWithData:encodedJSON];
+        
+        var theClass = CPClassFromString(encodedJSON[OLJSONKeyedUnarchiverClassKey]);
+        decodedObject = [[theClass alloc] initWithCoder:unarchiver];
+    }
+    
+    return decodedObject;
 }
 
 - (id)_decodeDictionaryOfObjectsForKey:(CPString)aKey
 {
-    var theDictionary = [CPDictionary dictionary];
-
-    for (var someKey in _json)
+    var decodedDictionary = [CPDictionary dictionary];
+    
+    var encodedJSON = _json[aKey];
+    for (var key in encodedJSON)
     {
-        if (someKey !== OLJSONKeyedUnarchiverClassKey)
+        if (key !== OLJSONKeyedUnarchiverClassKey)
         {
-            [theDictionary addObject:_json[someKey] forKey:someKey];
+            [decodedDictionary setObject:encodedJSON[key] forKey:key];
         }
     }
-    
-    return theDictionary;
+
+    return decodedDictionary;
+}
+
+- (BOOL)_isJSONAPrimitive:(JSON)json
+{
+    var typeOfObject = typeof(json);
+    return (typeOfObject === "string" || typeOfObject === "number" || typeOfObject === "boolean" || json === null);
 }
 
 @end
