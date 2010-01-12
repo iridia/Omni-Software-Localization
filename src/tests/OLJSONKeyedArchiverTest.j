@@ -40,6 +40,22 @@
     [self assert:@"MockJSONParseObject" equals:response["ChildKey"]["$$CLASS$$"]];
 }
 
+- (void)testThatOLJSONKeyedArchiverDoesAllowKeyedCoding
+{
+    [self assertTrue:[OLJSONKeyedArchiver allowsKeyedCoding]];
+}
+
+- (void)testThatOLJSONKeyedArchiverDoesWorkWhenNotUsingClassMethod
+{
+    var data = [[MockJSONParseObject alloc] init];
+    var response = {};
+    var target = [[OLJSONKeyedArchiver alloc] initForWritingWithMutableData:response];
+    [target startEncodingWithRootObject:data];
+
+    [self assert:@"Bob" equals:response["DataKey"]];
+    [self assert:@"MockJSONParseObject" equals:response["$$CLASS$$"]];
+}
+
 @end
 
 
