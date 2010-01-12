@@ -5,6 +5,10 @@
 	CPString _email @accessors(property=email, readonly);
 }
 
++ (void)findByEmail:(CPString)emailAddress callback:(Function)aCallback
+{
+    [self find:"email" by:emailAddress callback:aCallback];
+}
 
 - (id)initWithEmail:(CPString)emailAddress
 {

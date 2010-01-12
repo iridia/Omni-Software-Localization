@@ -13,10 +13,12 @@
 	CPURLConnection _createConnection;
 	CPURLConnection _getConnection;
 	CPURLConnection _listConnection;
+	CPURLConnection findByConnection;
 	
 	Function        getCallback;
 	Function        saveCallback;
 	Function        createCallback;
+	Function        findByCallback;
 	
 	id _delegate @accessors(property=delegate);
 }
@@ -80,6 +82,16 @@
 		
 		return [CPArray array];
 	}
+}
+
++ (void)find:(CPString)propertyToSearchOn by:(JSON)object callback:(Function)callback
+{
+	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
+    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find_by_" + propertyToSearchOn + "?key=" + object;
+	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
+	
+	findByCallback = callback;
+    findByConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
 }
 
 + (void)findByRecordID:(CPString)aRecordID withCallback:(Function)callback
@@ -242,6 +254,15 @@
     
 	    switch (connection)
 	    {
+	        case findByConnection:
+            	for(var i = 0; i < [json.rows count]; i++)
+            	{
+            		[self findByRecordID:json.rows[i].id withCallback:function(user)
+            		{
+            		    findByCallback(user); 
+            		}];
+            	}
+            	break;
 	        case _createConnection:
 	            _recordID = json["id"];
 	            _revision = json["rev"];

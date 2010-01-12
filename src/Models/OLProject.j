@@ -8,6 +8,11 @@
     CPArray     _resourceBundles    @accessors(property=resourceBundles, readonly);
 }
 
++ (void)findByName:(CPString)aName callback:(Function)callback
+{
+    [self find:"name" by:aName callback:callback];
+}
+
 - (id)init
 {
     return [self initWithName:@"Untitled Project"];
