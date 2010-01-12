@@ -1,4 +1,4 @@
-@import "../models/OLResource.j"
+@import "../Models/OLResource.j"
 
 var OLResourceEditorViewIdentifierColumnHeader = @"OLResourceEditorViewIdentifierColumnHeader";
 var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHeader";
