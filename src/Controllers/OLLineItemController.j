@@ -128,10 +128,12 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
     var tableView = [aNotification object];
-    
-    var selectedRow = [[tableView selectedRowIndexes] firstIndex];
-    
-    [self setSelectedLineItem:[lineItems objectAtIndex:selectedRow]];
+
+    if(![[tableView selectedRowIndexes] isEqualToIndexSet:[CPIndexSet indexSet]])
+    {
+        var selectedRow = [[tableView selectedRowIndexes] firstIndex];
+        [self setSelectedLineItem:[lineItems objectAtIndex:selectedRow]];
+    }
 }
 
 @end
