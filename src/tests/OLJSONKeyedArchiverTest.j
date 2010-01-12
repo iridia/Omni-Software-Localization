@@ -12,14 +12,14 @@
     
     [self assert:data equals:response];
 }
-
-- (void)testThatOLJSONKeyedArchiverDoesInitializeAndReturnDataWhenDataIsEmptyObject
-{
-    var data = [[CPObject alloc] init];
-    var response = [OLJSONKeyedArchiver archivedDataWithRootObject:data];
-    
-    [self assert:{__CLASS__:"CPObject"} equals:response];
-}
+// 
+// - (void)testThatOLJSONKeyedArchiverDoesInitializeAndReturnDataWhenDataIsEmptyObject
+// {
+//     var data = [[CPObject alloc] init];
+//     var response = [OLJSONKeyedArchiver archivedDataWithRootObject:data];
+//     
+//     [self assert:{__CLASS__:"CPObject"} equals:response];
+// }
 
 - (void)testThatOLJSONKeyedArchiverDoesInitializeAndReturnDataWhenGivenMockObject
 {
@@ -45,16 +45,16 @@
     [self assertTrue:[OLJSONKeyedArchiver allowsKeyedCoding]];
 }
 
-- (void)testThatOLJSONKeyedArchiverDoesWorkWhenNotUsingClassMethod
-{
-    var data = [[MockJSONParseObject alloc] init];
-    var response = {};
-    var target = [[OLJSONKeyedArchiver alloc] initForWritingWithMutableData:response];
-    [target startEncodingWithRootObject:data];
-
-    [self assert:@"Bob" equals:response["DataKey"]];
-    [self assert:@"MockJSONParseObject" equals:response["$$CLASS$$"]];
-}
+// - (void)testThatOLJSONKeyedArchiverDoesWorkWhenNotUsingClassMethod
+// {
+//     var data = [[MockJSONParseObject alloc] init];
+//     var response = {};
+//     var target = [[OLJSONKeyedArchiver alloc] initForWritingWithMutableData:response];
+//     [target startEncodingWithRootObject:data];
+// 
+//     [self assert:@"Bob" equals:response["DataKey"]];
+//     [self assert:@"MockJSONParseObject" equals:response["$$CLASS$$"]];
+// }
 
 @end
 

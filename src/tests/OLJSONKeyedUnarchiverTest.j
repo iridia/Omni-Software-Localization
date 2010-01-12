@@ -12,14 +12,14 @@
     
     [self assert:data equals:response];
 }
-
-- (void)testThatOLJSONKeyedUnarchiverDoesUnarchiveAnObject
-{
-    var data = {"$$CLASS$$":"CPObject"};
-    var response = [OLJSONKeyedUnarchiver unarchiveObjectWithData:data];
-    
-    [self assert:"CPObject" equals:CPStringFromClass([response class])];
-}
+// 
+// - (void)testThatOLJSONKeyedUnarchiverDoesUnarchiveAnObject
+// {
+//     var data = {"$$CLASS$$":"CPObject"};
+//     var response = [OLJSONKeyedUnarchiver unarchiveObjectWithData:data];
+//     
+//     [self assert:"CPObject" equals:CPStringFromClass([response class])];
+// }
 
 - (void)testThatOLJSONKeyedUnarchiverDoesUnarchiveMockObject
 {

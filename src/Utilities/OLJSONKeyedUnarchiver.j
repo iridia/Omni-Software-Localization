@@ -11,7 +11,7 @@ var OLJSONKeyedUnarchiverClassKey = @"$$CLASS$$";
 + (id)unarchiveObjectWithData:(JSON)json
 {
     var unarchiver = [[self alloc] initForReadingWithData:json];
-    return [unarchiver startDecodingWithRootData:json];
+    return [unarchiver _decodeObject:json];
 }
 
 - (id)initForReadingWithData:(JSON)json
@@ -23,20 +23,12 @@ var OLJSONKeyedUnarchiverClassKey = @"$$CLASS$$";
     return self;
 }
 
-- (id)startDecodingWithRootData:(JSON)rootData
-{
-    var theClass = CPClassFromString(rootData[OLJSONKeyedUnarchiverClassKey]);
-    var object = [[theClass alloc] initWithCoder:self];
-    
-    return object;
-}
-
 - (id)decodeObjectForKey:(CPString)aKey
 {
     return [self _decodeObject:_json[aKey]];
 }
 
-- (id)_decodeObject:(id)anObject
+- (id)_decodeObject:(JSON)anObject
 {
     var theType = typeof anObject;
     if (theType === "string" || theType === "number" || theType === "boolean")
@@ -57,7 +49,12 @@ var OLJSONKeyedUnarchiverClassKey = @"$$CLASS$$";
     }
     else
     {
-        return [[self class] unarchiveObjectWithData:anObject];
+        var unarchiver = [[[self class] alloc] initForReadingWithData:anObject];
+        
+        var theClass = CPClassFromString(anObject[OLJSONKeyedUnarchiverClassKey]);
+        var object = [[theClass alloc] initWithCoder:unarchiver];
+
+        return object;
     }
 }
 

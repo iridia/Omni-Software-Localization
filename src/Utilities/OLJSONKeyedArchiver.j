@@ -12,9 +12,9 @@ var OLJSONKeyedUnarchiverClassKey = @"$$CLASS$$";
     var json = {};
     var archiver = [[self alloc] initForWritingWithMutableData:json];
     
-    [archiver startEncodingWithRootObject:rootObject];
+    return [archiver _encodeObject:rootObject];
     
-    return json;
+    //return json;
 }
 
 + (BOOL)allowsKeyedCoding
@@ -29,12 +29,6 @@ var OLJSONKeyedUnarchiverClassKey = @"$$CLASS$$";
         _json = json;
     }
     return self;
-}
-
-- (void)startEncodingWithRootObject:(id)rootObject
-{
-    [rootObject encodeWithCoder:self];
-    _json[OLJSONKeyedUnarchiverClassKey] = CPStringFromClass([rootObject class]);
 }
 
 - (void)encodeObject:(id)anObject forKey:(CPString)aKey
@@ -64,7 +58,13 @@ var OLJSONKeyedUnarchiverClassKey = @"$$CLASS$$";
     }
     else
     {
-        return [[self class] archivedDataWithRootObject:anObject];
+        var json = {};
+        var archiver = [[[self class] alloc] initForWritingWithMutableData:json];
+
+        [anObject encodeWithCoder:archiver];
+        json[OLJSONKeyedUnarchiverClassKey] = CPStringFromClass([anObject class]);
+
+        return json;
     }
 }
 
