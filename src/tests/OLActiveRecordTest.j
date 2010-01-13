@@ -1,6 +1,7 @@
 @import "../Models/OLActiveRecord.j"
 @import <AppKit/AppKit.j>
 @import <OJMoq/OJMoq.j>
+@import "../Utilities/OLURLConnectionFactory.j"
 
 @implementation OLActiveRecordTest : OJTestCase
 {
@@ -10,7 +11,7 @@
 - (void)setUp
 {
     urlConnection = moq();
-    [OLActiveRecord setConnectionFactoryMethod:function(request, delegate)
+    [OLURLConnectionFactory setConnectionFactoryMethod:function(request, delegate)
     {
         return [urlConnection createConnectionWithRequest:request delegate:delegate];
     }];
@@ -18,23 +19,7 @@
 
 - (void)tearDown
 {
-    [OLActiveRecord setConnectionFactoryMethod:nil];
-}
-
-- (void)testThatOLActiveRecordDoesCreateConnectionWithUrlConnection
-{
-    var anObject = moq();
-    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) returns:anObject];
-    [self assert:anObject equals:[OLActiveRecord createConnectionWithRequest:moq() delegate:moq()]];
-}
-
-- (void)testThatOLActiveRecordDoesSetCreateConnectionFactoryMethod
-{
-    var anObject = moq();
-    var factoryMethod = function(a, b) { return anObject; };
-    [OLActiveRecord setConnectionFactoryMethod:factoryMethod];
-    
-    [self assert:anObject equals:[OLActiveRecord createConnectionWithRequest:moq() delegate:moq()]];
+    [OLURLConnectionFactory setConnectionFactoryMethod:nil];
 }
 
 - (void)testThatOLActiveRecordDoesFindByName

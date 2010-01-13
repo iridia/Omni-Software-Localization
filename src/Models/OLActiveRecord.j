@@ -3,6 +3,7 @@
 @import "../Utilities/OLJSONKeyedArchiver.j"
 @import "../Utilities/OLJSONKeyedUnarchiver.j"
 @import "../Utilities/OLException.j"
+@import "../Utilities/OLURLConnectionFactory.j"
 
 var __createURLConnectionFunction = nil;
 
@@ -23,21 +24,6 @@ var __createURLConnectionFunction = nil;
 	Function        findByCallback;
 	
 	id _delegate @accessors(property=delegate);
-}
-
-+ (CPURLConnection)createConnectionWithRequest:(CPURLRequest)request delegate:(id)delegate
-{
-    if(__createURLConnectionFunction == nil)
-    {
-        return [CPURLConnection connectionWithRequest:request delegate:delegate];
-    }
-    
-    return __createURLConnectionFunction(request, delegate);
-}
-
-+ (CPURLConnection)setConnectionFactoryMethod:(Function)builderMethodWithTwoArguments
-{
-    __createURLConnectionFunction = builderMethodWithTwoArguments;
 }
 
 /*
@@ -101,7 +87,7 @@ var __createURLConnectionFunction = nil;
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	
 	findByCallback = callback;
-    findByConnection = [self createConnectionWithRequest:urlRequest delegate:self];
+    findByConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
 }
 
 + (void)findByRecordID:(CPString)aRecordID withCallback:(Function)callback
@@ -133,7 +119,7 @@ var __createURLConnectionFunction = nil;
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"GET"];
 	
-    	_getConnection = [[self class] createConnectionWithRequest:urlRequest delegate:self];
+    	_getConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
 	}
 	catch(ex)
 	{
@@ -174,7 +160,7 @@ var __createURLConnectionFunction = nil;
             [urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
 	
 	    	saveCallback = callback;
-	    	_saveConnection = [[self class] createConnectionWithRequest:urlRequest delegate:self];
+	    	_saveConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
 		}
 		catch(ex)
 		{
@@ -206,7 +192,7 @@ var __createURLConnectionFunction = nil;
 		}
 		
 		createCallback = callback;
-		_createConnection = [[self class] createConnectionWithRequest:urlRequest delegate:self];
+		_createConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
 	}
 	catch(ex)
 	{

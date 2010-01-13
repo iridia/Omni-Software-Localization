@@ -7,7 +7,7 @@
 - (void)setUp
 {
     urlConnection = moq();
-    [OLException setConnectionFactoryMethod:function(request, delegate)
+    [OLURLConnectionFactory setConnectionFactoryMethod:function(request, delegate)
     {
         return [urlConnection createConnectionWithRequest:request delegate:delegate];
     }];
@@ -15,7 +15,7 @@
 
 - (void)tearDown
 {
-    [OLException setConnectionFactoryMethod:nil];
+    [OLURLConnectionFactory setConnectionFactoryMethod:nil];
 }
 
 - (void)testThatOLExceptionDoesInitialize

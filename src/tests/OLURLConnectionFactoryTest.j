@@ -17,7 +17,7 @@
 
 - (void)tearDown
 {
-    [OLException setConnectionFactoryMethod:nil];
+    [OLURLConnectionFactory setConnectionFactoryMethod:nil];
 }
 
 - (void)testThatOLActiveRecordDoesCreateConnectionWithUrlConnection
