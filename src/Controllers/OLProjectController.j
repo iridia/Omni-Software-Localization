@@ -52,31 +52,6 @@
     [self insertObject:project inProjectsAtIndex:[projects count]];
 }
 
-- (OLProject)createProjectFromJSON:(JSObject)jsonResponse
-{
-    var userIdentifier = @"";
-    if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
-    {
-        userIdentifier = [[CPUserSessionManager defaultManager] userIdentifier];
-    }
-	var project = [[OLProject alloc] initWithName:jsonResponse.fileName userIdentifier:userIdentifier];
-
-    for(var i = 0; i < jsonResponse.resourcebundles.length; i++)
-    {        
-        var resources = [CPArray array];
-        for(var j = 0; j < jsonResponse.resourcebundles[i].resources.length; j++)
-        {
-            var theResource = jsonResponse.resourcebundles[i].resources[j];
-            var lineItems = [self lineItemsFromResponse:theResource];
-         
-            [resources addObject:[[OLResource alloc] initWithFileName:theResource.fileName fileType:theResource.fileType lineItems:lineItems]];
-        }
-        [project addResourceBundle:[[OLResourceBundle alloc] initWithResources:resources language:[OLLanguage languageFromLProj:jsonResponse.resourcebundles[i].name]]];
-    }
-	
-	return project;
-}
-
 - (void)addResource:(JSObject)jsonResponse toResourceBundle:(OLResourceBundle)resourceBundle
 {
 	var fileName = jsonResponse.fileName;
@@ -117,7 +92,7 @@
 
 	if (jsonResponse.fileType === @"zip")
 	{
-		var newProject = [self createProjectFromJSON:jsonResponse];
+		var newProject = [OLProject projectFromJSON:jsonResponse];
 		[self addProject:newProject];
     	[newProject save];
 	}
@@ -130,31 +105,6 @@
 - (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
 {
     [selectedProject save];
-}
-
-- (void)lineItemsFromResponse:(JSObject)jsonResponse
-{
-	var result = [CPArray array];
-	var lineItemKeys = jsonResponse.dict.key;
-	var lineItemStrings = jsonResponse.dict.string;
-	
-	if(jsonResponse.fileType == "strings")
-	{
-		var lineItemComments = jsonResponse.comments_dict.string;
-
-		for (var i = 0; i < [lineItemKeys count]; i++)
-		{
-			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i] comment:lineItemComments[i]]];
-		}	
-	}
-	else
-	{
-		for (var i = 0; i < [lineItemKeys count]; i++)
-		{
-			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
-		}
-	}
-	return result;
 }
 
 @end

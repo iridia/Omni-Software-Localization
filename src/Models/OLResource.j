@@ -14,6 +14,12 @@
 	CPDictionary   	votes		@accessors(readonly);
 }
 
++ (id)resourceFromJSON:(JSON)json
+{
+    var lineItems = [OLLineItem lineItemsFromJSON:json];
+    
+    return [[self alloc] initWithFileName:json.fileName fileType:json.fileType lineItems:lineItems]
+}
 
 // Overriding default initializer of superclass
 - (id)init

@@ -1,6 +1,17 @@
 @import "../Models/OLResource.j"
 
+var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.strings","fileType":"strings","dict":{"key":["","","",""],"string":["","","",""]},"comments_dict":{"key":["","","",""],"string":[" Localized versions of Info.plist keys ","","",""]}};
+
 @implementation OLResourceTest : OJTestCase
+
+- (void)testThatOLResourceDoesCreateResourceFromJSON
+{
+    var target = [OLResource resourceFromJSON:json];
+    
+    [self assertNotNull:target];
+    [self assert:json.fileName equals:[target fileName]];
+    [self assert:json.fileType equals:[target fileType]];
+}
 
 - (void)testThatOLResourceDoesInitialize
 {
