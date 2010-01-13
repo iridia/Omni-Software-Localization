@@ -46,6 +46,15 @@
     [urlConnection verifyThatAllExpectationsHaveBeenMet];
 }
 
+- (void)testThatOLActiveRecordDoesFindByRecordID
+{
+    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    
+    [OLActiveRecord findByRecordID:@"123" withCallback:function(){}];
+
+    [urlConnection verifyThatAllExpectationsHaveBeenMet];
+}
+
 - (void)testThatOLActiveRecordDoesGetWithCallback
 {
     [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
