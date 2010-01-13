@@ -4,6 +4,8 @@
 @import "../Utilities/OLJSONKeyedUnarchiver.j"
 @import "../Utilities/OLException.j"
 
+var __createURLConnectionFunction = nil;
+
 @implementation OLActiveRecord : CPObject
 {
 	CPString _recordID @accessors(property=recordID);
@@ -21,6 +23,21 @@
 	Function        findByCallback;
 	
 	id _delegate @accessors(property=delegate);
+}
+
++ (CPURLConnection)createURLConnectionWithRequest:(CPURLRequest)request delegate:(id)delegate
+{
+    if(__createURLConnectionFunction == nil)
+    {
+        return [CPURLConnection connectionWithRequest:request delegate:delegate];
+    }
+    
+    return __createURLConnectionFunction(request, delegate);
+}
+
++ (CPURLConnection)setURLConnectionBuilderMethod:(Function)builderMethodWithTwoArguments
+{
+    __createURLConnectionFunction = builderMethodWithTwoArguments;
 }
 
 + (CPArray)list
