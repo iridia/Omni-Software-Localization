@@ -1,4 +1,5 @@
 @import <Foundation/CPObject.j>
+@import <Foundation/CPUserSessionManager.j>
 
 @import "../Models/OLProject.j"
 
@@ -52,8 +53,13 @@
 }
 
 - (void)createNewProject:(JSObject)jsonResponse
-{	
-	var project = [[OLProject alloc] initWithName:jsonResponse.fileName];
+{
+    var userIdentifier = @"";
+    if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
+    {
+        userIdentifier = [[CPUserSessionManager defaultManager] userIdentifier];
+    }
+	var project = [[OLProject alloc] initWithName:jsonResponse.fileName userIdentifier:userIdentifier];
 
     for(var i = 0; i < jsonResponse.resourcebundles.length; i++)
     {        
