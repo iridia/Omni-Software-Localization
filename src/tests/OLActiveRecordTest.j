@@ -46,4 +46,13 @@
     [urlConnection verifyThatAllExpectationsHaveBeenMet];
 }
 
+- (void)testThatOLActiveRecordDoesGetWithCallback
+{
+    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    
+    [[[OLActiveRecord alloc] init] getWithCallback:function(){}];
+    
+    [urlConnection verifyThatAllExpectationsHaveBeenMet];
+}
+
 @end
