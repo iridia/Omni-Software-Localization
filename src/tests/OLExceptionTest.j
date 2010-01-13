@@ -4,6 +4,20 @@
 
 @implementation OLExceptionTest : OJTestCase
 
+- (void)setUp
+{
+    urlConnection = moq();
+    [OLException setConnectionFactoryMethod:function(request, delegate)
+    {
+        return [urlConnection createConnectionWithRequest:request delegate:delegate];
+    }];
+}
+
+- (void)tearDown
+{
+    [OLException setConnectionFactoryMethod:nil];
+}
+
 - (void)testThatOLExceptionDoesInitialize
 {
 	var target = [[OLException alloc] initWithName:@"Test" reason:@"Testing" userInfo:[CPDictionary dictionary]];
