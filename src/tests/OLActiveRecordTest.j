@@ -64,4 +64,56 @@
     [urlConnection verifyThatAllExpectationsHaveBeenMet];
 }
 
+- (void)testThatOLActiveRecordDoesSave
+{
+    var tempOLJSONKeyedArchiver = OLJSONKeyedArchiver;
+    try
+    {
+        OLJSONKeyedArchiver = moq();
+        [OLJSONKeyedArchiver selector:@selector(archivedDataWithRootObject:) returns:@"asdf"];
+    
+        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+
+        var target = [[OLActiveRecord alloc] init];
+        [target setRecordID:@"asdf"];
+        [target save];
+
+        [urlConnection verifyThatAllExpectationsHaveBeenMet];
+    }
+    finally
+    {
+        OLJSONKeyedArchiver = tempOLJSONKeyedArchiver;
+    }
+}
+
+- (void)testThatOLActiveRecordDoesCreate
+{
+    var tempOLJSONKeyedArchiver = OLJSONKeyedArchiver;
+    try
+    {
+        OLJSONKeyedArchiver = moq();
+        [OLJSONKeyedArchiver selector:@selector(archivedDataWithRootObject:) returns:@"asdf"];
+
+        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+
+        var target = [[OLActiveRecord alloc] init];
+        [target save];
+
+        [urlConnection verifyThatAllExpectationsHaveBeenMet];
+    }
+    finally
+    {
+        OLJSONKeyedArchiver = tempOLJSONKeyedArchiver;
+    }
+}
+
+- (void)testThatOLActiveRecordDoesDelete
+{
+    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+
+    [[[OLActiveRecord alloc] init] delete];
+
+    [urlConnection verifyThatAllExpectationsHaveBeenMet];
+}
+
 @end

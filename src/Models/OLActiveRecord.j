@@ -162,11 +162,11 @@ var __createURLConnectionFunction = nil;
 		{
 			var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 			[urlRequest setHTTPMethod:"POST"];
-		
-	        var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
-	        archivedJSON["_rev"] = _revision;
-	        
-	    	[urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
+	
+            var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
+            archivedJSON["_rev"] = _revision;
+                     
+            [urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
 	
 	    	saveCallback = callback;
 	    	_saveConnection = [[self class] createConnectionWithRequest:urlRequest delegate:self];
