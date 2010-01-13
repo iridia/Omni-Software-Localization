@@ -36,7 +36,7 @@ var __createURLConnectionFunction = nil;
     return __createURLConnectionFunction(request, delegate);
 }
 
-+ (CPURLConnection)setConnectionBuilderMethod:(Function)builderMethodWithTwoArguments
++ (CPURLConnection)setConnectionFactoryMethod:(Function)builderMethodWithTwoArguments
 {
     __createURLConnectionFunction = builderMethodWithTwoArguments;
 }
