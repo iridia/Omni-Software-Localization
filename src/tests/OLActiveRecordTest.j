@@ -133,4 +133,41 @@
     [self assertTrue:@"api/activerecord" == result];
 }
 
+- (void)testThatOLActiveRecordDoesListWithCallbackWithNoData
+{
+    var tempCPURLConnection = CPURLConnection;
+    try
+    {
+        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+        
+        CPURLConnection = moq();
+        [OLActiveRecord listWithCallback:function(){}];
+        
+        [urlConnection verifyThatAllExpectationsHaveBeenMet];
+    }
+    finally
+    {
+        CPURLConnection = tempCPURLConnection;
+    }
+}
+
+- (void)testThatOLActiveRecordDoesListWithCallbackWithData
+{
+    var tempCPURLConnection = CPURLConnection;
+    try
+    {
+        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+
+        CPURLConnection = moq();
+        [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[{'id':1}, {'id':2}]}"}]
+        [OLActiveRecord listWithCallback:function(){}];
+
+        [urlConnection verifyThatAllExpectationsHaveBeenMet];
+    }
+    finally
+    {
+        CPURLConnection = tempCPURLConnection;
+    }
+}
+
 @end
