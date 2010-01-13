@@ -138,12 +138,13 @@
     var tempCPURLConnection = CPURLConnection;
     try
     {
-        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+        wasCalled = false;
         
         CPURLConnection = moq();
-        [OLActiveRecord listWithCallback:function(){}];
+        [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[]}"}]
+        [OLActiveRecord listWithCallback:function(){} finalCallback:function(){wasCalled=true;}];
         
-        [urlConnection verifyThatAllExpectationsHaveBeenMet];
+        [self assertTrue:wasCalled];
     }
     finally
     {

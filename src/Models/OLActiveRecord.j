@@ -73,6 +73,11 @@ var __createURLConnectionFunction = nil;
 			    }
 			}];
 		}
+		
+		if([data.rows count] == 0)
+		{
+		    finalCallback();
+		}
 	}
 	catch(ex)
 	{
