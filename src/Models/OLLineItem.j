@@ -7,6 +7,33 @@
 	CPObject value	 		@accessors;
 }
 
++ (CPArray)lineItemsFromJSON:(JSON)json
+{
+    var lineItems = [CPArray array];
+    
+	var lineItemKeys = json.dict.key;
+	var lineItemStrings = json.dict.string;
+	
+	if(json.fileType == "strings")
+	{
+		var lineItemComments = json.comments_dict.string;
+
+		for (var i = 0; i < [lineItemKeys count]; i++)
+		{
+			[lineItems addObject:[[self alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i] comment:lineItemComments[i]]];
+		}	
+	}
+	else
+	{
+		for (var i = 0; i < [lineItemKeys count]; i++)
+		{
+			[lineItems addObject:[[self alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
+		}
+	}
+	
+	return lineItems;
+}
+
 - (id)initWithIdentifier:(CPString)anIdentifier value:(CPObject)aValue
 {
 	[self initWithIdentifier:anIdentifier value:aValue comment:@"No Comment"];

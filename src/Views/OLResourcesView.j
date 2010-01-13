@@ -17,7 +17,6 @@
         var splitViewSize = CGRectMake(0, 40, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame)-99);
     
         resourcesView = [[OLResourcesSplitView alloc] initWithFrame:splitViewSize];
-        console.log(self, resourcesView);
         [self addSubview:resourcesView];
         
         var titleBar = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(aFrame), 40)];
@@ -53,7 +52,6 @@
 
 - (void)reloadData:(OLResourceBundleController)resourceBundleController
 {
-    console.log(_cmd);
     [popUpButton removeAllItems];
     [popUpButton addItemsWithTitles:[resourceBundleController titlesOfResourceBundles]];
     [popUpButton selectItemAtIndex:[resourceBundleController indexOfSelectedResourceBundle]];

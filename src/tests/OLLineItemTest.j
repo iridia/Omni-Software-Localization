@@ -1,8 +1,20 @@
+@import "../Models/OLLineItem.j"
+
+var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.strings","fileType":"strings","dict":{"key":["","","",""],"string":["","","",""]},"comments_dict":{"key":["","","",""],"string":[" Localized versions of Info.plist keys ","","",""]}};
+
 @implementation OLLineItemTest : OJTestCase
+
+- (void)testThatOLLineItemDoesCreateFromJSON
+{
+    var target = [OLLineItem lineItemsFromJSON:json];
+
+    [self assert:json.dict.key.length equals:[target count]];
+}
 
 - (void)testThatOLLineItemDoesInitialize
 {
-    [self assertNotNull:[[OLLineItem alloc] init]];
+    var target = [[OLLineItem alloc] init];
+    [self assertNotNull:target];
 }
 
 - (void)testThatOLLineItemDoesInitializeWithDefaultParameters

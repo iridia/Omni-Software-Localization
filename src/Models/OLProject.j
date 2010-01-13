@@ -14,6 +14,24 @@
     [self find:"name" by:aName callback:callback];
 }
 
++ (id)projectFromJSON:(JSON)json
+{
+    var userIdentifier = @"";
+    if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
+    {
+        userIdentifier = [[CPUserSessionManager defaultManager] userIdentifier];
+    }
+    
+	var project = [[self alloc] initWithName:json.fileName userIdentifier:userIdentifier];
+
+    for (var i = 0; i < json.resourcebundles.length; i++)
+    {        
+        [project addResourceBundle:[OLResourceBundle resourceBundleFromJSON:json.resourcebundles[i]]];
+    }
+	
+	return project;
+}
+
 - (id)init
 {
     return [self initWithName:@"Untitled Project"];
