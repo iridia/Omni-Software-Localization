@@ -25,7 +25,7 @@ var __createURLConnectionFunction = nil;
 	id _delegate @accessors(property=delegate);
 }
 
-+ (CPURLConnection)createURLConnectionWithRequest:(CPURLRequest)request delegate:(id)delegate
++ (CPURLConnection)createConnectionWithRequest:(CPURLRequest)request delegate:(id)delegate
 {
     if(__createURLConnectionFunction == nil)
     {
@@ -35,7 +35,7 @@ var __createURLConnectionFunction = nil;
     return __createURLConnectionFunction(request, delegate);
 }
 
-+ (CPURLConnection)setURLConnectionBuilderMethod:(Function)builderMethodWithTwoArguments
++ (CPURLConnection)setConnectionBuilderMethod:(Function)builderMethodWithTwoArguments
 {
     __createURLConnectionFunction = builderMethodWithTwoArguments;
 }
@@ -52,15 +52,15 @@ var __createURLConnectionFunction = nil;
     [exception raise];
 }
 
+/*
+ * This has a special callback requirement. Because we want our lists to load when available (rather than when all are loaded)
+ * we need this callback to ADD to a list rather than SET a list. Expect a single record as an argument!
+ */
 + (void)listWithCallback:(Function)callback
 {
     [self listWithCallback:callback finalCallback:function(){}];
 }
 
-/*
- * This has a special callback requirement. Because we want our lists to load when available (rather than when all are loaded)
- * we need this callback to ADD to a list rather than SET a list. Expect a single record as an argument!
- */
 + (void)listWithCallback:(Function)callback finalCallback:(Function)finalCallback
 {
 	try
@@ -108,7 +108,7 @@ var __createURLConnectionFunction = nil;
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	
 	findByCallback = callback;
-    findByConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
+    findByConnection = [self createConnectionWithRequest:urlRequest delegate:self];
 }
 
 + (void)findByRecordID:(CPString)aRecordID withCallback:(Function)callback
@@ -152,7 +152,7 @@ var __createURLConnectionFunction = nil;
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"GET"];
 	
-    	_getConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
+    	_getConnection = [[self class] createConnectionWithRequest:urlRequest delegate:self];
 	}
 	catch(ex)
 	{
@@ -193,7 +193,7 @@ var __createURLConnectionFunction = nil;
 	    	[urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
 	
 	    	saveCallback = callback;
-	    	_saveConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
+	    	_saveConnection = [[self class] createConnectionWithRequest:urlRequest delegate:self];
 		}
 		catch(ex)
 		{
@@ -225,7 +225,7 @@ var __createURLConnectionFunction = nil;
 		}
 		
 		createCallback = callback;
-		_createConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
+		_createConnection = [[self class] createConnectionWithRequest:urlRequest delegate:self];
 	}
 	catch(ex)
 	{
@@ -248,7 +248,7 @@ var __createURLConnectionFunction = nil;
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"DELETE"];
 	
-		[[CPURLConnection alloc] initWithRequest:urlRequest delegate:nil startImmediately:YES];
+		[[self class] createConnectionWithRequest:urlRequest delegate:nil];
 	}
 	catch(ex)
 	{
