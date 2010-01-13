@@ -1,3 +1,5 @@
+@import "../Utilities/OLJSONKeyedArchiver.j"
+
 @implementation OLJSONKeyedArchiverTest : OJTestCase
 
 - (void)testThatOLJSONKeyedArchiverDoesInitialize
@@ -12,21 +14,18 @@
     
     [self assert:data equals:response];
 }
-// 
-// - (void)testThatOLJSONKeyedArchiverDoesInitializeAndReturnDataWhenDataIsEmptyObject
-// {
-//     var data = [[CPObject alloc] init];
-//     var response = [OLJSONKeyedArchiver archivedDataWithRootObject:data];
-//     
-//     [self assert:{__CLASS__:"CPObject"} equals:response];
-// }
 
 - (void)testThatOLJSONKeyedArchiverDoesInitializeAndReturnDataWhenGivenMockObject
 {
     var data = [[MockJSONParseObject alloc] init];
     var response = [OLJSONKeyedArchiver archivedDataWithRootObject:data];
     
-    [self assert:@"Bob" equals:response["DataKey"]];
+    [self assert:[data aString] equals:response["StringKey"]];
+    [self assert:[data aNumber] equals:response["NumberKey"]];
+    [self assert:[data aBool] equals:response["BoolKey"]];
+    [self assert:[data aNull] equals:response["NullKey"]];
+    [self assert:[data anArray] equals:response["ArrayKey"]];
+    [self assertTrue:[[data aDictionary] isEqualToDictionary:[CPDictionary dictionaryWithJSObject:response["DictionaryKey"]["CP.objects"]]]];
     [self assert:@"MockJSONParseObject" equals:response["$$CLASS$$"]];
 }
 
@@ -35,9 +34,14 @@
     var data = [[MockJsonParseObjectWithChild alloc] init];
     var response = [OLJSONKeyedArchiver archivedDataWithRootObject:data];
     
-    [self assert:@"Bob" equals:response["DataKey"]];
-    [self assert:@"MockJsonParseObjectWithChild" equals:response["$$CLASS$$"]];
-    [self assert:@"MockJSONParseObject" equals:response["ChildKey"]["$$CLASS$$"]];
+    [self assert:[data aString] equals:response["StringKey"]];
+    [self assert:[data aNumber] equals:response["NumberKey"]];
+    [self assert:[data aBool] equals:response["BoolKey"]];
+    [self assert:[data aNull] equals:response["NullKey"]];
+    [self assert:[data anArray] equals:response["ArrayKey"]];
+    [self assertTrue:[[data aDictionary] isEqualToDictionary:[CPDictionary dictionaryWithJSObject:response["DictionaryKey"]["CP.objects"]]]];
+    [self assert:CPStringFromClass([data class]) equals:response["$$CLASS$$"]];
+    [self assert:CPStringFromClass([[data child] class]) equals:response["ChildKey"]["$$CLASS$$"]];
 }
 
 - (void)testThatOLJSONKeyedArchiverDoesAllowKeyedCoding
@@ -45,30 +49,29 @@
     [self assertTrue:[OLJSONKeyedArchiver allowsKeyedCoding]];
 }
 
-// - (void)testThatOLJSONKeyedArchiverDoesWorkWhenNotUsingClassMethod
-// {
-//     var data = [[MockJSONParseObject alloc] init];
-//     var response = {};
-//     var target = [[OLJSONKeyedArchiver alloc] initForWritingWithMutableData:response];
-//     [target startEncodingWithRootObject:data];
-// 
-//     [self assert:@"Bob" equals:response["DataKey"]];
-//     [self assert:@"MockJSONParseObject" equals:response["$$CLASS$$"]];
-// }
-
 @end
 
 
 @implementation MockJSONParseObject : CPObject
 {
-    CPString data;
+    CPString        aString     @accessors;
+    int             aNumber     @accessors;
+    BOOL            aBool       @accessors;
+    id              aNull       @accessors;
+    CPArray         anArray     @accessors;
+    CPDictionary    aDictionary @accessors;
 }
 
 - (id)init
 {
     if(self = [super init])
     {
-        data = "Bob";
+        aString = "Bob";
+        aNumber = 42;
+        aBool = YES;
+        aNull = nil;
+        anArray = [aString, aNumber, aBool, aNull];
+        aDictionary = [CPDictionary dictionaryWithObjects:[aString, aNumber, aBool, aNull, anArray] forKeys:["string", "number", "bool", "null", "array"]];
     }
     return self;
 }
@@ -78,21 +81,31 @@
     self = [super init];
     if(self)
     {
-        data = [coder decodeObjectForKey:@"DataKey"];
+        aString     = [coder decodeObjectForKey:@"StringKey"];
+        aNumber     = [coder decodeObjectForKey:@"NumberKey"];
+        aBool       = [coder decodeObjectForKey:@"BoolKey"];
+        aNull       = [coder decodeObjectForKey:@"NullKey"];
+        anArray     = [coder decodeObjectForKey:@"ArrayKey"];
+        aDictionary = [coder decodeObjectForKey:@"DictionaryKey"];
     }
     return self;
 }
 
 - (void)encodeWithCoder:(CPCoder)coder
 {
-    [coder encodeObject:data forKey:@"DataKey"];
+    [coder encodeObject:aString forKey:@"StringKey"];
+    [coder encodeObject:aNumber forKey:@"NumberKey"];
+    [coder encodeObject:aBool forKey:@"BoolKey"];
+    [coder encodeObject:aNull forKey:@"NullKey"];
+    [coder encodeObject:anArray forKey:@"ArrayKey"];
+    [coder encodeObject:aDictionary forKey:@"DictionaryKey"];
 }
 
 @end
 
 @implementation MockJsonParseObjectWithChild : MockJSONParseObject
 {
-    MockJSONParseObject child;
+    MockJSONParseObject child   @accessors;
 }
 
 - (id)init

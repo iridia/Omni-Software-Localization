@@ -1,11 +1,12 @@
 @import "OLActiveRecord.j"
-
 @import "OLResourceBundle.j"
+@import "OLUser.j"
 
 @implementation OLProject : OLActiveRecord
 {
-    CPString    _name               @accessors(property=name);
-    CPArray     _resourceBundles    @accessors(property=resourceBundles, readonly);
+    CPString    name                @accessors;
+    CPArray     resourceBundles     @accessors(readonly);
+    CPString    userIdentifier      @accessors;
 }
 
 + (void)findByName:(CPString)aName callback:(Function)callback
@@ -18,31 +19,38 @@
     return [self initWithName:@"Untitled Project"];
 }
 
-- (id)initWithName:(CPString)name
+- (id)initWithName:(CPString)aName
+{
+    return [self initWithName:aName userIdentifier:@""];
+}
+
+- (id)initWithName:(CPString)aName userIdentifier:(CPString)aUserIdentifier
 {
     if (self = [super init])
     {
-        _name = name;
-		_resourceBundles = [CPArray array];
+        name = aName;
+        resourceBundles = [CPArray array];
+        userIdentifier = aUserIdentifier;
     }
     return self;
 }
 
 - (void)resources
 {
-	var defaultResourceBundle = [_resourceBundles objectAtIndex:0]; // FIXME: This should not be hard coded
+	var defaultResourceBundle = [resourceBundles objectAtIndex:0]; // FIXME: This should not be hard coded
 	return [defaultResourceBundle resources];
 }
 
 - (void)addResourceBundle:(OLResourceBundle)aResourceBundle
 {
-	[_resourceBundles addObject:aResourceBundle];
+	[resourceBundles addObject:aResourceBundle];
 }
 
 @end
 
 var OLProjectNameKey = @"OLProjectNameKey";
 var OLProjectResourceBundlesKey = @"OLProjectResourceBundlesKey";
+var OLProjectUserKey = @"OLProjectUserKey";
 
 @implementation OLProject (CPCoding)
 
@@ -52,8 +60,9 @@ var OLProjectResourceBundlesKey = @"OLProjectResourceBundlesKey";
     
     if (self)
     {
-        _name = [aCoder decodeObjectForKey:OLProjectNameKey];
-        _resourceBundles = [aCoder decodeObjectForKey:OLProjectResourceBundlesKey];
+        name = [aCoder decodeObjectForKey:OLProjectNameKey];
+        resourceBundles = [aCoder decodeObjectForKey:OLProjectResourceBundlesKey];
+        userIdentifier = [aCoder decodeObjectForKey:OLProjectUserKey];
     }
     
     return self;
@@ -61,8 +70,9 @@ var OLProjectResourceBundlesKey = @"OLProjectResourceBundlesKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    [aCoder encodeObject:_name forKey:OLProjectNameKey];
-    [aCoder encodeObject:_resourceBundles forKey:OLProjectResourceBundlesKey];
+    [aCoder encodeObject:name forKey:OLProjectNameKey];
+    [aCoder encodeObject:resourceBundles forKey:OLProjectResourceBundlesKey];
+    [aCoder encodeObject:userIdentifier forKey:OLProjectUserKey];
 }
 
 @end

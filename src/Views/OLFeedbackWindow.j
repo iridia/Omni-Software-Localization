@@ -84,6 +84,8 @@
         // Create other views up front
         _submittingFeedbackView = createSubmittingFeedbackView(self, contentView);
         _submittedFeedbackView = createSubmittedFeedbackView(self, contentView);
+        
+        [self setDefaultButton:_submitButton];
     }
     
     return self;

@@ -4,12 +4,27 @@
 
 - (void)testThatOLProjectDoesInitialize
 {
-    [self assertNotNull:[[OLProject alloc] init]];
+    var target = [[OLProject alloc] init];
+    [self assertNotNull:target];
 }
 
-- (void)testThatOLProjectDoesInitializeWithDefaultParameters
+- (void)testThatOLProjectDoesInitializeWithName
 {
-    [self assertNotNull:[[OLProject alloc] initWithName:@"AProject"]];
+    var projectName = @"AProject";
+    var target = [[OLProject alloc] initWithName:projectName];
+    
+    [self assertNotNull:target];
+    [self assert:projectName equals:[target name]];
+    [self assertTrue:[[CPArray array] isEqualToArray:[target resourceBundles]]];
+}
+
+- (void)testThatOLProjectDoesInitializeWithNameAndUserIdentifier
+{
+    var userID = @"1234";
+    var target = [[OLProject alloc] initWithName:@"AProject" userIdentifier:userID];
+    
+    [self assertNotNull:target];
+    [self assert:userID equals:[target userIdentifier]];
 }
 
 - (void)testThatOLProjectDoesAddResourceBundleCorrectly
