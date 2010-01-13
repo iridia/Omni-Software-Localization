@@ -10,7 +10,10 @@
 - (void)setUp
 {
     urlConnection = moq();
-    [OLActiveRecord setConnectionFactoryMethod:function(a,b){return urlConnection;}];
+    [OLActiveRecord setConnectionFactoryMethod:function(request, delegate)
+    {
+        return [urlConnection createConnectionWithRequest:request delegate:delegate];
+    }];
 }
 
 - (void)tearDown
@@ -20,7 +23,9 @@
 
 - (void)testThatOLActiveRecordDoesCreateConnectionWithUrlConnection
 {
-    [self assert:urlConnection equals:[OLActiveRecord createConnectionWithRequest:moq() delegate:moq()]];
+    var anObject = moq();
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) returns:anObject];
+    [self assert:anObject equals:[OLActiveRecord createConnectionWithRequest:moq() delegate:moq()]];
 }
 
 - (void)testThatOLActiveRecordDoesSetCreateConnectionFactoryMethod
@@ -30,6 +35,13 @@
     [OLActiveRecord setConnectionFactoryMethod:factoryMethod];
     
     [self assert:anObject equals:[OLActiveRecord createConnectionWithRequest:moq() delegate:moq()]];
+}
+
+- (void)testThatOLActiveRecordDoesFindByName
+{
+    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    
+    [OLActiveRecord find:@"name" by:@"joe" callback:function(){}];
 }
 
 @end

@@ -29,7 +29,6 @@ var __createURLConnectionFunction = nil;
 {
     if(__createURLConnectionFunction == nil)
     {
-        return nil;
         return [CPURLConnection connectionWithRequest:request delegate:delegate];
     }
     
@@ -39,18 +38,6 @@ var __createURLConnectionFunction = nil;
 + (CPURLConnection)setConnectionFactoryMethod:(Function)builderMethodWithTwoArguments
 {
     __createURLConnectionFunction = builderMethodWithTwoArguments;
-}
-
-+ (CPArray)list
-{
-    var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-     reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
-     
-    //[exception setClassWithError:[self class]];
-    [exception setMethodWithError:@"list"];
-    //[exception setAdditionalInformation:"List is deprecated, use listWithCallback"];
-    
-    [exception raise];
 }
 
 /*
@@ -131,18 +118,6 @@ var __createURLConnectionFunction = nil;
     }
     
     return self;
-}
-
-- (id)get
-{
-    var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-     reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
-     
-    //[exception setClassWithError:[self class]];
-    [exception setMethodWithError:@"get"];
-    //[exception setAdditionalInformation:"Get is deprecated, use getWithCallback"];
-    
-    [exception raise];
 }
 
 - (void)getWithCallback:(Function)callback
