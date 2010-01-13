@@ -116,4 +116,21 @@
     [urlConnection verifyThatAllExpectationsHaveBeenMet];
 }
 
+- (void)testThatOLActiveRecordDoesReturnAPIWithRecordID
+{
+    var target = [[OLActiveRecord alloc] init];
+    [target setRecordID:@"asdf"];
+    var result = [target apiURLWithRecordID:YES];
+    
+    [self assertTrue:@"api/activerecord/asdf" == result];
+}
+
+- (void)testThatOLActiveRecordDoesReturnAPI
+{
+    var target = [[OLActiveRecord alloc] init];
+    var result = [target apiURLWithRecordID:NO];
+
+    [self assertTrue:@"api/activerecord" == result];
+}
+
 @end
