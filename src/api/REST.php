@@ -25,6 +25,9 @@ echo "<br />";
 echo $apiCall;
 echo "<br />";
 echo $call;
+echo "<br />";
+echo $query;
+echo "<br />";
 */
 
 header("Content-Type: application/json" );

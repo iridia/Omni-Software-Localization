@@ -40,7 +40,7 @@ var __createURLConnectionFunction = nil;
 	try
 	{
 		var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
-	    var url = @"api/" + modifiedClassName + "/_design/finder/_views/find";
+	    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find";
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 		var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
 		var numberCalledBack = 0;
