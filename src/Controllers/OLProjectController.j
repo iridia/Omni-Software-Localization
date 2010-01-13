@@ -52,7 +52,7 @@
     [self insertObject:project inProjectsAtIndex:[projects count]];
 }
 
-- (void)createNewProject:(JSObject)jsonResponse
+- (OLProject)createProjectFromJSON:(JSObject)jsonResponse
 {
     var userIdentifier = @"";
     if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
@@ -74,8 +74,7 @@
         [project addResourceBundle:[[OLResourceBundle alloc] initWithResources:resources language:[OLLanguage languageFromLProj:jsonResponse.resourcebundles[i].name]]];
     }
 	
-	[self addProject:project];
-	[project save];
+	return project;
 }
 
 - (void)addResource:(JSObject)jsonResponse toResourceBundle:(OLResourceBundle)resourceBundle
@@ -118,7 +117,9 @@
 
 	if (jsonResponse.fileType === @"zip")
 	{
-		[self createNewProject:jsonResponse]
+		var newProject = [self createProjectFromJSON:jsonResponse];
+		[self addProject:newProject];
+    	[newProject save];
 	}
 	else
 	{
