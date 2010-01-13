@@ -42,6 +42,8 @@
     [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
     
     [OLActiveRecord find:@"name" by:@"joe" callback:function(){}];
+    
+    [urlConnection verifyThatAllExpectationsHaveBeenMet];
 }
 
 @end
