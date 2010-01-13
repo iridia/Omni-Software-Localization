@@ -29,6 +29,7 @@ var __createURLConnectionFunction = nil;
 {
     if(__createURLConnectionFunction == nil)
     {
+        return nil;
         return [CPURLConnection connectionWithRequest:request delegate:delegate];
     }
     
@@ -43,12 +44,12 @@ var __createURLConnectionFunction = nil;
 + (CPArray)list
 {
     var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-    	reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
-	
+     reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
+     
     //[exception setClassWithError:[self class]];
     [exception setMethodWithError:@"list"];
     //[exception setAdditionalInformation:"List is deprecated, use listWithCallback"];
-
+    
     [exception raise];
 }
 
@@ -68,7 +69,7 @@ var __createURLConnectionFunction = nil;
 		var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
 	    var url = @"api/" + modifiedClassName + "/_design/finder/_views/find";
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
-		var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
+		//var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
 		var numberCalledBack = 0;
 	
 		var data = eval('(' + JSONresponse.string + ')');
@@ -88,16 +89,16 @@ var __createURLConnectionFunction = nil;
 	}
 	catch(ex)
 	{
-		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-
-		//[exception setClassWithError:[self class]];
-		[exception setMethodWithError:@"list"];
-		//[exception setAdditionalInformation:ex];
-
-		[exception raise];
-		
-		return [CPArray array];
+        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+         reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
+        
+        //[exception setClassWithError:[self class]];
+        [exception setMethodWithError:@"list"];
+        //[exception setAdditionalInformation:ex];
+        
+        [exception raise];
+        
+        return [CPArray array];
 	}
 }
 
@@ -134,14 +135,14 @@ var __createURLConnectionFunction = nil;
 
 - (id)get
 {
-	var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-		reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
-		
-	//[exception setClassWithError:[self class]];
-	[exception setMethodWithError:@"get"];
-	//[exception setAdditionalInformation:"Get is deprecated, use getWithCallback"];
-	
-	[exception raise];
+    var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+     reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
+     
+    //[exception setClassWithError:[self class]];
+    [exception setMethodWithError:@"get"];
+    //[exception setAdditionalInformation:"Get is deprecated, use getWithCallback"];
+    
+    [exception raise];
 }
 
 - (void)getWithCallback:(Function)callback
@@ -156,16 +157,16 @@ var __createURLConnectionFunction = nil;
 	}
 	catch(ex)
 	{
-		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
-			
-		//[exception setClassWithError:[self class]];
-		[exception setMethodWithError:@"get"];
-		//[exception setAdditionalInformation:ex];
-		
-		[exception raise];
-		
-		return [[CPObject alloc] init];
+        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+         reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
+         
+        //[exception setClassWithError:[self class]];
+        [exception setMethodWithError:@"get"];
+        //[exception setAdditionalInformation:ex];
+        
+        [exception raise];
+        
+        return [[CPObject alloc] init];
 	}
 }
 
@@ -197,14 +198,14 @@ var __createURLConnectionFunction = nil;
 		}
 		catch(ex)
 		{
-			var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-				reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-
-			//[exception setClassWithError:[self class]];
-			[exception setMethodWithError:@"save"];
-			//[exception setAdditionalInformation:ex];
-
-			[exception raise];
+            var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+             reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
+            
+            //[exception setClassWithError:[self class]];
+            [exception setMethodWithError:@"save"];
+            //[exception setAdditionalInformation:ex];
+            
+            [exception raise];
 		}
     }    
 }
@@ -229,15 +230,14 @@ var __createURLConnectionFunction = nil;
 	}
 	catch(ex)
 	{
-		console.log(ex);
-		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-
-		//[exception setClassWithError:[self class]];
-		[exception setMethodWithError:@"create"];
-		//[exception setAdditionalInformation:ex];
-
-		[exception raise];
+        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+         reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
+        
+        //[exception setClassWithError:[self class]];
+        [exception setMethodWithError:@"create"];
+        //[exception setAdditionalInformation:ex];
+        
+        [exception raise];
 	}
 }
 
@@ -252,14 +252,14 @@ var __createURLConnectionFunction = nil;
 	}
 	catch(ex)
 	{
-		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-			
-		//[exception setClassWithError:[self class]];
-		[exception setMethodWithError:@"delete"];
-		//[exception setAdditionalInformation:ex];
-		
-		[exception raise];		
+        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+         reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
+         
+        //[exception setClassWithError:[self class]];
+        [exception setMethodWithError:@"delete"];
+        //[exception setAdditionalInformation:ex];
+        
+        [exception raise];   	
 	}
 }
 
@@ -323,14 +323,14 @@ var __createURLConnectionFunction = nil;
 	}
 	catch(ex)
 	{
-		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:"it was unable to handle the response from the server" userInfo:[CPDictionary dictionary]];
-			
-		///[exception setClassWithError:""+[self class]];
-		[exception setMethodWithError:@"get"];
-		//[exception setAdditionalInformation:ex];
-		
-		[exception raise];
+        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+         reason:"it was unable to handle the response from the server" userInfo:[CPDictionary dictionary]];
+         
+        ///[exception setClassWithError:""+[self class]];
+        [exception setMethodWithError:@"get"];
+        //[exception setAdditionalInformation:ex];
+        
+        [exception raise];
 	}
 }
 

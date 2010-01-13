@@ -3,63 +3,24 @@
 @import <OJMoq/OJMoq.j>
 
 @implementation OLActiveRecordTest : OJTestCase
-
-- (void)testThatOLActiveRecordDoesInitialize
 {
-	var target = [[OLActiveRecord alloc] init];
-	[self assertNotNull:target];
+    OJMoq urlConnection;
 }
 
-- (void)testThatOLActiveRecordDoesTryToGrabAList
+- (void)setUp
 {
-	[self assertNotNull:[OLActiveRecord list]]
+    urlConnection = moq();
+    [OLActiveRecord setConnectionBuilderMethod:function(a,b){return urlConnection;}];
 }
 
-- (void)testThatOLActiveRecordDoesFindByRecordId
+- (void)tearDown
 {
-	[self assertNotNull:[OLActiveRecord findByRecordID:@"aRecordId" withCallback:function(){}]];
+    [OLActiveRecord setConnectionBuilderMethod:nil];
 }
 
-- (void)testThatOLActiveRecordDoesGet
+- (void)testThatOLActiveRecordDoesCreateConnectionWithUrlConnection
 {
-	var target = [[OLActiveRecord alloc] init];
-	[self assertNotNull:[target get]];
-}
-
-- (void)testThatOLActiveRecordDoesSave
-{
-	var target = [[OLActiveRecord alloc] init];
-	[target save];
-	[self assertTrue:YES];
-}
-
-- (void)testThatOLActiveRecordDoesRecieveData
-{
-	var target = [[OLActiveRecord alloc] init];
-	[target connection:moq() didReceiveData:moq()];
-	[self assertTrue:YES];
-}
-
-- (void)testThatOLActiveRecordDoesDelete
-{
-	var target = [[OLActiveRecord alloc] init];
-	[target delete];
-	[self assertTrue:YES];
-}
-
-- (void)testThatOLActiveRecordDoesGiveBackCorrectAPIValue
-{
-	var target = [[OLActiveRecord alloc] init];
-	[target setRecordID:@"1"];
-	var actual = [target apiURLWithRecordID:YES];
-	[self assert:actual equals:[CPURL URLWithString:@"api/activerecord/1"]];
-}
-
-- (void)testThatOLActiveRecordDoesGiveBackCorrectAPIValueWithNoID
-{
-	var target = [[OLActiveRecord alloc] init];
-	var actual = [target apiURLWithRecordID:NO];
-	[self assert:actual equals:[CPURL URLWithString:@"api/activerecord"]];
+    [self assert:urlConnection equals:[OLActiveRecord createConnectionWithRequest:moq() delegate:moq()]];
 }
 
 @end
