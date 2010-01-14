@@ -10,6 +10,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 @implementation OLLineItemController : CPObject
 {
 	CPArray		    lineItems;
+	CPString        ownerId             @accessors;
 	OLLineItem      selectedLineItem    @accessors;
 	OLResourcesView resourcesView       @accessors;
 }
@@ -31,6 +32,13 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 
 - (void)editSelectedLineItem:(id)sender
 {
+    var loggedInUserId = [[CPUserSessionManager defaultManager] userIdentifier];
+    if(loggedInUserId || [loggedInUserId isEqualToString:@""] || ![loggedInUserId isEqualToString:ownerId])
+    {
+        alert("Can't localize!");
+        return;
+    }
+    
     var lineItemEditWindowController = [[OLLineItemEditWindowController alloc] initWithWindowCibName:@"LineItemEditor.cib" lineItem:selectedLineItem];
     [lineItemEditWindowController setDelegate:self];
     [self addObserver:lineItemEditWindowController forKeyPath:@"selectedLineItem" options:CPKeyValueObservingOptionNew context:nil];
@@ -82,6 +90,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
             var selectedResource = [object selectedResource];
             if (selectedResource)
             {
+                ownerId = [object ownerId];
                 lineItems = [[object selectedResource] lineItems];
                 [[[resourcesView editingView] lineItemsTableView] reloadData];
                 [resourcesView showLineItemsTableView];

@@ -2,6 +2,7 @@
 
 @implementation OLResourceBundleController : CPObject
 {
+    CPString            ownerId                     @accessors;
     CPArray             resourceBundles             @accessors(readonly);
     CPResourceBundle    selectedResourceBundle      @accessors;
     CPView              resourcesView               @accessors;
@@ -80,6 +81,7 @@
     switch (keyPath)
     {
         case @"selectedProject":
+            ownerId = [[object selectedProject] userIdentifier]
             projectName = [[object selectedProject] name];
             [self setResourceBundles:[[object selectedProject] resourceBundles]];
 			[resourcesView reloadData:self];
