@@ -69,6 +69,23 @@
     return numVotes;
 }
 
+- (void)addLineItem:(OLLineItem)aLineItem
+{
+    [_lineItems addObject:aLineItem];
+}
+
+- (OLResource)clone
+{
+    var clone = [[OLResource alloc] initWithFileName:_fileName fileType:_fileType lineItems:[CPArray array]];
+    
+    for(var i = 0; i < [_lineItems count]; i++)
+    {
+        [clone addLineItem:[[_lineItems objectAtIndex:i] clone]];
+    }
+    
+    return clone;
+}
+
 @end
 
 
