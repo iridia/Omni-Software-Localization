@@ -47,6 +47,18 @@
 	return self;
 }
 
+- (OLResourceBundle)clone
+{
+    var clone = [[OLResourceBundle alloc] initWithLanguage:[_language clone]];
+    
+    for(var i = 0; i < [_resources count]; i++)
+    {
+        [clone insertObject:[[_resources objectAtIndex:i] clone] inResourcesAtIndex:i];
+    }
+    
+    return clone;
+}
+
 @end
 
 @implementation OLResourceBundle (KVC)

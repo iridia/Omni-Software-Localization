@@ -61,4 +61,39 @@ var json = {"name":"English.lproj","resources":[{"fileName":"Chess.app/Contents/
     [coder verifyThatAllExpectationsHaveBeenMet];
 }
 
+- (void)testThatOLResourceBundleDoesCloneLanguageCorrectly
+{
+    var language = moq();
+    var target = [[OLResourceBundle alloc] initWithLanguage:language];
+    
+    var clonedLanguage = moq();
+    [language selector:@selector(clone) returns:clonedLanguage];
+    
+    var clone = [target clone];
+    
+    [self assert:clonedLanguage equals:[clone language]];
+}
+
+- (void)testThatOLResourceBundleDoesCloneResourceArray
+{
+    var target = [[OLResourceBundle alloc] initWithResources:[moq(), moq()] language:moq()];
+    
+    var clone = [target clone];
+    
+    [self assert:[[clone resources] count] equals:[[target resources] count]];
+}
+
+- (void)testThatOLResourceBundleDoesCloneResourcesCorrectly
+{
+    var resource = moq();
+    var target = [[OLResourceBundle alloc] initWithResources:[resource] language:moq()];
+    
+    var clonedResource = moq();
+    [resource selector:@selector(clone) returns:clonedResource];
+    
+    var clone = [target clone];
+    
+    [self assert:[[clone resources] objectAtIndex:0] equals:clonedResource];
+}
+
 @end
