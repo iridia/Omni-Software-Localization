@@ -30,6 +30,11 @@
     return [languageMapping objectForKey:lproj];
 }
 
+- (OLLanguage)clone
+{
+    return [[OLLanguage alloc] initWithName:_name];
+}
+
 + (OLLanguage)english {	return [[OLLanguage alloc] initWithName:@"English"]; }
 + (OLLanguage)french {	return [[OLLanguage alloc] initWithName:@"French"]; }
 + (OLLanguage)spanish {	return [[OLLanguage alloc] initWithName:@"Spanish"]; }
