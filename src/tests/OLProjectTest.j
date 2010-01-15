@@ -75,4 +75,50 @@ var uploadedJSON = {"fileType":"zip","fileName":"Chess.app","resourcebundles":[{
     [self assert:userIdentifier equals:[newProject userIdentifier]];
 }
 
+- (void)testThatOLProjectDoesCloneNameCorrectly
+{
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
+    
+    var clone = [target clone];
+    
+    [self assertTrue:[[clone name] isEqualToString:[target name]]];
+    [self assert:clone notSame:target];
+}
+
+- (void)testThatOLProjectDoesCloneIdCorrectly
+{
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
+
+    var clone = [target clone];
+
+    [self assertTrue:[[clone userIdentifier] isEqualToString:[target userIdentifier]]];
+    [self assert:clone notSame:target];
+}
+
+- (void)testThatOLProjectDoesCloneResourceBundleArray
+{
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
+    
+    [target addResourceBundle:moq()];
+
+    var clone = [target clone];
+
+    [self assert:[[clone resourceBundles] count] equals:[[target resourceBundles] count]];
+    [self assert:clone notSame:target];
+}
+
+- (void)testThatOLProjectDoesCloneResourceBundles
+{
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
+    var bundleInTarget = moq();
+    var clonedBundleInTarget = moq();
+    [bundleInTarget selector:@selector(clone) returns:clonedBundleInTarget];
+    [target addResourceBundle:bundleInTarget];
+
+    var clone = [target clone];
+
+    [self assert:clonedBundleInTarget equals:[[clone resourceBundles] objectAtIndex:0]];
+    [self assert:clone notSame:target];
+}
+
 @end

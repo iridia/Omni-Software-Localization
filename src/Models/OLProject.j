@@ -68,6 +68,18 @@
 	[resourceBundles addObject:aResourceBundle];
 }
 
+- (OLProject)clone
+{
+    result = [[OLProject alloc] initWithName:name userIdentifier:userIdentifier];
+    
+    for(var i = 0; i < [resourceBundles count]; i++)
+    {
+        [result addResourceBundle:[[resourceBundles objectAtIndex:i] clone]];
+    }
+    
+    return result;
+}
+
 @end
 
 var OLProjectNameKey = @"OLProjectNameKey";

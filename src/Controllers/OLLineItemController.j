@@ -36,6 +36,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
     if(!loggedInUserId || [loggedInUserId isEqualToString:@""] || ![loggedInUserId isEqualToString:ownerId])
     {
         console.log(loggedInUserId, ownerId, [loggedInUserId isEqualToString:@""], [loggedInUserId isEqualToString:ownerId]);
+        // TODO: Launch "Do you want to localize this?" dialog
         alert("Can't localize!");
         return;
     }
