@@ -33,8 +33,9 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 - (void)editSelectedLineItem:(id)sender
 {
     var loggedInUserId = [[CPUserSessionManager defaultManager] userIdentifier];
-    if(loggedInUserId || [loggedInUserId isEqualToString:@""] || ![loggedInUserId isEqualToString:ownerId])
+    if(!loggedInUserId || [loggedInUserId isEqualToString:@""] || ![loggedInUserId isEqualToString:ownerId])
     {
+        console.log(loggedInUserId, ownerId, [loggedInUserId isEqualToString:@""], [loggedInUserId isEqualToString:ownerId]);
         alert("Can't localize!");
         return;
     }

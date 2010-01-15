@@ -21,6 +21,10 @@
     {
         userIdentifier = [[CPUserSessionManager defaultManager] userIdentifier];
     }
+    else
+    {
+        [OLException raise:@"Project" reason:@"you must be logged in in order to create a project!"];
+    }
     
 	var project = [[self alloc] initWithName:json.fileName userIdentifier:userIdentifier];
 
