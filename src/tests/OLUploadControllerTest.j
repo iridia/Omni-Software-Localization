@@ -1,4 +1,5 @@
 @import "../Controllers/OLUploadController.j"
+@import "utilities/CPNotificationCenter+MockDefaultCenter.j"
 
 @implementation OLUploadControllerTest : OJTestCase
 
@@ -10,12 +11,12 @@
 
 -(void)testThatOLUploadControllerDoesHandleServerResponse
 {
-	var target = [[OLUploadContoller alloc] init];
+	var target = [[OLUploadController alloc] init];
 	var jsonString = "<pre style=\"word-wrap: break-word; white-space: pre-wrap;\">" + "{test:1}"+ "\n</pre>";
-	
+
 	[target handleServerResponse:jsonString];
 	
-	[self assert:{test:1} equals:[target jsonResponse]];
+	[self assertTrue:{test:1}.test == [target jsonResponse].test];
 }
 
 @end

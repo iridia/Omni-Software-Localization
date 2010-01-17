@@ -1,3 +1,5 @@
+@import <Foundation/CPUserSessionManager.j>
+
 @import "../Controllers/OLProjectController.j"
 
 @implementation OLProjectControllerTest : OJTestCase

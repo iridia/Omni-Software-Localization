@@ -13,6 +13,8 @@ var ENV = require("system").env,
     FileList = require("jake").FileList,
     app = require("cappuccino/jake").app,
     configuration = ENV["CONFIG"] || ENV["CONFIGURATION"] || ENV["c"] || "Debug";
+    
+task ("build", function(){});
 
 task ("test", function()
 {
@@ -23,4 +25,27 @@ task ("test", function()
     var code = OS.system(cmdString);
     if (code !== 0)
         OS.exit(code);
+});
+
+task ("press", ["build", "test"], function()
+{
+    var cmd = "press . ../Pressed";
+    
+    rm_rf("../Pressed");
+    
+    var code = OS.system(cmd);
+    
+    if (code !== 0)
+    {
+        OS.exit(code);
+    }
+});
+
+// task ("deploy", ["build", "test", "press"], function()
+task ("deploy", ["build", "test"], function()
+{
+    //var cmd = "scp -r projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/ ../Pressed";
+    var cmd = "scp -r projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/ .";
+    
+    OS.system(cmd);
 });

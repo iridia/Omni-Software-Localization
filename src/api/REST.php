@@ -10,9 +10,13 @@ $putOrPostArgs = file_get_contents('php://input');
 parse_str(file_get_contents('php://input'), $deleteArgs);
 
 $apiCall = str_replace($urlPrefix, "", $url);
+if(preg_match("\?", $apiCall) != 0)
+{
+    $queryString = strstr($apiCall, "?");
+}
 $exploded = explode("/",$apiCall);
 $dbName = $exploded[0];
-$call = str_replace($dbName."/", "", $apiCall);
+$call = str_replace($dbName."/", "", $apiCall) . $queryString;
 $db = new CouchDB($dbName);
 
 /* DEBUG
@@ -21,6 +25,9 @@ echo "<br />";
 echo $apiCall;
 echo "<br />";
 echo $call;
+echo "<br />";
+echo $query;
+echo "<br />";
 */
 
 header("Content-Type: application/json" );

@@ -55,11 +55,11 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 {
     switch (keyPath)
     {
-        case @"selectedProject":
-            resources = [[object selectedProject] resources];
+        case @"selectedResourceBundle":
+            resources = [[object selectedResourceBundle] resources];
 			[[resourcesView resourceTableView] reloadData];
-			[[resourcesView resourceTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:-1] byExtendingSelection:NO];
-			[self setSelectedResource:nil];
+            [[resourcesView resourceTableView] selectRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
+            [self setSelectedResource:nil];
             break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);

@@ -1134,11 +1134,11 @@ var _CPDictionaryAppendXMLData = function(XMLData, aDictionary)
 }
 var _encodeHTMLComponent = function(aString)
 {
-    return aString.replace('<', "&lt;").replace('>', "&gt;").replace('\"', "&quot;").replace('\'', "&apos;").replace('&', "&amp;");
+    return aString.replace(/&/g,'&amp;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 var _decodeHTMLComponent = function(aString)
 {
-    return aString.replace("&lt;", '<').replace("&gt;", '>').replace("&quot;", '\"').replace("&apos;", '\'').replace("&amp;", '&');
+    return aString.replace(/&quot;/g, '"').replace(/&apos;/g, '\'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
 }
 var _CPPropertyListAppendXMLData = function(XMLData, aPlist)
 {
@@ -1673,9 +1673,9 @@ function objj_decompile(aString, bundle)
 {
     var stream = new objj_markedStream(aString);
     if (stream.magicNumber() != STATIC_MAGIC_NUMBER)
-        objj_exception_throw(new objj_exception(OBJJUnrecognizedFormatException, "*** Could not recognize executable code format."));
+        objj_exception_throw(new objj_exception(OBJJUnrecognizedFormatException, "*** Could not recognize executable code format in bundle: "+bundle));
     if (stream.version() != 1.0)
-        objj_exception_throw(new objj_exception(OBJJUnrecognizedFormatException, "*** Could not recognize executable code format."));
+        objj_exception_throw(new objj_exception(OBJJUnrecognizedFormatException, "*** Could not recognize executable code format in bundle: "+bundle));
     var file = NULL,
         files = [],
         marker;
@@ -1725,14 +1725,13 @@ var OBJJ_EXCEPTION_OUTPUT_STREAM = NULL;
 function objj_exception(aName, aReason, aUserInfo)
 {
     this.name = aName;
-    this.reason = aReason;
+    this.message = aReason;
     this.userInfo = aUserInfo;
     this.__address = (OBJECT_COUNT++);
+    if (typeof Packages !== "undefined" && Packages && Packages.org)
+        this.rhinoException = Packages.org.mozilla.javascript.JavaScriptException(this, null, 0);
 }
-objj_exception.prototype.toString = function()
-{
-    return this.reason;
-}
+objj_exception.prototype = new Error();
 function objj_exception_throw(anException)
 {
     throw anException;

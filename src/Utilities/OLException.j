@@ -1,4 +1,7 @@
 @import <Foundation/CPException.j>
+@import "OLURLConnectionFactory.j"
+
+var __createURLConnectionFunction = nil;
 
 @implementation OLException : CPException
 {
@@ -30,7 +33,7 @@
 	var req = [CPURLRequest requestWithURL:@"api/error/"];
 	[req setHTTPMethod:"PUT"];
     [req setHTTPBody:JSON.stringify(data)];
-	var conn = [CPURLConnection connectionWithRequest:req delegate:self];
+	var conn = [OLURLConnectionFactory createConnectionWithRequest:req delegate:self];
 	
 	[[[CPApplication sharedApplication] delegate] handleException:self];
 }

@@ -10,7 +10,7 @@ git checkout B
 git pull . A
 
 # Delete Branch A from Remote Repository
-git push :heads/A
+git push origin :heads/A
 
 # Track Branch A on Branch B from Remote Repository (A can equal B in this case)
 git checkout --track -b B origin/A

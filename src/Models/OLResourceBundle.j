@@ -13,6 +13,20 @@
 	CPArray             _resources  @accessors(property=resources);
 }
 
+
++ (id)resourceBundleFromJSON:(JSON)json
+{
+    var resources = [CPArray array];
+    
+    for (var j = 0; j < json.resources.length; j++)
+    {
+        var resource = [OLResource resourceFromJSON:json.resources[j]];
+        [resources addObject:resource];
+    }
+    
+    return [[OLResourceBundle alloc] initWithResources:resources language:[OLLanguage languageFromLProj:json.name]]
+}
+
 - (id)init
 {
     return [self initWithResources:[CPArray array] language:nil];

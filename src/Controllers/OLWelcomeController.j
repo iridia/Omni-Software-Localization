@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
-@import "../views/OLWelcomeView.j"
+
+@import "../Views/OLWelcomeView.j"
 
 /*!
  * The OLWelcomeController is a controller for the welcome views that decides

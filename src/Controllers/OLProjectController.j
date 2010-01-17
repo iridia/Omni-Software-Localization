@@ -1,4 +1,5 @@
 @import <Foundation/CPObject.j>
+@import <Foundation/CPUserSessionManager.j>
 
 @import "../Models/OLProject.j"
 
@@ -51,30 +52,6 @@
     [self insertObject:project inProjectsAtIndex:[projects count]];
 }
 
-- (void)createNewProject:(JSObject)jsonResponse
-{	
-	var project = [[OLProject alloc] initWithName:jsonResponse.fileName];
-
-	var resources = [CPArray array];
-
-	for(var i = 0; i < jsonResponse.resourcebundles.length; i++)
-	{		
-		for(var j = 0; j < jsonResponse.resourcebundles[i].resources.length; j++)
-		{
-			var theResource = jsonResponse.resourcebundles[i].resources[j];
-			var lineItems = [self lineItemsFromResponse:theResource];
-			
-			[resources addObject:[[OLResource alloc] initWithFileName:theResource.fileName fileType:theResource.fileType lineItems:lineItems]];
-		}
-	}
-	
-	var resourceBundle = [[OLResourceBundle alloc] initWithResources:resources language:[OLLanguage english]];
-	[project addResourceBundle:resourceBundle];
-
-	[self addProject:project];
-	[project save];
-}
-
 - (void)addResource:(JSObject)jsonResponse toResourceBundle:(OLResourceBundle)resourceBundle
 {
 	var fileName = jsonResponse.fileName;
@@ -115,7 +92,9 @@
 
 	if (jsonResponse.fileType === @"zip")
 	{
-		[self createNewProject:jsonResponse]
+		var newProject = [OLProject projectFromJSON:jsonResponse];
+		[self addProject:newProject];
+    	[newProject save];
 	}
 	else
 	{
@@ -126,31 +105,6 @@
 - (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
 {
     [selectedProject save];
-}
-
-- (void)lineItemsFromResponse:(JSObject)jsonResponse
-{
-	var result = [CPArray array];
-	var lineItemKeys = jsonResponse.dict.key;
-	var lineItemStrings = jsonResponse.dict.string;
-	
-	if(jsonResponse.fileType == "strings")
-	{
-		var lineItemComments = jsonResponse.comments_dict.string;
-
-		for (var i = 0; i < [lineItemKeys count]; i++)
-		{
-			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i] comment:lineItemComments[i]]];
-		}	
-	}
-	else
-	{
-		for (var i = 0; i < [lineItemKeys count]; i++)
-		{
-			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
-		}
-	}
-	return result;
 }
 
 @end

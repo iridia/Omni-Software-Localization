@@ -26,20 +26,14 @@ CPApp._windows = moq();
 	[self assertTrue:YES];
 }
 
+// OJMoq doesn't yet handle callbacks
 // - (void)testThatOLLoginControllerDoesRespondToDidSubmitLogin
 // {
-// 	var target = [[OLLoginController alloc] init];
-// 	var userInfo = [CPDictionary dictionary];
-// 	[target didSubmitLogin:userInfo];
-// 	[self assertTrue:YES];
+//     var target = [[OLLoginController alloc] init];
+//     var userInfo = [CPDictionary dictionary];
+//     [target didSubmitLogin:userInfo];
+//     [self assertTrue:YES];
 // }
-
-- (void)testThatOLLoginControllerDoesRespondToRegister
-{
-	var target = [[OLLoginController alloc] init];
-	[target showRegister];
-	[self assertTrue:YES];
-}
 
 - (void)testThatOLLoginControllerDoesRespondToDidSubmitRegistration
 {
@@ -52,7 +46,91 @@ CPApp._windows = moq();
 - (void)testThatOLLoginControllerDoesRespondToShowLoginWindow
 {
 	var target = [[OLLoginController alloc] init];
-	[target showLogin:moq()];
+	[target showLoginAndRegisterWindow:moq()];
+	[self assertTrue:YES];
+}
+
+- (void)testThatOLLoginControllerDoesRespondToWillLogin
+{
+    var target = [[OLLoginController alloc] init];
+	[target willLogin];
+	[self assertTrue:YES];
+}
+
+- (void)testThatOLLoginControllerDoesForwardWillLogin
+{
+    var target = [[OLLoginController alloc] init];
+    var loginAndRegisterWindowMoq = moq();
+    target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
+    
+    [loginAndRegisterWindowMoq expectSelector:@selector(showLoggingIn) times:1];
+    
+	[target willLogin];
+	
+	[loginAndRegisterWindowMoq verifyThatAllExpectationsHaveBeenMet];
+}
+
+- (void)testThatOLLoginControllerDoesRespondToHasLoggedIn
+{
+    var target = [[OLLoginController alloc] init];
+    var loginAndRegisterWindowMoq = moq();
+    target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
+	[target hasLoggedIn:moq()];
+	[self assertTrue:YES];
+}
+
+- (void)testThatOLLoginControllerDoesCloseWindowOnHasLoggedIn
+{
+    var target = [[OLLoginController alloc] init];
+	var loginAndRegisterWindowMoq = moq();
+    target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
+    
+    [loginAndRegisterWindowMoq expectSelector:@selector(close) times:1];
+    
+	[target hasLoggedIn:moq()];
+	
+	[loginAndRegisterWindowMoq verifyThatAllExpectationsHaveBeenMet];
+}
+
+- (void)testThatOLLoginControllerDoesSetUserOnHasLoggedIn
+{
+    var target = [[OLLoginController alloc] init];
+    var loginAndRegisterWindowMoq = moq();
+    target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
+    var mockedUser = moq();
+    [mockedUser selector:@selector(recordID) returns:@"123"];
+    
+	[target hasLoggedIn:mockedUser];
+	
+	[self assert:@"123" equals:[[CPUserSessionManager defaultManager] userIdentifier]];
+	[self assert:CPUserSessionLoggedInStatus equals:[[CPUserSessionManager defaultManager] status]];
+}
+
+
+- (void)testThatOLLoginControllerDoesRespondToLoginFailed
+{
+    var target = [[OLLoginController alloc] init];
+	[target loginFailed];
+	[self assertTrue:YES];
+}
+
+- (void)testThatOLLoginControllerDoesForwardLoginFailed
+{
+    var target = [[OLLoginController alloc] init];
+    var loginAndRegisterWindowMoq = moq();
+    target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
+    
+    [loginAndRegisterWindowMoq expectSelector:@selector(loginFailed) times:1];
+    
+	[target loginFailed];
+	
+	[loginAndRegisterWindowMoq verifyThatAllExpectationsHaveBeenMet];
+}
+
+- (void)testThatOLLoginControllerDoesRespondToDidSubmitRegistration
+{
+	var target = [[OLLoginController alloc] init];
+	[target didSubmitRegistration:moq()];
 	[self assertTrue:YES];
 }
 

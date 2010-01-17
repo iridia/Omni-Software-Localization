@@ -1,102 +1,84 @@
 @import <Foundation/CPObject.j>
 @import "../Categories/CPArray+Find.j"
-@import "../Views/OLLoginWindow.j"
-@import "../Views/OLRegisterWindow.j"
+@import "../Views/OLLoginAndRegisterWindow.j"
 @import "../Models/OLUser.j"
 
 @implementation OLLoginController : CPObject
 {
-	CPWindow _loginWindow;
-	CPWindow _registerWindow;
-	id _delegate @accessors(property=delegate);
+    CPWindow    loginAndRegisterWindow;
+    id          delegate                @accessors;
 }
 
 - (id)init
 {
-	if(self = [super init])
-	{
-		_loginWindow = [[OLLoginWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 200) styleMask:CPTitledWindowMask];
-		_registerWindow = [[OLRegisterWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 120) styleMask:CPTitledWindowMask];
-		[_loginWindow setDelegate:self];
-		[_registerWindow setDelegate:self];
-	}
-	return self;
+    if(self = [super init])
+    {
+        loginAndRegisterWindow = [[OLLoginAndRegisterWindow alloc] initWithContentRect:CGRectMake(0.0, 0.0, 300.0, 180.0) styleMask:CPTitledWindowMask];
+        [loginAndRegisterWindow setDelegate:self];
+    }
+    return self;
 }
 
 - (void)willLogin
 {
-	[_loginWindow showLoggingIn];
+    [loginAndRegisterWindow showLoggingIn];
 }
 
 - (void)hasLoggedIn:(OLUser)aUser
 {
-    [_loginWindow close];
+    [loginAndRegisterWindow close];
     
     var sessionManager = [CPUserSessionManager defaultManager];
     [sessionManager setStatus:CPUserSessionLoggedInStatus];
     [sessionManager setUserIdentifier:[aUser recordID]];
-    
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLLoginDidLogin"
-        object:self];
 }
 
 - (void)loginFailed
 {
-	[_loginWindow showLoginFailed]
+    [loginAndRegisterWindow loginFailed];
 }
 
 - (void)didSubmitLogin:(CPDictionary)userInfo
 {
-	[self willLogin];
-	var foundUser = NO;
-	[OLUser listWithCallback:function(user){if([[user email] isEqualToString:[userInfo objectForKey:@"username"]])
-	    {
-	        foundUser = YES;
-	        [self hasLoggedIn:user];
-	    }} finalCallback:function(){if(!foundUser){[self loginFailed];}}];
+    [self willLogin];
+    var foundUser = NO;
+    [OLUser listWithCallback:function(user){if([[user email] isEqualToString:[userInfo objectForKey:@"username"]])
+        {
+            foundUser = YES;
+            [self hasLoggedIn:user];
+        }} finalCallback:function(){if(!foundUser){[self loginFailed];}}];
 }
 
-- (void)showRegister
+- (void)showLoginAndRegisterWindow:(id)sender
 {
-	[_loginWindow close];
-	[[CPApplication sharedApplication] runModalForWindow:_registerWindow];
-}
-
-- (void)showLogin:(id)sender
-{
-	[[CPApplication sharedApplication] runModalForWindow:_loginWindow];
+    [[CPApplication sharedApplication] runModalForWindow:loginAndRegisterWindow];
+    [loginAndRegisterWindow transitionToLoginView:nil];
 }
 
 - (void)didSubmitRegistration:(CPDictionary)registrationInfo
 {
-	var user = [[OLUser alloc] initWithEmail:[registrationInfo objectForKey:@"username"]];
-	if([user email])
-	{
-		[self hasRegistered:user];
-	}
-	else
-	{
-		[self registrationFailed];
-	}
+    var user = [[OLUser alloc] initWithEmail:[registrationInfo objectForKey:@"username"]];
+    if([user email])
+    {
+        [self hasRegistered:user];
+    }
+    else
+    {
+        [self registrationFailed];
+    }
 }
 
 - (void)hasRegistered:(OLUser)aUser
 {
-	[aUser save];
-	[_registerWindow close];
-	[self showLogin:self];
+    [aUser saveWithCallback:function(user)
+    {
+     [self hasLoggedIn:aUser];
+    }];
 }
 
 - (void)registrationFailed
 {
-	[_registerWindow showRegistrationFailed]
+    [loginAndRegisterWindow registrationFailed]
 }
 
 @end
-
-function makeLoggedInTitle(user)
-{
-	var email = [user email];
-	return "Welcome, " + email + "!";
-}

@@ -1,4 +1,4 @@
-@import "../models/OLResource.j"
+@import "../Models/OLResource.j"
 
 var OLResourceEditorViewIdentifierColumnHeader = @"OLResourceEditorViewIdentifierColumnHeader";
 var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHeader";
@@ -48,7 +48,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 		[self addSubview:_scrollView];
 
 		var bottomBar = [[CPView alloc] initWithFrame:CGRectMake(0.0, CGRectGetHeight([_scrollView bounds]), CGRectGetWidth(aFrame), 32.0)];
-		[bottomBar setBackgroundColor:[CPColor lightGrayColor]];
+		[bottomBar setBackgroundColor:[CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/_CPToolbarViewBackground.png"]]]];
 		[bottomBar setAutoresizingMask:CPViewWidthSizable | CPViewMinYMargin];
 		
 		voteUpButton = [CPButton buttonWithTitle:@"Vote Up"];

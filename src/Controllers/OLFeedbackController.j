@@ -1,7 +1,7 @@
 @import <Foundation/CPObject.j>
 
-@import "../views/OLFeedbackWindow.j"
-@import "../models/OLFeedback.j"
+@import "../Views/OLFeedbackWindow.j"
+@import "../Models/OLFeedback.j"
 
 @implementation OLFeedbackController : CPObject
 {

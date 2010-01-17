@@ -1,6 +1,11 @@
 @import <Foundation/CPObject.j>
-@import <Foundation/CPKeyedArchiver.j>
+
+@import "../Utilities/OLJSONKeyedArchiver.j"
+@import "../Utilities/OLJSONKeyedUnarchiver.j"
 @import "../Utilities/OLException.j"
+@import "../Utilities/OLURLConnectionFactory.j"
+
+var __createURLConnectionFunction = nil;
 
 @implementation OLActiveRecord : CPObject
 {
@@ -11,39 +16,31 @@
 	CPURLConnection _createConnection;
 	CPURLConnection _getConnection;
 	CPURLConnection _listConnection;
+	CPURLConnection findByConnection;
 	
-	Function getCallback;
+	Function        getCallback;
+	Function        saveCallback;
+	Function        createCallback;
+	Function        findByCallback;
 	
 	id _delegate @accessors(property=delegate);
-}
-
-+ (CPArray)list
-{
-    var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-    	reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
-	
-    //[exception setClassWithError:[self class]];
-    [exception setMethodWithError:@"list"];
-    //[exception setAdditionalInformation:"List is deprecated, use listWithCallback"];
-
-    [exception raise];
-}
-
-+ (void)listWithCallback:(Function)callback
-{
-    [self listWithCallback:callback finalCallback:function(){}];
 }
 
 /*
  * This has a special callback requirement. Because we want our lists to load when available (rather than when all are loaded)
  * we need this callback to ADD to a list rather than SET a list. Expect a single record as an argument!
  */
++ (void)listWithCallback:(Function)callback
+{
+    [self listWithCallback:callback finalCallback:function(){}];
+}
+
 + (void)listWithCallback:(Function)callback finalCallback:(Function)finalCallback
 {
 	try
 	{
 		var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
-	    var url = @"api/" + modifiedClassName + "/_all_docs";
+	    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find";
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 		var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
 		var numberCalledBack = 0;
@@ -62,20 +59,35 @@
 			    }
 			}];
 		}
+		
+		if([data.rows count] == 0)
+		{
+		    finalCallback();
+		}
 	}
 	catch(ex)
 	{
-		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-
-		//[exception setClassWithError:[self class]];
-		[exception setMethodWithError:@"list"];
-		//[exception setAdditionalInformation:ex];
-
-		[exception raise];
-		
-		return [CPArray array];
+        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+         reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
+        
+        //[exception setClassWithError:[self class]];
+        [exception setMethodWithError:@"list"];
+        //[exception setAdditionalInformation:ex];
+        
+        [exception raise];
+        
+        return [CPArray array];
 	}
+}
+
++ (void)find:(CPString)propertyToSearchOn by:(JSON)object callback:(Function)callback
+{
+	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
+    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find_by_" + propertyToSearchOn + "?key=" + object;
+	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
+	
+	findByCallback = callback;
+    findByConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
 }
 
 + (void)findByRecordID:(CPString)aRecordID withCallback:(Function)callback
@@ -99,18 +111,6 @@
     return self;
 }
 
-- (id)get
-{
-	var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-		reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
-		
-	//[exception setClassWithError:[self class]];
-	[exception setMethodWithError:@"get"];
-	//[exception setAdditionalInformation:"Get is deprecated, use getWithCallback"];
-	
-	[exception raise];
-}
-
 - (void)getWithCallback:(Function)callback
 {
 	try
@@ -119,28 +119,33 @@
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"GET"];
 	
-    	_getConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
+    	_getConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
 	}
 	catch(ex)
 	{
-		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
-			
-		//[exception setClassWithError:[self class]];
-		[exception setMethodWithError:@"get"];
-		//[exception setAdditionalInformation:ex];
-		
-		[exception raise];
-		
-		return [[CPObject alloc] init];
+        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+         reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
+         
+        //[exception setClassWithError:[self class]];
+        [exception setMethodWithError:@"get"];
+        //[exception setAdditionalInformation:ex];
+        
+        [exception raise];
+        
+        return [[CPObject alloc] init];
 	}
 }
 
 - (void)save
 {
+    [self saveWithCallback:function(){}];
+}
+
+- (void)saveWithCallback:(Function)callback
+{
 	if (!_recordID)
 	{
-        [self _create];
+        [self _createWithCallback:callback];
 	}
 	else
 	{	
@@ -148,61 +153,57 @@
 		{
 			var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 			[urlRequest setHTTPMethod:"POST"];
-		
-	        var archivedData = [[CPKeyedArchiver archivedDataWithRootObject:self] string];
-	        var jsonedData = JSON.stringify({"_rev": _revision, "archive":archivedData});
-	    	[urlRequest setHTTPBody:jsonedData];
 	
-	    	_saveConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
+            var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
+            archivedJSON["_rev"] = _revision;
+                     
+            [urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
+	
+	    	saveCallback = callback;
+	    	_saveConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
 		}
 		catch(ex)
 		{
-			var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-				reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-
-			//[exception setClassWithError:[self class]];
-			[exception setMethodWithError:@"save"];
-			//[exception setAdditionalInformation:ex];
-
-			[exception raise];
+            var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+             reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
+            
+            //[exception setClassWithError:[self class]];
+            [exception setMethodWithError:@"save"];
+            //[exception setAdditionalInformation:ex];
+            
+            [exception raise];
 		}
     }    
 }
 
-- (void)_create
+- (void)_createWithCallback:(Function)callback
 {
 	try
 	{
 	    var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:NO]];
 		[urlRequest setHTTPMethod:"PUT"];
-		
-		console.log("Here1", self);
 
-	    var archivedData = [[CPKeyedArchiver archivedDataWithRootObject:self] string];
-		
-		console.log("Here2");
-	    var jsonedData = JSON.stringify({"archive":archivedData});
-		console.log("Here3");
-	    [urlRequest setHTTPBody:jsonedData];
+	    var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
+	    [urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
 	
 		if ([_delegate respondsToSelector:@selector(willCreateRecord:)])
 		{
 		    [_delegate willCreateRecord:self];
 		}
 		
-		_createConnection = [CPURLConnection connectionWithRequest:urlRequest delegate:self];
+		createCallback = callback;
+		_createConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
 	}
 	catch(ex)
 	{
-		console.log(ex);
-		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-
-		//[exception setClassWithError:[self class]];
-		[exception setMethodWithError:@"create"];
-		//[exception setAdditionalInformation:ex];
-
-		[exception raise];
+        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+         reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
+        
+        //[exception setClassWithError:[self class]];
+        [exception setMethodWithError:@"create"];
+        //[exception setAdditionalInformation:ex];
+        
+        [exception raise];
 	}
 }
 
@@ -213,18 +214,18 @@
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"DELETE"];
 	
-		[[CPURLConnection alloc] initWithRequest:urlRequest delegate:nil startImmediately:YES];
+		[[self class] createConnectionWithRequest:urlRequest delegate:nil];
 	}
 	catch(ex)
 	{
-		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-			
-		//[exception setClassWithError:[self class]];
-		[exception setMethodWithError:@"delete"];
-		//[exception setAdditionalInformation:ex];
-		
-		[exception raise];		
+        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+         reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
+         
+        //[exception setClassWithError:[self class]];
+        [exception setMethodWithError:@"delete"];
+        //[exception setAdditionalInformation:ex];
+        
+        [exception raise];   	
 	}
 }
 
@@ -236,6 +237,15 @@
     
 	    switch (connection)
 	    {
+	        case findByConnection:
+            	for(var i = 0; i < [json.rows count]; i++)
+            	{
+            		[self findByRecordID:json.rows[i].id withCallback:function(user)
+            		{
+            		    findByCallback(user); 
+            		}];
+            	}
+            	break;
 	        case _createConnection:
 	            _recordID = json["id"];
 	            _revision = json["rev"];
@@ -243,15 +253,15 @@
 	        	{
 	        	    [_delegate didCreateRecord:self];
 	        	}
+	        	createCallback(self);
 	            break;
 	        case _saveConnection:
 	            _revision = json["rev"] || _revision;
+	            saveCallback(self);
 	            break;
 	        case _getConnection:
         		// Unarchive the data
-        		var archivedString = json.archive;
-        		var archivedData = [CPData dataWithString:archivedString];
-        		var rootObject = [CPKeyedUnarchiver unarchiveObjectWithData:archivedData];
+        		var rootObject = [OLJSONKeyedUnarchiver unarchiveObjectWithData:json];
 
         		[rootObject setRevision:json._rev];
         		[rootObject setRecordID:json._id];
@@ -279,14 +289,14 @@
 	}
 	catch(ex)
 	{
-		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-			reason:"it was unable to handle the response from the server" userInfo:[CPDictionary dictionary]];
-			
-		///[exception setClassWithError:""+[self class]];
-		[exception setMethodWithError:@"get"];
-		//[exception setAdditionalInformation:ex];
-		
-		[exception raise];
+        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
+         reason:"it was unable to handle the response from the server" userInfo:[CPDictionary dictionary]];
+         
+        ///[exception setClassWithError:""+[self class]];
+        [exception setMethodWithError:@"get"];
+        //[exception setAdditionalInformation:ex];
+        
+        [exception raise];
 	}
 }
 

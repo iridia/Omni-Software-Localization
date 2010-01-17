@@ -86,12 +86,12 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
                 [[[resourcesView editingView] lineItemsTableView] reloadData];
                 [resourcesView showLineItemsTableView];
     			[resourcesView setVoteCount:[selectedResource numberOfVotes]];
+                [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
             }
             else
             {
                 [resourcesView hideLineItemsTableView];
             }
-            [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:-1] byExtendingSelection:NO];
             break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
@@ -128,10 +128,12 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
     var tableView = [aNotification object];
-    
-    var selectedRow = [[tableView selectedRowIndexes] firstIndex];
-    
-    [self setSelectedLineItem:[lineItems objectAtIndex:selectedRow]];
+
+    if(![[tableView selectedRowIndexes] isEqualToIndexSet:[CPIndexSet indexSet]])
+    {
+        var selectedRow = [[tableView selectedRowIndexes] firstIndex];
+        [self setSelectedLineItem:[lineItems objectAtIndex:selectedRow]];
+    }
 }
 
 @end
