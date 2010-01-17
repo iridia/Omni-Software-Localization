@@ -38,7 +38,7 @@
 
 - (void)new:(id)sender
 {
-    [uploadWindowController startUpload];
+    [uploadWindowController startUpload:self];
 }
 
 - (void)updateLoginItemWithTitle:(CPString)aTitle

@@ -77,8 +77,23 @@ var uploadURL = @"Upload/upload.php";
 	return self;
 }
 
-- (void)startUpload
+- (void)startUpload:(id)sender
 {
+    if([[CPUserSessionManager defaultManager] status] !== CPUserSessionLoggedInStatus)
+    {
+        var userInfo = [CPDictionary dictionary];
+        [userInfo setObject:@"You must log in to create a new project/glossary!" forKey:@"StatusMessageText"];
+        [userInfo setObject:@selector(startUpload:) forKey:@"SuccessfulLoginAction"];
+        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
+    
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLUserShouldLoginNotification"
+            object:nil
+            userInfo:userInfo];
+    
+        return;
+    }
+    
     [[CPApplication sharedApplication] runModalForWindow:uploadWindow];
 }
 
@@ -92,14 +107,7 @@ var uploadURL = @"Upload/upload.php";
 @implementation OLUploadWindowController (UploadButtonDelegate)
 
 - (void)uploadButton:(id)sender didChangeSelection:(CPString)selection
-{
-    if([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
-    {
-        
-        
-        return;
-    }
-    
+{   
 	[sender submit];
 }
 
