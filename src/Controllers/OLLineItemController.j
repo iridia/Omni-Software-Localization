@@ -35,8 +35,13 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
     var loggedInUserId = [[CPUserSessionManager defaultManager] userIdentifier];
     if(!loggedInUserId)
     {
+        var successfulLoginCallback = function() {[self editSelectedLineItem:self];};
+        
         var userInfo = [CPDictionary dictionary];
         [userInfo setObject:@"You must log in to edit this item!" forKey:@"StatusMessageText"];
+        [userInfo setObject:@selector(editSelectedLineItem:) forKey:@"SuccessfulLoginAction"];
+        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
+        
         [[CPNotificationCenter defaultCenter]
             postNotificationName:@"OLUserShouldLoginNotification"
             object:nil

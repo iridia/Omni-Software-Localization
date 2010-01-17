@@ -7,6 +7,8 @@
 {
     CPWindow    loginAndRegisterWindow;
     id          delegate                @accessors;
+    id          successfulLoginTarget   @accessors;
+    SEL         successfulLoginAction   @accessors;
 }
 
 - (id)init
@@ -37,6 +39,8 @@
     var sessionManager = [CPUserSessionManager defaultManager];
     [sessionManager setStatus:CPUserSessionLoggedInStatus];
     [sessionManager setUserIdentifier:[aUser recordID]];
+    
+    [successfulLoginTarget performSelector:successfulLoginAction withObject:self];
 }
 
 - (void)loginFailed
@@ -57,12 +61,21 @@
 
 - (void)showLoginAndRegisterWindow:(CPNotification)notification
 {   
+    successfulLoginTarget = nil;
+    successfulLoginAction = nil;
     [[CPApplication sharedApplication] runModalForWindow:loginAndRegisterWindow];
     [loginAndRegisterWindow transitionToLoginView:nil];
     
     if([[[notification userInfo] allKeys] containsObject:@"StatusMessageText"])
     {
         [loginAndRegisterWindow setStatus:[[notification userInfo] objectForKey:@"StatusMessageText"]];
+    }
+    
+    if([[[notification userInfo] allKeys] containsObject:@"SuccessfulLoginAction"] &&
+        [[[notification userInfo] allKeys] containsObject:@"SuccessfulLoginTarget"])
+    {
+        successfulLoginTarget = [[notification userInfo] objectForKey:@"SuccessfulLoginTarget"];
+        successfulLoginAction = [[notification userInfo] objectForKey:@"SuccessfulLoginAction"];
     }
 }
 
