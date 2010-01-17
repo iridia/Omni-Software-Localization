@@ -69,6 +69,11 @@ var OLJSONKeyedArchiverClassKey = @"$$CLASS$$";
     [self encodeObject:aNumber forKey:aKey];
 }
 
+- (void)encodeInt:(int)anInt forKey:(CPString)aKey
+{
+    [self encodeObject:anInt forKey:aKey];
+}
+
 - (JSON)_encodeDictionaryOfObjects:(CPDictionary)dictionaryToEncode forKey:(CPString)aKey
 {
     var encodedDictionary = {};
