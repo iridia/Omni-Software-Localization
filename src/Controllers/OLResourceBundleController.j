@@ -1,18 +1,21 @@
 @import <Foundation/CPObject.j>
+@import "../Views/OLCreateNewBundleWindow.j"
 
 @implementation OLResourceBundleController : CPObject
 {
+    CPString            projectName                 @accessors(readonly);
     CPString            ownerId                     @accessors;
     CPArray             resourceBundles             @accessors(readonly);
     CPResourceBundle    selectedResourceBundle      @accessors;
     CPView              resourcesView               @accessors;
-    CPString            projectName                 @accessors(readonly);
+    CPView              createNewBundleWindow         @accessors;
 }
 
 - (id)init
 {
     if(self = [super init])
     {
+        createNewBundleWindow = [[OLCreateNewBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
     }
     return self;
 }
@@ -46,9 +49,7 @@
 {
     if([aButton indexOfSelectedItem] === 0)
     {
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLResourceBundleShouldBeCreated"
-            object:self];
+        [self startCreateNewBundle:self];
         
         return;
     }
@@ -80,6 +81,11 @@
     }
     
     return result;
+}
+
+- (void)startCreateNewBundle:(id)sender
+{
+    [[CPApplication sharedApplication] runModalForWindow:createNewBundleWindow];
 }
 
 @end
