@@ -61,16 +61,15 @@
 
 - (void)setUpOwner:(CPString)ownerId
 {
-    var ownerName = [OLUser findByRecordID:ownerId withCallback:function(user){    
-        var components = [[user email] componentsSeparatedByString:@"@"];
-        var ownerName = [components objectAtIndex:0].toLowerCase();
+    var ownerName = [OLUser findByRecordID:ownerId withCallback:function(user){ 
+        var ownerName = [user email];
         
         if(ownerId === [[CPUserSessionManager defaultManager] userIdentifier])
         {
             ownerName = "yours";
         }
         
-        [owner setStringValue:[components objectAtIndex:0]];
+        [owner setStringValue:ownerName];
         [owner sizeToFit];
         [owner setCenter:CPPointMake(CGRectGetWidth([owner frame])/2 + 10, 20)];
     }];
