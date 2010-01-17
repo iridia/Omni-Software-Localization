@@ -15,6 +15,12 @@
     {
         loginAndRegisterWindow = [[OLLoginAndRegisterWindow alloc] initWithContentRect:CGRectMake(0.0, 0.0, 300.0, 180.0) styleMask:CPTitledWindowMask];
         [loginAndRegisterWindow setDelegate:self];
+        
+        [[CPNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(showLoginAndRegisterWindow:)
+            name:@"OLUserShouldLoginNotification"
+            object:nil];
     }
     return self;
 }
@@ -49,7 +55,7 @@
         }} finalCallback:function(){if(!foundUser){[self loginFailed];}}];
 }
 
-- (void)showLoginAndRegisterWindow:(id)sender
+- (void)showLoginAndRegisterWindow:(CPNotification)notification
 {
     [[CPApplication sharedApplication] runModalForWindow:loginAndRegisterWindow];
     [loginAndRegisterWindow transitionToLoginView:nil];
