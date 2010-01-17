@@ -74,7 +74,7 @@
 {
     var result = [CPArray array];
     
-    [result addObject:"Add Language..."];
+    [result addObject:@"Add Language..."];
     for(var i = 0; i < [resourceBundles count]; i++)
     {
         [result addObject:[[[resourceBundles objectAtIndex:i] language] name]];
@@ -86,6 +86,37 @@
 - (void)startCreateNewBundle:(id)sender
 {
     [[CPApplication sharedApplication] runModalForWindow:createNewBundleWindow];
+    [createNewBundleWindow setUp:self];
+}
+
+- (CPArray)titlesOfAvailableLanguage
+{
+    var result = [CPArray array];
+    
+    for(var i = 0; i < [[OLLanguage allLanguages] count]; i++)
+    {
+        var theLanguage = [[OLLanguage allLanguages] objectAtIndex:i];
+        
+        if(![self isLanguageAlreadyLocalized:theLanguage])
+        {
+            [result addObject:[[[OLLanguage allLanguages] objectAtIndex:i] name]];
+        }
+    }
+    
+    return result;
+}
+
+- (BOOL)isLanguageAlreadyLocalized:(OLLanguage)aLanguage
+{
+    for(var i = 0; i < [resourceBundles count]; i++)
+    {
+        if([[[resourceBundles objectAtIndex:i] language] equals:aLanguage])
+        {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 @end

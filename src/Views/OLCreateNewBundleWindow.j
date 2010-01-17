@@ -17,14 +17,24 @@
         [popUpButton setCenter:CGPointMake(CGRectGetWidth([view frame])-90, 20)];
         
         createButton = [CPButton buttonWithTitle:@"Create"];
+        [createButton setAction:@selector(create:)];
      
         cancelButton = [CPButton buttonWithTitle:@"Cancel"];
+        [cancelButton setAction:@selector(cancel:)];
         
         [view addSubview:popUpButton positioned:CPViewWidthCentered | CPViewHeightCentered relativeTo:view withPadding:0.0];
         [view addSubview:createButton positioned:CPViewBottomAligned | CPViewRightAligned relativeTo:view withPadding:10.0];
         [view addSubview:cancelButton positioned:CPViewOnTheLeft | CPViewHeightSame relativeTo:createButton withPadding:10.0];
     }
     return self;
+}
+
+- (void)setUp:(OLResourceBundleController)resourceBundleController
+{
+    [createButton setTarget:resourceBundleController];
+    [cancelButton setTarget:resourceBundleController];
+    
+    [popUpButton addItemsWithTitles:[resourceBundleController titlesOfAvailableLanguage]];
 }
 
 @end

@@ -16,6 +16,11 @@
     return [languageMapping objectForKey:lproj];
 }
 
++ (CPArray)allLanguages
+{
+    return [CPArray arrayWithArray:[languageMapping allValues]];
+}
+
 + (OLLanguage)english {	return [[OLLanguage alloc] initWithName:@"English"]; }
 + (OLLanguage)french {	return [[OLLanguage alloc] initWithName:@"French"]; }
 + (OLLanguage)spanish {	return [[OLLanguage alloc] initWithName:@"Spanish"]; }
