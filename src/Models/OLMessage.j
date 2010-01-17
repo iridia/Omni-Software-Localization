@@ -2,8 +2,9 @@
 
 @implementation OLMessage : OLActiveRecord
 {
-    CPString subject @accessors;
-	CPString content @accessors;
+    CPString subject    @accessors;
+	CPString content    @accessors;
+	CPDate   dateSent   @accessors;
 	CPString fromUserID @accessors;  // could possibly change to the user object later (depending on session manager)
 }
 
@@ -24,6 +25,7 @@
 		fromUserID = aUserID;
 		subject = aSubject;
 		content = someContent;
+		dateSent = [CPDate date];
 	}
 	return self;
 }
@@ -33,6 +35,7 @@
 var OLMessageFromUserIDKey= @"OLMessageFromUserIDKey";
 var OLMessageSubjectKey = @"OLMessageSubjectKey";
 var OLMessageContentKey = @"OLMessageContentKey";
+var OLMessageDateSentKey = @"OLMessageDateSentKey";
 
 @implementation OLMessage (CPCoding)
 
@@ -45,6 +48,7 @@ var OLMessageContentKey = @"OLMessageContentKey";
 		fromUserID = [aCoder decodeObjectForKey:OLMessageFromUserIDKey];
         subject = [aCoder decodeObjectForKey:OLMessageSubjectKey];
         content = [aCoder decodeObjectForKey:OLMessageContentKey];
+        dateSent = [aCoder decodeObjectForKey:OLMessageDateSentKey];
     }
     
     return self;
@@ -55,6 +59,7 @@ var OLMessageContentKey = @"OLMessageContentKey";
 	[aCoder encodeObject:fromUserID forKey:OLMessageFromUserIDKey];
     [aCoder encodeObject:subject forKey:OLMessageSubjectKey];
     [aCoder encodeObject:content forKey:OLMessageContentKey];
+    [aCoder encodeObject:dateSent forKey:OLMessageDateSentKey];
 }
 
 @end

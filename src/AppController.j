@@ -21,10 +21,14 @@
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
 @import "Controllers/OLUploadController.j"
+@import "Controllers/OLMessageController.j"
+@import "Controllers/OLCommunityController.j"
 
 @import "Views/OLMenu.j"
 @import "Views/OLResourcesView.j"
 @import "Views/OLGlossariesView.j"
+@import "Views/OLMailView.j"
+@import "Views/OLMessageWindow.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
@@ -43,9 +47,12 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	OLResourceController		resourceController;
 	OLLineItemController		lineItemController;
 	OLGlossaryController		glossaryController;
+	OLMessageController         messageController;
+	OLCommunityController       communityController;
 	
 	OLResourcesView				resourcesView;
 	OLGlossariesView			glossariesView;
+	OLMailView                  mailView;
 
     OLToolbarController         toolbarController @accessors(property=toolbarController);
 }
@@ -87,13 +94,27 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[glossariesView setGlossaryController:glossaryController];
 	[contentViewController setGlossariesView:glossariesView];
 	[glossaryController setGlossariesView:glossariesView];
+    
+    messageController = [[OLMessageController alloc] init];
+    // [messageController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
+    // [messageController addObserver:messageController forKeyPath:@"selectedMessage" options:CPKeyValueObservingOptionNew context:nil];
+    
+    communityController = [[OLCommunityController alloc] init];
+    [communityController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
+    [communityController addObserver:contentViewController forKeyPath:@"selectedCommunityItem" options:CPKeyValueObservingOptionNew context:nil];
+    
+    mailView = [[OLMailView alloc] initWithFrame:[mainContentView bounds]];
+    [mailView setCommunityController:communityController];
+    [contentViewController setMailView:mailView];
+    [communityController setMailView:mailView];
 	
     [projectController loadProjects];
 	[glossaryController loadGlossaries];
+    // [messageController loadMessages];
 	
 	var loginController = [[OLLoginController alloc] init];
 	
-    setupToolbar(self, theWindow, loginController, projectController, nil);
+    setupToolbar(self, theWindow, loginController, projectController, nil, messageController);
 }
 
 - (void)awakeFromCib
@@ -141,11 +162,11 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 @end
 
-function setupToolbar(self, theWindow, loginController, projectController, glossaryController)
+function setupToolbar(self, theWindow, loginController, projectController, glossaryController,messageController)
 {
     var feedbackController = [[OLFeedbackController alloc] init];
     var toolbarController = [[OLToolbarController alloc] initWithFeedbackController:feedbackController loginController:loginController
-            projectController:projectController glossaryController:glossaryController];
+            projectController:projectController glossaryController:glossaryController messageController:messageController];
 
     var toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
     [toolbar setDelegate:toolbarController];

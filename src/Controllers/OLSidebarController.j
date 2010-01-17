@@ -21,7 +21,7 @@ var OLSidebarCommunityKey = @"Community";
     // Want projects to initially show up, even if there are no projects.
     [self updateProjects:[CPArray array]];
 	[self updateGlossaries:[CPArray array]];
-	[self updateCommunity:[CPArray array]];
+	[self updateCommunity:["Inbox"]];
     
     // Autohide the scrollers here and not in the Cib because it is impossible to
     // select the scrollView in Atlas again otherwise.

@@ -2,6 +2,7 @@
 
 var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
 var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
+var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 
 @implementation OLToolbarController : CPObject
 {
@@ -9,6 +10,7 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
     OLProjectController  projectController;
     OLLoginController    loginController;
     OLGlossaryController glossaryController;
+    OLMessageController  messageController;
     CPMenuItem           loginMenuItem;
     CPToolbar            toolbar @accessors;
     CPString             loginValue;
@@ -16,11 +18,12 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
 
 - (id)init
 {
-    return [self initWithFeedbackController:nil loginController:nil projectController:nil glossaryController:nil];
+    return [self initWithFeedbackController:nil loginController:nil projectController:nil glossaryController:nil messageController:nil];
 }
 
 - (id)initWithFeedbackController:(OLFeedbackController)aFeedbackController loginController:(OLLoginController)aLoginController
         projectController:(OLProjectController)aProjectController glossaryController:(OLGlossaryController)aGlossaryController
+        messageController:(OLMessageController)aMessageController
 {
     self = [super init];
     
@@ -30,6 +33,7 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
         loginController = aLoginController;
         projectController = aProjectController;
         glossaryController = aGlossaryController;
+        messageController = aMessageController;
         loginValue = "Login / Register";
         
         [[CPNotificationCenter defaultCenter]
@@ -49,7 +53,7 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
 
 - (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)toolbar
 {
-    return [CPToolbarFlexibleSpaceItemIdentifier, OLLoginToolbarItemIdentifier, OLFeedbackToolbarItemIdentifier];
+    return [OLMessageToolbarItemIdentifier, CPToolbarFlexibleSpaceItemIdentifier, OLLoginToolbarItemIdentifier, OLFeedbackToolbarItemIdentifier];
 }
 
 - (CPToolbarItem)toolbar:(CPToolbar)toolbar itemForItemIdentifier:(CPString)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
@@ -86,6 +90,23 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
         [menuItem setAction:@selector(showLogin:)];
         
         loginMenuItem = menuItem;
+    }
+    else if(itemIdentifier === OLMessageToolbarItemIdentifier)
+    {
+        var messageButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Dialog.png" size:CPSizeMake(32, 32)];
+        var messageButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Dialog.png" size:CPSizeMake(32, 32)];
+            
+        [menuItem setImage:messageButton];
+        [menuItem setAlternateImage:messageButton];
+        [menuItem setMinSize:CGSizeMake(32, 32)];
+        [menuItem setMaxSize:CGSizeMake(32, 32)];
+        [menuItem setLabel:"New Message"];
+
+        [menuItem setTarget:messageController];
+        [menuItem setAction:@selector(showMessageWindow:)];
+        
+        loginMenuItem = menuItem;
+        
     }
     
     return menuItem;

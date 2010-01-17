@@ -7,6 +7,7 @@
 	CPView			currentView;
 	CPView			resourcesView   @accessors;
 	CPView			glossariesView	@accessors;
+	CPView          mailView        @accessors;
 
     @outlet 		CPView			contentView;
 }
@@ -48,6 +49,13 @@
 		       [self setCurrentView:glossariesView];
 		    }
 			break;
+		case @"selectedCommunityItem":
+		    var selectedCommunityItem = [object selectedCommunityItem];
+		    if(selectedCommunityItem)
+		    {
+		        [self setCurrentView:mailView];
+		    }
+		    break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
             break;

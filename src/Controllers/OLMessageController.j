@@ -31,6 +31,7 @@
     var email = [messageDictionary objectForKey:@"email"];
     var subject = [messageDictionary objectForKey:@"subject"];
     var text = [messageDictionary objectForKey:@"content"];
+    var dateSent = [messageDictionary objectForKey:@"dateSent"];
     
     var message = [[OLMessage alloc] initWithUserID:email subject:subject content:text];
     [message setDelegate:self];
