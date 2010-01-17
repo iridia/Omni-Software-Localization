@@ -6,12 +6,12 @@
 	CPString	name        @accessors(readonly);
 }
 
--(id)init
+- (id)init
 {
 	return [self initWithName:@"TestingName"];
 }
 
--(id)initWithName:(CPString)aName
+- (id)initWithName:(CPString)aName
 {
 	if (self = [super init])
 	{
@@ -22,9 +22,14 @@
 	return self;
 }
 
--(void)addLineItem:(OLLineItem)aLineItem
+- (void)addLineItem:(OLLineItem)aLineItem
 {
 	[lineItems addObject:aLineItem];
+}
+
+- (CPString)sidebarName
+{
+    return [self name];
 }
 
 @end
