@@ -135,10 +135,12 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 - (void)handleException:(OLException)anException
 {
+    CPLog.error(@"Error: %s threw the error: %s. In method: %s. Additional info: %s.", [anException classWithError], [anException reason], [anException methodWithError], [anException userInfo]);
     
     alert = [[CPAlert alloc] init];
     [alert setTitle:@"Application Error"];
-    [alert setMessageText:@"Error!\n"+[anException name]+@" threw error "+[anException reason]];
+    var message = [CPString stringWithFormat:@"Error!\n%s.", [anException userMessage]];
+    [alert setMessageText:message];
     [alert addButtonWithTitle:@"Close"];
     [alert runModal];
 }
