@@ -49,8 +49,8 @@
 		       [self setCurrentView:glossariesView];
 		    }
 			break;
-		case @"selectedCommunityItem":
-		    var selectedCommunityItem = [object selectedCommunityItem];
+		case @"selectedItem":
+		    var selectedCommunityItem = [object selectedItem];
 		    if(selectedCommunityItem)
 		    {
 		        [self setCurrentView:mailView];

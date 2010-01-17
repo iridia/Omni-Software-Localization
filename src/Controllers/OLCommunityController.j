@@ -7,10 +7,10 @@ var OLMailViewFromUserIDColumnHeader = @"OLMailViewFromUserIDColumnHeader";
 var OLMailViewSubjectColumnHeader = @"OLMailViewSubjectColumnHeader";
 var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
-// Manages an array of glossaries
+// Manages an array of community items (Mailbox)
 @implementation OLCommunityController : CPObject
 {
-    CPArray             items        	    @accessors;
+    CPArray             messages    	    @accessors;
 	OLMessage	        selectedItem    	@accessors;
 	OLMailView          mailView            @accessors;
 }
@@ -55,31 +55,40 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 	var messageList = [OLMessage listWithCallback:function(message){[self addMessage:message];}];
 }
 
+- (void)addMessage:(OLMessage)message
+{
+    [self insertObject:message inMessagesAtIndex:[messages count]];
+}
+
+- (void)insertObject:(OLMessage)message inMessagesAtIndex:(int)index
+{
+    [messages insertObject:message atIndex:index];
+}
+
 @end
 
 @implementation OLCommunityController (OLCommunityTableViewDataSource)
 
 - (int)numberOfRowsInTableView:(CPTableView)mailTableView
 {
-    console.log([[OLMessage listWithCallback:function(message){[self addMessage:message];}] count]);
-    return [[OLMessage listWithCallback:function(message){[self addMessage:message];}] count];//Needs to be the number of mail items in the DB for the user.
+    return [messages count];//Needs to be the number of mail items in the DB for the user.
 }
 
 - (id)tableView:(CPTableView)mailTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
-    //Needs to set the values from the message passed in.
-       
+    var message = [messages objectAtIndex:row];
+    
     if ([tableColumn identifier] === OLMailViewFromUserIDColumnHeader)
     {
-       return [selectedItem fromUserID];
+       return [message fromUserID];
     }
     else if ([tableColumn identifier] === OLMailViewSubjectColumnHeader)
     {
-        return [selectedItem subject];
+        return [message subject];
     }
     else if ([tableColumn identifier] === OLMailViewDateSentColumnHeader)
     {
-        return [message dateSent];
+        return [selectedItem dateSent];
     }
 }
 
