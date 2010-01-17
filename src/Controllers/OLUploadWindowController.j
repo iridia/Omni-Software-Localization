@@ -93,6 +93,13 @@ var uploadURL = @"Upload/upload.php";
 
 - (void)uploadButton:(id)sender didChangeSelection:(CPString)selection
 {
+    if([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
+    {
+        
+        
+        return;
+    }
+    
 	[sender submit];
 }
 
