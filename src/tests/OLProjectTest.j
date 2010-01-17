@@ -121,4 +121,9 @@ var uploadedJSON = {"fileType":"zip","fileName":"Chess.app","resourcebundles":[{
     [self assert:clone notSame:target];
 }
 
+- (void)testThatOLProjectDoesGetCurrentProjectWithLineItem
+{
+    
+}
+
 @end

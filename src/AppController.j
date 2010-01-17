@@ -122,6 +122,16 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [alert runModal];
 }
 
+- (void)currentProject
+{
+    return [projectController selectedProject];
+}
+
+- (void)reloadProjects
+{
+    [projectController loadProjects];
+}
+
 @end
 
 @implementation AppController (CPSplitViewDelegate)

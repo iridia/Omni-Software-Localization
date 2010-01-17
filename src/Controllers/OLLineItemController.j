@@ -36,8 +36,15 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
     if(!loggedInUserId || [loggedInUserId isEqualToString:@""] || ![loggedInUserId isEqualToString:ownerId])
     {
         console.log(loggedInUserId, ownerId, [loggedInUserId isEqualToString:@""], [loggedInUserId isEqualToString:ownerId]);
-        // TODO: Launch "Do you want to localize this?" dialog
-        alert("Can't localize!");
+
+        var alert = [[CPAlert alloc] init];
+        [alert setTitle:@"Not your project!"];
+        [alert setMessageText:@"This is not your project. In order to start localizing, you will need to create your own. Do you want to create your own project of this application?"];
+        [alert setAlertStyle:CPInformationalAlertStyle];
+        [alert addButtonWithTitle:@"No"];
+        [alert addButtonWithTitle:@"Yes"];
+        [alert setDelegate:self];
+        [alert runModal];
         return;
     }
     
@@ -45,6 +52,18 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
     [lineItemEditWindowController setDelegate:self];
     [self addObserver:lineItemEditWindowController forKeyPath:@"selectedLineItem" options:CPKeyValueObservingOptionNew context:nil];
     [lineItemEditWindowController loadWindow];
+}
+
+- (void)alertDidEnd:(CPAlert)theAlert returnCode:(int)returnCode
+{
+    if(returnCode == 1)
+    {
+        var currentProject = [[CPApp delegate] currentProject];
+        var clonedProject = [currentProject clone];
+        [clonedProject setUserIdentifier:[[CPUserSessionManager defaultManager] userIdentifier]];
+        [clonedProject save];
+        [[CPApp delegate] reloadProjects];
+    }
 }
 
 - (void)nextLineItem
