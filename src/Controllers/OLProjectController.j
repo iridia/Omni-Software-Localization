@@ -132,6 +132,7 @@
         var clonedProject = [selectedProject clone];
         [clonedProject setUserIdentifier:[[CPUserSessionManager defaultManager] userIdentifier]];
         [clonedProject save];
+        [self addProject:clonedProject];
     }
 }
 
