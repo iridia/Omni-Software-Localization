@@ -44,7 +44,16 @@
 
 - (void)selectedResourceBundleDidChange:(CPPopUpButton)aButton
 {
-    [self setSelectedResourceBundle:[resourceBundles objectAtIndex:[aButton indexOfSelectedItem]]];
+    if([aButton indexOfSelectedItem] === 0)
+    {
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLResourceBundleShouldBeCreated"
+            object:self];
+        
+        return;
+    }
+    
+    [self setSelectedResourceBundle:[resourceBundles objectAtIndex:[aButton indexOfSelectedItem]-1]];
 }
 
 - (CPNumber)indexOfSelectedResourceBundle
@@ -53,7 +62,7 @@
     {
         if(selectedResourceBundle === [resourceBundles objectAtIndex:i])
         {
-            return i;
+            return i+1;
         }
     }
     
@@ -64,6 +73,7 @@
 {
     var result = [CPArray array];
     
+    [result addObject:"Add Language..."];
     for(var i = 0; i < [resourceBundles count]; i++)
     {
         [result addObject:[[[resourceBundles objectAtIndex:i] language] name]];
