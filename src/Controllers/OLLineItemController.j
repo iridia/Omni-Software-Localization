@@ -36,6 +36,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
     if(!loggedInUserId)
     {
         var userInfo = [CPDictionary dictionary];
+        [userInfo setObject:@"You must log in to edit this item!" forKey:@"StatusMessageText"];
         [[CPNotificationCenter defaultCenter]
             postNotificationName:@"OLUserShouldLoginNotification"
             object:nil

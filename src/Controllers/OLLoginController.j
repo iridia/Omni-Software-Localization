@@ -56,9 +56,14 @@
 }
 
 - (void)showLoginAndRegisterWindow:(CPNotification)notification
-{
+{   
     [[CPApplication sharedApplication] runModalForWindow:loginAndRegisterWindow];
     [loginAndRegisterWindow transitionToLoginView:nil];
+    
+    if([[[notification userInfo] allKeys] containsObject:@"StatusMessageText"])
+    {
+        [loginAndRegisterWindow setStatus:[[notification userInfo] objectForKey:@"StatusMessageText"]];
+    }
 }
 
 - (void)didSubmitRegistration:(CPDictionary)registrationInfo
