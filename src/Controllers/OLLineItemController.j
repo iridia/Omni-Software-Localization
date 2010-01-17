@@ -33,7 +33,16 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 - (void)editSelectedLineItem:(id)sender
 {
     var loggedInUserId = [[CPUserSessionManager defaultManager] userIdentifier];
-    if(!loggedInUserId || [loggedInUserId isEqualToString:@""] || ![loggedInUserId isEqualToString:ownerId])
+    if(!loggedInUserId)
+    {
+        var userInfo = [CPDictionary dictionary];
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLUserShouldLoginNotification"
+            object:nil
+            userInfo:userInfo];
+        return;
+    }
+    else if([loggedInUserId isEqualToString:@""] || ![loggedInUserId isEqualToString:ownerId])
     {
         [[CPNotificationCenter defaultCenter]
             postNotificationName:@"OLProjectShouldBranchNotification"
