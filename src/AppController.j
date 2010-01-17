@@ -116,7 +116,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	
     [projectController loadProjects];
 	[glossaryController loadGlossaries];
-    // [messageController loadMessages];
+    [communityController loadMessages];
 	
 	var loginController = [[OLLoginController alloc] init];
 	
