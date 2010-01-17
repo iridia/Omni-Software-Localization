@@ -72,8 +72,6 @@ var __createURLConnectionFunction = nil;
         [exception setClassWithError:[self className]];
         [exception setMethodWithError:_cmd];
         [exception setUserMessage:@"Could not finish the request to the server"];
-        [exception addUserInfo:callback forKey:@"callback"];
-        [exception addUserInfo:finalCallback forKey:@"finalCallback"];
 
 		[exception raise];
         
@@ -129,8 +127,7 @@ var __createURLConnectionFunction = nil;
         [exception setClassWithError:[self className]];
         [exception setMethodWithError:_cmd];
         [exception setUserMessage:@"Could not retrieve the requested data from the database"];
-        [exception addUserInfo:callback forKey:@"callback"];
-
+        
 		[exception raise];
         
         return [[CPObject alloc] init];
@@ -170,8 +167,6 @@ var __createURLConnectionFunction = nil;
             [exception setClassWithError:[self className]];
             [exception setMethodWithError:_cmd];
             [exception setUserMessage:@"Could not save the data to the database"];
-            [exception addUserInfo:callback forKey:@"callback"];
-
     		[exception raise];
 		}
     }    
@@ -202,7 +197,6 @@ var __createURLConnectionFunction = nil;
         [exception setClassWithError:[self className]];
         [exception setMethodWithError:_cmd];
         [exception setUserMessage:@"Could not create the data on the server"];
-        [exception addUserInfo:callback forKey:@"callback"];
 
 		[exception raise];
 	}
