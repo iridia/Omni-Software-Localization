@@ -7,13 +7,18 @@
 
 + (OLLanguage)languageFromLProj:(CPString)lproj
 {
-    lproj = [lproj stringByReplacingOccurrencesOfString:@".lproj" withString:@""];
-    if(![languageMapping objectForKey:lproj])
+    var title = [lproj stringByReplacingOccurrencesOfString:@".lproj" withString:@""];
+    return [self languageFromTitle:title];
+}
+
++ (OLLanguage)languageFromTitle:(CPString)title
+{
+    if(![languageMapping objectForKey:title])
     {
-        return [[OLLanguage alloc] initWithName:lproj];
+        return [[OLLanguage alloc] initWithName:title];
     }
 
-    return [languageMapping objectForKey:lproj];
+    return [languageMapping objectForKey:title];
 }
 
 + (CPArray)allLanguages

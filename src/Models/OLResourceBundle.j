@@ -8,8 +8,7 @@
  */
 @implementation OLResourceBundle : OLActiveRecord
 {
-	OLLanguage          _language   @accessors(property=language, readonly);
-	OLResourceBundle    _baseBundle @accessors(property=baseBundle);
+	OLLanguage          _language   @accessors(property=language);
 	CPArray             _resources  @accessors(property=resources);
 }
 

@@ -93,13 +93,25 @@
 {
     var result = [CPArray array];
     
+    for(var i = 0; i < [[self availableLanguages] count]; i++)
+    {
+        [result addObject:[[[self availableLanguages] objectAtIndex:i] name]];
+    }
+    
+    return result;
+}
+
+- (CPArray)availableLanguages
+{
+    var result = [CPArray array];
+    
     for(var i = 0; i < [[OLLanguage allLanguages] count]; i++)
     {
         var theLanguage = [[OLLanguage allLanguages] objectAtIndex:i];
         
         if(![self isLanguageAlreadyLocalized:theLanguage])
         {
-            [result addObject:[[[OLLanguage allLanguages] objectAtIndex:i] name]];
+            [result addObject:[[OLLanguage allLanguages] objectAtIndex:i]];
         }
     }
     
@@ -117,6 +129,42 @@
     }
     
     return false;
+}
+
+- (void)cancel:(id)sender
+{
+    [createNewBundleWindow close];
+    
+    [[CPApplication sharedApplication] stopModal];
+}
+
+- (void)create:(id)sender
+{
+    var clone = [[self defaultBundle] clone];
+    
+    [clone setLanguage:[[self availableLanguages] objectAtIndex:[[createNewBundleWindow popUpButton] indexOfSelectedItem]]];
+    
+    [resourceBundles addObject:clone];
+    [resourcesView reloadData:self];
+    
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:@"OLProjectDidChangeNotification"
+        object:clone];
+        
+    [self cancel:self];
+}
+
+- (void)defaultBundle
+{
+    for(var i = 0; i < [resourceBundles count]; i++)
+    {
+        if([[[resourceBundles objectAtIndex:i] language] equals:[OLLanguage english]])
+        {
+            return [resourceBundles objectAtIndex:i];
+        }
+    }
+    
+    return nil;
 }
 
 @end
