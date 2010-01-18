@@ -85,6 +85,29 @@
 
 - (void)startCreateNewBundle:(id)sender
 {
+    if([[CPUserSessionManager defaultManager] status] !== CPUserSessionLoggedInStatus)
+    {
+        var userInfo = [CPDictionary dictionary];
+        [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
+        [userInfo setObject:@selector(startCreateNewBundle:) forKey:@"SuccessfulLoginAction"];
+        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
+        
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLUserShouldLoginNotification"
+            object:nil
+            userInfo:userInfo];
+        
+        return;
+    }
+    else if([[CPUserSessionManager defaultManager] userIdentifier] !== ownerId)
+    {
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLProjectShouldBranchNotification"
+            object:nil];
+        
+        return;
+    }
+    
     [[CPApplication sharedApplication] runModalForWindow:createNewBundleWindow];
     [createNewBundleWindow setUp:self];
 }
