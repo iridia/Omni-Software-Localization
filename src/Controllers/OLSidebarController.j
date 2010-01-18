@@ -1,14 +1,9 @@
 @import <Foundation/CPObject.j>
-
-@import "../Views/OLSidebarOutlineView.j"
-
-var OLSidebarProjectsKey = @"Projects";
-var OLSidebarGlossariesKey = @"Glossaries";
-var OLSidebarCommunityKey = @"Community";
+@import <AppKit/CPOutlineView.j>
 
 @implementation OLSidebarController : CPObject
 {
-    CPDictionary            items;
+    CPDictionary            sidebarItems;
     OLSidebarOutlineView    sidebarOutlineView;
     
     @outlet                 CPScrollView                sidebarScrollView;
@@ -16,66 +11,55 @@ var OLSidebarCommunityKey = @"Community";
 
 - (void)awakeFromCib
 {
-    items = [CPDictionary dictionary];
-    
-    // Want projects to initially show up, even if there are no projects.
-    [self updateProjects:[CPArray array]];
-	[self updateGlossaries:[CPArray array]];
-	[self updateCommunity:["Inbox"]];
+    sidebarItems = [CPDictionary dictionary];
     
     // Autohide the scrollers here and not in the Cib because it is impossible to
     // select the scrollView in Atlas again otherwise.
     [sidebarScrollView setAutohidesScrollers:YES];
     [sidebarScrollView setHasHorizontalScroller:NO];
+    var onlyColumn = [[CPTableColumn alloc] initWithIdentifier:@"OnlyColumn"];
+    [onlyColumn setWidth:CGRectGetWidth([sidebarScrollView bounds])];
     
-    sidebarOutlineView = [[OLSidebarOutlineView alloc] initWithFrame:[sidebarScrollView bounds]];
+    sidebarOutlineView = [[CPOutlineView alloc] initWithFrame:[sidebarScrollView bounds]];
+    [sidebarOutlineView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [sidebarOutlineView addTableColumn:onlyColumn];
+    [sidebarOutlineView setOutlineTableColumn:onlyColumn];
+    [sidebarOutlineView setHeaderView:nil];
+    [sidebarOutlineView setCornerView:nil];
     [sidebarOutlineView setDataSource:self];
     [sidebarOutlineView setDelegate:self];
 
     [sidebarScrollView setDocumentView:sidebarOutlineView];
 }
 
-- (void)updateGlossaries:(CPArray)glossaries
+- (void)setSidebarItems:(CPArray)someItems forKey:(CPString)aKey
 {
-	[items setObject:glossaries forKey:OLSidebarGlossariesKey];
-	[sidebarOutlineView expandItem:OLSidebarGlossariesKey];
-}
-
-- (void)updateProjects:(CPArray)projects
-{
-    [items setObject:projects forKey:OLSidebarProjectsKey];
-    [sidebarOutlineView expandItem:OLSidebarProjectsKey];
-}
-
--(void)updateCommunity:(CPArray)community
-{
-    [items setObject:community forKey:OLSidebarCommunityKey];
-    [sidebarOutlineView expandItem:OLSidebarCommunityKey];
+    [sidebarItems setObject:someItems forKey:aKey];
+    [sidebarOutlineView reloadData];
+    [sidebarOutlineView expandItem:aKey];
 }
 
 @end
 
-@implementation OLSidebarController (OLResourceBundleControllerKVO)
+@implementation OLSidebarController (KVO)
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    switch (keyPath)
+    var itemsSelector = CPSelectorFromString(keyPath);
+    if (![object respondsToSelector:itemsSelector])
     {
-        case @"glossaries":
-            [self updateGlossaries:[object glossaries]];
-            break;
-        case @"projects":
-            [self updateProjects:[object projects]];
-            break;
-        case @"community":
-            [self updateCommunity:[object community]];
-            break;
-        default:
-            CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
-            break;
+        CPLog.warn(@"%s: Cannot get items for: %s, in: %s", _cmd, keyPath, [self className]);
+        return;
+    }
+    var items = [object performSelector:itemsSelector];
+    
+    var sidebarKey = [keyPath capitalizedString];
+    if ([object respondsToSelector:@selector(sidebarKey)])
+    {
+        sidebarKey = [object sidebarKey];
     }
     
-    [sidebarOutlineView reloadData];
+    [self setSidebarItems:items forKey:sidebarKey];
 }
 
 @end
@@ -86,19 +70,19 @@ var OLSidebarCommunityKey = @"Community";
 {
     if (item === nil)
     {
-        var keys = [items allKeys];
+        var keys = [sidebarItems allKeys];
         return [keys objectAtIndex:index];
     }
     else
     {
-        var values = [items objectForKey:item];
+        var values = [sidebarItems objectForKey:item];
         return [values objectAtIndex:index];
     }
 }
 
 - (BOOL)outlineView:(CPOutlineView)outlineView isItemExpandable:(id)item
 {
-    var values = [items objectForKey:item];
+    var values = [sidebarItems objectForKey:item];
     
     var isItemExpandable = ([values count] > 0);
     
@@ -109,20 +93,20 @@ var OLSidebarCommunityKey = @"Community";
 {
     if (item === nil)
     {
-        return [items count];
+        return [sidebarItems count];
     }
     else
     {
-        var values = [items objectForKey:item];
+        var values = [sidebarItems objectForKey:item];
         return [values count];
     }
 }
 
 - (id)outlineView:(CPOutlineView)outlineView objectValueForTableColumn:(CPTableColumn)tableColumn byItem:(id)item
 {
-    if ([item isKindOfClass:[OLProject class]] || [item isKindOfClass:[OLGlossary class]])
+    if ([item respondsToSelector:@selector(sidebarName)])
     {
-        return [item name];
+        return [item sidebarName];
     }
     else
     {

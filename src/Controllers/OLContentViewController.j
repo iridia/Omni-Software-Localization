@@ -22,8 +22,12 @@
         }
 
         currentView = aView;
-        [currentView setFrame:[contentView bounds]];
-        [contentView addSubview:currentView];
+        
+        if (currentView)
+        {
+            [currentView setFrame:[contentView bounds]];
+            [contentView addSubview:currentView];
+        }
     }
 }
 
@@ -32,7 +36,7 @@
 @implementation OLContentViewController (KVO)
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
-{
+{    
     switch (keyPath)
     {
         case @"selectedProject":
@@ -41,12 +45,20 @@
             {
     			[self setCurrentView:resourcesView];
     		}
+    		else
+    		{
+    		    [self setCurrentView:nil];
+    		}
             break;
 		case @"selectedGlossary":
 		    var selectedGlossary = [object selectedGlossary];
 		    if (selectedGlossary)
 		    {
 		       [self setCurrentView:glossariesView];
+		    }
+		    else
+		    {
+		        [self setCurrentView:nil];
 		    }
 			break;
 		case @"selectedItem":

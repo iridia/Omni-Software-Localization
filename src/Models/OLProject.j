@@ -64,6 +64,11 @@
 	[resourceBundles addObject:aResourceBundle];
 }
 
+- (CPString)sidebarName
+{
+    return [self name];
+}
+
 @end
 
 var OLProjectNameKey = @"OLProjectNameKey";
