@@ -189,22 +189,26 @@
 
 - (void)loginFailed
 {
-    [statusTextField setStringValue:@"Login failed"];
+    [self setStatus:@"Login failed"];
     [statusTextField setTextColor:[CPColor errorColor]];
-	[self centerStatusTextField];
 }
 
 - (void)registrationFailed
 {
-    [statusTextField setStringValue:@"Registration failed"];
+    [self setStatus:@"Registration failed"];
     [statusTextField setTextColor:[CPColor errorColor]];
-    [self centerStatusTextField];
 }
 
 - (void)centerStatusTextField
 {
 	[statusTextField sizeToFit];
     [statusTextField centerHorizontally];
+}
+
+- (void)setStatus:(CPString)statusMessage
+{
+    [statusTextField setStringValue:statusMessage];
+    [self centerStatusTextField];
 }
 
 @end

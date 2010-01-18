@@ -35,6 +35,12 @@
 		    selector:@selector(didReceiveProjectDidChangeNotification:)
 		    name:@"OLProjectDidChangeNotification"
 		    object:nil];
+		    
+		[[CPNotificationCenter defaultCenter]
+		    addObserver:self
+		    selector:@selector(didReceiveProjectShouldBranchNotification:)
+		    name:@"OLProjectShouldBranchNotification"
+		    object:nil];
     }
     return self;
 }
@@ -85,6 +91,29 @@
 - (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
 {
     [selectedProject save];
+}
+
+- (void)didReceiveProjectShouldBranchNotification:(CPNotification)notification
+{
+    var alert = [[CPAlert alloc] init];
+    [alert setTitle:@"Not your project!"];
+    [alert setMessageText:@"This is not your project. In order to start localizing, you will need to create your own. Do you want to create your own project of this application?"];
+    [alert setAlertStyle:CPInformationalAlertStyle];
+    [alert addButtonWithTitle:@"No"];
+    [alert addButtonWithTitle:@"Yes"];
+    [alert setDelegate:self];
+    [alert runModal];
+}
+
+- (void)alertDidEnd:(CPAlert)theAlert returnCode:(int)returnCode
+{
+    if(returnCode == 1 && [[CPUserSessionManager defaultManager] status] == CPUserSessionLoggedInStatus)
+    {
+        var clonedProject = [selectedProject clone];
+        [clonedProject setUserIdentifier:[[CPUserSessionManager defaultManager] userIdentifier]];
+        [clonedProject save];
+        [self addProject:clonedProject];
+    }
 }
 
 @end

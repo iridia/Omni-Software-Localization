@@ -7,6 +7,7 @@
     OLResourcesView resourcesView;
     CPPopUpButton   popUpButton;
     CPTextField     title;
+    CPTextField     owner;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -34,8 +35,16 @@
         [title setTextShadowOffset:CGSizeMake(0.0, 1.5)];
         [title setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
         
+        owner = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, 200, 15)];
+        
+        [owner setFont:[CPFont boldSystemFontOfSize:14.0]];
+        [owner setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
+        [owner setTextShadowOffset:CGSizeMake(0.0, 1.5)];
+        [owner setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
+        
         [self addSubview:titleBar];
         [self addSubview:title];
+        [self addSubview:owner];
     }
     
     return self;
@@ -50,12 +59,29 @@
     [title setCenter:CPPointMake(CGRectGetWidth([self frame])/2, 20)];
 }
 
+- (void)setUpOwner:(CPString)ownerId
+{
+    var ownerName = [OLUser findByRecordID:ownerId withCallback:function(user){ 
+        var ownerName = [user email];
+        
+        if(ownerId === [[CPUserSessionManager defaultManager] userIdentifier])
+        {
+            ownerName = "yours";
+        }
+        
+        [owner setStringValue:ownerName];
+        [owner sizeToFit];
+        [owner setCenter:CPPointMake(CGRectGetWidth([owner frame])/2 + 10, 20)];
+    }];
+}
+
 - (void)reloadData:(OLResourceBundleController)resourceBundleController
 {
     [popUpButton removeAllItems];
     [popUpButton addItemsWithTitles:[resourceBundleController titlesOfResourceBundles]];
     [popUpButton selectItemAtIndex:[resourceBundleController indexOfSelectedResourceBundle]];
     [self setUpTitle:[resourceBundleController projectName]];
+    [self setUpOwner:[resourceBundleController ownerId]];
 }
 
 - (void)setResourceBundleController:(OLResourceBundleController)resourceBundleController

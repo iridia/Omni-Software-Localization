@@ -5,6 +5,34 @@
 	CPString _name @accessors(property=name, readonly);
 }
 
++ (OLLanguage)languageFromLProj:(CPString)lproj
+{
+    var title = [lproj stringByReplacingOccurrencesOfString:@".lproj" withString:@""];
+    return [self languageFromTitle:title];
+}
+
++ (OLLanguage)languageFromTitle:(CPString)title
+{
+    if(![languageMapping objectForKey:title])
+    {
+        return [[OLLanguage alloc] initWithName:title];
+    }
+
+    return [languageMapping objectForKey:title];
+}
+
++ (CPArray)allLanguages
+{
+    return [CPArray arrayWithArray:[languageMapping allValues]];
+}
+
++ (OLLanguage)english {	return [[OLLanguage alloc] initWithName:@"English"]; }
++ (OLLanguage)french {	return [[OLLanguage alloc] initWithName:@"French"]; }
++ (OLLanguage)spanish {	return [[OLLanguage alloc] initWithName:@"Spanish"]; }
++ (OLLanguage)german {	return [[OLLanguage alloc] initWithName:@"German"]; }
++ (OLLanguage)arabic {	return [[OLLanguage alloc] initWithName:@"Arabic"]; }
++ (OLLanguage)japanese {	return [[OLLanguage alloc] initWithName:@"Japanese"]; }
+
 - (id)initWithName:(CPString)aName
 {
 	if(self = [super init])
@@ -19,23 +47,10 @@
 	return [_name isEqualToString:[otherLanguage name]];
 }
 
-+ (OLLanguage)languageFromLProj:(CPString)lproj
+- (OLLanguage)clone
 {
-    lproj = [lproj stringByReplacingOccurrencesOfString:@".lproj" withString:@""];
-    if(![languageMapping objectForKey:lproj])
-    {
-        return [[OLLanguage alloc] initWithName:lproj];
-    }
-    
-    return [languageMapping objectForKey:lproj];
+    return [[OLLanguage alloc] initWithName:_name];
 }
-
-+ (OLLanguage)english {	return [[OLLanguage alloc] initWithName:@"English"]; }
-+ (OLLanguage)french {	return [[OLLanguage alloc] initWithName:@"French"]; }
-+ (OLLanguage)spanish {	return [[OLLanguage alloc] initWithName:@"Spanish"]; }
-+ (OLLanguage)german {	return [[OLLanguage alloc] initWithName:@"German"]; }
-+ (OLLanguage)arabic {	return [[OLLanguage alloc] initWithName:@"Arabic"]; }
-+ (OLLanguage)japanese {	return [[OLLanguage alloc] initWithName:@"Japanese"]; }
 
 @end
 

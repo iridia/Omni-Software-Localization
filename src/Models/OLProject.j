@@ -21,6 +21,10 @@
     {
         userIdentifier = [[CPUserSessionManager defaultManager] userIdentifier];
     }
+    else
+    {
+        [OLException raise:@"Project" reason:@"you must be logged in in order to create a project!"];
+    }
     
 	var project = [[self alloc] initWithName:json.fileName userIdentifier:userIdentifier];
 
@@ -67,6 +71,18 @@
 - (CPString)sidebarName
 {
     return [self name];
+}
+
+- (OLProject)clone
+{
+    result = [[OLProject alloc] initWithName:name userIdentifier:userIdentifier];
+    
+    for(var i = 0; i < [resourceBundles count]; i++)
+    {
+        [result addResourceBundle:[[resourceBundles objectAtIndex:i] clone]];
+    }
+    
+    return result;
 }
 
 @end

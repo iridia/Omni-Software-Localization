@@ -10,6 +10,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     CPArray         resources;
     OLResource      selectedResource    @accessors;
     OLResourcesView resourcesView       @accessors;
+	CPString        ownerId             @accessors;
 }
 
 - (id)init
@@ -56,6 +57,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     switch (keyPath)
     {
         case @"selectedResourceBundle":
+            ownerId = [object ownerId];
             resources = [[object selectedResourceBundle] resources];
 			[[resourcesView resourceTableView] reloadData];
             [[resourcesView resourceTableView] selectRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
