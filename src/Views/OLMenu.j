@@ -45,10 +45,13 @@
         var projectSubmenu = [[CPMenu alloc] initWithTitle:@"ProjectMenu"];
         var newLanguage = [[CPMenuItem alloc] initWithTitle:@"New Language.." action:@selector(newLanguage:) keyEquivalent:nil];
         var deleteLanguage = [[CPMenuItem alloc] initWithTitle:@"Delete Language.." action:@selector(deleteLanguage:) keyEquivalent:nil];
+        var broadcastMessage = [[CPMenuItem alloc] initWithTitle:@"New Broadcast.." action:@selector(broadcastMessage:) keyEquivalent:"b"];
+        [broadcastMessage setKeyEquivalentModifierMask:CPShiftKeyMask | CPCommandKeyMask];
         
         [projectMenu setSubmenu:projectSubmenu];
         [projectSubmenu addItem:newLanguage];
         [projectSubmenu addItem:deleteLanguage];
+        [projectSubmenu addItem:broadcastMessage];
         
         [newLanguage setTarget:self];
         [deleteLanguage setTarget:self];
