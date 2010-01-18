@@ -25,6 +25,13 @@
     [self assert:target registered:@"OLMenuShouldEnableItemsNotification"];
 }
 
+- (void)testThatOLMenuControllerDoesSetupNotificationForDisablingItems
+{
+    var target = [[OLMenuController alloc] init];
+
+    [self assert:target registered:@"OLMenuShouldDisableItemsNotification"];
+}
+
 - (void)assert:(id)target registered:(CPString)aNotification
 {
     var names = [[CPNotificationCenter defaultCenter]._namedRegistries keyEnumerator];
