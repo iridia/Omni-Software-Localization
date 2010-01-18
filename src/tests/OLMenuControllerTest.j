@@ -6,6 +6,8 @@
 - (void)setUp
 {
     [CPNotificationCenter setIsMocked:NO];
+    _DOMElement = moq();
+    _DOMElement.appendChild = function(){return moq();};
 }
 
 - (void)tearDown

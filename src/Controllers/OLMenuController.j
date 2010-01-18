@@ -1,7 +1,9 @@
 @import <Foundation/CPObject.j>
+@import "../Views/OLMenu.j"
 
 @implementation OLMenuController : CPObject
 {
+    CPMenu      menu;
 }
 
 - (id)init
@@ -20,6 +22,9 @@
             selector:@selector(disableItems:)
             name:@"OLMenuShouldDisableItemsNotification"
             object:nil];
+            
+        menu = [[OLMenu alloc] init];
+        [[CPApplication sharedApplication] setMainMenu:menu];
     }
     return self;
 }

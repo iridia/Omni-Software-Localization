@@ -22,6 +22,7 @@
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
 @import "Controllers/OLUploadController.j"
+@import "Controllers/OLMenuController.j"
 
 @import "Views/OLMenu.j"
 @import "Views/OLResourcesView.j"
@@ -44,6 +45,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	OLResourceController		resourceController;
 	OLLineItemController		lineItemController;
 	OLGlossaryController		glossaryController;
+	OLMenuController            menuController;
 	
 	OLResourcesView				resourcesView;
 	OLGlossariesView			glossariesView;
@@ -93,6 +95,9 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[glossariesView setGlossaryController:glossaryController];
 	[glossaryController setGlossariesView:glossariesView];
 	
+	menuController = [[OLMenuController alloc] init];
+    [CPMenu setMenuBarVisible:YES];
+	
     [projectController loadProjects];
 	[glossaryController loadGlossaries];
 	
@@ -105,10 +110,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 {
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
-    
-    var menu = [[OLMenu alloc] init];
-    [[CPApplication sharedApplication] setMainMenu:menu];
-    [CPMenu setMenuBarVisible:YES];
 }
 
 - (void)handleException:(OLException)anException
