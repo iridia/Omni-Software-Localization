@@ -102,12 +102,12 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[glossaryController setGlossariesView:glossariesView];
     
     messageController = [[OLMessageController alloc] init];
-    // [messageController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
-    // [messageController addObserver:messageController forKeyPath:@"selectedMessage" options:CPKeyValueObservingOptionNew context:nil];
+    [messageController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
+    [messageController addObserver:messageController forKeyPath:@"selectedMessage" options:CPKeyValueObservingOptionNew context:nil];
     
     communityController = [[OLCommunityController alloc] init];
     [communityController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
-    [communityController addObserver:contentViewController forKeyPath:@"selectedCommunityItem" options:CPKeyValueObservingOptionNew context:nil];
+    [communityController addObserver:contentViewController forKeyPath:@"selectedItem" options:CPKeyValueObservingOptionNew context:nil];
     
     mailView = [[OLMailView alloc] initWithFrame:[mainContentView bounds]];
     [mailView setCommunityController:communityController];

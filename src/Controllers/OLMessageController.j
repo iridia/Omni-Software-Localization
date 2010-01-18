@@ -1,7 +1,9 @@
 @import <Foundation/CPObject.j>
 
-@import "../views/OLMessageWindow.j"
-@import "../models/OLMessage.j"
+@import "../Models/OLUser.j";
+
+@import "../Views/OLMessageWindow.j"
+@import "../Models/OLMessage.j"
 
 @implementation OLMessageController : CPObject
 {
@@ -32,10 +34,21 @@
     var subject = [messageDictionary objectForKey:@"subject"];
     var text = [messageDictionary objectForKey:@"content"];
     var dateSent = [messageDictionary objectForKey:@"dateSent"];
-    
-    var message = [[OLMessage alloc] initWithUserID:email subject:subject content:text];
-    [message setDelegate:self];
-    [message save];
+   
+    if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
+    {
+    }
+    else
+    {
+        //popup the user login without cancel button
+    }
+    var fromUser = [[CPUserSessionManager defaultManager] userIdentifier];
+    [OLUser findByRecordID:fromUser withCallback:function(user)
+    {
+        var message = [[OLMessage alloc] initWithUserID:[user email] subject:subject content:text to:email];
+        [message setDelegate:self];
+        [message save];
+    }];
 }
 
 - (void)willCreateRecord:(OLMessage)message

@@ -19,13 +19,13 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
     {
         if(self = [super init])
         {        
-    		items = [CPArray array];
+    		messages = [CPArray array];
 
     		[[CPNotificationCenter defaultCenter]
     			addObserver:self
     			selector:@selector(didReceiveOutlineViewSelectionDidChangeNotification:)
     			name:CPOutlineViewSelectionDidChangeNotification
-    			object:nil];
+    			object:nil];	
         }
         return self;
 }
@@ -42,7 +42,7 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 	if (parent === @"Community")
 	{
 	    [self setSelectedItem:item];
-        [[[self mailView] tableView] reloadData];
+        [[[mailView mailView] messageTableView] reloadData];
 	}
 	else
 	{
@@ -52,7 +52,7 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
 - (void)loadMessages
 {
-	var messageList = [OLMessage listWithCallback:function(message){[self addMessage:message];}];
+    [OLMessage listWithCallback:function(message){[self addMessage:message];}];
 }
 
 - (void)addMessage:(OLMessage)message
@@ -62,6 +62,7 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
 - (void)insertObject:(OLMessage)message inMessagesAtIndex:(int)index
 {
+    
     [messages insertObject:message atIndex:index];
 }
 
@@ -88,7 +89,7 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
     }
     else if ([tableColumn identifier] === OLMailViewDateSentColumnHeader)
     {
-        return [selectedItem dateSent];
+        return [message dateSent];
     }
 }
 

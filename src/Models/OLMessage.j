@@ -5,27 +5,29 @@
     CPString subject    @accessors;
 	CPString content    @accessors;
 	CPDate   dateSent   @accessors;
+	CPString toUserID   @accessors;
 	CPString fromUserID @accessors;  // could possibly change to the user object later (depending on session manager)
 }
 
-- (id)initWithUserID:(CPString)aUserID
+- (id)initWithUserID:(CPString)aUserID to:(CPString)toID
 {
-    [self initWithUserID:aUserID subject:@"No Subject" content:@""];
+    [self initWithUserID:aUserID subject:@"No Subject" content:@"" to:toID];
 }
 
 - (id)initWithUserID:(CPString)aUserID content:(CPString)someContent
 {
-	[self initWithUserID:aUserID subject:@"No Subject" content:someContent];
+	[self initWithUserID:aUserID subject:@"No Subject" content:someContent to:@"No one."];
 }
 
-- (id)initWithUserID:(CPString)aUserID subject:(CPString)aSubject content:(CPString)someContent
+- (id)initWithUserID:(CPString)fromID subject:(CPString)aSubject content:(CPString)someContent to:(CPString)toID
 {
     if(self = [super init])
 	{
-		fromUserID = aUserID;
+		fromUserID = fromID;
 		subject = aSubject;
 		content = someContent;
 		dateSent = [CPDate date];
+		toUserID = toID;
 	}
 	return self;
 }
