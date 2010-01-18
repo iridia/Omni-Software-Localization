@@ -1,12 +1,13 @@
 @import <Foundation/CPObject.j>
 
 @import "../Models/OLUser.j";
-
 @import "../Views/OLMessageWindow.j"
 @import "../Models/OLMessage.j"
 
 @implementation OLMessageController : CPObject
 {
+    CPString        contentText;
+    OLMessage       selectedMessage;
     OLMessageWindow messageWindow;
 }
 
@@ -49,6 +50,11 @@
         [message setDelegate:self];
         [message save];
     }];
+}
+
+- (void)didReceiveTableViewSelectionDidChangeNotification:(CPNotfication)notification
+{
+    alert("called");
 }
 
 - (void)willCreateRecord:(OLMessage)message

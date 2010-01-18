@@ -12,7 +12,7 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 {
     CPArray             messages    	    @accessors;
 	OLMessage	        selectedItem    	@accessors;
-	OLMailView          mailView            @accessors;
+	CPView              mailView            @accessors;
 }
 
 - (id)init
@@ -39,7 +39,7 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
 	var parent = [outlineView parentForItem:item];
 
-	if (parent === @"Community")
+	if (parent === self)
 	{
 	    [self setSelectedItem:item];
         [[[mailView mailView] messageTableView] reloadData];
@@ -62,10 +62,27 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
 - (void)insertObject:(OLMessage)message inMessagesAtIndex:(int)index
 {
-    
     [messages insertObject:message atIndex:index];
 }
 
+@end
+
+@implementation OLCommunityController (OLCommunityTableViewDelegate)
+
+- (void)tableViewSelectionDidChange:(CPTableView)aTableView
+{
+    var tableView = [[mailView mailView] messageTableView];
+    var selectedRow = [[tableView selectedRowIndexes] firstIndex];
+    var textToDisplay = @"";
+    
+    if (selectedRow >= 0 )
+    {
+       textToDisplay = [[messages objectAtIndex:selectedRow] content];
+    }
+   
+    [[[[mailView mailView] messageDetailView] content] setStringValue:textToDisplay];
+    [[mailView mailView] showMessageDetailView];
+}
 @end
 
 @implementation OLCommunityController (OLCommunityTableViewDataSource)
@@ -91,6 +108,25 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
     {
         return [message dateSent];
     }
+}
+
+@end
+
+@implementation OLCommunityController (SidebarItem)
+
+- (CPString)sidebarName
+{
+    return @"Community";
+}
+
+- (CPArray)sidebarItems
+{
+    return [@"Inbox"];
+}
+
+- (CPView)contentView
+{
+    return mailView;
 }
 
 @end

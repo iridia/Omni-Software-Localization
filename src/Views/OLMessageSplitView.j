@@ -65,7 +65,7 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 		messageDetailView = [[OLMessageDetailView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)];
 		[messageDetailView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         [self addSubview:messageDetailView];
-        [self setPosition:[self maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
+        [self showMessageDetailView];
 	}
 
 	return self;
@@ -77,19 +77,12 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
     [messageTableView setDelegate:aCommunityController];
 }
 
-- (void)setMessageController:(OLMessageController)aMessageController
-{
-    [messageDetailView setDataSource:aMessageController];
-    [messageDetailView setDelegate:aMessageController];
-    [messageDetailView setTarget:aMessageController];
-}
-
 - (void)showMessageDetailView
 {
     if (!isEditing)
     {
         isEditing = YES;
-        [self setPosition:([self maxPossiblePositionOfDividerAtIndex:0] - 150.0) ofDividerAtIndex:0];
+        [self setPosition:([self minPossiblePositionOfDividerAtIndex:0] +150.0) ofDividerAtIndex:0];
     }
 }
 

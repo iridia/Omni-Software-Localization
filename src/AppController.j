@@ -106,11 +106,12 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     
     communityController = [[OLCommunityController alloc] init];
     [communityController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
-    [communityController addObserver:contentViewController forKeyPath:@"selectedItem" options:CPKeyValueObservingOptionNew context:nil];
+    // [communityController addObserver:contentViewController forKeyPath:@"selectedItem" options:CPKeyValueObservingOptionNew context:nil];
+    [sidebarController addSidebarItem:communityController];
     
     mailView = [[OLMailView alloc] initWithFrame:[mainContentView bounds]];
     [mailView setCommunityController:communityController];
-    [contentViewController setMailView:mailView];
+    // [contentViewController setMailView:mailView];
     [communityController setMailView:mailView];
 	
     [projectController loadProjects];

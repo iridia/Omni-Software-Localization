@@ -12,10 +12,11 @@
     
     if (self)
     {     
-        scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) -  32.0)];
+        content = [[CPTextField alloc] initWithFrame:aFrame];
+        
+        scrollView = [[CPScrollView alloc] initWithFrame:aFrame];
 		[scrollView setAutohidesScrollers:YES];
 		[scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-		
 		[scrollView setDocumentView:content];
 		[self addSubview:scrollView];
     }
