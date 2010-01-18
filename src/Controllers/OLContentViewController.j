@@ -1,14 +1,19 @@
 @import <Foundation/CPObject.j>
 
-@import "../Views/OLResourcesView.j"
-
 @implementation OLContentViewController : CPObject
 {	
 	CPView			currentView;
-	CPView			resourcesView   @accessors;
-	CPView			glossariesView	@accessors;
 
     @outlet 		CPView			contentView;
+}
+
+- (void)awakeFromCib
+{
+    [[CPNotificationCenter defaultCenter]
+		addObserver:self
+		selector:@selector(outlineViewSelectionDidChangeNotification:)
+		name:CPOutlineViewSelectionDidChangeNotification
+		object:nil];
 }
 
 - (void)setCurrentView:(CPView)aView
@@ -32,38 +37,24 @@
 
 @end
 
-@implementation OLContentViewController (KVO)
+@implementation OLContentViewController (OutlineViewNotification)
 
-- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
-{    
-    switch (keyPath)
-    {
-        case @"selectedProject":
-            var selectedProject = [object selectedProject];
-            if (selectedProject)
-            {
-    			[self setCurrentView:resourcesView];
-    		}
-    		else
-    		{
-    		    [self setCurrentView:nil];
-    		}
-            break;
-		case @"selectedGlossary":
-		    var selectedGlossary = [object selectedGlossary];
-		    if (selectedGlossary)
-		    {
-		       [self setCurrentView:glossariesView];
-		    }
-		    else
-		    {
-		        [self setCurrentView:nil];
-		    }
-			break;
-        default:
-            CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
-            break;
-    }
+- (void)outlineViewSelectionDidChangeNotification:(CPNotification)notification
+{
+    var outlineView = [notification object];
+
+	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
+	var item = [outlineView itemAtRow:selectedRow];
+    var parent = [outlineView parentForItem:item];
+
+	if ([parent respondsToSelector:@selector(contentView)])
+	{
+	    [self setCurrentView:[parent contentView]];
+	}
+	else
+	{
+	    [self setCurrentView:nil];
+	}
 }
 
 @end
