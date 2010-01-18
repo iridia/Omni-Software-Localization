@@ -3,7 +3,7 @@
 
 @implementation OLSidebarController : CPObject
 {
-    CPDictionary            sidebarItems;
+    CPArray                 sidebarItems;
     OLSidebarOutlineView    sidebarOutlineView;
     
     @outlet                 CPScrollView                sidebarScrollView;
@@ -11,7 +11,7 @@
 
 - (void)awakeFromCib
 {
-    sidebarItems = [CPDictionary dictionary];
+    sidebarItems = [CPArray array];
     
     // Autohide the scrollers here and not in the Cib because it is impossible to
     // select the scrollView in Atlas again otherwise.
@@ -32,11 +32,10 @@
     [sidebarScrollView setDocumentView:sidebarOutlineView];
 }
 
-- (void)setSidebarItems:(CPArray)someItems forKey:(CPString)aKey
+- (void)addSidebarItem:(id)anItem
 {
-    [sidebarItems setObject:someItems forKey:aKey];
+    [sidebarItems addObject:anItem];
     [sidebarOutlineView reloadData];
-    [sidebarOutlineView expandItem:aKey];
 }
 
 @end
@@ -45,44 +44,46 @@
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(void)context
 {
-    var itemsSelector = CPSelectorFromString(keyPath);
-    if (![object respondsToSelector:itemsSelector])
-    {
-        CPLog.warn(@"%s: Cannot get items for: %s, in: %s", _cmd, keyPath, [self className]);
-        return;
-    }
-    var items = [object performSelector:itemsSelector];
+    [sidebarOutlineView reloadData];
     
-    var sidebarKey = [keyPath capitalizedString];
-    if ([object respondsToSelector:@selector(sidebarKey)])
+    if ([object respondsToSelector:@selector(shouldExpandSidebarItemOnReload)])
     {
-        sidebarKey = [object sidebarKey];
+        if ([object shouldExpandSidebarItemOnReload])
+        {
+            [sidebarOutlineView expandItem:object];
+        }
     }
-    
-    [self setSidebarItems:items forKey:sidebarKey];
 }
 
 @end
 
 @implementation OLSidebarController (CPOutlineViewDataSource)
 
+- (CPArray)childrenOfItem:(id)item
+{
+    if ([item respondsToSelector:@selector(sidebarItems)])
+    {
+        return [item sidebarItems];
+    }
+    return [CPArray array];
+}
+
 - (id)outlineView:(CPOutlineView)outlineView child:(int)index ofItem:(id)item
 {
     if (item === nil)
     {
-        var keys = [sidebarItems allKeys];
-        return [keys objectAtIndex:index];
+        return [sidebarItems objectAtIndex:index];
     }
     else
     {
-        var values = [sidebarItems objectForKey:item];
+        var values = [self childrenOfItem:item];
         return [values objectAtIndex:index];
     }
 }
 
 - (BOOL)outlineView:(CPOutlineView)outlineView isItemExpandable:(id)item
 {
-    var values = [sidebarItems objectForKey:item];
+    var values = [self childrenOfItem:item];
     
     var isItemExpandable = ([values count] > 0);
     
@@ -97,7 +98,7 @@
     }
     else
     {
-        var values = [sidebarItems objectForKey:item];
+        var values = [self childrenOfItem:item];
         return [values count];
     }
 }

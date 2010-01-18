@@ -2,12 +2,14 @@
 @import <Foundation/CPUserSessionManager.j>
 
 @import "../Models/OLProject.j"
+@import "../Views/OLResourcesView.j"
 
 // Manages an array of projects
 @implementation OLProjectController : CPObject
 {
-    CPArray                     projects       	            @accessors;
-	OLProject	                selectedProject		        @accessors;
+    CPArray         projects       	    @accessors;
+	OLProject	    selectedProject		@accessors;
+	OLResourcesView projectView         @accessors;
 }
 
 - (id)init
@@ -64,28 +66,6 @@
 	[resourceBundle addResource:resource];
 }
 
-- (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
-{
-	var outlineView = [notification object];
-
-	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
-	var item = [outlineView itemAtRow:selectedRow];
-
-	var parent = [outlineView parentForItem:item];
-
-	if (parent === @"Projects")
-	{
-	    if (selectedProject !== item)
-	    {
-    	    [self setSelectedProject:item];
-        }
-	}
-	else
-	{
-	    [self setSelectedProject:nil];
-	}
-}
-
 - (void)didReceiveParseServerResponseNotification:(CPNotification)notification
 {
 	var jsonResponse = [[notification object] jsonResponse];
@@ -105,6 +85,52 @@
 - (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
 {
     [selectedProject save];
+}
+
+@end
+
+@implementation OLProjectController (SidebarItem)
+
+- (BOOL)shouldExpandSidebarItemOnReload
+{
+    return YES;
+}
+
+- (CPView)contentView
+{
+    return projectView;
+}
+
+- (CPString)sidebarName
+{
+    return @"Projects";
+}
+
+- (CPArray)sidebarItems
+{
+    return projects;
+}
+
+- (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
+{
+	var outlineView = [notification object];
+
+	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
+	var item = [outlineView itemAtRow:selectedRow];
+
+	var parent = [outlineView parentForItem:item];
+	
+	if (parent === self)
+	{
+	    if (selectedProject !== item)
+	    {
+    	    [self setSelectedProject:item];
+        }
+	}
+	else
+	{
+	    [self setSelectedProject:nil];
+	}
 }
 
 @end
