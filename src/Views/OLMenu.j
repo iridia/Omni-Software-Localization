@@ -55,6 +55,7 @@
         
         [newLanguage setTarget:self];
         [deleteLanguage setTarget:self];
+        [broadcastMessage setTarget:self];
         
         [self addItem:appMenu];
         [self addItem:fileMenu];
@@ -75,6 +76,11 @@
 - (void)deleteLanguage:(id)sender
 {
     [[CPNotificationCenter defaultCenter] postNotificationName:@"CPLanguageShouldDeleteLanguageNotification" object:self];
+}
+
+- (void)broadcastMessage:(id)sender
+{
+    [[CPNotificationCenter defaultCenter] postNotificationName:@"CPMessageShouldBroadcastNotification" object:self];
 }
 
 - (void)about:(id)sender
