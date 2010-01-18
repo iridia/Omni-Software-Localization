@@ -8,7 +8,7 @@
  */
 @implementation OLResource : OLActiveRecord
 {
-	CPString		_fileName	@accessors(readonly, property=fileName);
+	CPString		_fileName	@accessors(property=fileName);
 	CPString		_fileType	@accessors(readonly, property=fileType);
 	CPArray			_lineItems  @accessors(readonly, property=lineItems);
 	CPDictionary   	votes		@accessors(readonly);

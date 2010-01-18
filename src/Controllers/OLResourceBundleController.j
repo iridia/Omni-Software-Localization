@@ -144,6 +144,7 @@
     
     [clone setLanguage:[[self availableLanguages] objectAtIndex:[[createNewBundleWindow popUpButton] indexOfSelectedItem]]];
     
+    replaceEnglishWithNewResourceBundleName(clone, [[clone language] name]);
     [resourceBundles addObject:clone];
     [resourcesView reloadData:self];
     
@@ -168,6 +169,16 @@
 }
 
 @end
+
+function replaceEnglishWithNewResourceBundleName(bundle, name)
+{
+    for(var i = 0; i < [[bundle resources] count]; i++)
+    {
+        var theResource = [[bundle resources] objectAtIndex:i];
+        
+        [theResource setFileName:[[theResource fileName] stringByReplacingOccurrencesOfString:@"English" withString:name]];
+    }
+}
 
 @implementation OLResourceBundleController (OLResourceBundleControllerKVO)
 
