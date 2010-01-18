@@ -95,6 +95,8 @@
 
 - (void)didReceiveProjectShouldBranchNotification:(CPNotification)notification
 {
+    [selectedProject addSubscriber:[[CPUserSessionManager defaultManager] userIdentifier]];
+    
     var alert = [[CPAlert alloc] init];
     [alert setTitle:@"Not your project!"];
     [alert setMessageText:@"This is not your project. In order to start localizing, you will need to create your own. Do you want to create your own project of this application?"];

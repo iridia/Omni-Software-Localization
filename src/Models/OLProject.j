@@ -7,6 +7,7 @@
     CPString    name                @accessors;
     CPArray     resourceBundles     @accessors(readonly);
     CPString    userIdentifier      @accessors;
+    CPArray     subscribers;
 }
 
 + (void)findByName:(CPString)aName callback:(Function)callback
@@ -53,6 +54,7 @@
         name = aName;
         resourceBundles = [CPArray array];
         userIdentifier = aUserIdentifier;
+        subscribers = [CPArray array];
     }
     return self;
 }
@@ -83,6 +85,16 @@
     }
     
     return result;
+}
+
+- (CPArray)subscribers
+{
+    return [CPArray arrayWithArray:subscribers];
+}
+
+- (void)addSubscriber:(CPString)subscriberId
+{
+    [subscribers addObject:subscriberId];
 }
 
 @end

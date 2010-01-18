@@ -121,9 +121,21 @@ var uploadedJSON = {"fileType":"zip","fileName":"Chess.app","resourcebundles":[{
     [self assert:clone notSame:target];
 }
 
-- (void)testThatOLProjectDoesGetCurrentProjectWithLineItem
+- (void)testThatOLProjectDoesHaveSubscribers
 {
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
     
+    [self assert:0 equals:[[target subscribers] count]];
+}
+
+- (void)testThatOLProjectDoesAddSubscriber
+{
+    var userId = @"asdf";
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
+    
+    [target addSubscriber:userId];
+    
+    [self assertTrue:userId == [[target subscribers] objectAtIndex:0]];
 }
 
 @end
