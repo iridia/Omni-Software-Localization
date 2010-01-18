@@ -22,6 +22,7 @@
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
 @import "Controllers/OLUploadController.j"
+@import "Controllers/OLMessageController.j"
 
 @import "Views/OLMenu.j"
 @import "Views/OLResourcesView.j"
@@ -44,6 +45,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	OLResourceController		resourceController;
 	OLLineItemController		lineItemController;
 	OLGlossaryController		glossaryController;
+	OLMessageController         messageController;
 	
 	OLResourcesView				resourcesView;
 	OLGlossariesView			glossariesView;
@@ -92,6 +94,8 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	glossariesView = [[OLGlossariesView alloc] initWithFrame:[mainContentView bounds]];
 	[glossariesView setGlossaryController:glossaryController];
 	[glossaryController setGlossariesView:glossariesView];
+	
+	messageController = [[OLMessageController alloc] init];
 	
     [projectController loadProjects];
 	[glossaryController loadGlossaries];

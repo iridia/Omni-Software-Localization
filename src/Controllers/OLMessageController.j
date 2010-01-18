@@ -16,9 +16,21 @@
     {
         messageWindow = [[OLMessageWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 300) styleMask:CPTitledWindowMask];
         [messageWindow setDelegate:self];
+        
+        [[CPNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(createBroadcastMessage:)
+            name:@"CPMessageShouldBroadcastNotification"
+            object:nil];
     }
     
     return self;
+}
+
+- (void)createBroadcastMessage:(id)sender
+{
+    [self showMessageWindow:sender];
+//    [messageWindow ]
 }
 
 - (void)showMessageWindow:(id)sender
