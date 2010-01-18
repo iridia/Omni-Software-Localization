@@ -16,6 +16,12 @@
     if(self = [super init])
     {
         createNewBundleWindow = [[OLCreateNewBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
+        
+        [[CPNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(startCreateNewBundle:)
+            name:@"CPLanguageShouldAddLanguageNotification"
+            object:nil];
     }
     return self;
 }
