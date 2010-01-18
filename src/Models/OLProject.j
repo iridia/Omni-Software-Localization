@@ -68,6 +68,11 @@
 	[resourceBundles addObject:aResourceBundle];
 }
 
+- (CPString)sidebarName
+{
+    return [self name];
+}
+
 - (OLProject)clone
 {
     result = [[OLProject alloc] initWithName:name userIdentifier:userIdentifier];

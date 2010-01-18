@@ -28,6 +28,11 @@ var OLJSONKeyedUnarchiverClassKey = @"$$CLASS$$";
     return [self _decodeObject:_json[aKey]];
 }
 
+- (int)decodeIntForKey:(CPString)aKey
+{
+    return [self _decodeObject:_json[aKey]];
+}
+
 - (id)_decodeObject:(JSON)encodedJSON
 {
     var decodedObject = nil;

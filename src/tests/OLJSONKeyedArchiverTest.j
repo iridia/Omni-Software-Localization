@@ -25,6 +25,7 @@
     [self assert:[data aBool] equals:response["BoolKey"]];
     [self assert:[data aNull] equals:response["NullKey"]];
     [self assert:[data anArray] equals:response["ArrayKey"]];
+    [self assert:[data aDate] equals:new Date(response["DateKey"]["CPDateTimeKey"])];
     [self assertTrue:[[data aDictionary] isEqualToDictionary:[CPDictionary dictionaryWithJSObject:response["DictionaryKey"]["CP.objects"]]]];
     [self assert:@"MockJSONParseObject" equals:response["$$CLASS$$"]];
 }
@@ -39,6 +40,7 @@
     [self assert:[data aBool] equals:response["BoolKey"]];
     [self assert:[data aNull] equals:response["NullKey"]];
     [self assert:[data anArray] equals:response["ArrayKey"]];
+    [self assert:[data aDate] equals:new Date(response["DateKey"]["CPDateTimeKey"])];
     [self assertTrue:[[data aDictionary] isEqualToDictionary:[CPDictionary dictionaryWithJSObject:response["DictionaryKey"]["CP.objects"]]]];
     [self assert:CPStringFromClass([data class]) equals:response["$$CLASS$$"]];
     [self assert:CPStringFromClass([[data child] class]) equals:response["ChildKey"]["$$CLASS$$"]];
@@ -60,6 +62,7 @@
     id              aNull       @accessors;
     CPArray         anArray     @accessors;
     CPDictionary    aDictionary @accessors;
+    CPDate          aDate       @accessors;
 }
 
 - (id)init
@@ -71,6 +74,7 @@
         aBool = YES;
         aNull = nil;
         anArray = [aString, aNumber, aBool, aNull];
+        aDate = [CPDate date];
         aDictionary = [CPDictionary dictionaryWithObjects:[aString, aNumber, aBool, aNull, anArray] forKeys:["string", "number", "bool", "null", "array"]];
     }
     return self;
@@ -87,6 +91,7 @@
         aNull       = [coder decodeObjectForKey:@"NullKey"];
         anArray     = [coder decodeObjectForKey:@"ArrayKey"];
         aDictionary = [coder decodeObjectForKey:@"DictionaryKey"];
+        aDate       = [coder decodeObjectForKey:@"DateKey"];
     }
     return self;
 }
@@ -99,6 +104,7 @@
     [coder encodeObject:aNull forKey:@"NullKey"];
     [coder encodeObject:anArray forKey:@"ArrayKey"];
     [coder encodeObject:aDictionary forKey:@"DictionaryKey"];
+    [coder encodeObject:aDate forKey:@"DateKey"];
 }
 
 @end

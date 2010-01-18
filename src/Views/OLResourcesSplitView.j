@@ -75,7 +75,7 @@ var OLResourcesViewVoteColumn = @"OLResourcesViewVoteColumn";
     if (!isEditing)
     {
         isEditing = YES;
-        [self setPosition:([self maxPossiblePositionOfDividerAtIndex:0] - 150.0) ofDividerAtIndex:0];
+        [self setPosition:([self minPossiblePositionOfDividerAtIndex:0] + 100.0) ofDividerAtIndex:0];
     }
 }
 

@@ -15,8 +15,8 @@
 
 - (void)testThatOLJSONKeyedUnarchiverDoesUnarchiveMockObject
 {
-    var data = {"$$CLASS$$":"MockJSONParseObject","StringKey":"Bob","NumberKey":42,"BoolKey":true,"NullKey":null,"ArrayKey":["Bob",42,true,null],"DictionaryKey":{"$$CLASS$$":"CPDictionary","CP.objects":{"array":["Bob",42,true,null],"null":null,"bool":true,"number":42,"string":"Bob"}}};
-    
+    var data = {"$$CLASS$$":"MockJSONParseObject","StringKey":"Bob","NumberKey":42,"BoolKey":true,"NullKey":null,"ArrayKey":["Bob",42,true,null],"DictionaryKey":{"$$CLASS$$":"CPDictionary","CP.objects":{"array":["Bob",42,true,null],"null":null,"bool":true,"number":42,"string":"Bob"}},"DateKey":{"$$CLASS$$":"CPDate","CPDateTimeKey":1263762168983}};
+
     var response = [OLJSONKeyedUnarchiver unarchiveObjectWithData:data];
 
     [self assert:@"MockJSONParseObject" equals:CPStringFromClass([response class])];
@@ -25,13 +25,14 @@
     [self assert:data["BoolKey"] equals:[response aBool]];
     [self assert:data["NullKey"] equals:[response aNull]];
     [self assert:data["ArrayKey"] equals:[response anArray]];
+    [self assert:new Date(data["DateKey"]["CPDateTimeKey"]) equals:[response aDate]];
     [self assertTrue:[[CPDictionary dictionaryWithJSObject:data["DictionaryKey"]["CP.objects"]] isEqualToDictionary:[response aDictionary]]];
 }
 
 - (void)testThatOLJSONKeyedUnarchiverDoesUnarchiveMockObjectWithChild
 {
-    var data = {"$$CLASS$$":"MockJsonParseObjectWithChild","StringKey":"Bob","NumberKey":42,"BoolKey":true,"NullKey":null,"ArrayKey":["Bob",42,true,null],"DictionaryKey":{"$$CLASS$$":"CPDictionary","CP.objects":{"array":["Bob",42,true,null],"null":null,"bool":true,"number":42,"string":"Bob"}},"ChildKey":{"$$CLASS$$":"MockJSONParseObject","StringKey":"Bob","NumberKey":42,"BoolKey":true,"NullKey":null,"ArrayKey":["Bob",42,true,null],"DictionaryKey":{"$$CLASS$$":"CPDictionary","CP.objects":{"array":["Bob",42,true,null],"null":null,"bool":true,"number":42,"string":"Bob"}}}};
-    
+    var data = {"$$CLASS$$":"MockJsonParseObjectWithChild","StringKey":"Bob","NumberKey":42,"BoolKey":true,"NullKey":null,"ArrayKey":["Bob",42,true,null],"DictionaryKey":{"$$CLASS$$":"CPDictionary","CP.objects":{"array":["Bob",42,true,null],"null":null,"bool":true,"number":42,"string":"Bob"}},"DateKey":{"$$CLASS$$":"CPDate","CPDateTimeKey":1263762235196},"ChildKey":{"$$CLASS$$":"MockJSONParseObject","StringKey":"Bob","NumberKey":42,"BoolKey":true,"NullKey":null,"ArrayKey":["Bob",42,true,null],"DictionaryKey":{"$$CLASS$$":"CPDictionary","CP.objects":{"array":["Bob",42,true,null],"null":null,"bool":true,"number":42,"string":"Bob"}},"DateKey":{"$$CLASS$$":"CPDate","CPDateTimeKey":1263762235196}}};
+
     var response = [OLJSONKeyedUnarchiver unarchiveObjectWithData:data];
 
     [self assert:@"MockJsonParseObjectWithChild" equals:CPStringFromClass([response class])];
@@ -40,6 +41,7 @@
     [self assert:data["BoolKey"] equals:[response aBool]];
     [self assert:data["NullKey"] equals:[response aNull]];
     [self assert:data["ArrayKey"] equals:[response anArray]];
+    [self assert:new Date(data["DateKey"]["CPDateTimeKey"]) equals:[response aDate]];
     [self assertTrue:[[CPDictionary dictionaryWithJSObject:data["DictionaryKey"]["CP.objects"]] isEqualToDictionary:[response aDictionary]]];
     [self assert:data["ChildKey"]["$$CLASS$$"] equals:CPStringFromClass([[response child] class])];
 }
@@ -54,6 +56,7 @@
     id              aNull       @accessors;
     CPArray         anArray     @accessors;
     CPDictionary    aDictionary @accessors;
+    CPDate          aDate       @accessors;
 }
 
 - (id)init
@@ -65,6 +68,7 @@
         aBool = YES;
         aNull = nil;
         anArray = [aString, aNumber, aBool, aNull];
+        aDate = [CPDate date];
         aDictionary = [CPDictionary dictionaryWithObjects:[aString, aNumber, aBool, aNull, anArray] forKeys:["string", "number", "bool", "null", "array"]];
     }
     return self;
@@ -81,6 +85,7 @@
         aNull       = [coder decodeObjectForKey:@"NullKey"];
         anArray     = [coder decodeObjectForKey:@"ArrayKey"];
         aDictionary = [coder decodeObjectForKey:@"DictionaryKey"];
+        aDate       = [coder decodeObjectForKey:@"DateKey"];
     }
     return self;
 }
@@ -93,6 +98,7 @@
     [coder encodeObject:aNull forKey:@"NullKey"];
     [coder encodeObject:anArray forKey:@"ArrayKey"];
     [coder encodeObject:aDictionary forKey:@"DictionaryKey"];
+    [coder encodeObject:aDate forKey:@"DateKey"];
 }
 
 @end

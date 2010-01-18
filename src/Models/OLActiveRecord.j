@@ -67,14 +67,13 @@ var __createURLConnectionFunction = nil;
 	}
 	catch(ex)
 	{
-        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-         reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-        
-        //[exception setClassWithError:[self class]];
-        [exception setMethodWithError:@"list"];
-        //[exception setAdditionalInformation:ex];
-        
-        [exception raise];
+        var exception = [OLException exceptionFromCPException:ex];
+
+        [exception setClassWithError:[self className]];
+        [exception setMethodWithError:_cmd];
+        [exception setUserMessage:@"Could not finish the request to the server"];
+
+		[exception raise];
         
         return [CPArray array];
 	}
@@ -123,14 +122,13 @@ var __createURLConnectionFunction = nil;
 	}
 	catch(ex)
 	{
-        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-         reason:@"it was unable to complete the request to the api" userInfo:[CPDictionary dictionary]];
-         
-        //[exception setClassWithError:[self class]];
-        [exception setMethodWithError:@"get"];
-        //[exception setAdditionalInformation:ex];
+        var exception = [OLException exceptionFromCPException:ex];
+
+        [exception setClassWithError:[self className]];
+        [exception setMethodWithError:_cmd];
+        [exception setUserMessage:@"Could not retrieve the requested data from the database"];
         
-        [exception raise];
+		[exception raise];
         
         return [[CPObject alloc] init];
 	}
@@ -164,14 +162,12 @@ var __createURLConnectionFunction = nil;
 		}
 		catch(ex)
 		{
-            var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-             reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-            
-            //[exception setClassWithError:[self class]];
-            [exception setMethodWithError:@"save"];
-            //[exception setAdditionalInformation:ex];
-            
-            [exception raise];
+            var exception = [OLException exceptionFromCPException:ex];
+
+            [exception setClassWithError:[self className]];
+            [exception setMethodWithError:_cmd];
+            [exception setUserMessage:@"Could not save the data to the database"];
+    		[exception raise];
 		}
     }    
 }
@@ -196,14 +192,13 @@ var __createURLConnectionFunction = nil;
 	}
 	catch(ex)
 	{
-        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-         reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-        
-        //[exception setClassWithError:[self class]];
-        [exception setMethodWithError:@"create"];
-        //[exception setAdditionalInformation:ex];
-        
-        [exception raise];
+        var exception = [OLException exceptionFromCPException:ex];
+
+        [exception setClassWithError:[self className]];
+        [exception setMethodWithError:_cmd];
+        [exception setUserMessage:@"Could not create the data on the server"];
+
+		[exception raise];
 	}
 }
 
@@ -218,14 +213,13 @@ var __createURLConnectionFunction = nil;
 	}
 	catch(ex)
 	{
-        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-         reason:"it was unable to finish the request to the server" userInfo:[CPDictionary dictionary]];
-         
-        //[exception setClassWithError:[self class]];
-        [exception setMethodWithError:@"delete"];
-        //[exception setAdditionalInformation:ex];
-        
-        [exception raise];   	
+        var exception = [OLException exceptionFromCPException:ex];
+
+        [exception setClassWithError:[self className]];
+        [exception setMethodWithError:_cmd];
+        [exception setUserMessage:@"Could not delete the data from the database"];
+
+		[exception raise];
 	}
 }
 
@@ -272,12 +266,14 @@ var __createURLConnectionFunction = nil;
     		    }
     		    catch(ex)
     		    {
-            		var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-            			reason:"the provided callback threw an error" userInfo:[CPDictionary dictionary]];
+            		var exception = [OLException exceptionFromCPException:ex];
 
-            		///[exception setClassWithError:""+[self class]];
-            		[exception setMethodWithError:@"get"];
-            		//[exception setAdditionalInformation:ex];
+                    [exception setClassWithError:[self className]];
+                    [exception setMethodWithError:_cmd];
+                    [exception setUserMessage:@"Could not handle the response from the server"];
+                    [exception addUserInfo:data forKey:@"response"];
+                    [exception addUserInfo:rootObject forKey:@"rootObject"];
+                    [exception addUserInfo:@"get" forKey:@"connectionType"];
 
             		[exception raise];
     		    }
@@ -289,12 +285,12 @@ var __createURLConnectionFunction = nil;
 	}
 	catch(ex)
 	{
-        var exception = [[OLException alloc] initWithName:@"OLActiveRecord" 
-         reason:"it was unable to handle the response from the server" userInfo:[CPDictionary dictionary]];
+        var exception = [OLException exceptionFromCPException:ex];
          
-        ///[exception setClassWithError:""+[self class]];
-        [exception setMethodWithError:@"get"];
-        //[exception setAdditionalInformation:ex];
+        [exception setClassWithError:[self className]];
+        [exception setMethodWithError:_cmd];
+        [exception setUserMessage:@"Could not handle response form server"];
+        [exception addUserInfo:data forKey:@"response"];
         
         [exception raise];
 	}
