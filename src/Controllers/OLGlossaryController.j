@@ -2,6 +2,8 @@
 @import <AppKit/CPOutlineView.j>
 
 @import "../Models/OLGlossary.j"
+@import "../Views/OLGlossariesView.j"
+
 
 var OLGlossaryViewIdentifierColumnHeader = @"OLGlossaryViewIdentifierColumnHeader";
 var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
@@ -70,29 +72,6 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
     [glossary save];
 }
 
-- (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
-{
-	var outlineView = [notification object];
-
-	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
-	var item = [outlineView itemAtRow:selectedRow];
-
-	var parent = [outlineView parentForItem:item];
-
-	if (parent === @"Glossaries")
-	{
-	    if (item !== selectedGlossary)
-	    {
-    		[self setSelectedGlossary:item];
-    		[[[self glossariesView] tableView] reloadData];
-    	}
-	}
-	else
-	{
-	    [self setSelectedGlossary:nil];
-	}
-}
-
 - (void)didReceiveParseServerResponseNotification:(CPNotification)notification
 {
 	var jsonResponse = [[notification object] jsonResponse];
@@ -126,6 +105,48 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 		}
 	}
 	return result;
+}
+
+@end
+
+@implementation OLGlossaryController (SidebarItem)
+
+- (CPArray)sidebarItems
+{
+    return glossaries;
+}
+
+- (CPString)sidebarName
+{
+    return @"Glossaries";
+}
+
+- (CPView)contentView
+{
+    return glossariesView;
+}
+
+- (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
+{
+	var outlineView = [notification object];
+
+	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
+	var item = [outlineView itemAtRow:selectedRow];
+
+	var parent = [outlineView parentForItem:item];
+
+	if (parent === self)
+	{
+	    if (item !== selectedGlossary)
+	    {
+    		[self setSelectedGlossary:item];
+    		[[[self glossariesView] tableView] reloadData];
+    	}
+	}
+	else
+	{
+	    [self setSelectedGlossary:nil];
+	}
 }
 
 @end

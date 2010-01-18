@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 @import "../Views/OLCreateNewBundleWindow.j"
+@import "../Views/OLDeleteBundleWindow.j"
 
 @implementation OLResourceBundleController : CPObject
 {
@@ -8,7 +9,8 @@
     CPArray             resourceBundles             @accessors(readonly);
     CPResourceBundle    selectedResourceBundle      @accessors;
     CPView              resourcesView               @accessors;
-    CPView              createNewBundleWindow         @accessors;
+    CPView              createNewBundleWindow       @accessors;
+    CPView              deleteBundleWindow          @accessors;
 }
 
 - (id)init
@@ -16,6 +18,19 @@
     if(self = [super init])
     {
         createNewBundleWindow = [[OLCreateNewBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
+        deleteBundleWindow = [[OLDeleteBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
+        
+        [[CPNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(startCreateNewBundle:)
+            name:@"CPLanguageShouldAddLanguageNotification"
+            object:nil];
+            
+        [[CPNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(startDeleteBundle:)
+            name:@"CPLanguageShouldDeleteLanguageNotification"
+            object:nil];
     }
     return self;
 }
@@ -73,7 +88,6 @@
 - (CPArray)titlesOfResourceBundles
 {
     var result = [CPArray array];
-    
     [result addObject:@"Add Language..."];
     for(var i = 0; i < [resourceBundles count]; i++)
     {
@@ -112,6 +126,35 @@
     [createNewBundleWindow setUp:self];
 }
 
+- (void)startDeleteBundle:(id)sender
+{
+    if([[CPUserSessionManager defaultManager] status] !== CPUserSessionLoggedInStatus)
+    {
+        var userInfo = [CPDictionary dictionary];
+        [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
+        [userInfo setObject:@selector(startDeleteBundle:) forKey:@"SuccessfulLoginAction"];
+        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
+
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLUserShouldLoginNotification"
+            object:nil
+            userInfo:userInfo];
+
+        return;
+    }
+    else if([[CPUserSessionManager defaultManager] userIdentifier] !== ownerId)
+    {
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLProjectShouldBranchNotification"
+            object:nil];
+
+        return;
+    }
+
+    [[CPApplication sharedApplication] runModalForWindow:deleteBundleWindow];
+    [deleteBundleWindow setUp:self];
+}
+
 - (CPArray)titlesOfAvailableLanguage
 {
     var result = [CPArray array];
@@ -119,6 +162,18 @@
     for(var i = 0; i < [[self availableLanguages] count]; i++)
     {
         [result addObject:[[[self availableLanguages] objectAtIndex:i] name]];
+    }
+    
+    return result;
+}
+
+- (CPArray)titlesOfLocalizedLanguages
+{
+    var result = [CPArray array];
+    
+    for(var i = 0; i < [resourceBundles count]; i++)
+    {
+        [result addObject:[[[resourceBundles objectAtIndex:i] language] name]];
     }
     
     return result;
@@ -157,6 +212,7 @@
 - (void)cancel:(id)sender
 {
     [createNewBundleWindow close];
+    [deleteBundleWindow close];
     
     [[CPApplication sharedApplication] stopModal];
 }
@@ -173,7 +229,19 @@
     
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLProjectDidChangeNotification"
-        object:clone];
+        object:nil];
+        
+    [self cancel:self];
+}
+
+- (void)delete:(id)sender
+{
+    [resourceBundles removeObjectAtIndex:[[deleteBundleWindow popUpButton] indexOfSelectedItem]];
+    [resourcesView reloadData:self];
+    
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:@"OLProjectDidChangeNotification"
+        object:nil];
         
     [self cancel:self];
 }
