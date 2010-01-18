@@ -121,6 +121,11 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
     return @"Glossaries";
 }
 
+- (BOOL)shouldExpandSidebarItemOnReload
+{
+    return YES;
+}
+
 - (CPView)contentView
 {
     return glossariesView;
