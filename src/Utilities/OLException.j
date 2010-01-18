@@ -1,41 +1,69 @@
 @import <Foundation/CPException.j>
 @import "OLURLConnectionFactory.j"
+@import "OLJSONKeyedArchiver.j"
 
 var __createURLConnectionFunction = nil;
 
 @implementation OLException : CPException
 {
-	CPString _classWithError @accessors(property=classWithError);
-	CPString _methodWithError @accessors(property=methodWithError);
-	CPString _additionalInformation @accessors(property=additionalInformation);
+	CPString    classWithError      @accessors;
+	CPString    methodWithError     @accessors;
+	CPString    userMessage         @accessors;
 }
 
 + (id)alloc
 {
-	return class_createInstance(self);
+    return class_createInstance(self);
 }
 
-- (id)initWithName:(CPString)aName reason:(CPString)aReason userInfo:(CPDictionary)someUserInfo
++ (id)exceptionFromCPException:(CPException)exception
 {
-	return [super initWithName:aName reason:aReason userInfo:someUserInfo];
+    return [[OLException alloc] initWithName:[exception name] reason:[exception reason] userInfo:[CPDictionary dictionary]];
 }
 
 - (void)raise
 {
-	var data = {
-		"classWithError":_classWithError,
-		"methodWithError":_methodWithError,
-		"additionalInformation":_additionalInformation,
-		"name":[self name],
-		"reason":[self reason]
-	};
-	
+    var data = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
+    
 	var req = [CPURLRequest requestWithURL:@"api/error/"];
 	[req setHTTPMethod:"PUT"];
     [req setHTTPBody:JSON.stringify(data)];
 	var conn = [OLURLConnectionFactory createConnectionWithRequest:req delegate:self];
 	
 	[[[CPApplication sharedApplication] delegate] handleException:self];
+}
+
+- (void)addUserInfo:(id)info forKey:(CPString)aKey
+{
+    [[self userInfo] setObject:info forKey:aKey];
+}
+
+@end
+
+var OLExceptionClassKey = @"OLExceptionClassKey";
+var OLExceptionMethodKey = @"OLExceptionMethodKey";
+var OLExceptionUserMessageKey = @"OLExceptionUserMessageKey";
+
+@implementation OLException (CPCoding)
+
+- (id)initWithCoder:(CPCoder)aCoder
+{
+    if (self = [super initWithCoder:aCoder])
+    {
+        classWithError = [aCoder decodeObjectForKey:OLExceptionClassKey];
+        methodWithError = [aCoder decodeObjectForKey:OLExceptionMethodKey];
+        userMessage = [aCoder decodeObjectForKey:OLExceptionUserMessageKey];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(CPCoder)aCoder
+{
+    [super encodeWithCoder:aCoder];
+    
+    [aCoder encodeObject:classWithError forKey:OLExceptionClassKey];
+    [aCoder encodeObject:methodWithError forKey:OLExceptionMethodKey];
+    [aCoder encodeObject:userMessage forKey:OLExceptionUserMessageKey];
 }
 
 @end

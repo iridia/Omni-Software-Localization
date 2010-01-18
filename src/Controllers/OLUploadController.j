@@ -24,8 +24,14 @@ var OLUploadControllerDidParseServerResponse = @"OLUploadControllerDidParseServe
 	} 
 	catch (ex)
 	{
-		console.log(ex);
-		[OLException raise:"OLWelcomeController" reason:"it couldn't handle the response from the upload."];
+	    var exception = [OLException exceptionFromCPException:ex];
+
+        [exception setClassWithError:[self className]];
+        [exception setMethodWithError:_cmd];
+        [exception setUserMessage:@"Could not handle the response from the server"];
+        [exception addUserInfo:aResponse forKey:@"response"];
+
+		[exception raise];
 	}
 }
 
