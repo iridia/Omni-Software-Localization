@@ -30,14 +30,13 @@
 
 - (void)userDidChange:(CPNotification)notification
 {
-    var userSessionManager = [notification object];
     var email = @"";
-    if ([userSessionManager isUserLoggedIn])
+    if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
-        email = [[userSessionManager user] email];
+        email = [[[OLUserSessionManager defaultSessionManager] user] email];
     }
     
-    [[_feedbackWindow emailTextField] setStringValue:[user email]];
+    [[_feedbackWindow emailTextField] setStringValue:email];
 }
 
 - (void)showFeedbackWindow:(id)sender
