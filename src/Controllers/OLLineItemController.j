@@ -5,8 +5,7 @@
 @import "../Views/OLResourcesView.j"
 @import "../Models/OLLineItem.j"
 
-var OLResourceEditorViewIdentifierColumnHeader = @"OLResourceEditorViewIdentifierColumnHeader";
-var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHeader";
+OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineItemIndexDidChangeNotification";
 
 @implementation OLLineItemController : CPObject
 {
@@ -31,7 +30,19 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 	return self;
 }
 
-- (void)editSelectedLineItem:(id)sender
+- (void)selectLineItemAtIndex:(int)index
+{
+    if (index === CPNotFound)
+    {
+        [self setSelectedLineItem:nil];
+    }
+    else
+    {
+        [self setSelectedLineItem:[lineItems objectAtIndex:index]];
+    }
+}
+
+- (void)editSelectedLineItem
 {
     var userSessionManager = [OLUserSessionManager defaultSessionManager];
     if(![userSessionManager isUserLoggedIn])
@@ -72,8 +83,11 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
         nextIndex = 0;
     }
 
-    [self setSelectedLineItem:[lineItems objectAtIndex:nextIndex]];
-    [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:nextIndex] byExtendingSelection:NO];
+    [self selectLineItemAtIndex:nextIndex];
+    
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLLineItemSelectedLineItemIndexDidChangeNotification
+        object:nextIndex];
 }
 
 - (void)previousLineItem
@@ -86,13 +100,10 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
         previousIndex = [lineItems count] - 1;
     }
 
-    [self setSelectedLineItem:[lineItems objectAtIndex:previousIndex]];
-    [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:previousIndex] byExtendingSelection:NO];
-}
-
-- (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
-{
-    [[[resourcesView editingView] lineItemsTableView] reloadData];
+    [self selectLineItemAtIndex:previousIndex];
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLLineItemSelectedLineItemIndexDidChangeNotification
+        object:previousIndex];
 }
 
 @end
@@ -122,43 +133,6 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
             break;
-    }
-}
-
-@end
-
-@implementation OLLineItemController (OLLineItemsTableViewDataSource)
-
-- (int)numberOfRowsInTableView:(CPTableView)resourceTableView
-{
-    return [lineItems count];
-}
-
-- (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
-{
-    if ([tableColumn identifier] === OLResourceEditorViewIdentifierColumnHeader)
-    {
-        return [[lineItems objectAtIndex:row] identifier];
-    }
-    else if ([tableColumn identifier] === OLResourceEditorViewValueColumnHeader)
-    {
-        return [[lineItems objectAtIndex:row] value];
-    }
-}
-
-
-@end
-
-@implementation OLLineItemController (OLLineItemsTableViewDelegate)
-
-- (void)tableViewSelectionDidChange:(CPNotification)aNotification
-{
-    var tableView = [aNotification object];
-
-    if(![[tableView selectedRowIndexes] isEqualToIndexSet:[CPIndexSet indexSet]])
-    {
-        var selectedRow = [[tableView selectedRowIndexes] firstIndex];
-        [self setSelectedLineItem:[lineItems objectAtIndex:selectedRow]];
     }
 }
 

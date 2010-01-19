@@ -88,22 +88,3 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 }
 
 @end
-
-@implementation CPTableView (DoubleClick)
-
-- (void)mouseDown:(CPEvent)anEvent
-{
-    if ([anEvent clickCount] == 2)
-	{
-		var index = [[self selectedRowIndexes] firstIndex];
-		
-		if(index >= 0)
-		{
-			objj_msgSend([self target], [self doubleAction], self);	
-		}
-	}
-
-	[super mouseDown:anEvent];
-}
-
-@end

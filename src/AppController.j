@@ -33,6 +33,8 @@
 @import "Views/OLProjectSearchView.j"
 @import "Views/OLMessageWindow.j"
 
+@import "Views/OLProjectView.j"
+
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 @implementation AppController : CPObject
@@ -69,26 +71,18 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
     
-    resourceBundleController = [[OLResourceBundleController alloc] init];
-    [projectController addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
-	
-	resourceController = [[OLResourceController alloc] init];
-    [resourceBundleController addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
-	
-	lineItemController = [[OLLineItemController alloc] init];
-	[resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
-	
-    var resourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
-    [resourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    [resourcesView setResourceController:resourceController];
-    [resourcesView setLineItemController:lineItemController];
-    [resourcesView setResourceBundleController:resourceBundleController];
-    [[resourcesView editingView] setVoteTarget:resourceController downAction:@selector(voteDown:) upAction:@selector(voteUp:)];
+    var projectView = [[OLProjectView alloc] initWithFrame:[mainContentView bounds]];
+    [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [projectController setProjectView:projectView];
     
-    [resourceController setResourcesView:resourcesView];
-    [resourceBundleController setResourcesView:resourcesView];
-    [lineItemController setResourcesView:resourcesView];
-    [projectController setProjectView:resourcesView];
+    // resourceBundleController = [[OLResourceBundleController alloc] init];
+    // [projectController addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+	
+    // resourceController = [[OLResourceController alloc] init];
+    // [resourceBundleController addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
+	
+    // lineItemController = [[OLLineItemController alloc] init];
+    // [resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
 	
 	glossaryController = [[OLGlossaryController alloc] init];
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
@@ -114,22 +108,23 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
     [communityController setSearchView:searchView];
     
-    var secondResourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
-    [secondResourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    [communityController setResourcesView:secondResourcesView];
+    // var secondResourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
+    // [secondResourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    // [communityController setResourcesView:secondResourcesView];
 	
     var uploadWindowController = [[OLUploadWindowController alloc] init];
 	menuController = [[OLMenuController alloc] init];
 	[menuController setUploadWindowController:uploadWindowController];
     [CPMenu setMenuBarVisible:YES];
 	
-    [projectController loadProjects];
-	[glossaryController loadGlossaries];
-    [communityController loadMessages];
+    // [projectController loadProjects];
+    // [glossaryController loadGlossaries];
+    // [communityController loadMessages];
 	
 	var loginController = [[OLLoginController alloc] init];
 	
     setupToolbar(self, theWindow, loginController, projectController, nil, messageController);
+    
 }
 
 - (void)awakeFromCib

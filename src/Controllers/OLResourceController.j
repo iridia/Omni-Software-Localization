@@ -4,6 +4,8 @@
 @import "../Views/OLResourcesView.j"
 @import "../Models/OLResource.j"
 
+@import "OLLineItemController.j"
+
 var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 @implementation OLResourceController : CPObject
@@ -12,6 +14,8 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     OLResource      selectedResource    @accessors;
     OLResourcesView resourcesView       @accessors;
 	CPString        ownerId             @accessors;
+	
+	OLLineItemController    lineItemController;
 }
 
 - (id)init
@@ -19,8 +23,43 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     if(self = [super init])
     {
         resources = [CPArray array];
+        
+        lineItemController = [[OLLineItemController alloc] init];
+    	[self addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
     }
     return self;
+}
+
+- (int)numberOfLineItems
+{
+    return [[selectedResource lineItems] count];
+}
+
+- (OLLineItem)lineItemAtIndex:(int)index
+{
+    return [[selectedResource lineItems] objectAtIndex:index];
+}
+
+- (void)selectLineItemAtIndex:(int)index
+{
+    [lineItemController selectLineItemAtIndex:index];
+}
+
+- (void)editSelectedLineItem
+{
+    [lineItemController editSelectedLineItem];
+}
+
+- (void)selectResourceAtIndex:(int)index
+{
+    if (index === CPNotFound)
+    {
+        [self setSelectedResource:nil];
+    }
+    else
+    {
+        [self setSelectedResource:[resources objectAtIndex:index]];
+    }
 }
 
 - (void)voteUp:(id)sender

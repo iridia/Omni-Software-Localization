@@ -2,14 +2,18 @@
 
 @import "../Utilities/OLUserSessionManager.j"
 @import "../Models/OLProject.j"
-@import "../Views/OLResourcesView.j"
+@import "../Views/OLProjectView.j"
+
+@import "OLResourceBundleController.j"
 
 // Manages an array of projects
 @implementation OLProjectController : CPObject
 {
     CPArray         projects       	    @accessors;
 	OLProject	    selectedProject		@accessors;
-	OLResourcesView projectView         @accessors;
+	OLProjectView   projectView;
+	
+	OLResourceBundleController  resourceBundleController;
 }
 
 - (id)init
@@ -17,6 +21,9 @@
     if(self = [super init])
     {        
 		projects = [CPArray array];
+		
+		resourceBundleController = [[OLResourceBundleController alloc] init];
+        [self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
 
 		[[CPNotificationCenter defaultCenter]
 			addObserver:self
@@ -48,6 +55,11 @@
     		name:@"OLProjectsShouldReload"
     		object:nil];
     		
+    	[[CPNotificationCenter defaultCenter]
+    	   addObserver:self
+    	   selector:@selector(didReceiveLineItemSelectedIndexDidChangeNotification:)
+    	   name:OLLineItemSelectedLineItemIndexDidChangeNotification
+    	   object:nil];    		
     }
     return self;
 }
@@ -126,6 +138,13 @@
     [self loadProjects];
 }
 
+- (void)didReceiveLineItemSelectedIndexDidChangeNotification:(CPNotification)notification
+{
+    var index = [notification object];
+    
+    [projectView selectLineItemsTableViewRowIndexes:[CPIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+}
+
 - (void)alertDidEnd:(CPAlert)theAlert returnCode:(int)returnCode
 {
     if(returnCode === 1 && [[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
@@ -135,6 +154,115 @@
         [clonedProject save];
         [self addProject:clonedProject];
     }
+}
+
+- (void)setProjectView:(OLProjectView)aProjectView
+{
+    if (projectView === aProjectView)
+        return;
+        
+    projectView = aProjectView;
+    
+    [projectView setResourcesTableViewDataSource:self];
+    [projectView setLineItemsTableViewDataSource:self];
+    [projectView setResourcesTableViewDelegate:self];
+    [projectView setLineItemsTableViewDelegate:self];
+    [projectView setLineItemsTarget:self doubleAction:@selector(lineItemsTableViewDoubleClick:)];
+    [projectView setResourceBundleDelegate:self];
+}
+
+@end
+
+@implementation OLProjectController (ProjectViewDataSource)
+
+- (int)numberOfRowsInTableView:(CPTableView)tableView
+{
+    if (tableView === [projectView resourcesTableView])
+    {
+        return [resourceBundleController numberOfResources];
+    }
+    
+    if (tableView === [projectView lineItemsTableView])
+    {
+        return [resourceBundleController numberOfLineItems];
+    }
+    
+    return 0;
+}
+
+- (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
+{
+    if (tableView === [projectView resourcesTableView])
+    {
+        return [resourceBundleController resourceNameAtIndex:row];
+    }
+    
+    if (tableView === [projectView lineItemsTableView])
+    {
+        var lineItem = [resourceBundleController lineItemAtIndex:row];
+        
+        if ([[tableColumn identifier] isEqualToString:OLLineItemTableColumnIdentifierIdentifier])
+        {
+            return [lineItem identifier];
+        }
+        
+        if ([[tableColumn identifier] isEqualToString:OLLineItemTableColumnValueIdentifier])
+        {
+            return [lineItem value];
+        }
+    }
+}
+
+- (CPArray)titlesOfResourceBundlesForProjectView:(OLProjectView)projectView
+{
+    return [resourceBundleController titlesOfResourceBundles];
+}
+
+- (int)indexOfSelectedResourceBundleForProjectView:(OLProjectView)projectView
+{
+    return [resourceBundleController indexOfSelectedResourceBundle];
+}
+
+- (void)selectedResourceBundleDidChange:(int)selectedIndex
+{
+    [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
+    [resourceBundleController selectResourceBundleAtIndex:selectedIndex];
+    [projectView reloadAllData];
+}
+
+@end
+
+@implementation OLProjectController (ProjectViewDelegate)
+
+- (void)tableViewSelectionDidChange:(CPNotification)aNotification
+{
+    var tableView = [aNotification object];
+    
+    var selectedRow = [[tableView selectedRowIndexes] firstIndex];
+    
+    if (tableView === [projectView resourcesTableView])
+    {
+        [resourceBundleController selectResourceAtIndex:selectedRow];
+        [projectView reloadLineItemsTableView];
+        [projectView selectLineItemsTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
+        [projectView setIsEditing:(selectedRow !== CPNotFound)];
+    }
+    
+    if (tableView === [projectView lineItemsTableView])
+    {
+        [resourceBundleController selectLineItemAtIndex:selectedRow];
+    }
+}
+
+- (void)lineItemsTableViewDoubleClick:(CPTableView)tableView
+{
+    [resourceBundleController editSelectedLineItem];
+}
+
+// HACK FOR CPTableView BUG (_doubleAction is a global var)
+- (SEL)doubleAction
+{
+    return CPSelectorFromString(@"lineItemsTableViewDoubleClick:");
 }
 
 @end
@@ -177,6 +305,9 @@
 	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldEnableItemsNotification" 
 	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage]];
     	    [self setSelectedProject:item];
+    	    [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
+            [projectView setTitle:[[self selectedProject] name]];
+            [projectView reloadAllData];
         }
 	}
 	else

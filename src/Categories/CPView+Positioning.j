@@ -7,6 +7,7 @@ CPViewHeightSame        = 32;
 CPViewOnTheLeft         = 64;
 CPViewLeftAligned       = 128;
 CPViewTopAligned        = 256;
+CPViewOnTheRight        = 512;
 
 @implementation CPView (Positioning)
 
@@ -25,7 +26,7 @@ CPViewTopAligned        = 256;
     
     if (positioning & CPViewHeightCentered)
     {
-        yPos = (CGRectGetHeight([anotherView bounds]) / 2.0) - CGRectGetHeight([aView bounds]);
+        yPos = (CGRectGetHeight([anotherView bounds]) / 2.0) - (CGRectGetHeight([aView bounds]) / 2.0);
     }
     
     if (positioning & CPViewBottomAligned)
@@ -35,7 +36,7 @@ CPViewTopAligned        = 256;
     
     if (positioning & CPViewTopAligned)
     {
-        yPos = 0.0;
+        yPos = 0.0 + padding;
     }
     
     if (positioning & CPViewHeightSame)
@@ -56,12 +57,17 @@ CPViewTopAligned        = 256;
     
     if (positioning & CPViewLeftAligned)
     {
-        xPos = 0.0;
+        xPos = 0.0 + padding;
     }
     
     if (positioning & CPViewOnTheLeft)
     {
         xPos = [anotherView frame].origin.x - CGRectGetWidth([aView bounds]) - padding;
+    }
+    
+    if (positioning & CPViewOnTheRight)
+    {
+        xPos = [anotherView frame].origin.x + [anotherView frame].size.width + padding;
     }
     
     [aView setFrameOrigin:CPMakePoint(xPos, yPos)];

@@ -4,15 +4,18 @@
 @import "../Views/OLCreateNewBundleWindow.j"
 @import "../Views/OLDeleteBundleWindow.j"
 
+@import "OLResourceController.j"
+
 @implementation OLResourceBundleController : CPObject
 {
     CPString            projectName                 @accessors(readonly);
     CPString            ownerId                     @accessors;
     CPArray             resourceBundles             @accessors(readonly);
     CPResourceBundle    selectedResourceBundle      @accessors;
-    CPView              resourcesView               @accessors;
     CPView              createNewBundleWindow       @accessors;
     CPView              deleteBundleWindow          @accessors;
+    
+    OLResourceController    resourceController;
 }
 
 - (id)init
@@ -21,6 +24,9 @@
     {
         createNewBundleWindow = [[OLCreateNewBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
         deleteBundleWindow = [[OLDeleteBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
+        
+        resourceController = [[OLResourceController alloc] init];
+        [self addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
         
         [[CPNotificationCenter defaultCenter]
             addObserver:self
@@ -35,6 +41,46 @@
             object:nil];
     }
     return self;
+}
+
+- (int)numberOfResources
+{
+    return [[selectedResourceBundle resources] count];
+}
+
+- (int)numberOfLineItems
+{
+    return [resourceController numberOfLineItems];
+}
+
+- (OLLineItem)lineItemAtIndex:(int)index
+{
+    return [resourceController lineItemAtIndex:index];
+}
+
+- (CPString)resourceNameAtIndex:(int)index
+{
+    return [[[selectedResourceBundle resources] objectAtIndex:index] fileName];
+}
+
+- (void)editSelectedLineItem
+{
+    [resourceController editSelectedLineItem];
+}
+
+- (void)selectResourceBundleAtIndex:(int)index
+{
+    [self setSelectedResourceBundle:[resourceBundles objectAtIndex:(index - 1)]];
+}
+
+- (void)selectResourceAtIndex:(int)index
+{
+    [resourceController selectResourceAtIndex:index];
+}
+
+- (void)selectLineItemAtIndex:(int)index
+{
+    [resourceController selectLineItemAtIndex:index];
 }
 
 - (void)setResourceBundles:(CPArray)someResourceBundles
@@ -227,7 +273,7 @@
     
     replaceEnglishWithNewResourceBundleName(clone, [[clone language] name]);
     [resourceBundles addObject:clone];
-    [resourcesView reloadData:self];
+    // [resourcesView reloadData:self];
     
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLProjectDidChangeNotification"
@@ -239,7 +285,7 @@
 - (void)delete:(id)sender
 {
     [resourceBundles removeObjectAtIndex:[[deleteBundleWindow popUpButton] indexOfSelectedItem]];
-    [resourcesView reloadData:self];
+    // [resourcesView reloadData:self];
     
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLProjectDidChangeNotification"
@@ -283,7 +329,8 @@ function replaceEnglishWithNewResourceBundleName(bundle, name)
             ownerId = [[object selectedProject] userIdentifier]
             projectName = [[object selectedProject] name];
             [self setResourceBundles:[[object selectedProject] resourceBundles]];
-			[resourcesView reloadData:self];
+            [self resetCurrentBundle];
+            // [resourcesView reloadData:self];
             break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
