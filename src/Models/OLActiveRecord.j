@@ -17,11 +17,15 @@ var __createURLConnectionFunction = nil;
 	CPURLConnection _getConnection;
 	CPURLConnection _listConnection;
 	CPURLConnection findByConnection;
+	CPURLConnection findAllConnection;
 	
 	Function        getCallback;
 	Function        saveCallback;
 	Function        createCallback;
 	Function        findByCallback;
+	Function        findAllCallback;
+	
+	CPString        findAllSelector;
 	
 	id _delegate @accessors(property=delegate);
 }
@@ -104,6 +108,25 @@ var __createURLConnectionFunction = nil;
 	var record = [[self alloc] init];
 	[record setRecordID:aRecordID];
 	[record getWithCallback:callback];
+}
+
++ (void)findAllBy:(CPString)aString withCallback:(Function)callback
+{
+    var record = [[self alloc] init];
+    [record findAllBy:aString withCallback:callback];
+}
+
+- (void)findAllBy:(CPString)aString withCallback:(Function)callback
+{
+    aString = [aString lowercaseString];
+	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
+    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find_all_by_" + modifiedClassName + "_" + aString;
+	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
+	[urlRequest setHTTPMethod:"GET"];
+
+    findAllSelector = aString;
+    findAllCallback = callback;
+	findAllConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
 }
 
 - (id)init
@@ -240,6 +263,18 @@ var __createURLConnectionFunction = nil;
 	    var json = eval('(' + data + ')');
 	    switch (connection)
 	    {
+	        case findAllConnection:
+	            for(var i = 0; i < [json.rows count]; i++)
+	            {
+	                var record = [[self alloc] init];
+	                [record setRecordID:json.rows[i].id];
+	                
+	                var selector = CPSelectorFromString("set" + [findBySelector capitalizedString] + ":");
+	                
+	                objj_msgSend(record, selector, json.rows[i][findBySelector]);
+	                findAllCallback(record);
+	            }
+	            break;
 	        case findByConnection:
 
             	for(var i = 0; i < [json.rows count]; i++)

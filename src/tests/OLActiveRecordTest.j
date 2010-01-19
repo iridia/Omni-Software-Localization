@@ -167,4 +167,13 @@
     }
 }
 
+- (void)testThatOLActiveRecordDoesFindAllByCallback
+{
+    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    
+    [OLActiveRecord findAllBy:@"name" withCallback:function(){}];
+
+    [urlConnection verifyThatAllExpectationsHaveBeenMet];
+}
+
 @end
