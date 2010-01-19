@@ -59,11 +59,11 @@ OLMenuItemDisabled = NO;
 
 - (void)disableItems:(CPNotification)aNotification
 {
-    var dictionary = [aNotification object];
+    var array = [aNotification object];
     
-    for(var i = 0; i < [[dictionary allKeys] count]; i++)
+    for(var i = 0; i < [array count]; i++)
     {
-        var key = [[dictionary allKeys] objectAtIndex:i];
+        var key = [array objectAtIndex:i];
         [items setObject:OLMenuItemDisabled forKey:key];
     }
 }

@@ -79,6 +79,24 @@
     [self assertTrue:[[target items] objectForKey:OLMenuItemNewLanguage]];
 }
 
+- (void)testThatOLMenuControllerDoesEnableAnItem
+{
+    var array = [CPArray arrayWithObject:OLMenuItemNewLanguage];
+
+    var notification = [CPNotification notificationWithName:@"asdf" object:array];
+
+    var target = [[OLMenuController alloc] init];
+
+    [target enableItems:notification];
+
+    [self assertTrue:[[target items] objectForKey:OLMenuItemNewLanguage]];
+    
+    [target disableItems:notification];
+    
+    [self assertFalse:[[target items] objectForKey:OLMenuItemNewLanguage]];
+}
+
+
 - (void)assert:(id)target registered:(CPString)aNotification
 {
     var names = [[CPNotificationCenter defaultCenter]._namedRegistries keyEnumerator];
