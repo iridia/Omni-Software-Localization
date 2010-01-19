@@ -36,12 +36,12 @@
 
 - (void)testThatOLMenuControllerDoesPostNotificationWhenCreatingANewLanguage
 {
-    
+    [self fail:@"Not Yet Complete"];
 }
 
 - (void)testThatOLMenuControllerDoesPostNotificationWhenDeletingALanguage
 {
-    
+    [self fail:@"Not Yet Complete"];
 }
 
 - (void)testThatOLMenuControllerDoesStartUploadOnNew
