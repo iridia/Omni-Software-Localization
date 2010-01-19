@@ -85,4 +85,16 @@
     [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:"asdf"]]];
 }
 
+- (void)testThatOLLanguageDoesClone
+{
+    var target = [OLLanguage english];
+    [self assert:[target clone] notSame:target];
+}
+
+- (void)testThatOLLanguageDoesCloneName
+{
+    var target = [OLLanguage spanish];
+    [self assert:[[target clone] name] equals:[target name]];
+}
+
 @end

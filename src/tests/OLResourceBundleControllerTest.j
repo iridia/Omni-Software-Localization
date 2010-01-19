@@ -65,7 +65,7 @@
     
     var aPopUpButton = moq();
     
-    [aPopUpButton selector:@selector(indexOfSelectedItem) returns:1];
+    [aPopUpButton selector:@selector(indexOfSelectedItem) returns:2];
     
     var resourceBundles = [firstResourceBundle, secondResourceBundle];
     
@@ -93,7 +93,7 @@
 
     [target setResourceBundles:resourceBundles];
 
-    [self assert:0 equals:[target indexOfSelectedResourceBundle]];
+    [self assert:1 equals:[target indexOfSelectedResourceBundle]];
 }
 
 - (void)testThatOLResourceBundleControllerDoesReturnIndexOfSelectedResourceBundleAfterAChange
@@ -133,9 +133,9 @@
 
     [target setResourceBundles:resourceBundles];
 
-    [self assert:@"German" equals:[[target titlesOfResourceBundles] objectAtIndex:0]];
-    [self assert:@"Spanish" equals:[[target titlesOfResourceBundles] objectAtIndex:1]];
+    [self assert:@"German" equals:[[target titlesOfResourceBundles] objectAtIndex:1]];
     [self assert:@"Spanish" equals:[[target titlesOfResourceBundles] objectAtIndex:2]];
+    [self assert:@"Spanish" equals:[[target titlesOfResourceBundles] objectAtIndex:3]];
 }
 
 @end

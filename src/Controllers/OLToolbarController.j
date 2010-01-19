@@ -86,8 +86,8 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
         [menuItem setMaxSize:CGSizeMake(32, 32)];
         [menuItem setLabel:loginValue];
 
-        [menuItem setTarget:loginController];
-        [menuItem setAction:@selector(showLoginAndRegisterWindow:)];
+        [menuItem setTarget:self];
+        [menuItem setAction:@selector(login:)];
         
         loginMenuItem = menuItem;
     }
@@ -110,6 +110,11 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     }
     
     return menuItem;
+}
+
+- (void)login:(id)sender
+{
+    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLUserShouldLoginNotification" object:self userInfo:[CPDictionary dictionary]];
 }
 
 - (void)updateLoginInfo:(CPNotification)notification

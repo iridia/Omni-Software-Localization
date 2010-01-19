@@ -50,6 +50,11 @@
 	return self;
 }
 
+- (OLLineItem)clone
+{
+    return [[OLLineItem alloc] initWithIdentifier:identifier value:value comment:comment];
+}
+
 @end
 
 var OLLineItemCommentKey = @"OLLineItemCommentKey";

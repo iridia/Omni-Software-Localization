@@ -8,7 +8,7 @@
  */
 @implementation OLResource : OLActiveRecord
 {
-	CPString		_fileName	@accessors(readonly, property=fileName);
+	CPString		_fileName	@accessors(property=fileName);
 	CPString		_fileType	@accessors(readonly, property=fileType);
 	CPArray			_lineItems  @accessors(readonly, property=lineItems);
 	CPDictionary   	votes		@accessors(readonly);
@@ -67,6 +67,23 @@
     }
 
     return numVotes;
+}
+
+- (void)addLineItem:(OLLineItem)aLineItem
+{
+    [_lineItems addObject:aLineItem];
+}
+
+- (OLResource)clone
+{
+    var clone = [[OLResource alloc] initWithFileName:_fileName fileType:_fileType lineItems:[CPArray array]];
+    
+    for(var i = 0; i < [_lineItems count]; i++)
+    {
+        [clone addLineItem:[[_lineItems objectAtIndex:i] clone]];
+    }
+    
+    return clone;
 }
 
 @end

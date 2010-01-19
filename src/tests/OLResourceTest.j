@@ -111,4 +111,65 @@ var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.str
     [self assert:0 equals:[target numberOfVotes]];
 }
 
+- (void)testThatOLResourceDoesClone
+{
+    var target = [[OLResource alloc] initWithFileName:@"AFile" fileType:@"zip" lineItems:[CPArray array]];
+    
+    var clone = [target clone];
+    
+    [self assert:clone notSame:target];
+}
+
+- (void)testThatOLResourceDoesCloneFileName
+{
+    var target = [[OLResource alloc] initWithFileName:@"AFile" fileType:@"zip" lineItems:[CPArray array]];
+
+    var clone = [target clone];
+
+    [self assertTrue:[[clone fileName] isEqualToString:[target fileName]]];
+}
+
+- (void)testThatOLResourceDoesCloneFileType
+{
+    var target = [[OLResource alloc] initWithFileName:@"AFile" fileType:@"zip" lineItems:[CPArray array]];
+
+    var clone = [target clone];
+
+    [self assertTrue:[[clone fileType] isEqualToString:[target fileType]]];
+}
+
+- (void)testThatOLResourceDoesCloneLineItemArray
+{
+    var target = [[OLResource alloc] initWithFileName:@"AFile" fileType:@"zip" lineItems:[moq()]];
+
+    var clone = [target clone];
+
+    [self assert:[[clone lineItems] count] equals:[[target lineItems] count]];
+}
+
+- (void)testThatOLResourceDoesAddLineItems
+{
+    var target = [[OLResource alloc] initWithFileName:@"AFile" fileType:@"zip" lineItems:[CPArray array]];
+    
+    var lineItem = moq();
+    
+    [target addLineItem:lineItem];
+    
+    [self assert:1 equals:[[target lineItems] count]];
+    [self assert:lineItem equals:[[target lineItems] objectAtIndex:0]];
+}
+
+- (void)testThatOLResourceDoesCloneLineItems
+{
+    var lineItem = moq();
+    var target = [[OLResource alloc] initWithFileName:@"AFile" fileType:@"zip" lineItems:[lineItem]];
+    
+    var clonedLineItem = moq();
+    [lineItem selector:@selector(clone) returns:clonedLineItem];
+
+    var clone = [target clone];
+
+    [self assert:clonedLineItem equals:[[clone lineItems] objectAtIndex:0]];
+}
+
 @end

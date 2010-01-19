@@ -45,8 +45,12 @@ CPApp._windows = moq();
 
 - (void)testThatOLLoginControllerDoesRespondToShowLoginWindow
 {
+    var notification = moq();
+    
+    [notification selector:@selector(userInfo) returns:[CPDictionary dictionary]];
+    
 	var target = [[OLLoginController alloc] init];
-	[target showLoginAndRegisterWindow:moq()];
+	[target showLoginAndRegisterWindow:notification];
 	[self assertTrue:YES];
 }
 

@@ -40,4 +40,46 @@ var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.str
     [coder verifyThatAllExpectationsHaveBeenMet];
 }
 
+
+- (void)testThatOLLineItemDoesCloneAndAreNotSame
+{
+    var target = [[OLLineItem alloc] init];
+    var clone = [target clone];
+    
+    [self assert:clone notSame:target];
+}
+
+
+- (void)testThatOLLineItemDoesCloneIdentifier
+{
+    var identifier = "asdf";
+    var target = [[OLLineItem alloc] initWithIdentifier:identifier value:@"" comment:@""];
+    
+    var clone = [target clone];
+    
+    [self assert:identifier equals:[clone identifier]];
+}
+
+
+- (void)testThatOLLineItemDoesCloneValue
+{
+    var value = "asdf";
+    var target = [[OLLineItem alloc] initWithIdentifier:@"" value:value comment:@""];
+
+    var clone = [target clone];
+
+    [self assert:value equals:[clone value]];
+}
+
+
+- (void)testThatOLLineItemDoesCloneComment
+{
+    var comment = "asdf";
+    var target = [[OLLineItem alloc] initWithIdentifier:@"" value:@"" comment:comment];
+
+    var clone = [target clone];
+
+    [self assert:comment equals:[clone comment]];
+}
+
 @end

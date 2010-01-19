@@ -8,8 +8,7 @@
  */
 @implementation OLResourceBundle : OLActiveRecord
 {
-	OLLanguage          _language   @accessors(property=language, readonly);
-	OLResourceBundle    _baseBundle @accessors(property=baseBundle);
+	OLLanguage          _language   @accessors(property=language);
 	CPArray             _resources  @accessors(property=resources);
 }
 
@@ -45,6 +44,18 @@
 		_resources = someResources;
 	}
 	return self;
+}
+
+- (OLResourceBundle)clone
+{
+    var clone = [[OLResourceBundle alloc] initWithLanguage:[_language clone]];
+    
+    for(var i = 0; i < [_resources count]; i++)
+    {
+        [clone insertObject:[[_resources objectAtIndex:i] clone] inResourcesAtIndex:i];
+    }
+    
+    return clone;
 }
 
 @end
