@@ -1,7 +1,7 @@
 @import <AppKit/CPView.j>
 @import <AppKit/CPTableView.j>
 
-@implementation ProjectSearchView : CPView
+@implementation OLProjectSearchView : CPView
 {
     CPTableView allProjectsTableView;
 }
@@ -26,13 +26,15 @@
 		[[allProjectsTableView cornerView] setBackgroundColor:headerColor];
 		
 		// add the filename column
-		var column = [[CPTableColumn alloc] initWithIdentifier:OLProjectNameColumn];
+		var column = [[CPTableColumn alloc] initWithIdentifier:@"ProjectName"];
 		[[column headerView] setStringValue:"Project Name"];
 		[[column headerView] setBackgroundColor:headerColor];
 		[column setWidth:CGRectGetWidth(aFrame)];
 		[allProjectsTableView addTableColumn:column];
 		
 		[scrollView setDocumentView:allProjectsTableView];
+		
+		[self addSubview:scrollView];
     }
     return self;
 }
@@ -40,6 +42,11 @@
 - (void)setDataSource:(id)aDataSource
 {
     [allProjectsTableView setDataSource:aDataSource];
+}
+
+- (void)reloadData
+{
+    [allProjectsTableView reloadData];
 }
 
 @end
