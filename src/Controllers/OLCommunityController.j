@@ -127,24 +127,37 @@ var OLCommunitySearchItem = @"Search";
 
 - (int)numberOfRowsInTableView:(CPTableView)mailTableView
 {
-    return [messages count];//Needs to be the number of mail items in the DB for the user.
+    var result = 0;
+    
+    for(var i = 0; i < [messages count]; i++)
+    {
+        if([[messages objectAtIndex:i] toUserID] === [[[OLUserSessionManager defaultSessionManager] user] email])
+        {
+            result++;
+        }
+    }
+    
+    return result;//Needs to be the number of mail items in the DB for the user.
 }
 
 - (id)tableView:(CPTableView)mailTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
     var message = [messages objectAtIndex:row];
     
-    if ([tableColumn identifier] === OLMailViewFromUserIDColumnHeader)
+    if([message toUserID] === [[[OLUserSessionManager defaultSessionManager] user] email])
     {
-       return [message fromUserID];
-    }
-    else if ([tableColumn identifier] === OLMailViewSubjectColumnHeader)
-    {
-        return [message subject];
-    }
-    else if ([tableColumn identifier] === OLMailViewDateSentColumnHeader)
-    {
-        return [message dateSent];
+        if ([tableColumn identifier] === OLMailViewFromUserIDColumnHeader)
+        {
+           return [message fromUserID];
+        }
+        else if ([tableColumn identifier] === OLMailViewSubjectColumnHeader)
+        {
+            return [message subject];
+        }
+        else if ([tableColumn identifier] === OLMailViewDateSentColumnHeader)
+        {
+            return [message dateSent];
+        }
     }
 }
 

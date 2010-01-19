@@ -13,6 +13,7 @@
     CPTextField messageTextView;  
     CPButton    submitButton;
     CPTextField messageTextLabel;
+    CPTextField statusLabel;
     
     id delegate @accessors;
 }
@@ -70,6 +71,9 @@
                 [cancelButton setAction:@selector(cancel:)];
                 [cancelButton setFrameOrigin:CPMakePoint([submitButton frame].origin.x - CGRectGetWidth([cancelButton bounds]) - 5, CGRectGetHeight([messageView bounds]) - CGRectGetHeight([cancelButton bounds]))];
                 [messageView addSubview:cancelButton];
+                
+                var statusLabel = [CPTextField labelWithTitle:@""];
+                [messageView addSubview:statusLabel];
                                 
                 [contentView addSubview:messageView];
                 
@@ -85,8 +89,10 @@
 
 - (void)sendMessage:(id)sender
 {
+    [self setStatus:@""];
+    
     var message = [CPDictionary dictionary];
-    [message setObject:[emailTextField stringValue] forKey:@"UserID"];
+    [message setObject:[emailTextField stringValue] forKey:@"ToUserID"];
     [message setObject:[subjectTextField stringValue] forKey:@"subject"];
     [message setObject:[messageTextView stringValue] forKey:@"content"];
     
@@ -94,6 +100,14 @@
 	{
 	    [delegate didSendMessage:message];
 	}
+}
+
+- (void)setStatus:(CPString)statusString
+{
+    [statusLabel setStringValue:statusString];
+    [statusLabel setTextColor:[CPColor redColor]];
+    [statusLabel sizeToFit];
+    [statusLabel setCenter:CPMakePoint(CGRectGetWidth([messageView bounds])/2, 5)];
 }
 
 - (void)setCurrentView:(CPView)aView
@@ -104,6 +118,8 @@
 
 - (void)cancel:(id)sender
 {
+    [self setStatus:@""];
+    
     [[CPApplication sharedApplication] stopModal];
     [self orderOut:self];
     
