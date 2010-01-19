@@ -49,9 +49,9 @@ var __createURLConnectionFunction = nil;
 	
 		for(var i = 0; i < [data.rows count]; i++)
 		{
-			[self findByRecordID:data.rows[i].id withCallback:function(user)
+			[self findByRecordID:data.rows[i].id withCallback:function(record)
 			{
-			    callback(user); 
+			    callback(record); 
 			    numberCalledBack++; 
 			    if(numberCalledBack == [data.rows count]) 
 			    {
@@ -82,11 +82,20 @@ var __createURLConnectionFunction = nil;
 + (void)find:(CPString)propertyToSearchOn by:(JSON)object callback:(Function)callback
 {
 	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
-    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find_by_" + propertyToSearchOn + "?key=" + object;
+    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find_by_" + propertyToSearchOn + "?key=\"" + object + "\"";
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	
-	findByCallback = callback;
-    findByConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
+	var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
+	
+	var data = eval('(' + JSONresponse.string + ')');
+
+	for(var i = 0; i < [data.rows count]; i++)
+	{
+		[self findByRecordID:data.rows[i].id withCallback:function(record)
+		{
+		    callback(record);
+		}];
+	}
 }
 
 + (void)findByRecordID:(CPString)aRecordID withCallback:(Function)callback
@@ -228,7 +237,6 @@ var __createURLConnectionFunction = nil;
 	try
 	{
 	    var json = eval('(' + data + ')');
-    
 	    switch (connection)
 	    {
 	        case findByConnection:

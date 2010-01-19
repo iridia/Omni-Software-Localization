@@ -41,13 +41,30 @@
 		    selector:@selector(didReceiveProjectShouldBranchNotification:)
 		    name:@"OLProjectShouldBranchNotification"
 		    object:nil];
+		    
+        [[CPNotificationCenter defaultCenter]
+    	    addObserver:self
+    		selector:@selector(didReceiveProjectsShouldReloadNotification:)
+    		name:@"OLProjectsShouldReload"
+    		object:nil];
+    		
     }
     return self;
 }
 
 - (void)loadProjects
 {
-	[OLProject listWithCallback:function(project){[self addProject:project];}];
+    if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
+    {
+        var userLoggedIn = [[CPUserSessionManager defaultManager] userIdentifier];
+        console.log("jerk");
+        [OLProject findByUserIdentifier:userLoggedIn callback:function(project)
+    	{
+    	    console.log(project);
+            [self addProject:project];
+        }];
+    }
+	
 }
 
 - (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index
@@ -103,6 +120,11 @@
     [alert addButtonWithTitle:@"Yes"];
     [alert setDelegate:self];
     [alert runModal];
+}
+
+- (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
+{
+    [self loadProjects];
 }
 
 - (void)alertDidEnd:(CPAlert)theAlert returnCode:(int)returnCode

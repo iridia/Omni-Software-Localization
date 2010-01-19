@@ -14,6 +14,11 @@
     [self find:"name" by:aName callback:callback];
 }
 
++ (void)findByUserIdentifier:(CPString)userIdentifier callback:(Function)callback
+{
+    [self find:"useridentifier" by:userIdentifier callback:callback];
+}
+
 + (id)projectFromJSON:(JSON)json
 {
     var userIdentifier = @"";
