@@ -86,7 +86,7 @@
 - (void)sendMessage:(id)sender
 {
     var message = [CPDictionary dictionary];
-    [message setObject:[emailTextField stringValue] forKey:@"UserID"];
+    [message setObject:[emailTextField stringValue] forKey:@"ToUserID"];
     [message setObject:[subjectTextField stringValue] forKey:@"subject"];
     [message setObject:[messageTextView stringValue] forKey:@"content"];
     
@@ -94,6 +94,15 @@
 	{
 	    [delegate didSendMessage:message];
 	}
+}
+
+- (void)setStatus:(CPString)statusString
+{
+    var statusLabel = [CPTextField labelWithTitle:statusString];
+    [statusLabel setTextColor:[CPColor redColor]];
+    [statusLabel sizeToFit];
+    [statusLabel setCenter:CPMakePoint(CGRectGetWidth([messageView bounds])/2, 5)];
+    [messageView addSubview:statusLabel];  
 }
 
 - (void)setCurrentView:(CPView)aView

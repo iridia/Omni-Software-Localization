@@ -38,6 +38,7 @@ var OLMessageFromUserIDKey= @"OLMessageFromUserIDKey";
 var OLMessageSubjectKey = @"OLMessageSubjectKey";
 var OLMessageContentKey = @"OLMessageContentKey";
 var OLMessageDateSentKey = @"OLMessageDateSentKey";
+var OLMessageToUserIDKey = @"OLMessageToUserIDKey";
 
 @implementation OLMessage (CPCoding)
 
@@ -51,6 +52,7 @@ var OLMessageDateSentKey = @"OLMessageDateSentKey";
         subject = [aCoder decodeObjectForKey:OLMessageSubjectKey];
         content = [aCoder decodeObjectForKey:OLMessageContentKey];
         dateSent = [aCoder decodeObjectForKey:OLMessageDateSentKey];
+        toUserID = [aCoder decodeObjectForKey:OLMessageToUserIDKey];
     }
     
     return self;
@@ -62,6 +64,7 @@ var OLMessageDateSentKey = @"OLMessageDateSentKey";
     [aCoder encodeObject:subject forKey:OLMessageSubjectKey];
     [aCoder encodeObject:content forKey:OLMessageContentKey];
     [aCoder encodeObject:dateSent forKey:OLMessageDateSentKey];
+    [aCoder encodeObject:toUserID forKey:OLMessageToUserIDKey];
 }
 
 @end

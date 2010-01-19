@@ -26,29 +26,50 @@
 
 - (void)showMessageWindow:(id)sender
 {
+    if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
+    {
+        var userInfo = [CPDictionary dictionary];
+        [userInfo setObject:@"You must log in to send a message!" forKey:@"StatusMessageText"];
+        [userInfo setObject:@selector(showMessageWindow:) forKey:@"SuccessfulLoginAction"];
+        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
+        
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLUserShouldLoginNotification"
+            object:nil
+            userInfo:userInfo];
+        
+        return;
+    }
     [[CPApplication sharedApplication] runModalForWindow:messageWindow];
 }
 
 - (void)didSendMessage:(CPDictionary)messageDictionary
 {
-    var email = [messageDictionary objectForKey:@"email"];
+    var toUser = [messageDictionary objectForKey:@"ToUserID"];
     var subject = [messageDictionary objectForKey:@"subject"];
     var text = [messageDictionary objectForKey:@"content"];
     var dateSent = [messageDictionary objectForKey:@"dateSent"];
-   
-    if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
-    {
-    }
-    else
-    {
-        //popup the user login without cancel button
-    }
-    
     var fromUser = [[OLUserSessionManager defaultSessionManager] user];
-    var message = [[OLMessage alloc] initWithUserID:[fromUser email] subject:subject content:text to:email];
-    [message setDelegate:self];
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMessageCreatedNotification" object:message];
-    [message save];
+    
+    var wasFound = NO;
+    [OLUser listWithCallback:function(user)
+        {
+            if(toUser === [user email])
+            {
+                wasFound = YES;
+                var message = [[OLMessage alloc] initWithUserID:[fromUser email] subject:subject content:text to:toUser];
+                [message setDelegate:self];
+                [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMessageCreatedNotification" object:message];
+                [message save];
+            }
+        } 
+        finalCallback:function(user)
+        {
+            if(!wasFound)
+            {
+                [messageWindow setStatus:@"Invalid To field."];
+            }
+        }];
 }
 
 - (void)willCreateRecord:(OLMessage)message
