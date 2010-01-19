@@ -2,17 +2,23 @@
 @import <AppKit/CPOutlineView.j>
 
 @import "../Models/OLMessage.j"
+@import "OLProjectSearchController.j"
 
 var OLMailViewFromUserIDColumnHeader = @"OLMailViewFromUserIDColumnHeader";
 var OLMailViewSubjectColumnHeader = @"OLMailViewSubjectColumnHeader";
 var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
+var OLCommunityInboxItem = @"Inbox";
+var OLCommunitySearchItem = @"Search";
+
 // Manages an array of community items (Mailbox)
 @implementation OLCommunityController : CPObject
 {
-    CPMutableArray      messages    	    @accessors;
-	OLMessage	        selectedItem    	@accessors;
-	CPView              mailView            @accessors;
+    CPArray                     messages    	    @accessors;
+	OLMessage	                selectedItem    	@accessors;
+	OLMailView                  mailView            @accessors;
+	OLProjectSearchView         searchView          @accessors(readonly);
+	OLProjectSearchController   searchController;
 }
 
 - (id)init
@@ -33,6 +39,7 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
         		name:@"OLMessageCreatedNotification"
         		object:nil];
         		
+        	searchController = [[OLProjectSearchController alloc] init];
         }
         return self;
 }
@@ -51,12 +58,20 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
         [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldDisableItemsNotification" 
             object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage]];
 	    [self setSelectedItem:item];
-        [[[mailView mailView] messageTableView] reloadData];
 	}
 	else
 	{
 	    [self setSelectedItem:nil];
 	}
+}
+
+- (void)setSearchView:(CPView)aSearchView
+{
+    if (searchView === aSearchView)
+        return;
+    
+    searchView = aSearchView;
+    [searchView setDataSource:searchController];
 }
 
 - (void)newMessageCreated:(CPNotification)notification
@@ -136,12 +151,27 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
 - (CPArray)sidebarItems
 {
-    return [@"Inbox"];
+    return [OLCommunityInboxItem, OLCommunitySearchItem];
 }
 
 - (CPView)contentView
 {
-    return mailView;
+    var view;
+    switch(selectedItem)
+    {
+        case OLCommunityInboxItem:
+            [[[mailView mailView] messageTableView] reloadData];
+            view = mailView;
+            break;
+        case OLCommunitySearchItem:
+            view = searchView;
+            break;
+        default:
+            CPLog.warn(@"Unhandled case in %s, %s", [self className], _cmd);
+            break;
+    }
+    
+    return view;
 }
 
 @end

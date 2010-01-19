@@ -31,6 +31,7 @@
 @import "Views/OLResourcesView.j"
 @import "Views/OLGlossariesView.j"
 @import "Views/OLMailView.j"
+@import "Views/OLProjectSearchView.j"
 @import "Views/OLMessageWindow.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
@@ -86,7 +87,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[lineItemController setResourcesView:[resourceController resourcesView]];
 	[resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
 	
-    resourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
+    var resourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
     [resourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [resourcesView setResourceController:resourceController];
     [resourcesView setLineItemController:lineItemController];
@@ -102,7 +103,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:glossaryController];
 	
-	glossariesView = [[OLGlossariesView alloc] initWithFrame:[mainContentView bounds]];
+	var glossariesView = [[OLGlossariesView alloc] initWithFrame:[mainContentView bounds]];
 	[glossariesView setGlossaryController:glossaryController];
 	[glossaryController setGlossariesView:glossariesView];
     
@@ -112,13 +113,14 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     
     communityController = [[OLCommunityController alloc] init];
     [communityController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
-    // [communityController addObserver:contentViewController forKeyPath:@"selectedItem" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:communityController];
     
-    mailView = [[OLMailView alloc] initWithFrame:[mainContentView bounds]];
+    var mailView = [[OLMailView alloc] initWithFrame:[mainContentView bounds]];
     [mailView setCommunityController:communityController];
-    // [contentViewController setMailView:mailView];
     [communityController setMailView:mailView];
+    
+    var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
+    [communityController setSearchView:searchView];
 	
     var uploadWindowController = [[OLUploadWindowController alloc] init];
 	menuController = [[OLMenuController alloc] init];
