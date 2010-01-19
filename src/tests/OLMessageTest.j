@@ -9,12 +9,12 @@
 
 - (void)testThatOLMessageDoesInitializeWithDefaultParameters
 {
-    [self assertNotNull:[[OLMessage alloc] initWithUserID:@"userID" subject:@"subject" content:@"content"]];
+    [self assertNotNull:[[OLMessage alloc] initWithUserID:@"userID" subject:@"subject" content:@"content" to:@"anotherUserId"]];
 }
 
 - (void)testThatOLMessageDoesInitializeWithShortParameters
 {
-    [self assertNotNull:[[OLMessage alloc] initWithUserID:@"userID"]];
+    [self assertNotNull:[[OLMessage alloc] initWithUserID:@"userID" to:@"anotherUserId"]];
 }
 
 - (void)testThatOLMessageDoesInitWithCoder
