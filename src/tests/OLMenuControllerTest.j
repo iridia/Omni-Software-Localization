@@ -1,5 +1,6 @@
 @import "../Controllers/OLMenuController.j"
 @import "utilities/CPNotificationCenter+MockDefaultCenter.j"
+@import "utilities/Observer.j"
 
 @implementation OLMenuControllerTest : OJTestCase
 
@@ -36,12 +37,28 @@
 
 - (void)testThatOLMenuControllerDoesPostNotificationWhenCreatingANewLanguage
 {
-    [self fail:@"Not Yet Complete"];
+    var observer = [[Observer alloc] init];
+    
+    var target = [[OLMenuController alloc] init];
+    
+    [observer startObserving:@"CPLanguageShouldAddLanguageNotification"];
+    
+    [target newLanguage:self];
+    
+    [self assertTrue:[observer didObserve:@"CPLanguageShouldAddLanguageNotification"]];
 }
 
 - (void)testThatOLMenuControllerDoesPostNotificationWhenDeletingALanguage
 {
-    [self fail:@"Not Yet Complete"];
+    var observer = [[Observer alloc] init];
+
+    var target = [[OLMenuController alloc] init];
+
+    [observer startObserving:@"CPLanguageShouldDeleteLanguageNotification"];
+
+    [target deleteLanguage:self];
+
+    [self assertTrue:[observer didObserve:@"CPLanguageShouldDeleteLanguageNotification"]];
 }
 
 - (void)testThatOLMenuControllerDoesStartUploadOnNew
