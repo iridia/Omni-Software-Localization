@@ -1,10 +1,14 @@
 @import <Foundation/CPObject.j>
 @import "../Views/OLMenu.j"
 
+OLMenuItemEnabled = true;
+OLMenuItemDisabled = false;
+
 @implementation OLMenuController : CPObject
 {
     CPMenu                      menu;
     CPUploadWindowController    uploadWindowController  @accessors;
+    CPDictionary                items;
 }
 
 - (id)init
@@ -23,21 +27,45 @@
             selector:@selector(disableItems:)
             name:@"OLMenuShouldDisableItemsNotification"
             object:nil];
-            
+        
+        items = [CPDictionary dictionary];
+        
+        [items setObject:OLMenuItemDisabled forKey:OLMenuItemNew];
+        [items setObject:OLMenuItemDisabled forKey:OLMenuItemSave];
+        [items setObject:OLMenuItemDisabled forKey:OLMenuItemNewLanguage];
+        [items setObject:OLMenuItemDisabled forKey:OLMenuItemDeleteLanguage];
+        
         menu = [[OLMenu alloc] initWithTitle:@"Omni Software Localization" controller:self];
         [[CPApplication sharedApplication] setMainMenu:menu];
     }
     return self;
 }
 
+- (CPDictionary)items
+{
+    return [CPDictionary dictionaryWithDictionary:items];
+}
+
 - (void)enableItems:(CPNotification)aNotification
 {
+    var dictionary = [aNotification object];
     
+    for(var i = 0; i < [[dictionary allKeys] count]; i++)
+    {
+        var key = [[dictionary allKeys] objectAtIndex:i];
+        [items setObject:OLMenuItemEnabled forKey:key];
+    }
 }
 
 - (void)disableItems:(CPNotification)aNotification
 {
+    var dictionary = [aNotification object];
     
+    for(var i = 0; i < [[dictionary allKeys] count]; i++)
+    {
+        var key = [[dictionary allKeys] objectAtIndex:i];
+        [items setObject:OLMenuItemDisabled forKey:key];
+    }
 }
 
 - (void)newLanguage:(id)sender
