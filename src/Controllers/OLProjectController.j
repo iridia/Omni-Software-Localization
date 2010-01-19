@@ -54,6 +54,7 @@
 
 - (void)loadProjects
 {
+    projects = [CPArray array];
     if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
