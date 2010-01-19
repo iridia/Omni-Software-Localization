@@ -24,11 +24,22 @@
 
 - (void)testThatOLActiveRecordDoesFindByName
 {
-    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
     
-    [OLActiveRecord find:@"name" by:@"joe" callback:function(){}];
-    
-    [urlConnection verifyThatAllExpectationsHaveBeenMet];
+    var tempCPURLConnection = CPURLConnection;
+    try
+    {
+        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+
+        CPURLConnection = moq();
+        [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[{'id':1}, {'id':2}]}"}]
+        [OLActiveRecord listWithCallback:function(){}];
+
+        [urlConnection verifyThatAllExpectationsHaveBeenMet];
+    }
+    finally
+    {
+        CPURLConnection = tempCPURLConnection;
+    }
 }
 
 - (void)testThatOLActiveRecordDoesFindByRecordID

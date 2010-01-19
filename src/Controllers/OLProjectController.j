@@ -57,10 +57,8 @@
     if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
     {
         var userLoggedIn = [[CPUserSessionManager defaultManager] userIdentifier];
-        console.log("jerk");
         [OLProject findByUserIdentifier:userLoggedIn callback:function(project)
     	{
-    	    console.log(project);
             [self addProject:project];
         }];
     }

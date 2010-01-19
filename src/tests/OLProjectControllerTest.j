@@ -16,7 +16,7 @@
     {
         OLProject = moq();
     
-        [OLProject expectSelector:@selector(listWithCallback:) times:1];
+        [OLProject expectSelector:@selector(findByUserIdentifier:callback:) times:1];
     
         var target = [[OLProjectController alloc] init];
     

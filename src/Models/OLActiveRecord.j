@@ -83,12 +83,13 @@ var __createURLConnectionFunction = nil;
 {
 	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
     var url = @"api/" + modifiedClassName + "/_design/finder/_view/find_by_" + propertyToSearchOn + "?key=\"" + object + "\"";
+    
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	
 	var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
 	
 	var data = eval('(' + JSONresponse.string + ')');
-
+    
 	for(var i = 0; i < [data.rows count]; i++)
 	{
 		[self findByRecordID:data.rows[i].id withCallback:function(record)
@@ -240,6 +241,7 @@ var __createURLConnectionFunction = nil;
 	    switch (connection)
 	    {
 	        case findByConnection:
+
             	for(var i = 0; i < [json.rows count]; i++)
             	{
             		[self findByRecordID:json.rows[i].id withCallback:function(user)
