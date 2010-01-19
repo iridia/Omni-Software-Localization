@@ -85,6 +85,11 @@
     return result;
 }
 
+- (CPString)sidebarName
+{
+    return [self name];
+}
+
 @end
 
 var OLProjectNameKey = @"OLProjectNameKey";
