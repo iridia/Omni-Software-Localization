@@ -1,8 +1,8 @@
 @import <Foundation/CPObject.j>
 @import "../Views/OLMenu.j"
 
-OLMenuItemEnabled = true;
-OLMenuItemDisabled = false;
+OLMenuItemEnabled = YES;
+OLMenuItemDisabled = NO;
 
 @implementation OLMenuController : CPObject
 {
@@ -48,11 +48,11 @@ OLMenuItemDisabled = false;
 
 - (void)enableItems:(CPNotification)aNotification
 {
-    var dictionary = [aNotification object];
+    var array = [aNotification object];
     
-    for(var i = 0; i < [[dictionary allKeys] count]; i++)
+    for(var i = 0; i < [array count]; i++)
     {
-        var key = [[dictionary allKeys] objectAtIndex:i];
+        var key = [array objectAtIndex:i];
         [items setObject:OLMenuItemEnabled forKey:key];
     }
 }

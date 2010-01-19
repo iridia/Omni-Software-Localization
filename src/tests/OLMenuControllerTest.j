@@ -58,6 +58,27 @@
     [uploadWindowController verifyThatAllExpectationsHaveBeenMet];
 }
 
+- (void)testThatOLMenuControllerDoesGetItems
+{
+    var target = [[OLMenuController alloc] init];
+    
+    [self assertNotNull:[target items]];
+    [self assertFalse:[[[target items] allValues] objectAtIndex:0]];
+}
+
+- (void)testThatOLMenuControllerDoesEnableAnItem
+{
+    var array = [CPArray arrayWithObject:OLMenuItemNewLanguage];
+    
+    var notification = [CPNotification notificationWithName:@"asdf" object:array];
+    
+    var target = [[OLMenuController alloc] init];
+    
+    [target enableItems:notification];
+    
+    [self assertTrue:[[target items] objectForKey:OLMenuItemNewLanguage]];
+}
+
 - (void)assert:(id)target registered:(CPString)aNotification
 {
     var names = [[CPNotificationCenter defaultCenter]._namedRegistries keyEnumerator];
