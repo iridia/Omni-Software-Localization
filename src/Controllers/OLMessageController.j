@@ -36,21 +36,19 @@
     var text = [messageDictionary objectForKey:@"content"];
     var dateSent = [messageDictionary objectForKey:@"dateSent"];
    
-    if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
+    if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
     }
     else
     {
         //popup the user login without cancel button
     }
-    var fromUser = [[CPUserSessionManager defaultManager] userIdentifier];
-    [OLUser findByRecordID:fromUser withCallback:function(user)
-    {
-        var message = [[OLMessage alloc] initWithUserID:[user email] subject:subject content:text to:email];
-        [message setDelegate:self];
-        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMessageCreatedNotification" object:message];
-        [message save];
-    }];
+    
+    var fromUser = [[OLUserSessionManager defaultSessionManager] user];
+    var message = [[OLMessage alloc] initWithUserID:[fromUser email] subject:subject content:text to:email];
+    [message setDelegate:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMessageCreatedNotification" object:message];
+    [message save];
 }
 
 - (void)willCreateRecord:(OLMessage)message
