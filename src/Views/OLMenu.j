@@ -6,14 +6,14 @@
 
 @implementation OLMenu : CPMenu
 {
-    OLFeedbackController _feedbackController;
-	OLLoginController _loginController;
-	OLUploadWindowController uploadWindowController;
-	CPMenuItem _loginItem;
-	CPAlert alert;
 }
 
 - (id)initWithTitle:(CPString)title
+{
+    [self initWithTitle:title controller:nil];
+}
+
+- (id)initWithTitle:(CPString)title controller:(OLMenuController)controller
 {
     self = [super initWithTitle:title];
     
@@ -24,8 +24,8 @@
         var aboutItem = [[CPMenuItem alloc] initWithTitle:@"About Omni Software Localization" action:@selector(about:) keyEquivalent:nil];
         var quitItem = [[CPMenuItem alloc] initWithTitle:@"Quit Omni Software Localization" action:@selector(quit:) keyEquivalent:"q"];
         
-        [aboutItem setTarget:self];
-        [quitItem setTarget:self];
+        [aboutItem setTarget:controller];
+        [quitItem setTarget:controller];
         [appSubmenu addItem:aboutItem];
         [appSubmenu addItem:quitItem];
         [appMenu setSubmenu:appSubmenu];
@@ -38,7 +38,7 @@
         [fileSubmenu addItem:newItem];
         [fileSubmenu addItem:saveItem];
         
-        [newItem setTarget:self];
+        [newItem setTarget:controller];
         [fileMenu setSubmenu:fileSubmenu];
         
         var projectMenu = [[CPMenuItem alloc] initWithTitle:@"Project" action:nil keyEquivalent:nil];
@@ -50,8 +50,8 @@
         [projectSubmenu addItem:newLanguage];
         [projectSubmenu addItem:deleteLanguage];
         
-        [newLanguage setTarget:self];
-        [deleteLanguage setTarget:self];
+        [newLanguage setTarget:controller];
+        [deleteLanguage setTarget:controller];
         
         [self addItem:appMenu];
         [self addItem:fileMenu];
@@ -62,41 +62,6 @@
     }
     
     return self;
-}
-
-- (void)newLanguage:(id)sender
-{
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"CPLanguageShouldAddLanguageNotification" object:self];
-}
-
-- (void)deleteLanguage:(id)sender
-{
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"CPLanguageShouldDeleteLanguageNotification" object:self];
-}
-
-- (void)about:(id)sender
-{
-    alert = [[CPAlert alloc] init];
-    [alert setTitle:@"About Omni Software Localization"];
-    [alert setAlertStyle:CPInformationalAlertStyle];
-    [alert setMessageText:@"Created by Derek Hammer, Chandler Kent and Kyle Rhodes."];
-    [alert addButtonWithTitle:@"Close"];
-    [alert runModal];
-}
-
-- (void)new:(id)sender
-{
-    [uploadWindowController startUpload:self];
-}
-
-- (void)updateLoginItemWithTitle:(CPString)aTitle
-{
-	[_loginItem setTitle:aTitle];
-}
-
-- (void)quit:(id)sender
-{
-    // TODO: Make the app quit
 }
 
 @end
