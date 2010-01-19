@@ -2,6 +2,7 @@
 
 @import "OLResourcesSplitView.j"
 @import "../Utilities/OLUserSessionManager.j"
+@import "../Categories/CPView+Positioning.j"
 
 @implementation OLResourcesView : CPView
 {
@@ -9,6 +10,7 @@
     CPPopUpButton   popUpButton;
     CPTextField     title;
     CPTextField     owner;
+    CPButton        backButton;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -43,9 +45,15 @@
         [owner setTextShadowOffset:CGSizeMake(0.0, 1.5)];
         [owner setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
         
+        backButton = [CPButton buttonWithTitle:@"Back"];
+        
+        [titleBar addSubview:title];
+        [titleBar addSubview:owner];
+        [backButton setHidden:YES];
+        [titleBar addSubview:backButton];
+        [self setBackButtonTitle:@"Test"];
+        
         [self addSubview:titleBar];
-        [self addSubview:title];
-        [self addSubview:owner];
     }
     
     return self;
@@ -71,9 +79,21 @@
         }
         
         [owner setStringValue:ownerName];
-        [owner sizeToFit];
-        [owner setCenter:CPPointMake(CGRectGetWidth([owner frame])/2 + 10, 20)];
+        [self repositionOwner];
     }];
+}
+
+- (void)repositionOwner
+{
+    [owner sizeToFit];
+    if ([backButton isHidden])
+    {
+        [owner setCenter:CPMakePoint(CGRectGetWidth([owner frame])/2 + 10, 20)]
+    }
+    else
+    {
+        [owner setCenter:CPMakePoint(CGRectGetWidth([backButton frame]) + CGRectGetWidth([owner frame])/2 + 10, 20)];
+    }
 }
 
 - (void)reloadData:(OLResourceBundleController)resourceBundleController
@@ -124,6 +144,34 @@
 - (void)setVoteCount:(int)votes
 {
     [resourcesView setVoteCount:votes];
+}
+
+- (void)setBackButtonTitle:(CPString)aTitle
+{
+    [backButton setTitle:aTitle];
+    [backButton sizeToFit];
+    
+    [backButton setCenter:CPMakePoint(CGRectGetWidth([backButton frame]) / 2.0 + 5.0, 20.0)]
+}
+
+- (void)showBackButton
+{
+    [backButton setHidden:NO];
+}
+
+- (void)hideBackButton
+{
+    [backButton setHidden:YES];
+}
+
+- (void)setBackButtonTarget:(id)aTarget
+{
+    [backButton setTarget:aTarget];
+}
+
+- (void)setBackButtonAction:(SEL)anAction
+{
+    [backButton setAction:anAction];
 }
 
 @end
