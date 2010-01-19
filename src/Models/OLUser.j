@@ -51,6 +51,15 @@ var OLUserEmailKey = @"OLUserEmailKey";
 
 @end
 
+@implementation OLUser (OLUserSessionManager)
+
+- (CPString)userIdentifier
+{
+    return [self recordID];
+}
+
+@end
+
 function isValidEmail(anEmail)
 {
 	try

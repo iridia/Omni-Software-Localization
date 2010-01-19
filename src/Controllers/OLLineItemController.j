@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 
+@import "../Utilities/OLUserSessionManager.j"
 @import "OLLineItemEditWindowController.j"
 @import "../Views/OLResourcesView.j"
 @import "../Models/OLLineItem.j"
@@ -32,8 +33,8 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 
 - (void)editSelectedLineItem:(id)sender
 {
-    var loggedInUserId = [[CPUserSessionManager defaultManager] userIdentifier];
-    if(!loggedInUserId)
+    var userSessionManager = [OLUserSessionManager defaultSessionManager];
+    if(![userSessionManager isUserLoggedIn])
     {
         var userInfo = [CPDictionary dictionary];
         [userInfo setObject:@"You must log in to edit this item!" forKey:@"StatusMessageText"];
@@ -46,7 +47,7 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
             userInfo:userInfo];
         return;
     }
-    else if([loggedInUserId isEqualToString:@""] || ![loggedInUserId isEqualToString:ownerId])
+    else if(![userSessionManager isUserTheLoggedInUser:ownerId])
     {
         [[CPNotificationCenter defaultCenter]
             postNotificationName:@"OLProjectShouldBranchNotification"

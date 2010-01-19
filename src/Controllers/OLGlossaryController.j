@@ -144,6 +144,8 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 	{
 	    if (item !== selectedGlossary)
 	    {
+	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldDisableItemsNotification" 
+	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage]];
     		[self setSelectedGlossary:item];
     		[[[self glossariesView] tableView] reloadData];
     	}

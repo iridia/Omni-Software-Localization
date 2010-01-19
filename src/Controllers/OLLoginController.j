@@ -1,4 +1,6 @@
 @import <Foundation/CPObject.j>
+
+@import "../Utilities/OLUserSessionManager.j"
 @import "../Categories/CPArray+Find.j"
 @import "../Views/OLLoginAndRegisterWindow.j"
 @import "../Models/OLUser.j"
@@ -36,10 +38,9 @@
 {
     [loginAndRegisterWindow close];
     
-    var sessionManager = [CPUserSessionManager defaultManager];
-    [sessionManager setStatus:CPUserSessionLoggedInStatus];
-    [sessionManager setUserIdentifier:[aUser recordID]];
-    
+    var sessionManager = [OLUserSessionManager defaultSessionManager];
+    [sessionManager setUser:aUser];
+
     [successfulLoginTarget performSelector:successfulLoginAction withObject:self];
     [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectsShouldReload" object:nil];
 }

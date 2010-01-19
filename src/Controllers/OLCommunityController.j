@@ -47,7 +47,9 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 	var parent = [outlineView parentForItem:item];
 
 	if (parent === self)
-	{
+	{	    
+        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldDisableItemsNotification" 
+            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage]];
 	    [self setSelectedItem:item];
         [[[mailView mailView] messageTableView] reloadData];
 	}

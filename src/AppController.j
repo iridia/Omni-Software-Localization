@@ -22,6 +22,7 @@
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLWelcomeController.j"
 @import "Controllers/OLUploadController.j"
+@import "Controllers/OLMenuController.j"
 @import "Controllers/OLMessageController.j"
 @import "Controllers/OLCommunityController.j"
 
@@ -48,6 +49,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	OLResourceController		resourceController;
 	OLLineItemController		lineItemController;
 	OLGlossaryController		glossaryController;
+	OLMenuController            menuController;
 	OLMessageController         messageController;
 	OLCommunityController       communityController;
 	
@@ -114,6 +116,11 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     // [contentViewController setMailView:mailView];
     [communityController setMailView:mailView];
 	
+    var uploadWindowController = [[OLUploadWindowController alloc] init];
+	menuController = [[OLMenuController alloc] init];
+	[menuController setUploadWindowController:uploadWindowController];
+    [CPMenu setMenuBarVisible:YES];
+	
     [projectController loadProjects];
 	[glossaryController loadGlossaries];
     [communityController loadMessages];
@@ -127,10 +134,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 {
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
-    
-    var menu = [[OLMenu alloc] init];
-    [[CPApplication sharedApplication] setMainMenu:menu];
-    [CPMenu setMenuBarVisible:YES];
 }
 
 - (void)handleException:(OLException)anException
