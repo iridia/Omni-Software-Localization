@@ -34,6 +34,30 @@
     [self assert:target registered:@"OLMenuShouldDisableItemsNotification"];
 }
 
+- (void)testThatOLMenuControllerDoesPostNotificationWhenCreatingANewLanguage
+{
+    
+}
+
+- (void)testThatOLMenuControllerDoesPostNotificationWhenDeletingALanguage
+{
+    
+}
+
+- (void)testThatOLMenuControllerDoesStartUploadOnNew
+{
+    var uploadWindowController = moq();
+    
+    [uploadWindowController expectSelector:@selector(startUpload:) times:1];
+    
+    var target = [[OLMenuController alloc] init];
+    [target setUploadWindowController:uploadWindowController];
+    
+    [target new:self];
+    
+    [uploadWindowController verifyThatAllExpectationsHaveBeenMet];
+}
+
 - (void)assert:(id)target registered:(CPString)aNotification
 {
     var names = [[CPNotificationCenter defaultCenter]._namedRegistries keyEnumerator];

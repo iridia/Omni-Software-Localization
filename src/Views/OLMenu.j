@@ -57,8 +57,6 @@
         [self addItem:fileMenu];
         [self addItem:projectMenu];
         [self addItem:[CPMenuItem separatorItem]];
-        
-        uploadWindowController = [[OLUploadWindowController alloc] init];
     }
     
     return self;

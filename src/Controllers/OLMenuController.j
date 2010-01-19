@@ -3,7 +3,8 @@
 
 @implementation OLMenuController : CPObject
 {
-    CPMenu      menu;
+    CPMenu                      menu;
+    CPUploadWindowController    uploadWindowController  @accessors;
 }
 
 - (id)init

@@ -95,7 +95,9 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	[glossariesView setGlossaryController:glossaryController];
 	[glossaryController setGlossariesView:glossariesView];
 	
+    var uploadWindowController = [[OLUploadWindowController alloc] init];
 	menuController = [[OLMenuController alloc] init];
+	[menuController setUploadWindowController:uploadWindowController];
     [CPMenu setMenuBarVisible:YES];
 	
     [projectController loadProjects];
