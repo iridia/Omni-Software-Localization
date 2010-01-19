@@ -65,9 +65,4 @@
     [uploadWindowController startUpload:self];
 }
 
-- (void)quit:(id)sender
-{
-    // TODO: Make the app quit
-}
-
 @end
