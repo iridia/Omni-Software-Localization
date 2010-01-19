@@ -24,8 +24,8 @@
 
 - (void)addProject:(OLProject)aProject
 {
-    [projects addProject:aProject];
-    [view reloadData:self];
+    [projects addObject:aProject];
+//    [view reloadData:self];
 }
 
 @end

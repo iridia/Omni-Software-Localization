@@ -25,6 +25,7 @@
 @import "Controllers/OLMenuController.j"
 @import "Controllers/OLMessageController.j"
 @import "Controllers/OLCommunityController.j"
+@import "Controllers/OLProjectSearchController.j"
 
 @import "Views/OLMenu.j"
 @import "Views/OLResourcesView.j"
@@ -52,6 +53,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	OLMenuController            menuController;
 	OLMessageController         messageController;
 	OLCommunityController       communityController;
+	OLProjectSearchController   projectSearchController;
 	
 	OLResourcesView				resourcesView;
 	OLGlossariesView			glossariesView;
@@ -67,6 +69,8 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     // [welcomeController setUploadController:uploadController];
     
     var uploadWindowController = [[OLUploadWindowController alloc] init];
+    
+    projectSearchController = [[OLProjectSearchController alloc] init];
 	
 	projectController = [[OLProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
@@ -124,6 +128,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [projectController loadProjects];
 	[glossaryController loadGlossaries];
     [communityController loadMessages];
+    [projectSearchController loadProjects];
 	
 	var loginController = [[OLLoginController alloc] init];
 	

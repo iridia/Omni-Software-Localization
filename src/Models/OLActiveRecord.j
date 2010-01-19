@@ -266,12 +266,12 @@ var __createURLConnectionFunction = nil;
 	        case findAllConnection:
 	            for(var i = 0; i < [json.rows count]; i++)
 	            {
-	                var record = [[self alloc] init];
+	                var record = [[[self class] alloc] init];
 	                [record setRecordID:json.rows[i].id];
 	                
-	                var selector = CPSelectorFromString("set" + [findBySelector capitalizedString] + ":");
+	                var selector = CPSelectorFromString("set" + [findAllSelector capitalizedString] + ":");
 	                
-	                objj_msgSend(record, selector, json.rows[i][findBySelector]);
+	                objj_msgSend(record, selector, json.rows[i].value[findAllSelector]);
 	                findAllCallback(record);
 	            }
 	            break;
