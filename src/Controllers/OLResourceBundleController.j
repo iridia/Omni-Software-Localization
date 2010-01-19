@@ -1,4 +1,6 @@
 @import <Foundation/CPObject.j>
+
+@import "../Utilities/OLUserSessionManager.j"
 @import "../Views/OLCreateNewBundleWindow.j"
 @import "../Views/OLDeleteBundleWindow.j"
 
@@ -99,7 +101,7 @@
 
 - (void)startCreateNewBundle:(id)sender
 {
-    if([[CPUserSessionManager defaultManager] status] !== CPUserSessionLoggedInStatus)
+    if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userInfo = [CPDictionary dictionary];
         [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
@@ -113,7 +115,7 @@
         
         return;
     }
-    else if([[CPUserSessionManager defaultManager] userIdentifier] !== ownerId)
+    else if(![[OLUserSessionManager defaultSessionManager] isUserTheLoggedInUser:ownerId])
     {
         [[CPNotificationCenter defaultCenter]
             postNotificationName:@"OLProjectShouldBranchNotification"
@@ -128,7 +130,7 @@
 
 - (void)startDeleteBundle:(id)sender
 {
-    if([[CPUserSessionManager defaultManager] status] !== CPUserSessionLoggedInStatus)
+    if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userInfo = [CPDictionary dictionary];
         [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
@@ -142,7 +144,7 @@
 
         return;
     }
-    else if([[CPUserSessionManager defaultManager] userIdentifier] !== ownerId)
+    else if([[OLUserSessionManager defaultSessionManager] isUserTheLoggedInUser:ownerId])
     {
         [[CPNotificationCenter defaultCenter]
             postNotificationName:@"OLProjectShouldBranchNotification"

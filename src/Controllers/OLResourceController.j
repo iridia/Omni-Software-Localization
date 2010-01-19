@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 
+@import "../Utilities/OLUserSessionManager.j"
 @import "../Views/OLResourcesView.j"
 @import "../Models/OLResource.j"
 
@@ -24,28 +25,24 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 - (void)voteUp:(id)sender
 {
-    var userId = [[CPUserSessionManager defaultManager] userIdentifier];
-    [OLUser findByRecordID:userId withCallback:function(user){
-        [selectedResource voteUp:user];
-        [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+    [selectedResource voteUp:user];
+    [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
 
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLProjectDidChangeNotification"
-            object:self];
-    }];
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:@"OLProjectDidChangeNotification"
+        object:self];
 }
 
 - (void)voteDown:(id)sender
 {
-    var userId = [[CPUserSessionManager defaultManager] userIdentifier];
-    [OLUser findByRecordID:userId withCallback:function(user){
-        [selectedResource voteDown:user];
-        [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+    [selectedResource voteDown:user];
+    [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
 
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLProjectDidChangeNotification"
-            object:self];
-    }];
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:@"OLProjectDidChangeNotification"
+        object:self];
 }
 
 @end

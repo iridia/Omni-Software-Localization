@@ -1,6 +1,7 @@
 @import <AppKit/CPView.j>
 
 @import "OLResourcesSplitView.j"
+@import "../Utilities/OLUserSessionManager.j"
 
 @implementation OLResourcesView : CPView
 {
@@ -64,7 +65,7 @@
     var ownerName = [OLUser findByRecordID:ownerId withCallback:function(user){ 
         var ownerName = [user email];
         
-        if(ownerId === [[CPUserSessionManager defaultManager] userIdentifier])
+        if([[OLUserSessionManager defaultSessionManager] isUserTheLoggedInUser:ownerId])
         {
             ownerName = "yours";
         }
