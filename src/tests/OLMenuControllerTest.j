@@ -70,7 +70,7 @@
 {
     var array = [CPArray arrayWithObject:OLMenuItemNewLanguage];
     
-    var notification = [CPNotification notificationWithName:@"asdf" object:array];
+    var notification = [CPNotification notificationWithName:@"aName" object:array];
     
     var target = [[OLMenuController alloc] init];
     
@@ -83,7 +83,7 @@
 {
     var array = [CPArray arrayWithObject:OLMenuItemNewLanguage];
 
-    var notification = [CPNotification notificationWithName:@"asdf" object:array];
+    var notification = [CPNotification notificationWithName:@"aName" object:array];
 
     var target = [[OLMenuController alloc] init];
 

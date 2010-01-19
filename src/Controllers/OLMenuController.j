@@ -30,7 +30,7 @@ OLMenuItemDisabled = NO;
         
         items = [CPDictionary dictionary];
         
-        [items setObject:OLMenuItemDisabled forKey:OLMenuItemNew];
+        [items setObject:OLMenuItemEnabled forKey:OLMenuItemNew];
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemSave];
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemNewLanguage];
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemDeleteLanguage];
