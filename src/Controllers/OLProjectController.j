@@ -54,14 +54,12 @@
 
 - (void)loadProjects
 {
-    if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
+    if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
-        var userLoggedIn = [[CPUserSessionManager defaultManager] userIdentifier];
-        var numOfAddedProjects = 0;
+        var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
         [OLProject findByUserIdentifier:userLoggedIn callback:function(project)
     	{
             [self addProject:project];
-            numOfAddedProjects++;
         }];
     }
 	

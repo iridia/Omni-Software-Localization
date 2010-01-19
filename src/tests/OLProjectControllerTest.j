@@ -1,4 +1,5 @@
 @import "../Controllers/OLProjectController.j"
+@import "utilities/OLUserSessionManager+Testing.j"
 
 @implementation OLProjectControllerTest : OJTestCase
 
@@ -9,6 +10,10 @@
 
 - (void)testThatOLProjectControllerDoesLoadProjects
 {
+    var user = moq();
+    [user selector:@selector(userIdentifier) returns:@"12345"];
+    [[OLUserSessionManager defaultSessionManager] setUser:user];
+    
     var tempProject = OLProject;
     try
     {
@@ -48,6 +53,11 @@
     [target addProject:project];
 
     [self assert:project equals:[[target projects] objectAtIndex:0]];
+}
+
+- (void)tearDown
+{
+    [OLUserSessionManager resetDefaultSessionManager];
 }
 
 @end
