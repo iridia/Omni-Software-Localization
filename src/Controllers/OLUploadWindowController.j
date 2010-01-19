@@ -80,7 +80,7 @@ var uploadURL = @"Upload/upload.php";
 
 - (void)startUpload:(id)sender
 {
-    if(![[OLUserSessionManager defaultManager] isUserLoggedIn])
+    if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userInfo = [CPDictionary dictionary];
         [userInfo setObject:@"You must log in to create a new project/glossary!" forKey:@"StatusMessageText"];
