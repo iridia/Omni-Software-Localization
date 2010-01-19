@@ -10,7 +10,7 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 // Manages an array of community items (Mailbox)
 @implementation OLCommunityController : CPObject
 {
-    CPArray             messages    	    @accessors;
+    CPMutableArray      messages    	    @accessors;
 	OLMessage	        selectedItem    	@accessors;
 	CPView              mailView            @accessors;
 }
@@ -25,7 +25,14 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
     			addObserver:self
     			selector:@selector(didReceiveOutlineViewSelectionDidChangeNotification:)
     			name:CPOutlineViewSelectionDidChangeNotification
-    			object:nil];	
+    			object:nil];
+    			
+    	    [[CPNotificationCenter defaultCenter]
+        		addObserver:self
+        		selector:@selector(newMessageCreated:)
+        		name:@"OLMessageCreatedNotification"
+        		object:nil];
+        		
         }
         return self;
 }
@@ -48,6 +55,12 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 	{
 	    [self setSelectedItem:nil];
 	}
+}
+
+- (void)newMessageCreated:(CPNotification)notification
+{
+    [self addMessage: [notification object]];
+    [[[mailView mailView] messageTableView] reloadData];
 }
 
 - (void)loadMessages

@@ -48,13 +48,9 @@
     {
         var message = [[OLMessage alloc] initWithUserID:[user email] subject:subject content:text to:email];
         [message setDelegate:self];
+        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMessageCreatedNotification" object:message];
         [message save];
     }];
-}
-
-- (void)didReceiveTableViewSelectionDidChangeNotification:(CPNotfication)notification
-{
-    alert("called");
 }
 
 - (void)willCreateRecord:(OLMessage)message
