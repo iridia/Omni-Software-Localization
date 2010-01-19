@@ -43,6 +43,21 @@
     return self;
 }
 
+- (void)voteUp
+{
+    [resourceController voteUp];
+}
+
+- (void)voteDown
+{
+    [resourceController voteDown];
+}
+
+- (int)numberOfVotesForSelectedResource
+{
+    return [resourceController numberOfVotesForSelectedResource];
+}
+
 - (int)numberOfResources
 {
     return [[selectedResourceBundle resources] count];

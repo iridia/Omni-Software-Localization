@@ -169,6 +169,8 @@
     [projectView setLineItemsTableViewDelegate:self];
     [projectView setLineItemsTarget:self doubleAction:@selector(lineItemsTableViewDoubleClick:)];
     [projectView setResourceBundleDelegate:self];
+    [projectView setVotingDataSource:self];
+    [projectView setVotingDelegate:self];
 }
 
 @end
@@ -244,6 +246,7 @@
     {
         [resourceBundleController selectResourceAtIndex:selectedRow];
         [projectView reloadLineItemsTableView];
+        [projectView reloadVoting];
         [projectView selectLineItemsTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
         [projectView setIsEditing:(selectedRow !== CPNotFound)];
     }
@@ -263,6 +266,27 @@
 - (SEL)doubleAction
 {
     return CPSelectorFromString(@"lineItemsTableViewDoubleClick:");
+}
+
+@end
+
+@implementation OLProjectController (VotingDelegateAndDataSource)
+
+- (void)voteUp:(id)sender
+{
+    [resourceBundleController voteUp];
+    [projectView reloadVoting];
+}
+
+- (void)voteDown:(id)sender
+{
+    [resourceBundleController voteDown];
+    [projectView reloadVoting];
+}
+
+- (int)numberOfVotesForSelectedResource
+{
+    return [resourceBundleController numberOfVotesForSelectedResource];
 }
 
 @end

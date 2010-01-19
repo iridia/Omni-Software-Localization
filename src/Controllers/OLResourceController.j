@@ -62,26 +62,22 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     }
 }
 
-- (void)voteUp:(id)sender
+- (void)voteUp
 {
     var user = [[OLUserSessionManager defaultSessionManager] user];
     [selectedResource voteUp:user];
     [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
-
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLProjectDidChangeNotification"
-        object:self];
 }
 
-- (void)voteDown:(id)sender
+- (void)voteDown
 {
     var user = [[OLUserSessionManager defaultSessionManager] user];
     [selectedResource voteDown:user];
-    [resourcesView setVoteCount:[[self selectedResource] numberOfVotes]];
+}
 
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLProjectDidChangeNotification"
-        object:self];
+- (int)numberOfVotesForSelectedResource
+{
+    return [selectedResource numberOfVotes];
 }
 
 @end

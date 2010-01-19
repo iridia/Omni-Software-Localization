@@ -16,9 +16,15 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     CPPopUpButton           resourceBundlesView;
     CPView                  votingView;
     
+    CPButton                voteUpButton;
+    CPButton                voteDownButton;
+    CPTextField             votes;
+    
     BOOL                    isEditing               @accessors(readonly);
     
     id                      resourceBundleDelegate  @accessors;
+    
+    id                      votingDataSource;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -57,26 +63,24 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 		[votingView setBackgroundColor:[CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/_CPToolbarViewBackground.png"]]]];
 		[votingView setAutoresizingMask:CPViewWidthSizable | CPViewMinYMargin];
 		
-		var voteUpButton = [CPButton buttonWithTitle:@"Vote Up"];
+		voteUpButton = [CPButton buttonWithTitle:@"Vote Up"];
 		[voteUpButton setAutoresizingMask:CPViewMaxXMargin];
-        [voteUpButton setTarget:self];
         [voteUpButton setAction:@selector(voteUp:)];
         [votingView addSubview:voteUpButton positioned:CPViewLeftAligned | CPViewHeightCentered relativeTo:votingView withPadding:5.0];
         
-        var voteDownButton = [CPButton buttonWithTitle:@"Vote Down"];
+        voteDownButton = [CPButton buttonWithTitle:@"Vote Down"];
         [voteDownButton setAutoresizingMask:CPViewMaxXMargin];
-        [voteDownButton setTarget:self];
         [voteDownButton setAction:@selector(voteDown:)];
         [votingView addSubview:voteDownButton positioned:CPViewOnTheRight | CPViewHeightSame relativeTo:voteUpButton withPadding:5.0];
         
+        votes = [CPTextField labelWithTitle:@""];
+        [votes setFont:[CPFont systemFontOfSize:14.0]];
+        [votes sizeToFit];
+        [votes setAutoresizingMask:CPViewMaxXMargin];
+        [votingView addSubview:votes positioned:CPViewOnTheRight | CPViewHeightSame relativeTo:voteDownButton withPadding:5.0];
+        
         [bottomView addSubview:votingView positioned:CPViewBottomAligned relativeTo:bottomView withPadding:0.0];
         
-        // _votes = [CPTextField labelWithTitle:@"Votes: "];
-        //         [_votes setFont:[CPFont systemFontOfSize:14.0]];
-        //         [_votes sizeToFit];
-        //         [_votes setAutoresizingMask:CPViewMaxXMargin];
-        //         [_votes setFrameOrigin:CPMakePoint(CGRectGetWidth([voteUpButton bounds]) + CGRectGetWidth([voteDownButton bounds]) + 30.0, 7.0)];
-        //         [bottomBar addSubview:_votes];
     	var lineItemIdentifierColumn = [[CPTableColumn alloc] initWithIdentifier:OLLineItemTableColumnIdentifierIdentifier];
 		[[lineItemIdentifierColumn headerView] setStringValue:@"Identifier"];
 		[lineItemIdentifierColumn setWidth:200.0];
@@ -106,6 +110,26 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 - (CPTableView)lineItemsTableView
 {
     return [lineItemsTableView tableView];
+}
+
+- (void)setVotingDelegate:(id)aDelegate
+{
+    [voteUpButton setTarget:aDelegate];
+    [voteDownButton setTarget:aDelegate];
+}
+
+- (void)setVotingDataSource:(id)aDataSource
+{
+    votingDataSource = aDataSource;
+}
+
+- (void)reloadVoting
+{
+    if(votingDataSource)
+    {
+        [votes setStringValue:@"Votes: "+[votingDataSource numberOfVotesForSelectedResource]];
+        [votes sizeToFit];
+    }
 }
 
 - (void)setResourcesTableViewDelegate:(id)aDelegate
@@ -175,6 +199,8 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
             [resourceBundlesView selectItemAtIndex:[resourceBundleDelegate indexOfSelectedResourceBundleForProjectView:self]];
         }
     }
+    
+    [self reloadVoting];
 }
 
 - (void)setIsEditing:(BOOL)editing
