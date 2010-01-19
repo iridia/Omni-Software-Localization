@@ -44,6 +44,12 @@
     [allProjectsTableView setDataSource:aDataSource];
 }
 
+- (void)setDelegate:(id)aDelegate
+{
+    [allProjectsTableView setTarget:aDelegate];
+    [allProjectsTableView setDoubleAction:@selector(tableViewDidDoubleClickItem:)];
+}
+
 - (void)reloadData
 {
     [allProjectsTableView reloadData];

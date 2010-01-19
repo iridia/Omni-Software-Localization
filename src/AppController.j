@@ -25,7 +25,6 @@
 @import "Controllers/OLMenuController.j"
 @import "Controllers/OLMessageController.j"
 @import "Controllers/OLCommunityController.j"
-@import "Controllers/OLProjectSearchController.j"
 
 @import "Views/OLMenu.j"
 @import "Views/OLResourcesView.j"
@@ -54,13 +53,8 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 	OLMenuController            menuController;
 	OLMessageController         messageController;
 	OLCommunityController       communityController;
-	OLProjectSearchController   projectSearchController;
-	
-	OLResourcesView				resourcesView;
-	OLGlossariesView			glossariesView;
-	OLMailView                  mailView;
 
-    OLToolbarController         toolbarController @accessors(property=toolbarController);
+    OLToolbarController         toolbarController       @accessors;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
@@ -70,8 +64,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     // [welcomeController setUploadController:uploadController];
     
     var uploadWindowController = [[OLUploadWindowController alloc] init];
-    
-    projectSearchController = [[OLProjectSearchController alloc] init];
 	
 	projectController = [[OLProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
@@ -84,7 +76,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [resourceBundleController addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
 	
 	lineItemController = [[OLLineItemController alloc] init];
-	[lineItemController setResourcesView:[resourceController resourcesView]];
 	[resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
 	
     var resourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
@@ -113,6 +104,7 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     
     communityController = [[OLCommunityController alloc] init];
     [communityController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
+    [communityController setContentViewController:contentViewController];
     [sidebarController addSidebarItem:communityController];
     
     var mailView = [[OLMailView alloc] initWithFrame:[mainContentView bounds]];
@@ -121,6 +113,10 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     
     var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
     [communityController setSearchView:searchView];
+    
+    var secondResourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
+    [secondResourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [communityController setResourcesView:secondResourcesView];
 	
     var uploadWindowController = [[OLUploadWindowController alloc] init];
 	menuController = [[OLMenuController alloc] init];
@@ -130,7 +126,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     [projectController loadProjects];
 	[glossaryController loadGlossaries];
     [communityController loadMessages];
-    [projectSearchController loadProjects];
 	
 	var loginController = [[OLLoginController alloc] init];
 	

@@ -28,6 +28,11 @@
 //    [view reloadData:self];
 }
 
+- (OLProject)projectAtIndex:(int)index
+{
+    return [projects objectAtIndex:index];
+}
+
 @end
 
 @implementation OLProjectSearchController (ProjectSearchDataSource)
@@ -39,14 +44,7 @@
 
 - (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
-    if ([tableColumn identifier] === OLResourceEditorViewIdentifierColumnHeader)
-    {
-        return [[lineItems objectAtIndex:row] identifier];
-    }
-    else if ([tableColumn identifier] === OLResourceEditorViewValueColumnHeader)
-    {
-        return [[lineItems objectAtIndex:row] value];
-    }
+    return [[projects objectAtIndex:row] name];
 }
 
 @end

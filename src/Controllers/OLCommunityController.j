@@ -19,6 +19,8 @@ var OLCommunitySearchItem = @"Search";
 	OLMailView                  mailView            @accessors;
 	OLProjectSearchView         searchView          @accessors(readonly);
 	OLProjectSearchController   searchController;
+	OLResourcesView             resourcesView       @accessors;
+	id                          contentViewController   @accessors;
 }
 
 - (id)init
@@ -40,6 +42,7 @@ var OLCommunitySearchItem = @"Search";
         		object:nil];
         		
         	searchController = [[OLProjectSearchController alloc] init];
+        	[searchController loadProjects];
         }
         return self;
 }
@@ -72,6 +75,7 @@ var OLCommunitySearchItem = @"Search";
     
     searchView = aSearchView;
     [searchView setDataSource:searchController];
+    [searchView setDelegate:self];
 }
 
 - (void)newMessageCreated:(CPNotification)notification
@@ -102,17 +106,21 @@ var OLCommunitySearchItem = @"Search";
 - (void)tableViewSelectionDidChange:(CPTableView)aTableView
 {
     var tableView = [[mailView mailView] messageTableView];
-    var selectedRow = [[tableView selectedRowIndexes] firstIndex];
-    var textToDisplay = @"";
-    
-    if (selectedRow >= 0 )
+    if (aTableView === tableView)
     {
-       textToDisplay = [[messages objectAtIndex:selectedRow] content];
-    }
+        var selectedRow = [[tableView selectedRowIndexes] firstIndex];
+        var textToDisplay = @"";
+    
+        if (selectedRow >= 0 )
+        {
+           textToDisplay = [[messages objectAtIndex:selectedRow] content];
+        }
    
-    [[[[mailView mailView] messageDetailView] content] setStringValue:textToDisplay];
-    [[mailView mailView] showMessageDetailView];
+        [[[[mailView mailView] messageDetailView] content] setStringValue:textToDisplay];
+        [[mailView mailView] showMessageDetailView];
+    }
 }
+
 @end
 
 @implementation OLCommunityController (OLCommunityTableViewDataSource)
@@ -140,6 +148,50 @@ var OLCommunitySearchItem = @"Search";
     }
 }
 
+- (void)tableViewDidDoubleClickItem:(CPTableView)aTableView
+{
+    var selectedRow = [[aTableView selectedRowIndexes] firstIndex];
+
+    if (selectedRow < 0)
+    {
+        return;
+    }
+    
+    var projectName = [[searchController projectAtIndex:selectedRow] name];
+
+    var resourceBundleController = [[OLResourceBundleController alloc] init];
+    
+	var resourceController = [[OLResourceController alloc] init];
+    [resourceBundleController addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
+	
+	var lineItemController = [[OLLineItemController alloc] init];
+	[resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
+
+    [resourcesView setResourceController:resourceController];
+    [resourcesView setLineItemController:lineItemController];
+    [resourcesView setResourceBundleController:resourceBundleController];
+    [[resourcesView editingView] setVoteTarget:resourceController downAction:@selector(voteDown:) upAction:@selector(voteUp:)];
+    [resourcesView showBackButton];
+    [resourcesView setBackButtonTitle:@"Back"];
+    [resourcesView setBackButtonTarget:self];
+    [resourcesView setBackButtonAction:@selector(back:)]
+    
+    [resourceController setResourcesView:resourcesView];
+    [resourceBundleController setResourcesView:resourcesView];
+    [lineItemController setResourcesView:resourcesView];
+    
+    var project = [OLProject findByName:projectName callback:function(project){
+        [resourceBundleController observeValueForKeyPath:@"selectedProject" ofObject:[[StupidClassWeWillDeleteRightAwayThatMimicsOLProjectController alloc] initWithSelectedProject:project] change:nil context:nil];
+        [contentViewController setCurrentView:resourcesView];
+    }];
+}
+
+- (void)back:(id)sender
+{
+    [contentViewController setCurrentView:searchView];
+    [searchView setDelegate:self];
+}
+
 @end
 
 @implementation OLCommunityController (SidebarItem)
@@ -164,6 +216,8 @@ var OLCommunitySearchItem = @"Search";
             view = mailView;
             break;
         case OLCommunitySearchItem:
+            [searchView reloadData];
+            [searchView setDelegate:self];
             view = searchView;
             break;
         default:
@@ -172,6 +226,22 @@ var OLCommunitySearchItem = @"Search";
     }
     
     return view;
+}
+
+@end
+
+@implementation StupidClassWeWillDeleteRightAwayThatMimicsOLProjectController : CPObject
+{
+    OLProject selectedProject   @accessors;
+}
+
+- (id)initWithSelectedProject:(OLProject)aProject
+{
+    if (self = [super init])
+    {
+        selectedProject = aProject;
+    }
+    return self;
 }
 
 @end
