@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 
+@import "../Utilities/OLUserSessionManager.j"
 @import "../Views/OLFeedbackWindow.j"
 @import "../Models/OLFeedback.j"
 
@@ -20,7 +21,7 @@
         [[CPNotificationCenter defaultCenter]
 			addObserver:self
 			selector:@selector(userDidChange:)
-			name:CPUserSessionManagerUserIdentifierDidChangeNotification
+			name:OLUserSessionManagerUserDidChangeNotification
 			object:nil];
     }
     
@@ -29,13 +30,14 @@
 
 - (void)userDidChange:(CPNotification)notification
 {
-    [OLUser findByRecordID:[[CPUserSessionManager defaultManager] userIdentifier] withCallback:function(user)
+    var userSessionManager = [notification object];
+    var email = @"";
+    if ([userSessionManager isUserLoggedIn])
     {
-        if(user)
-        {
-            [[_feedbackWindow emailTextField] setStringValue:[user email]];
-        }
-    }];
+        email = [[userSessionManager user] email];
+    }
+    
+    [[_feedbackWindow emailTextField] setStringValue:[user email]];
 }
 
 - (void)showFeedbackWindow:(id)sender

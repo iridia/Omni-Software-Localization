@@ -1,4 +1,4 @@
-@import <Foundation/CPUserSessionManager.j>
+@import "utilities/OLUserSessionManager+Testing.j"
 
 @import "../Models/OLProject.j"
 
@@ -56,6 +56,10 @@ var uploadedJSON = {"fileType":"zip","fileName":"Chess.app","resourcebundles":[{
 
 - (void)testThatOLProjectControllerCanCreateProjectFromJSON
 {
+    var user = moq();
+    [user selector:@selector(userIdentifier) returns:@"12345"];
+    [[OLUserSessionManager defaultSessionManager] setUser:user];
+    
     var newProject = [OLProject projectFromJSON:uploadedJSON];
     
     [self assertNotNull:newProject];
@@ -65,10 +69,11 @@ var uploadedJSON = {"fileType":"zip","fileName":"Chess.app","resourcebundles":[{
 
 - (void)testThatOLProjectControllerCreatesProjectAssociatedWithLoggedInUser
 {
-    var sessionManager = [CPUserSessionManager defaultManager];
-    [sessionManager setStatus:CPUserSessionLoggedInStatus];
+    var sessionManager = [OLUserSessionManager defaultSessionManager];
+    var user = moq();
     var userIdentifier = @"12345";
-    [sessionManager setUserIdentifier:userIdentifier]
+    [user selector:@selector(userIdentifier) returns:userIdentifier];
+    [sessionManager setUser:user];
     
     var newProject = [OLProject projectFromJSON:uploadedJSON];
     
@@ -121,9 +126,9 @@ var uploadedJSON = {"fileType":"zip","fileName":"Chess.app","resourcebundles":[{
     [self assert:clone notSame:target];
 }
 
-- (void)testThatOLProjectDoesGetCurrentProjectWithLineItem
+- (void)tearDown
 {
-    
+    [OLUserSessionManager resetDefaultSessionManager];
 }
 
 @end

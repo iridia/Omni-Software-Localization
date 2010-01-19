@@ -1,6 +1,7 @@
 @import "OLActiveRecord.j"
 @import "OLResourceBundle.j"
 @import "OLUser.j"
+@import "../Utilities/OLUserSessionManager.j"
 
 @implementation OLProject : OLActiveRecord
 {
@@ -17,9 +18,9 @@
 + (id)projectFromJSON:(JSON)json
 {
     var userIdentifier = @"";
-    if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
+    if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
-        userIdentifier = [[CPUserSessionManager defaultManager] userIdentifier];
+        userIdentifier = [[OLUserSessionManager defaultSessionManager] userIdentifier];
     }
     else
     {

@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 
+@import "../Utilities/OLUserSessionManager.j"
 @import "../Views/CPUploadButton.j"
 @import "OLUploadController.j"
 
@@ -79,7 +80,7 @@ var uploadURL = @"Upload/upload.php";
 
 - (void)startUpload:(id)sender
 {
-    if([[CPUserSessionManager defaultManager] status] !== CPUserSessionLoggedInStatus)
+    if(![[OLUserSessionManager defaultManager] isUserLoggedIn])
     {
         var userInfo = [CPDictionary dictionary];
         [userInfo setObject:@"You must log in to create a new project/glossary!" forKey:@"StatusMessageText"];

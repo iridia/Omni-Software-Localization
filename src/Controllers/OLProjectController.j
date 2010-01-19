@@ -1,6 +1,6 @@
 @import <Foundation/CPObject.j>
-@import <Foundation/CPUserSessionManager.j>
 
+@import "../Utilities/OLUserSessionManager.j"
 @import "../Models/OLProject.j"
 @import "../Views/OLResourcesView.j"
 
@@ -107,10 +107,10 @@
 
 - (void)alertDidEnd:(CPAlert)theAlert returnCode:(int)returnCode
 {
-    if(returnCode == 1 && [[CPUserSessionManager defaultManager] status] == CPUserSessionLoggedInStatus)
+    if(returnCode === 1 && [[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var clonedProject = [selectedProject clone];
-        [clonedProject setUserIdentifier:[[CPUserSessionManager defaultManager] userIdentifier]];
+        [clonedProject setUserIdentifier:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
         [clonedProject save];
         [self addProject:clonedProject];
     }

@@ -61,6 +61,31 @@ var OLDefaultUserSessionManager = nil;
     [[CPNotificationCenter defaultCenter]
         postNotificationName:OLUserSessionManagerUserDidChangeNotification
         object:self];
+        
+    if (user)
+    {
+        [self setStatus:OLUserSessionLoggedInStatus];
+    }
+    else
+    {
+        [self setStatus:OLUserSessionLoggedOutStatus];
+    }
+}
+
+- (BOOL)isUserLoggedIn
+{
+    return ([self status] === OLUserSessionLoggedInStatus);
+}
+
+- (BOOL)isUserTheLoggedInUser:(id)aUserOrAUserIdentifier
+{
+    if ([aUserOrAUserIdentifier isKindOfClass:[CPString class]])
+    {
+        // A userIdentifier was passed in. This is leftover from before, so handle it to be nice.
+        return [[self userIdentifier] isEqualToString:aUserOrAUserIdentifier];
+    }
+    
+    return (user === aUserOrAUserIdentifier);
 }
 
 @end

@@ -58,7 +58,7 @@
 {
     var target = [OLUserSessionManager defaultSessionManager];
     
-    var object = [[CPObject alloc] init];
+    var object = moq();
     
     [target setUser:object];
     [self assert:object equals:[target user]];
@@ -68,11 +68,11 @@
 {
     var target = [OLUserSessionManager defaultSessionManager];
     
-    var clearUser = [[CPObject alloc] init];
+    var clearUser = moq();
     // Clear status
     [target setUser:clearUser];
     
-    var user = [[CPObject alloc] init];
+    var user = moq();
     [observer startObserving:OLUserSessionManagerUserDidChangeNotification];
     [target setUser:user];
     [self assertTrue:[observer didObserve:OLUserSessionManagerUserDidChangeNotification]];
@@ -95,6 +95,23 @@
     
     [target setUser:user];
     [self assert:@"1234" equals:[target userIdentifier]];
+}
+
+- (void)testThatOLUserSessionManagerReturnsCorrectIsLoggedInStatus
+{
+    var target = [OLUserSessionManager defaultSessionManager];
+    
+    var user = moq();
+    
+    [target setUser:user];
+    [self assertTrue:[target isUserLoggedIn]];
+    [target setUser:nil];
+    [self assertFalse:[target isUserLoggedIn]];
+}
+
+- (void)tearDown
+{
+    [OLUserSessionManager resetDefaultSessionManager];
 }
 
 @end

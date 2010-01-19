@@ -1,5 +1,8 @@
 @import <AppKit/CPToolbar.j>
 
+@import "../Utilities/OLUserSessionManager.j"
+
+
 var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
 var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
 
@@ -35,7 +38,7 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(updateLoginInfo:)
-            name:CPUserSessionManagerUserIdentifierDidChangeNotification
+            name:OLUserSessionManagerUserDidChangeNotification
             object:nil];
     }
     
@@ -98,11 +101,9 @@ var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
 
 - (void)updateLoginInfo:(CPNotification)notification
 {
-    [OLUser findByRecordID:[[CPUserSessionManager defaultManager] userIdentifier] withCallback:function(user)
-        {
-            loginValue = "Welcome, " + [user email]; 
-            [toolbar _reloadToolbarItems];
-        }];
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+    loginValue = "Welcome, " + [user email]; 
+    [toolbar _reloadToolbarItems];
 }
 
 @end
