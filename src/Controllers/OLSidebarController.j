@@ -37,7 +37,6 @@
     [sidebarItems addObject:anItem];
     [sidebarOutlineView reloadData];
 }
-
 @end
 
 @implementation OLSidebarController (KVO)
