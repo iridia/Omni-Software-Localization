@@ -153,6 +153,8 @@
 	{
 	    if (selectedProject !== item)
 	    {
+	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldEnableItemsNotification" 
+	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage]];
     	    [self setSelectedProject:item];
         }
 	}

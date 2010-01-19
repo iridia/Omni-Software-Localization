@@ -55,6 +55,8 @@ OLMenuItemDisabled = NO;
         var key = [array objectAtIndex:i];
         [items setObject:OLMenuItemEnabled forKey:key];
     }
+    
+    [menu reloadState:self];
 }
 
 - (void)disableItems:(CPNotification)aNotification
@@ -66,6 +68,8 @@ OLMenuItemDisabled = NO;
         var key = [array objectAtIndex:i];
         [items setObject:OLMenuItemDisabled forKey:key];
     }
+    
+    [menu reloadState:self];
 }
 
 - (void)newLanguage:(id)sender

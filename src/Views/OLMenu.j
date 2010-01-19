@@ -36,9 +36,9 @@ OLMenuItemDeleteLanguage = @"OLMenuItemDeleteLanguage";
 
 - (void)reloadState:(OLMenuController)controller
 {
-    for(var i = 0; i < [self numberOfItems]; i++)
+    for(var i = [self numberOfItems]-1; i >= 0; i--)
     {
-        [self removeItemAtIndex:0];
+        [self removeItemAtIndex:i];
     }
     
     var appMenu = [[CPMenuItem alloc] initWithTitle:@"Omni Software Localization" action:nil keyEquivalent:nil];
