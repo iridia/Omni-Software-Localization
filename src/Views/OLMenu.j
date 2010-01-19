@@ -22,11 +22,9 @@
         var appMenu = [[CPMenuItem alloc] initWithTitle:@"Omni Software Localization" action:nil keyEquivalent:nil];
         var appSubmenu = [[CPMenu alloc] initWithTitle:@"AppMenu"];
         var aboutItem = [[CPMenuItem alloc] initWithTitle:@"About Omni Software Localization" action:@selector(about:) keyEquivalent:nil];
-        var quitItem = [[CPMenuItem alloc] initWithTitle:@"Quit Omni Software Localization" action:nil keyEquivalent:"q"];
         
         [aboutItem setTarget:controller];
         [appSubmenu addItem:aboutItem];
-        [appSubmenu addItem:quitItem];
         [appMenu setSubmenu:appSubmenu];
         
         var fileMenu = [[CPMenuItem alloc] initWithTitle:@"File" action:nil keyEquivalent:nil];
