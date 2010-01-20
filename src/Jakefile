@@ -49,3 +49,15 @@ task ("deploy", ["build", "test"], function()
     
     OS.system(cmd);
 });
+
+task("metrics", function()
+{
+   var releases = ["Release-1", "Release-2", "Release-3", "Release-4", "Release-5", "Release-6"];
+   
+   var checkout = "git checkout ";
+   for (var i = 0; i < releases.length; i++)
+   {
+       OS.system(checkout+releases[i]);
+       OS.system(beancounter);
+   }
+});
