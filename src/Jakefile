@@ -57,9 +57,11 @@ task("metrics", function()
    var checkout = "git checkout ";
    for (var i = 0; i < releases.length; i++)
    {
-       OS.system(checkout+releases[i]);
+       print(releases[i]);
+       OS.system(checkout + releases[i]);
        OS.system("beancounter");
+       print("\n\n");
    }
    
-   OS.system(checkout+"master");
+   OS.system(checkout + "master");
 });
