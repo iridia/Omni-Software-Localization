@@ -58,6 +58,6 @@ task("metrics", function()
    for (var i = 0; i < releases.length; i++)
    {
        OS.system(checkout+releases[i]);
-       OS.system(beancounter);
+       OS.system("beancounter");
    }
 });
