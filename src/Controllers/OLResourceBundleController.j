@@ -85,6 +85,13 @@
 
 - (void)selectResourceBundleAtIndex:(int)index
 {
+    if(index === 0)
+    {
+        [self startCreateNewBundle:self];
+        
+        return;
+    }
+    
     [self setSelectedResourceBundle:[resourceBundles objectAtIndex:(index - 1)]];
 }
 
@@ -121,18 +128,6 @@
     {
         [self setSelectedResourceBundle:[resourceBundles objectAtIndex:0]];
     }
-}
-
-- (void)selectedResourceBundleDidChange:(CPPopUpButton)aButton
-{
-    if([aButton indexOfSelectedItem] === 0)
-    {
-        [self startCreateNewBundle:self];
-        
-        return;
-    }
-    
-    [self setSelectedResourceBundle:[resourceBundles objectAtIndex:[aButton indexOfSelectedItem]-1]];
 }
 
 - (CPNumber)indexOfSelectedResourceBundle
@@ -288,7 +283,6 @@
     
     replaceEnglishWithNewResourceBundleName(clone, [[clone language] name]);
     [resourceBundles addObject:clone];
-    // [resourcesView reloadData:self];
     
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLProjectDidChangeNotification"
@@ -300,7 +294,6 @@
 - (void)delete:(id)sender
 {
     [resourceBundles removeObjectAtIndex:[[deleteBundleWindow popUpButton] indexOfSelectedItem]];
-    // [resourcesView reloadData:self];
     
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLProjectDidChangeNotification"
@@ -345,7 +338,6 @@ function replaceEnglishWithNewResourceBundleName(bundle, name)
             projectName = [[object selectedProject] name];
             [self setResourceBundles:[[object selectedProject] resourceBundles]];
             [self resetCurrentBundle];
-            // [resourcesView reloadData:self];
             break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);

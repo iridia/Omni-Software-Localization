@@ -63,10 +63,6 @@
     [firstResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
     [secondResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
     
-    var aPopUpButton = moq();
-    
-    [aPopUpButton selector:@selector(indexOfSelectedItem) returns:2];
-    
     var resourceBundles = [firstResourceBundle, secondResourceBundle];
     
     var target = [[OLResourceBundleController alloc] init];
@@ -75,7 +71,7 @@
     
     [self assert:firstResourceBundle equals:[target selectedResourceBundle]];
     
-    [target selectedResourceBundleDidChange:aPopUpButton];
+    [target selectResourceBundleAtIndex:2];
     
     [self assert:secondResourceBundle equals:[target selectedResourceBundle]];
 }
@@ -103,10 +99,6 @@
     [firstResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
     [secondResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
 
-    var aPopUpButton = moq();
-
-    [aPopUpButton selector:@selector(indexOfSelectedItem) returns:1];
-
     var resourceBundles = [firstResourceBundle, secondResourceBundle];
 
     var target = [[OLResourceBundleController alloc] init];
@@ -115,7 +107,7 @@
 
     [self assert:firstResourceBundle equals:[target selectedResourceBundle]];
 
-    [target selectedResourceBundleDidChange:aPopUpButton];
+    [target selectResourceBundleAtIndex:1];
 
     [self assert:1 equals:[target indexOfSelectedResourceBundle]];
 }
