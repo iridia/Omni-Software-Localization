@@ -18,12 +18,6 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
 	if(self = [super init])
 	{
 	    lineItems = [CPArray array];
-	    
-    	[[CPNotificationCenter defaultCenter]
-    	    addObserver:self
-    	    selector:@selector(didReceiveProjectDidChangeNotification:)
-    	    name:@"OLProjectDidChangeNotification"
-    	    object:nil];
 	}
 	return self;
 }
