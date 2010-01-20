@@ -60,4 +60,6 @@ task("metrics", function()
        OS.system(checkout+releases[i]);
        OS.system("beancounter");
    }
+   
+   OS.system(checkout+"master");
 });
