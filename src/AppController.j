@@ -20,10 +20,7 @@
 @import "Controllers/OLContentViewController.j"
 @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
-@import "Controllers/OLWelcomeController.j"
-@import "Controllers/OLUploadController.j"
 @import "Controllers/OLMenuController.j"
-@import "Controllers/OLMessageController.j"
 @import "Controllers/OLCommunityController.j"
 
 @import "Views/OLMenu.j"
@@ -76,12 +73,6 @@
 	[glossariesView setGlossaryController:glossaryController];
 	[glossaryController setGlossariesView:glossariesView];
     
-    
-    messageController = [[OLMessageController alloc] init];
-    [messageController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
-    [messageController addObserver:messageController forKeyPath:@"selectedMessage" options:CPKeyValueObservingOptionNew context:nil];
-    
-    
     communityController = [[OLCommunityController alloc] init];
     [communityController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
     [communityController setContentViewController:contentViewController];
@@ -98,9 +89,7 @@
     [CPMenu setMenuBarVisible:YES];
 	
 	var loginController = [[OLLoginController alloc] init];
-	
-    var feedbackController = [[OLFeedbackController alloc] init];
-    var toolbarController = [[OLToolbarController alloc] initWithFeedbackController:feedbackController messageController:messageController];
+    var toolbarController = [[OLToolbarController alloc] init];
  
     [theWindow setToolbar:[toolbarController toolbar]];
 }

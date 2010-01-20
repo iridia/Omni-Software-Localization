@@ -1,6 +1,8 @@
 @import <AppKit/CPToolbar.j>
 
 @import "../Utilities/OLUserSessionManager.j"
+@import "OLMessageController.j"
+@import "OLFeedbackController.j"
 
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
@@ -21,17 +23,12 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 
 - (id)init
 {
-    return [self initWithFeedbackController:nil messageController:nil];
-}
-
-- (id)initWithFeedbackController:(OLFeedbackController)aFeedbackController messageController:(OLMessageController)aMessageController
-{
     self = [super init];
     
     if (self)
     {
-        feedbackController = aFeedbackController;
-        messageController = aMessageController;
+        messageController = [[OLMessageController alloc] init];
+        feedbackController = [[OLFeedbackController alloc] init];
         loginValue = "Login / Register";
         
         toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
