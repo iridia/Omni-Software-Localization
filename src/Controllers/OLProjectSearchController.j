@@ -11,6 +11,7 @@
 
 - (id)loadProjects
 {
+    projects = [CPArray array];
     [OLProject findAllProjectNamesWithCallback:function(project){[self addProject:project];}];
 }
 
@@ -80,22 +81,28 @@
 
 - (void)tableViewDidDoubleClickItem:(CPTableView)aTableView
 {
-    var index = [[aTableView selectedRowIndexes] firstIndex];
-    var theProject = [projects objectAtIndex:index];
-    [theProject getWithCallback:function(project)
+    if(aTableView === [searchView allProjectsTableView])
     {
-        [OLUser findByRecordID:[project userIdentifier] withCallback:function(user)
+        var index = [[aTableView selectedRowIndexes] firstIndex];
+        var theProject = [projects objectAtIndex:index];
+        [theProject getWithCallback:function(project)
         {
-            ownerName = [user email];
+            [OLUser findByRecordID:[project userIdentifier] withCallback:function(user)
+            {
+                ownerName = [user email];
             
-            [self setSelectedProject:project];
+                [self setSelectedProject:project];
     
-            [projectView setBackButtonDelegate:self];
-            [self setContentView:projectView];
+                [projectView setBackButtonDelegate:self];
+                [self setContentView:projectView];
         
-            [projectView reloadAllData];
+                [projectView reloadAllData];
+            }];
         }];
-    }];
+        return;
+    }
+    
+    [super performSelector:[super doubleAction] withObject:aTableView];
 }
 
 - (SEL)doubleAction

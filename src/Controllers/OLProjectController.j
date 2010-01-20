@@ -43,12 +43,6 @@
 		    name:@"OLProjectDidChangeNotification"
 		    object:nil];
 		    
-		[[CPNotificationCenter defaultCenter]
-		    addObserver:self
-		    selector:@selector(didReceiveProjectShouldBranchNotification:)
-		    name:@"OLProjectShouldBranchNotification"
-		    object:nil];
-		    
         [[CPNotificationCenter defaultCenter]
     	    addObserver:self
     		selector:@selector(didReceiveProjectsShouldReloadNotification:)
@@ -152,8 +146,11 @@
     {
         var clonedProject = [selectedProject clone];
         [clonedProject setUserIdentifier:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
-        [clonedProject save];
-        [self addProject:clonedProject];
+        [clonedProject saveWithCallback:function(project){
+            [[CPNotificationCenter defaultCenter]
+                postNotificationName:@"OLProjectsShouldReload"
+                object:self];
+        }];
     }
 }
 
@@ -278,9 +275,7 @@
     }
     else if(![userSessionManager isUserTheLoggedInUser:[selectedProject userIdentifier]])
     {
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLProjectShouldBranchNotification"
-            object:nil];
+        [self didReceiveProjectShouldBranchNotification:nil];
             
         return;
     }
