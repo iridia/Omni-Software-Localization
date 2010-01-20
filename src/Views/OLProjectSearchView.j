@@ -3,7 +3,7 @@
 
 @implementation OLProjectSearchView : CPView
 {
-    CPTableView allProjectsTableView;
+    OLTableView allProjectsTableView;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -11,32 +11,21 @@
     self = [super initWithFrame:aFrame];
     if(self)
     {
-        var scrollView = [[CPScrollView alloc] initWithFrame:aFrame];
-        [scrollView setAutohidesScrollers:YES];
-        [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-        
-		// create the resourceTableView
-		allProjectsTableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];
-		[allProjectsTableView setUsesAlternatingRowBackgroundColors:YES];
+    	var column = [[CPTableColumn alloc] initWithIdentifier:@"ProjectName"];
+    	[[column headerView] setStringValue:"Project Name"];
+    	[column setWidth:CGRectGetWidth(aFrame)];
+    	
+		allProjectsTableView = [[OLTableView alloc] initWithFrame:aFrame columns:[column]];
 		[allProjectsTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 		
-		// define the header color
-		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
-		
-		[[allProjectsTableView cornerView] setBackgroundColor:headerColor];
-		
-		// add the filename column
-		var column = [[CPTableColumn alloc] initWithIdentifier:@"ProjectName"];
-		[[column headerView] setStringValue:"Project Name"];
-		[[column headerView] setBackgroundColor:headerColor];
-		[column setWidth:CGRectGetWidth(aFrame)];
-		[allProjectsTableView addTableColumn:column];
-		
-		[scrollView setDocumentView:allProjectsTableView];
-		
-		[self addSubview:scrollView];
+		[self addSubview:allProjectsTableView];
     }
     return self;
+}
+
+- (CPTableView)allProjectsTableView
+{
+    return [allProjectsTableView tableView];
 }
 
 - (void)setDataSource:(id)aDataSource
@@ -47,7 +36,7 @@
 - (void)setDelegate:(id)aDelegate
 {
     [allProjectsTableView setTarget:aDelegate];
-    [allProjectsTableView setDoubleAction:@selector(tableViewDidDoubleClickItem:)];
+    [allProjectsTableView setDelegate:aDelegate];
 }
 
 - (void)reloadData

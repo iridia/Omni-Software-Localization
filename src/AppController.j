@@ -29,6 +29,7 @@
 @import "Views/OLMessageWindow.j"
 @import "Views/OLProjectView.j"
 @import "Views/OLProjectSearchView.j"
+@import "Views/OLProjectResultView.j"
 
 @implementation AppController : CPObject
 {
@@ -64,7 +65,6 @@
     [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [projectController setProjectView:projectView];
     
-    
  	glossaryController = [[OLGlossaryController alloc] init];
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:glossaryController];
@@ -84,6 +84,8 @@
     
     var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
     [communityController setSearchView:searchView];
+    [communityController setProjectView:[[OLProjectResultView alloc] initWithFrame:[mainContentView bounds]]];
+    [communityController setContentViewController:contentViewController];
  
 	menuController = [[OLMenuController alloc] init];
     [CPMenu setMenuBarVisible:YES];

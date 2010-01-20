@@ -13,7 +13,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     OLTableView             resourcesTableView;
     OLTableView             lineItemsTableView;
     OLNavigationBarView     navigationBarView;
-    CPTextField             ownerView;
+    CPTextField             backView;
     CPPopUpButton           resourceBundlesView;
     CPView                  votingView;
     
@@ -26,6 +26,8 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     id                      resourceBundleDelegate  @accessors;
     
     id                      votingDataSource;
+    id                      ownerDataSource;
+    id                      titleDataSource;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -41,13 +43,8 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
         [resourceBundlesView setTarget:self];
         [resourceBundlesView setAction:@selector(_selectedResourceBundleDidChange:)];
         [navigationBarView setAccessoryView:resourceBundlesView];
-        
-        ownerView = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, 0.0)];
-        [ownerView setFont:[CPFont boldSystemFontOfSize:14.0]];
-        [ownerView setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
-        [ownerView setTextShadowOffset:CGSizeMake(0.0, 1)];
-        [ownerView setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
-        [navigationBarView setBackView:ownerView];
+
+        [navigationBarView setBackView:[self backView]];
         
         splitView = [[CPSplitView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) - CGRectGetHeight([navigationBarView bounds]))];
         [splitView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
@@ -110,6 +107,17 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     return self;
 }
 
+- (CPView)backView
+{
+    backView = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, 0.0)];
+    [backView setFont:[CPFont boldSystemFontOfSize:14.0]];
+    [backView setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
+    [backView setTextShadowOffset:CGSizeMake(0.0, 1)];
+    [backView setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
+    
+    return backView;
+}
+
 - (CPTableView)resourcesTableView
 {
     return [resourcesTableView tableView];
@@ -136,12 +144,17 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     ownerDataSource = aDataSource;
 }
 
+- (void)setTitleDataSource:(id)aDataSource
+{
+    titleDataSource = aDataSource;
+}
+
 - (void)reloadOwner
 {
     if(ownerDataSource)
     {
-        [ownerView setStringValue:[ownerDataSource owner]];
-        [ownerView sizeToFit];
+        [backView setStringValue:[ownerDataSource owner]];
+        [backView sizeToFit];
         [navigationBarView repositionBackView];
     }
 }
@@ -201,6 +214,14 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     [lineItemsTableView setDoubleAction:doubleAction];
 }
 
+- (void)reloadTitle
+{
+    if(titleDataSource)
+    {
+        [self setTitle:[titleDataSource title]];
+    }
+}
+
 - (void)setTitle:(CPString)aTitle
 {
     [navigationBarView setTitle:aTitle];
@@ -225,6 +246,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     
     [self reloadVoting];
     [self reloadOwner];
+    [self reloadTitle];
 }
 
 - (void)setIsEditing:(BOOL)editing

@@ -173,6 +173,7 @@
     [projectView setVotingDataSource:self];
     [projectView setVotingDelegate:self];
     [projectView setOwnerDataSource:self];
+    [projectView setTitleDataSource:self];
 }
 
 @end
@@ -302,7 +303,16 @@
         return "yours";
     }
     
-    return [[[OLUserSessionManager defaultSessionManager] user] email];
+    return "not yours";
+}
+
+@end
+
+@implementation OLProjectController (TitleDataSource)
+
+- (CPString)title
+{
+    return [selectedProject name];
 }
 
 @end
