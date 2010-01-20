@@ -35,8 +35,6 @@
 
 @import "Views/OLProjectView.j"
 
-var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
-
 @implementation AppController : CPObject
 {
     @outlet						CPWindow                theWindow;
@@ -61,10 +59,6 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-    // var welcomeController = [[OLWelcomeController alloc] init];
-    //     [welcomeController setDelegate:self];
-    // [welcomeController setUploadController:uploadController];
-    
     var uploadWindowController = [[OLUploadWindowController alloc] init];
 	
 	projectController = [[OLProjectController alloc] init];
@@ -74,17 +68,8 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     var projectView = [[OLProjectView alloc] initWithFrame:[mainContentView bounds]];
     [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [projectController setProjectView:projectView];
-    
-    // resourceBundleController = [[OLResourceBundleController alloc] init];
-    // [projectController addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
-	
-    // resourceController = [[OLResourceController alloc] init];
-    // [resourceBundleController addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
-	
-    // lineItemController = [[OLLineItemController alloc] init];
-    // [resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
-	
-	glossaryController = [[OLGlossaryController alloc] init];
+ 
+ 	glossaryController = [[OLGlossaryController alloc] init];
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:glossaryController];
 	
@@ -107,24 +92,18 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
     
     var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
     [communityController setSearchView:searchView];
-    
-    // var secondResourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
-    // [secondResourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    // [communityController setResourcesView:secondResourcesView];
-	
+ 
     var uploadWindowController = [[OLUploadWindowController alloc] init];
 	menuController = [[OLMenuController alloc] init];
 	[menuController setUploadWindowController:uploadWindowController];
     [CPMenu setMenuBarVisible:YES];
 	
-    // [projectController loadProjects];
-    // [glossaryController loadGlossaries];
-    // [communityController loadMessages];
-	
 	var loginController = [[OLLoginController alloc] init];
 	
-    setupToolbar(self, theWindow, loginController, projectController, nil, messageController);
-    
+    var feedbackController = [[OLFeedbackController alloc] init];
+    var toolbarController = [[OLToolbarController alloc] initWithFeedbackController:feedbackController messageController:messageController];
+ 
+    [theWindow setToolbar:[toolbarController toolbar]];
 }
 
 - (void)awakeFromCib
@@ -174,17 +153,3 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 }
 
 @end
-
-function setupToolbar(self, theWindow, loginController, projectController, glossaryController,messageController)
-{
-    var feedbackController = [[OLFeedbackController alloc] init];
-    var toolbarController = [[OLToolbarController alloc] initWithFeedbackController:feedbackController loginController:loginController
-            projectController:projectController glossaryController:glossaryController messageController:messageController];
-
-    var toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
-    [toolbar setDelegate:toolbarController];
-    [toolbarController setToolbar:toolbar];
- 
-    [theWindow setToolbar:toolbar];
-    [self setToolbarController:toolbarController];
-}

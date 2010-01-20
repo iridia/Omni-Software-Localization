@@ -2,7 +2,7 @@
 
 @import "../Utilities/OLUserSessionManager.j"
 
-
+var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
 var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
 var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
@@ -15,29 +15,27 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     OLGlossaryController glossaryController;
     OLMessageController  messageController;
     CPMenuItem           loginMenuItem;
-    CPToolbar            toolbar @accessors;
+    CPToolbar            toolbar                @accessors;
     CPString             loginValue;
 }
 
 - (id)init
 {
-    return [self initWithFeedbackController:nil loginController:nil projectController:nil glossaryController:nil messageController:nil];
+    return [self initWithFeedbackController:nil messageController:nil];
 }
 
-- (id)initWithFeedbackController:(OLFeedbackController)aFeedbackController loginController:(OLLoginController)aLoginController
-        projectController:(OLProjectController)aProjectController glossaryController:(OLGlossaryController)aGlossaryController
-        messageController:(OLMessageController)aMessageController
+- (id)initWithFeedbackController:(OLFeedbackController)aFeedbackController messageController:(OLMessageController)aMessageController
 {
     self = [super init];
     
     if (self)
     {
         feedbackController = aFeedbackController;
-        loginController = aLoginController;
-        projectController = aProjectController;
-        glossaryController = aGlossaryController;
         messageController = aMessageController;
         loginValue = "Login / Register";
+        
+        toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
+        [toolbar setDelegate:self];
         
         [[CPNotificationCenter defaultCenter]
             addObserver:self
