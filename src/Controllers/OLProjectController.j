@@ -24,38 +24,55 @@
 		
 		resourceBundleController = [[OLResourceBundleController alloc] init];
         [self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
-
-		[[CPNotificationCenter defaultCenter]
-			addObserver:self
-			selector:@selector(didReceiveParseServerResponseNotification:)
-			name:@"OLUploadControllerDidParseServerResponse"
-			object:nil];
-		
-		[[CPNotificationCenter defaultCenter]
-			addObserver:self
-			selector:@selector(didReceiveOutlineViewSelectionDidChangeNotification:)
-			name:CPOutlineViewSelectionDidChangeNotification
-			object:nil];
-			
-		[[CPNotificationCenter defaultCenter]
-		    addObserver:self
-		    selector:@selector(didReceiveProjectDidChangeNotification:)
-		    name:@"OLProjectDidChangeNotification"
-		    object:nil];
-		    
-        [[CPNotificationCenter defaultCenter]
-    	    addObserver:self
-    		selector:@selector(didReceiveProjectsShouldReloadNotification:)
-    		name:@"OLProjectsShouldReload"
-    		object:nil];
-    		
-    	[[CPNotificationCenter defaultCenter]
-    	   addObserver:self
-    	   selector:@selector(didReceiveLineItemSelectedIndexDidChangeNotification:)
-    	   name:OLLineItemSelectedLineItemIndexDidChangeNotification
-    	   object:nil];    		
+   		
+   		[self registerForNotifications];
     }
     return self;
+}
+
+- (void)registerForNotifications
+{   
+	[[CPNotificationCenter defaultCenter]
+		addObserver:self
+		selector:@selector(didReceiveParseServerResponseNotification:)
+		name:@"OLUploadControllerDidParseServerResponse"
+		object:nil];
+	
+	[[CPNotificationCenter defaultCenter]
+		addObserver:self
+		selector:@selector(didReceiveOutlineViewSelectionDidChangeNotification:)
+		name:CPOutlineViewSelectionDidChangeNotification
+		object:nil];
+		
+	[[CPNotificationCenter defaultCenter]
+	    addObserver:self
+	    selector:@selector(didReceiveProjectDidChangeNotification:)
+	    name:@"OLProjectDidChangeNotification"
+	    object:nil];
+	    
+    [[CPNotificationCenter defaultCenter]
+	    addObserver:self
+		selector:@selector(didReceiveProjectsShouldReloadNotification:)
+		name:@"OLProjectsShouldReload"
+		object:nil];
+		
+	[[CPNotificationCenter defaultCenter]
+	   addObserver:self
+	   selector:@selector(didReceiveLineItemSelectedIndexDidChangeNotification:)
+	   name:OLLineItemSelectedLineItemIndexDidChangeNotification
+	   object:[[resourceBundleController resourceController] lineItemController]];
+       
+   [[CPNotificationCenter defaultCenter]
+       addObserver:self
+       selector:@selector(startCreateNewBundle:)
+       name:@"CPLanguageShouldAddLanguageNotification"
+       object:nil];
+       
+   [[CPNotificationCenter defaultCenter]
+       addObserver:self
+       selector:@selector(startDeleteBundle:)
+       name:@"CPLanguageShouldDeleteLanguageNotification"
+       object:nil];
 }
 
 - (void)loadProjects
@@ -82,18 +99,6 @@
     [self insertObject:project inProjectsAtIndex:[projects count]];
 }
 
-- (void)addResource:(JSObject)jsonResponse toResourceBundle:(OLResourceBundle)resourceBundle
-{
-	var fileName = jsonResponse.fileName;
-	var fileType = jsonResponse.fileType;
-	
-	var resourceLineItems = [self lineItemsFromResponse:jsonResponse];
-
-	var resource = [[OLResource alloc] initWithFileName:fileName fileType:fileType lineItems:resourceLineItems];
-	
-	[resourceBundle addResource:resource];
-}
-
 - (void)didReceiveParseServerResponseNotification:(CPNotification)notification
 {
 	var jsonResponse = [[notification object] jsonResponse];
@@ -103,10 +108,6 @@
 		var newProject = [OLProject projectFromJSON:jsonResponse];
 		[self addProject:newProject];
     	[newProject save];
-	}
-	else
-	{
-		[self addResource:jsonResponse toResourceBundle:nil];
 	}
 }
 
@@ -135,7 +136,7 @@
 
 - (void)didReceiveLineItemSelectedIndexDidChangeNotification:(CPNotification)notification
 {
-    var index = [notification object];
+    var index = [[notification userInfo] objectForKey:@"SelectedIndex"];
     
     [projectView selectLineItemsTableViewRowIndexes:[CPIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
 }
@@ -230,6 +231,62 @@
     [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
     [resourceBundleController selectResourceBundleAtIndex:selectedIndex];
     [projectView reloadAllData];
+}
+
+- (void)startCreateNewBundle:(id)sender
+{
+    if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
+    {
+        var userInfo = [CPDictionary dictionary];
+        [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
+        [userInfo setObject:@selector(startCreateNewBundle:) forKey:@"SuccessfulLoginAction"];
+        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
+        
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLUserShouldLoginNotification"
+            object:nil
+            userInfo:userInfo];
+        
+        return;
+    }
+    else if(![[OLUserSessionManager defaultSessionManager] isUserTheLoggedInUser:[selectedProject userIdentifier]])
+    {
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLProjectShouldBranchNotification"
+            object:nil];
+        
+        return;
+    }
+    
+    [resourceBundleController startCreateNewBundle:sender];
+}
+
+- (void)startDeleteBundle:(id)sender
+{
+    if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
+    {
+        var userInfo = [CPDictionary dictionary];
+        [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
+        [userInfo setObject:@selector(startDeleteBundle:) forKey:@"SuccessfulLoginAction"];
+        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
+
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLUserShouldLoginNotification"
+            object:nil
+            userInfo:userInfo];
+
+        return;
+    }
+    else if(![[OLUserSessionManager defaultSessionManager] isUserTheLoggedInUser:[selectedProject userIdentifier]])
+    {
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLProjectShouldBranchNotification"
+            object:nil];
+
+        return;
+    }
+    
+    [resourceBundleController startDeleteBundle:sender];
 }
 
 @end

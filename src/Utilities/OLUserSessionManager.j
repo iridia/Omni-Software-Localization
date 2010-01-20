@@ -57,10 +57,6 @@ var OLDefaultUserSessionManager = nil;
         return;
     
     user = aUser;
-    
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLUserSessionManagerUserDidChangeNotification
-        object:self];
         
     if (user)
     {
@@ -70,6 +66,10 @@ var OLDefaultUserSessionManager = nil;
     {
         [self setStatus:OLUserSessionLoggedOutStatus];
     }
+
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLUserSessionManagerUserDidChangeNotification
+        object:self];
 }
 
 - (BOOL)isUserLoggedIn

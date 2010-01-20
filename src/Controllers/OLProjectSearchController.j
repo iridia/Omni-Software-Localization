@@ -9,6 +9,27 @@
     OLContentViewController contentViewController   @accessors;
 }
 
+- (void)registerForNotifications
+{
+	[[CPNotificationCenter defaultCenter]
+	    addObserver:self
+	    selector:@selector(didReceiveProjectDidChangeNotification:)
+	    name:@"OLProjectDidChangeNotification"
+	    object:nil];
+
+    [[CPNotificationCenter defaultCenter]
+	    addObserver:self
+		selector:@selector(didReceiveProjectsShouldReloadNotification:)
+		name:@"OLProjectsShouldReload"
+		object:nil];
+        
+	[[CPNotificationCenter defaultCenter]
+	   addObserver:self
+	   selector:@selector(didReceiveLineItemSelectedIndexDidChangeNotification:)
+	   name:OLLineItemSelectedLineItemIndexDidChangeNotification
+	   object:[[resourceBundleController resourceController] lineItemController]];
+}
+
 - (id)loadProjects
 {
     projects = [CPArray array];

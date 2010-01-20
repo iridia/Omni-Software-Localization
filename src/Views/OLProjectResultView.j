@@ -25,7 +25,15 @@
 {
     if(titleDataSource && ownerDataSource)
     {
-        [self setTitle:[CPString stringWithFormat:@"%@'s %@", [ownerDataSource owner], [titleDataSource title]]];
+        var format = @"%@'s %@";
+        var owner = [ownerDataSource owner];
+        if([owner isEqualToString:@"yours"])
+        {
+            format = @"%@ %@";
+            owner = "your";
+        }
+        
+        [self setTitle:[CPString stringWithFormat:format, owner, [titleDataSource title]]];
     }
 }
 

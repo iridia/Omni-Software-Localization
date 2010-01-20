@@ -71,12 +71,17 @@
 
 - (SEL)doubleAction
 {
-    return [_delegate doubleAction];
+    if([_delegate respondsToSelector:@selector(doubleAction)])
+    {
+        return [_delegate doubleAction];
+    }
+    
+    return nil;
 }
 
 - (void)mouseDown:(CPEvent)anEvent
 {
-    if ([anEvent clickCount] == 2)
+    if ([self target] && [self doubleAction] && [anEvent clickCount] == 2)
 	{
 		var index = [[self selectedRowIndexes] firstIndex];
 		

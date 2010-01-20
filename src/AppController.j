@@ -89,6 +89,10 @@
  
 	menuController = [[OLMenuController alloc] init];
     [CPMenu setMenuBarVisible:YES];
+    
+    [glossaryController loadGlossaries];
+    [projectController loadProjects];
+    [communityController loadMessages];
 	
 	var loginController = [[OLLoginController alloc] init];
     var toolbarController = [[OLToolbarController alloc] init];

@@ -12,7 +12,7 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     CPArray                 resources;
     OLResource              selectedResource    @accessors;
 	
-	OLLineItemController    lineItemController;
+	OLLineItemController    lineItemController  @accessors(readonly);
 }
 
 - (id)init

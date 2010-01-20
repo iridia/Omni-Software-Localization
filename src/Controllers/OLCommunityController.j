@@ -125,22 +125,19 @@ var OLCommunitySearchItem = @"Search";
 
 @implementation OLCommunityController (OLCommunityTableViewDelegate)
 
-- (void)tableViewSelectionDidChange:(CPTableView)aTableView
+- (void)tableViewSelectionDidChange:(CPNotification)notification
 {
-    var tableView = [[mailView mailView] messageTableView];
-    if (aTableView === tableView)
+    var tableView = [notification object];
+    var selectedRow = [[tableView selectedRowIndexes] firstIndex];
+    var textToDisplay = @"";
+
+    if (selectedRow >= 0 )
     {
-        var selectedRow = [[tableView selectedRowIndexes] firstIndex];
-        var textToDisplay = @"";
-    
-        if (selectedRow >= 0 )
-        {
-           textToDisplay = [[messages objectAtIndex:selectedRow] content];
-        }
-   
-        [[[[mailView mailView] messageDetailView] content] setStringValue:textToDisplay];
-        [[mailView mailView] showMessageDetailView];
+       textToDisplay = [[messages objectAtIndex:selectedRow] content];
     }
+
+    [[[[mailView mailView] messageDetailView] content] setStringValue:textToDisplay];
+    [[mailView mailView] showMessageDetailView];
 }
 
 @end

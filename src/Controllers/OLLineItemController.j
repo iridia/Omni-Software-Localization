@@ -53,9 +53,12 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
 
     [self selectLineItemAtIndex:nextIndex];
     
+    var userInfo = [CPDictionary dictionary];
+    [userInfo setObject:nextIndex forKey:@"SelectedIndex"];
     [[CPNotificationCenter defaultCenter]
         postNotificationName:OLLineItemSelectedLineItemIndexDidChangeNotification
-        object:nextIndex];
+        object:self
+        userInfo:userInfo];
 }
 
 - (void)previousLineItem
@@ -69,9 +72,13 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
     }
 
     [self selectLineItemAtIndex:previousIndex];
+    
+    var userInfo = [CPDictionary dictionary];
+    [userInfo setObject:previousIndex forKey:@"SelectedIndex"];
     [[CPNotificationCenter defaultCenter]
         postNotificationName:OLLineItemSelectedLineItemIndexDidChangeNotification
-        object:previousIndex];
+        object:self
+        userInfo:userInfo];
 }
 
 @end
