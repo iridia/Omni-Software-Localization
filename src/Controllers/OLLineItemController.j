@@ -2,7 +2,6 @@
 
 @import "../Utilities/OLUserSessionManager.j"
 @import "OLLineItemEditWindowController.j"
-@import "../Views/OLResourcesView.j"
 @import "../Models/OLLineItem.j"
 
 OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineItemIndexDidChangeNotification";
@@ -12,7 +11,6 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
 	CPArray		    lineItems;
 	CPString        ownerId             @accessors;
 	OLLineItem      selectedLineItem    @accessors;
-	OLResourcesView resourcesView       @accessors;
 }
 
 - (id)init
@@ -120,14 +118,6 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
             {
                 ownerId = [object ownerId];
                 lineItems = [[object selectedResource] lineItems];
-                [[[resourcesView editingView] lineItemsTableView] reloadData];
-                [resourcesView showLineItemsTableView];
-    			[resourcesView setVoteCount:[selectedResource numberOfVotes]];
-                [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
-            }
-            else
-            {
-                [resourcesView hideLineItemsTableView];
             }
             break;
         default:
