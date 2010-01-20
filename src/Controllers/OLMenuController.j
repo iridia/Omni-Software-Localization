@@ -37,6 +37,8 @@ OLMenuItemDisabled = NO;
         
         menu = [[OLMenu alloc] initWithTitle:@"Omni Software Localization" controller:self];
         [[CPApplication sharedApplication] setMainMenu:menu];
+        
+        uploadWindowController = [[OLUploadWindowController alloc] init];
     }
     return self;
 }

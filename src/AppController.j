@@ -27,13 +27,11 @@
 @import "Controllers/OLCommunityController.j"
 
 @import "Views/OLMenu.j"
-@import "Views/OLResourcesView.j"
 @import "Views/OLGlossariesView.j"
 @import "Views/OLMailView.j"
-@import "Views/OLProjectSearchView.j"
 @import "Views/OLMessageWindow.j"
-
 @import "Views/OLProjectView.j"
+@import "Views/OLProjectSearchView.j"
 
 @implementation AppController : CPObject
 {
@@ -68,7 +66,8 @@
     var projectView = [[OLProjectView alloc] initWithFrame:[mainContentView bounds]];
     [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [projectController setProjectView:projectView];
- 
+    
+    
  	glossaryController = [[OLGlossaryController alloc] init];
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:glossaryController];
@@ -77,9 +76,11 @@
 	[glossariesView setGlossaryController:glossaryController];
 	[glossaryController setGlossariesView:glossariesView];
     
+    
     messageController = [[OLMessageController alloc] init];
     [messageController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
     [messageController addObserver:messageController forKeyPath:@"selectedMessage" options:CPKeyValueObservingOptionNew context:nil];
+    
     
     communityController = [[OLCommunityController alloc] init];
     [communityController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
@@ -93,9 +94,7 @@
     var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
     [communityController setSearchView:searchView];
  
-    var uploadWindowController = [[OLUploadWindowController alloc] init];
 	menuController = [[OLMenuController alloc] init];
-	[menuController setUploadWindowController:uploadWindowController];
     [CPMenu setMenuBarVisible:YES];
 	
 	var loginController = [[OLLoginController alloc] init];
