@@ -59,9 +59,28 @@
     [self addSubview:accessoryView positioned:CPViewRightAligned | CPViewHeightCentered relativeTo:self withPadding:5.0];
 }
 
+- (void)setBackView:(CPView)aBackView
+{
+    if (backView === aBackView)
+        return;
+        
+    [backView removeFromSuperview];
+    
+    backView = aBackView;
+    
+    [backView setAutoresizingMask:CPViewMinXMargin];
+    [self addSubview:backView positioned:CPViewLeftAligned | CPViewHeightCentered relativeTo:self withPadding:5.0];
+}
+
 - (void)_centerTitleView
 {
     [titleView setCenter:CPMakePoint(CGRectGetWidth([self bounds]) / 2.0, CGRectGetHeight([self bounds]) / 2.0)];
+}
+
+- (void)repositionBackView
+{
+    [backView removeFromSuperview];
+    [self addSubview:backView positioned:CPViewLeftAligned | CPViewHeightCentered relativeTo:self withPadding:5.0];
 }
 
 @end

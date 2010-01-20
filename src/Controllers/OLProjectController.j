@@ -119,6 +119,7 @@
 - (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
 {
     [selectedProject save];
+    [projectView reloadAllData];
 }
 
 - (void)didReceiveProjectShouldBranchNotification:(CPNotification)notification
@@ -171,6 +172,7 @@
     [projectView setResourceBundleDelegate:self];
     [projectView setVotingDataSource:self];
     [projectView setVotingDelegate:self];
+    [projectView setOwnerDataSource:self];
 }
 
 @end
@@ -287,6 +289,20 @@
 - (int)numberOfVotesForSelectedResource
 {
     return [resourceBundleController numberOfVotesForSelectedResource];
+}
+
+@end
+
+@implementation OLProjectController (OwnerDataSource)
+
+- (CPString)owner
+{
+    if([selectedProject userIdentifier] === [[OLUserSessionManager defaultSessionManager] userIdentifier])
+    {
+        return "yours";
+    }
+    
+    return [[[OLUserSessionManager defaultSessionManager] user] email];
 }
 
 @end

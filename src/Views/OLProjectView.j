@@ -13,6 +13,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     OLTableView             resourcesTableView;
     OLTableView             lineItemsTableView;
     OLNavigationBarView     navigationBarView;
+    CPTextField             ownerView;
     CPPopUpButton           resourceBundlesView;
     CPView                  votingView;
     
@@ -40,6 +41,13 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
         [resourceBundlesView setTarget:self];
         [resourceBundlesView setAction:@selector(_selectedResourceBundleDidChange:)];
         [navigationBarView setAccessoryView:resourceBundlesView];
+        
+        ownerView = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, 0.0)];
+        [ownerView setFont:[CPFont boldSystemFontOfSize:14.0]];
+        [ownerView setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
+        [ownerView setTextShadowOffset:CGSizeMake(0.0, 1)];
+        [ownerView setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
+        [navigationBarView setBackView:ownerView];
         
         splitView = [[CPSplitView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) - CGRectGetHeight([navigationBarView bounds]))];
         [splitView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
@@ -123,6 +131,21 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     votingDataSource = aDataSource;
 }
 
+- (void)setOwnerDataSource:(id)aDataSource
+{
+    ownerDataSource = aDataSource;
+}
+
+- (void)reloadOwner
+{
+    if(ownerDataSource)
+    {
+        [ownerView setStringValue:[ownerDataSource owner]];
+        [ownerView sizeToFit];
+        [navigationBarView repositionBackView];
+    }
+}
+
 - (void)reloadVoting
 {
     if(votingDataSource)
@@ -201,6 +224,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     }
     
     [self reloadVoting];
+    [self reloadOwner];
 }
 
 - (void)setIsEditing:(BOOL)editing
