@@ -11,7 +11,6 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 {
     CPArray                 resources;
     OLResource              selectedResource    @accessors;
-	CPString                ownerId             @accessors;
 	
 	OLLineItemController    lineItemController;
 }
@@ -86,7 +85,6 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     switch (keyPath)
     {
         case @"selectedResourceBundle":
-            ownerId = [object ownerId];
             resources = [[object selectedResourceBundle] resources];
             [self setSelectedResource:nil];
             break;

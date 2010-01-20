@@ -262,6 +262,29 @@
 
 - (void)lineItemsTableViewDoubleClick:(CPTableView)tableView
 {
+    var userSessionManager = [OLUserSessionManager defaultSessionManager];
+    if(![userSessionManager isUserLoggedIn])
+    {
+        var userInfo = [CPDictionary dictionary];
+        [userInfo setObject:@"You must log in to edit this item!" forKey:@"StatusMessageText"];
+        [userInfo setObject:@selector(lineItemsTableViewDoubleClick:) forKey:@"SuccessfulLoginAction"];
+        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
+        
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLUserShouldLoginNotification"
+            object:nil
+            userInfo:userInfo];
+        return;
+    }
+    else if(![userSessionManager isUserTheLoggedInUser:[selectedProject userIdentifier]])
+    {
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:@"OLProjectShouldBranchNotification"
+            object:nil];
+            
+        return;
+    }
+    
     [resourceBundleController editSelectedLineItem];
 }
 

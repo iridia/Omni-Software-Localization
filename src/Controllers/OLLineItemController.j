@@ -9,7 +9,6 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
 @implementation OLLineItemController : CPObject
 {
 	CPArray		    lineItems;
-	CPString        ownerId             @accessors;
 	OLLineItem      selectedLineItem    @accessors;
 }
 
@@ -35,30 +34,7 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
 }
 
 - (void)editSelectedLineItem
-{
-    var userSessionManager = [OLUserSessionManager defaultSessionManager];
-    if(![userSessionManager isUserLoggedIn])
-    {
-        var userInfo = [CPDictionary dictionary];
-        [userInfo setObject:@"You must log in to edit this item!" forKey:@"StatusMessageText"];
-        [userInfo setObject:@selector(editSelectedLineItem:) forKey:@"SuccessfulLoginAction"];
-        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
-        
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLUserShouldLoginNotification"
-            object:nil
-            userInfo:userInfo];
-        return;
-    }
-    else if(![userSessionManager isUserTheLoggedInUser:ownerId])
-    {
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLProjectShouldBranchNotification"
-            object:nil];
-            
-        return;
-    }
-    
+{   
     var lineItemEditWindowController = [[OLLineItemEditWindowController alloc] initWithWindowCibName:@"LineItemEditor.cib" lineItem:selectedLineItem];
     [lineItemEditWindowController setDelegate:self];
     [self addObserver:lineItemEditWindowController forKeyPath:@"selectedLineItem" options:CPKeyValueObservingOptionNew context:nil];
@@ -110,7 +86,6 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
             var selectedResource = [object selectedResource];
             if (selectedResource)
             {
-                ownerId = [object ownerId];
                 lineItems = [[object selectedResource] lineItems];
             }
             break;
