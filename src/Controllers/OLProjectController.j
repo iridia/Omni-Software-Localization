@@ -73,6 +73,12 @@
        selector:@selector(startDeleteBundle:)
        name:@"CPLanguageShouldDeleteLanguageNotification"
        object:nil];
+       
+   [[CPNotificationCenter defaultCenter]
+       addObserver:self
+       selector:@selector(downloadSelectedProject:)
+       name:@"OLProjectShouldDownloadNotification"
+       object:nil];
 }
 
 - (void)loadProjects
@@ -87,6 +93,14 @@
         }];
     }
 	
+}
+
+- (void)downloadSelectedProject:(CPNotification)notification
+{
+    var request = [CPURLRequest requestWithURL:@"/Download/Download.php"];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:[selectedProject recordID]];
+    [OLURLConnectionFactory createConnectionWithRequest:request delegate:nil];
 }
 
 - (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index
@@ -428,7 +442,7 @@
 	    if (selectedProject !== item)
 	    {
 	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldEnableItemsNotification" 
-	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage]];
+	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload]];
     	    [self setSelectedProject:item];
     	    [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
             [projectView setTitle:[[self selectedProject] name]];

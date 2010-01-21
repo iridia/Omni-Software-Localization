@@ -8,6 +8,7 @@ OLMenuItemNew = @"OLMenuItemNew";
 OLMenuItemSave = @"OLMenuItemSave";
 OLMenuItemNewLanguage = @"OLMenuItemNewLanguage";
 OLMenuItemDeleteLanguage = @"OLMenuItemDeleteLanguage";
+OLMenuItemDownload = @"OLMenuItemDownload";
 
 @implementation OLMenu : CPMenu
 {
@@ -56,11 +57,13 @@ OLMenuItemDeleteLanguage = @"OLMenuItemDeleteLanguage";
     var projectSubmenu = [[CPMenu alloc] initWithTitle:@"ProjectMenu"];
     var newLanguage = [[CPMenuItem alloc] initWithTitle:@"New Language.." action:@selector(newLanguage:) keyEquivalent:nil];
     var deleteLanguage = [[CPMenuItem alloc] initWithTitle:@"Delete Language.." action:@selector(deleteLanguage:) keyEquivalent:nil];
+    var download = [[CPMenuItem alloc] initWithTitle:@"Download" action:@selector(download:) keyEquivalent:"d"];
     
     [newLanguage setTarget:controller];
     [deleteLanguage setTarget:controller];
     [aboutItem setTarget:controller];
     [newItem setTarget:controller];
+    [download setTarget:controller];
     
     var items = [controller items];
 
@@ -68,6 +71,7 @@ OLMenuItemDeleteLanguage = @"OLMenuItemDeleteLanguage";
     [saveItem setEnabled:[items objectForKey:OLMenuItemSave]];
     [newLanguage setEnabled:[items objectForKey:OLMenuItemNewLanguage]];
     [deleteLanguage setEnabled:[items objectForKey:OLMenuItemDeleteLanguage]];
+    [download setEnabled:[items objectForKey:OLMenuItemDownload]];
     
     [fileSubmenu addItem:newItem];
     [fileSubmenu addItem:saveItem];
@@ -80,6 +84,7 @@ OLMenuItemDeleteLanguage = @"OLMenuItemDeleteLanguage";
     [projectMenu setSubmenu:projectSubmenu];
     [projectSubmenu addItem:newLanguage];
     [projectSubmenu addItem:deleteLanguage];
+    [projectSubmenu addItem:download];
     
     [self addItem:appMenu];
     [self addItem:fileMenu];
