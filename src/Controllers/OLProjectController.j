@@ -100,7 +100,16 @@
     var request = [CPURLRequest requestWithURL:@"/~hammerdr/osl/src/Download/Download.php"];
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:[selectedProject recordID]];
-    [OLURLConnectionFactory createConnectionWithRequest:request delegate:nil];
+    [OLURLConnectionFactory createConnectionWithRequest:request delegate:self];
+}
+
+- (void)connection:(CPURLConnection)connection didReceiveData:(CPString)data
+{
+    // This downloads the application without opening a window. This is pretty jank, but works.
+    var webView = [[CPWebView alloc] initWithFrame:CGRectMake(0,0,0,0)];
+    [webView setMainFrameURL:@"http://localhost/~hammerdr/osl/src/Download/" + [selectedProject name] + ".zip"];
+    [projectView addSubview:webView];
+    [CPTimer scheduledTimerWithTimeInterval:1 callback:function(){[webView removeFromSuperview];} repeats:NO];
 }
 
 - (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index
