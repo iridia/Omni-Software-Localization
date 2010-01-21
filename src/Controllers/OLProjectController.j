@@ -97,7 +97,7 @@
 
 - (void)downloadSelectedProject:(CPNotification)notification
 {
-    var request = [CPURLRequest requestWithURL:@"/Download/Download.php"];
+    var request = [CPURLRequest requestWithURL:@"/~hammerdr/osl/src/Download/Download.php"];
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:[selectedProject recordID]];
     [OLURLConnectionFactory createConnectionWithRequest:request delegate:nil];
