@@ -53,6 +53,12 @@
 	    selector:@selector(didReceiveProjectDidChangeNotification:)
 	    name:@"OLProjectDidChangeNotification"
 	    object:nil];
+		
+	[[CPNotificationCenter defaultCenter]
+	    addObserver:self
+	    selector:@selector(loadProjects)
+	    name:@"OLMyProjectsShouldReloadNotification"
+	    object:nil];
 	    
     [[CPNotificationCenter defaultCenter]
 	    addObserver:self
