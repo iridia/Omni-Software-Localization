@@ -13,6 +13,7 @@
     {
         var scrollView = [[CPScrollView alloc] initWithFrame:aFrame];
         [scrollView setAutohidesScrollers:YES];
+        [scrollView setHasHorizontalScroller:NO];
         [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
         tableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];
