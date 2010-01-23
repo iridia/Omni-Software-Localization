@@ -1,5 +1,8 @@
 @import "../Controllers/OLImportProjectController.j"
 
+_DOMElement = moq();
+_DOMElement.appendChild = function(){return moq();};
+
 
 @implementation OLImportProjectControllerTest : OJTestCase
 
