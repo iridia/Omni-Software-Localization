@@ -2,7 +2,8 @@
 
 @implementation OLTableView : CPView
 {
-    CPTableView     tableView   @accessors(readonly);
+    CPTableView     tableView       @accessors(readonly);
+    SEL             doubleAction    @accessors;
 }
 
 - (id)initWithFrame:(CGRect)aFrame columns:(CPArray)columns
@@ -35,49 +36,46 @@
     return self;
 }
 
-- (void)reloadData
+@end
+
+@implementation OLTableView (Forwarding)
+
+- (CPMethodSignature)methodSignatureForSelector:(SEL)aSelector
 {
-    [tableView reloadData];
+    if ([tableView respondsToSelector:aSelector])
+    {
+        return YES;
+    }
+    
+    return [super methodSignatureForSelector:aSelector];
 }
 
-- (void)setDataSource:(id)aDataSource
+- (void)forwardInvocation:(CPInvocation)anInvocation
 {
-    [tableView setDataSource:aDataSource];
+    var selector = [anInvocation selector];
+    if ([tableView respondsToSelector:selector])
+    {
+        [anInvocation invokeWithTarget:tableView];
+    }
+    else
+    {
+        [super forwardInvocation:anInvocation];
+    }
 }
 
-- (void)setDelegate:(id)aDelegate
+- (BOOL)respondsToSelector:(SEL)aSelector
 {
-    [tableView setDelegate:aDelegate];
-}
-
-- (void)setTarget:(id)aTarget
-{
-    [tableView setTarget:aTarget];
-}
-
-- (void)setDoubleAction:(SEL)doubleAction
-{
-    [tableView setDoubleAction:doubleAction];
-}
-
-- (void)selectRowIndexes:(CPIndexSet)indexSet byExtendingSelection:(BOOL)shouldExtendSelection
-{
-    [tableView selectRowIndexes:indexSet byExtendingSelection:shouldExtendSelection];
+    if ([tableView respondsToSelector:aSelector])
+    {
+        return YES;
+    }
+    
+    return [super respondsToSelector:aSelector];
 }
 
 @end
 
-@implementation CPTableView (DoubleClick)
-
-- (SEL)doubleAction
-{
-    if([_delegate respondsToSelector:@selector(doubleAction)])
-    {
-        return [_delegate doubleAction];
-    }
-    
-    return nil;
-}
+@implementation OLTableView (DoubleClick)
 
 - (void)mouseDown:(CPEvent)anEvent
 {
@@ -87,11 +85,11 @@
 		
 		if(index >= 0)
 		{
-			objj_msgSend([self target], [self doubleAction], self);	
+			[[self target] performSelector:[self doubleAction] withObject:self];	
 		}
 	}
 
-	[super mouseDown:anEvent];
+	[tableView mouseDown:anEvent];
 }
 
 @end

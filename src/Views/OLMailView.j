@@ -1,7 +1,6 @@
 @import <AppKit/CPView.j>
 
-@import "../Controllers/OLMessageController.j"
-@import "OLMessageSplitView.j"
+@import "OLTableView.j"
 
 var OLMailViewFromUserIDColumnHeader = @"OLMailViewFromUserIDColumnHeader";
 var OLMailViewSubjectColumnHeader = @"OLMailViewSubjectColumnHeader";
@@ -9,30 +8,91 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
 @implementation OLMailView : CPView
 {
-	OLMailView		mailView            @accessors;
-	CPTextField     title;
+	CPSplitView     splitView;
+	OLTableView     messagesView;
+	CPView          contentView;
+	CPTextField     textView;
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)aFrame
 {
-	if (self = [super initWithFrame:frame])
-	{
-		var splitViewSize = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
-    
-        mailView = [[OLMessageSplitView alloc] initWithFrame:splitViewSize];
-        [self addSubview:mailView];
+	if (self = [super initWithFrame:aFrame])
+	{    
+        splitView = [[CPSplitView alloc] initWithFrame:aFrame];
+        [splitView setVertical:NO];
+        [splitView setDelegate:self];
+        [splitView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+        var fromColumn = [[CPTableColumn alloc] initWithIdentifier:OLMailViewFromUserIDColumnHeader];
+        [[fromColumn headerView] setStringValue:@"From"];
+        [fromColumn setWidth:100.0];
+
+        var subjectColumn = [[CPTableColumn alloc] initWithIdentifier:OLMailViewSubjectColumnHeader];
+        [[subjectColumn headerView] setStringValue:@"Subject"];
+        [subjectColumn setWidth:200.0];
+
+        var dateColumn = [[CPTableColumn alloc] initWithIdentifier:OLMailViewSubjectColumnHeader];
+        [[dateColumn headerView] setStringValue:@"Subject"];
+        [dateColumn setWidth:(CGRectGetWidth(aFrame) - 300.0)];
+
+        messagesView = [[OLTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)
+                            columns:[fromColumn, subjectColumn, dateColumn]];
+        [messagesView setUsesAlternatingRowBackgroundColors:NO];
+        [messagesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+        [splitView addSubview:messagesView];
+
+        contentView = [[CPView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)];
+        [contentView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+        var contentViewScrollView = [[CPScrollView alloc] initWithFrame:[contentView bounds]];
+        [contentViewScrollView setAutohidesScrollers:YES];
+        [contentViewScrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+        textView = [[CPTextField alloc] initWithFrame:[contentView bounds]];
+        [textView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        
+        [contentViewScrollView setDocumentView:textView];
+        [contentView addSubview:contentViewScrollView];
+        [splitView addSubview:contentView];
+        
+        [self addSubview:splitView];
 	}
 	return self;
 }
 
-- (void)setCommunityController:(OLCommunityController)communityController
+- (void)setDelegate:(id)aDelegate
 {
-    [mailView setCommunityController:communityController];
+    [messagesView setDelegate:aDelegate];
 }
 
-- (void)setMessageController:(OLMessageController)aMessageController
+- (void)setDataSource:(id)aDataSource
 {
-    [mailView setMessageController:aMessageController];
+    [messagesView setDataSource:aDataSource];
+}
+
+@end
+
+@implementation OLMailView (CPSplitViewDelegate)
+
+- (BOOL)splitView:(CPSplitView)splitView canCollapseSubview:(CPView)subview
+{
+    return (subview !== messagesView);
+}
+
+- (BOOL)splitView:(CPSplitView)splitView shouldCollapseSubview:(CPView)subview forDoubleClickOnDividerAtIndex:(int)index
+{
+    return (subview !== messagesView);
+}
+
+- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
+{
+    return proposedMin + 150.0;
+}
+
+- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
+{    
+    return proposedMax - 150.0;
 }
 
 @end
