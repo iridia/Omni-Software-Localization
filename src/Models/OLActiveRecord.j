@@ -43,8 +43,8 @@ var __createURLConnectionFunction = nil;
 {
 	try
 	{
-		var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
-	    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find";
+		var modifiedClassName = [self apiClassName];
+        var url = @"api/" + modifiedClassName + "/find/all";
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 		var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
 		var numberCalledBack = 0;
@@ -85,8 +85,8 @@ var __createURLConnectionFunction = nil;
 
 + (void)find:(CPString)propertyToSearchOn by:(JSON)object callback:(Function)callback
 {
-	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
-    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find_by_" + propertyToSearchOn + "?key=\"" + object + "\"";
+	var modifiedClassName = [self apiClassName];
+    var url = @"api/" + modifiedClassName + "/find/" + propertyToSearchOn + "?key=\"" + object + "\"";
     
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	
@@ -119,8 +119,8 @@ var __createURLConnectionFunction = nil;
 - (void)findAllBy:(CPString)aString withCallback:(Function)callback
 {
     aString = [aString lowercaseString];
-	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
-    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find_all_by_" + modifiedClassName + "_" + aString;
+	var modifiedClassName = [[self class] apiClassName];
+    var url = @"api/" + modifiedClassName + "/find/all_by_" + modifiedClassName + "_" + aString;
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	[urlRequest setHTTPMethod:"GET"];
 
@@ -276,7 +276,6 @@ var __createURLConnectionFunction = nil;
 	            }
 	            break;
 	        case findByConnection:
-
             	for(var i = 0; i < [json.rows count]; i++)
             	{
             		[self findByRecordID:json.rows[i].id withCallback:function(user)
@@ -322,7 +321,6 @@ var __createURLConnectionFunction = nil;
 
             		[exception raise];
     		    }
-    		    
 	            break;
 	        default:
 	            break;
@@ -343,7 +341,7 @@ var __createURLConnectionFunction = nil;
 
 - (CPURL)apiURLWithRecordID:(BOOL)shouldAppendRecordID
 {
-    var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
+    var modifiedClassName = [[self class] apiClassName];
     var url = @"api/" + modifiedClassName;
     
     if (shouldAppendRecordID)
@@ -352,6 +350,11 @@ var __createURLConnectionFunction = nil;
     }
 
     return [CPURL URLWithString:url];
+}
+
++ (CPString)apiClassName
+{
+    return [self className].replace("OL", "").toLowerCase();
 }
 
 @end
