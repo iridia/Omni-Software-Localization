@@ -36,6 +36,10 @@
 {
     [sidebarItems addObject:anItem];
     [sidebarOutlineView reloadData];
+    if ([anItem respondsToSelector:@selector(shouldExpandSidebarItemOnReload)] && [anItem shouldExpandSidebarItemOnReload])
+    {
+        [sidebarOutlineView expandItem:anItem];
+    }
 }
 @end
 
@@ -45,12 +49,9 @@
 {
     [sidebarOutlineView reloadData];
     
-    if ([object respondsToSelector:@selector(shouldExpandSidebarItemOnReload)])
+    if ([object respondsToSelector:@selector(shouldExpandSidebarItemOnReload)] && [object shouldExpandSidebarItemOnReload])
     {
-        if ([object shouldExpandSidebarItemOnReload])
-        {
-            [sidebarOutlineView expandItem:object];
-        }
+        [sidebarOutlineView expandItem:object];
     }
 }
 

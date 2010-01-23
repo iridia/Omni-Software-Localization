@@ -1,7 +1,7 @@
 @import <Foundation/CPObject.j>
 @import <AppKit/CPOutlineView.j>
 
-// @import "../Models/OLMessage.j"
+@import "OLMessageController.j"
 @import "OLProjectSearchController.j"
 
 var OLCommunityInboxItem = @"Inbox";
@@ -19,26 +19,17 @@ var OLCommunitySearchItem = @"Search";
 - (id)init
     {
         if(self = [super init])
-        {        
-            // messages = [CPArray array];
-
-    		[[CPNotificationCenter defaultCenter]
-    			addObserver:self
-    			selector:@selector(didReceiveOutlineViewSelectionDidChangeNotification:)
-    			name:CPOutlineViewSelectionDidChangeNotification
-    			object:nil];
-
-            // [[CPNotificationCenter defaultCenter]
-            //              addObserver:self
-            //              selector:@selector(newMessageCreated:)
-            //              name:@"OLMessageCreatedNotification"
-            //              object:nil];
-        		
+        {        		
         	searchController = [[OLProjectSearchController alloc] init];
         	[searchController loadProjects];
         	
         	messageController = [[OLMessageController alloc] init];
-        	[messageController loadMessages];
+        	
+        	[[CPNotificationCenter defaultCenter]
+    			addObserver:self
+    			selector:@selector(didReceiveOutlineViewSelectionDidChangeNotification:)
+    			name:CPOutlineViewSelectionDidChangeNotification
+    			object:nil];
         }
         return self;
 }
@@ -77,6 +68,11 @@ var OLCommunitySearchItem = @"Search";
     return [OLCommunityInboxItem, OLCommunitySearchItem];
 }
 
+- (BOOL)shouldExpandSidebarItemOnReload
+{
+    return YES;
+}
+
 - (CPView)contentView
 {
     var view;
@@ -84,7 +80,6 @@ var OLCommunitySearchItem = @"Search";
     {
         case OLCommunityInboxItem:
             view = [messageController contentView];
-            [messageController reloadData];
             break;
         case OLCommunitySearchItem:
             view = [searchController contentView];
