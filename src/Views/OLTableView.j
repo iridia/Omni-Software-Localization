@@ -75,7 +75,17 @@
 
 @end
 
-@implementation OLTableView (DoubleClick)
+@implementation CPTableView (DoubleClick)
+
+- (SEL)doubleAction
+{
+    if ([_delegate respondsToSelector:@selector(doubleAction)])
+    {
+        return [_delegate doubleAction];
+    }
+    
+    return nil;
+}
 
 - (void)mouseDown:(CPEvent)anEvent
 {
@@ -89,7 +99,7 @@
 		}
 	}
 
-	[tableView mouseDown:anEvent];
+	[super mouseDown:anEvent];
 }
 
 @end
