@@ -47,4 +47,18 @@
 	}
 }
 
+- (CPArray)titlesOfLanguages
+{
+    result = [CPArray array];
+    
+    for(var i = 0; i < [[project resourceBundles] count]; i++)
+    {
+        var resourceBundle = [[project resourceBundles] objectAtIndex:i];
+        
+        [result addObject:[[resourceBundle language] name]];
+    }
+    
+    return result;
+}
+
 @end
