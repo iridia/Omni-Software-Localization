@@ -2,6 +2,7 @@
 
 @import "../Utilities/OLUserSessionManager.j"
 @import "utilities/Observer.j"
+@import "utilities/CPNotificationCenter+MockDefaultCenter.j"
 
 @implementation OLUserSessionManagerTest : OJTestCase
 {
@@ -11,6 +12,8 @@
 - (void)setUp
 {
     observer = [[Observer alloc] init];
+    [CPNotificationCenter setIsMocked:NO];
+    [CPNotificationCenter reset];
 }
 
 - (void)testThatOLUserSessionManagerDoesInitialize
