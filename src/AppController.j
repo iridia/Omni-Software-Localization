@@ -9,14 +9,8 @@
 
 @import <Foundation/CPObject.j>
 
-@import "Categories/CPColor+OLColors.j"
-
 @import "Controllers/OLProjectController.j"
-@import "Controllers/OLLineItemController.j"
-@import "Controllers/OLResourceController.j"
 @import "Controllers/OLGlossaryController.j"
-@import "Controllers/OLResourceBundleController.j"
-
 @import "Controllers/OLContentViewController.j"
 @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
@@ -26,7 +20,6 @@
 @import "Views/OLMenu.j"
 @import "Views/OLGlossariesView.j"
 @import "Views/OLMailView.j"
-@import "Views/OLMessageWindow.j"
 @import "Views/OLProjectView.j"
 @import "Views/OLProjectSearchView.j"
 @import "Views/OLProjectResultView.j"

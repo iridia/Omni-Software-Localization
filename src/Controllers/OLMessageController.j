@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 
+@import "../Categories/CPDate+RelativeDate.j"
 @import "../Models/OLUser.j";
 @import "../Views/OLMessageWindow.j"
 @import "../Views/OLMailView.j"
@@ -162,7 +163,7 @@
     }
     else if ([tableColumn identifier] === OLMailViewDateSentColumnHeader)
     {
-        return [message dateSent];
+        return [[message dateSent] getRelativeDateStringFromDate:[CPDate date]];
     }
         
     return nil;

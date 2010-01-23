@@ -25,15 +25,15 @@ OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
         var fromColumn = [[CPTableColumn alloc] initWithIdentifier:OLMailViewFromUserIDColumnHeader];
         [[fromColumn headerView] setStringValue:@"From"];
-        [fromColumn setWidth:100.0];
+        [fromColumn setWidth:200.0];
 
         var subjectColumn = [[CPTableColumn alloc] initWithIdentifier:OLMailViewSubjectColumnHeader];
         [[subjectColumn headerView] setStringValue:@"Subject"];
-        [subjectColumn setWidth:200.0];
+        [subjectColumn setWidth:300.0];
 
         var dateColumn = [[CPTableColumn alloc] initWithIdentifier:OLMailViewDateSentColumnHeader];
         [[dateColumn headerView] setStringValue:@"Date Sent"];
-        [dateColumn setWidth:(CGRectGetWidth(aFrame) - 300.0)];
+        [dateColumn setWidth:(CGRectGetWidth(aFrame) - 500.0)];
 
         messagesView = [[OLTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)
                             columns:[fromColumn, subjectColumn, dateColumn]];
@@ -75,7 +75,7 @@ OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 - (void)reloadData
 {
     [messagesView reloadData];
-    [textView setContent:@""];
+    [self setContent:@""];
 }
 
 - (void)setContent:(CPString)content
