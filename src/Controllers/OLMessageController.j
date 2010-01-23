@@ -2,12 +2,13 @@
 
 @import "../Models/OLUser.j";
 @import "../Views/OLMessageWindow.j"
+@import "../Views/OLMailView.j"
 @import "../Models/OLMessage.j"
 
 @implementation OLMessageController : CPObject
 {
-    CPString        contentText;
-    OLMessage       selectedMessage;
+    CPArray         messages;
+    OLMailView      mailView;
     OLMessageWindow messageWindow;
 }
 
@@ -17,12 +18,69 @@
     
     if (self)
     {
+        messages = [CPArray array];
+        
         messageWindow = [[OLMessageWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 300) styleMask:CPTitledWindowMask];
         [messageWindow setDelegate:self];
+        
+        [[CPNotificationCenter defaultCenter]
+    	    addObserver:self
+    		selector:@selector(didReceiveUserDidChangeNotification:)
+    		name:OLUserSessionManagerUserDidChangeNotification
+    		object:nil];
     }
     
     return self;
 }
+
+- (void)setMailView:(OLMailView)aMailView
+{
+    if (mailView === aMailView)
+        return;
+    
+    mailView = aMailView;
+    
+    [mailView setDelegate:self];
+    [mailView setDataSource:self];
+}
+
+- (void)loadMessages
+{
+    messages = [CPArray array]; // Clear the current messages
+
+    if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
+    {
+        var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
+        [OLMessage findByToUserID:userLoggedIn callback:function(message)
+    	{
+            [self addMessage:message];
+        }];
+    }
+}
+
+- (void)addMessage:(OLMessage)message
+{
+    [self insertObject:message inMessagesAtIndex:[messages count]];
+}
+
+- (void)insertObject:(OLMessage)message inMessagesAtIndex:(int)index
+{
+    [messages insertObject:message atIndex:index];
+    [mailView reloadData];
+}
+
+@end
+
+@implementation OLMessageController (Notifications)
+
+- (void)didReceiveUserDidChangeNotification:(CPNotification)aNotification
+{
+    [self loadMessages];
+}
+
+@end
+
+@implementation OLMessageController (OLMessageWindowDelegate)
 
 - (void)showMessageWindow:(id)sender
 {
@@ -49,7 +107,7 @@
     var subject = [messageDictionary objectForKey:@"subject"];
     var text = [messageDictionary objectForKey:@"content"];
     var dateSent = [messageDictionary objectForKey:@"dateSent"];
-    var fromUser = [[OLUserSessionManager defaultSessionManager] user];
+    var fromUserID = [[OLUserSessionManager defaultSessionManager] userIdentifier];
     
     var wasFound = NO;
     [OLUser listWithCallback:function(user)
@@ -57,9 +115,8 @@
             if(toUser === [user email])
             {
                 wasFound = YES;
-                var message = [[OLMessage alloc] initWithUserID:[fromUser email] subject:subject content:text to:toUser];
+                var message = [[OLMessage alloc] initWithUserID:fromUserID subject:subject content:text to:[user userIdentifier]];
                 [message setDelegate:self];
-                [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMessageCreatedNotification" object:message];
                 [message save];
             }
         } 
@@ -80,6 +137,62 @@
 - (void)didCreateRecord:(OLMessage)message
 {
     [messageWindow showSentMessageView];
+}
+
+@end
+
+@implementation OLMessageController (OLMailTableViewDataSource)
+
+- (int)numberOfRowsInTableView:(CPTableView)mailTableView
+{
+    return [messages count];
+}
+
+- (id)tableView:(CPTableView)mailTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
+{
+    var message = [messages objectAtIndex:row];
+
+    if ([tableColumn identifier] === OLMailViewFromUserIDColumnHeader)
+    {
+       return [message fromUserID];
+    }
+    else if ([tableColumn identifier] === OLMailViewSubjectColumnHeader)
+    {
+        return [message subject];
+    }
+    else if ([tableColumn identifier] === OLMailViewDateSentColumnHeader)
+    {
+        return [message dateSent];
+    }
+        
+    return nil;
+}
+
+@end
+
+@implementation OLMessageController (OLMailTableViewDelegate)
+
+- (void)tableViewSelectionDidChange:(CPNotification)notification
+{
+    var tableView = [notification object];
+    var selectedRow = [[tableView selectedRowIndexes] firstIndex];
+    var textToDisplay = @"";
+
+    if (selectedRow >= 0 )
+    {
+       textToDisplay = [[messages objectAtIndex:selectedRow] content];
+    }
+
+    [mailView setContent:textToDisplay];
+}
+
+@end
+
+@implementation OLMessageController (SidebarItem)
+
+- (CPView)contentView
+{
+    return mailView;
 }
 
 @end

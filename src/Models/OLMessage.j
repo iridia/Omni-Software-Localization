@@ -9,6 +9,11 @@
 	CPString fromUserID @accessors;  // could possibly change to the user object later (depending on session manager)
 }
 
++ (void)findByToUserID:(CPString)toUserID callback:(Function)callback
+{
+    [self find:@"touserid" by:toUserID callback:callback];
+}
+
 - (id)initWithUserID:(CPString)aUserID to:(CPString)toID
 {
     [self initWithUserID:aUserID subject:@"No Subject" content:@"" to:toID];

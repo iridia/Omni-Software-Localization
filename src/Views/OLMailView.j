@@ -2,9 +2,9 @@
 
 @import "OLTableView.j"
 
-var OLMailViewFromUserIDColumnHeader = @"OLMailViewFromUserIDColumnHeader";
-var OLMailViewSubjectColumnHeader = @"OLMailViewSubjectColumnHeader";
-var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
+OLMailViewFromUserIDColumnHeader = @"OLMailViewFromUserIDColumnHeader";
+OLMailViewSubjectColumnHeader = @"OLMailViewSubjectColumnHeader";
+OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
 @implementation OLMailView : CPView
 {
@@ -31,8 +31,8 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
         [[subjectColumn headerView] setStringValue:@"Subject"];
         [subjectColumn setWidth:200.0];
 
-        var dateColumn = [[CPTableColumn alloc] initWithIdentifier:OLMailViewSubjectColumnHeader];
-        [[dateColumn headerView] setStringValue:@"Subject"];
+        var dateColumn = [[CPTableColumn alloc] initWithIdentifier:OLMailViewDateSentColumnHeader];
+        [[dateColumn headerView] setStringValue:@"Date Sent"];
         [dateColumn setWidth:(CGRectGetWidth(aFrame) - 300.0)];
 
         messagesView = [[OLTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)
@@ -50,6 +50,7 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
         [contentViewScrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 
         textView = [[CPTextField alloc] initWithFrame:[contentView bounds]];
+		[textView setLineBreakMode:CPLineBreakByWordWrapping];
         [textView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
         [contentViewScrollView setDocumentView:textView];
@@ -69,6 +70,17 @@ var OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 - (void)setDataSource:(id)aDataSource
 {
     [messagesView setDataSource:aDataSource];
+}
+
+- (void)reloadData
+{
+    [messagesView reloadData];
+    [textView setContent:@""];
+}
+
+- (void)setContent:(CPString)content
+{
+    [textView setStringValue:content];
 }
 
 @end

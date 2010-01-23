@@ -42,7 +42,6 @@
     [sessionManager setUser:aUser];
 
     [successfulLoginTarget performSelector:successfulLoginAction withObject:self];
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectsShouldReload" object:nil];
 }
 
 - (void)loginFailed

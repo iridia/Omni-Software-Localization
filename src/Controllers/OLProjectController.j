@@ -52,8 +52,8 @@
 	    
     [[CPNotificationCenter defaultCenter]
 	    addObserver:self
-		selector:@selector(didReceiveProjectsShouldReloadNotification:)
-		name:@"OLProjectsShouldReload"
+		selector:@selector(didReceiveUserDidChangeNotification:)
+		name:OLUserSessionManagerUserDidChangeNotification
 		object:nil];
 		
 	[[CPNotificationCenter defaultCenter]
@@ -129,7 +129,7 @@
     [alert runModal];
 }
 
-- (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
+- (void)didReceiveUserDidChangeNotification:(CPNotification)notification
 {
     [self loadProjects];
 }
