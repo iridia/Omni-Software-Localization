@@ -14,6 +14,7 @@
 	OLProjectView   projectView;
 	
 	OLResourceBundleController  resourceBundleController;
+	OLImportProjectController   importProjectController;
 }
 
 - (id)init
@@ -24,6 +25,8 @@
 		
 		resourceBundleController = [[OLResourceBundleController alloc] init];
         [self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+        
+        importProjectController = nil;
    		
    		[self registerForNotifications];
     }
@@ -82,9 +85,14 @@
 
   [[CPNotificationCenter defaultCenter]
       addObserver:self
-      selector:@selector(downloadSelectedProject:)
+      selector:@selector(startImport:)
       name:@"OLProjectShouldImportNotification"
       object:nil];
+}
+
+- (void)startImport:(CPNotification)notification
+{
+    [importProjectController startImport:selectedProject];
 }
 
 - (void)loadProjects

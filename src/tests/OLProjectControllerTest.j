@@ -69,6 +69,14 @@
     [self assert:target registered:@"OLProjectShouldImportNotification"]
 }
 
+- (void)testThatOLProjectControllerDoesRespondToStartImport
+{
+    var target = [[OLProjectController alloc] init];
+    
+    [target startImport:moq()];
+    [self assertTrue:YES];
+}
+
 - (void)tearDown
 {
     [OLUserSessionManager resetDefaultSessionManager];
