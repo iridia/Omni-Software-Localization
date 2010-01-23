@@ -74,6 +74,7 @@ OLMenuItemDownload = @"OLMenuItemDownload";
     [newLanguage setEnabled:[items objectForKey:OLMenuItemNewLanguage]];
     [deleteLanguage setEnabled:[items objectForKey:OLMenuItemDeleteLanguage]];
     [download setEnabled:[items objectForKey:OLMenuItemDownload]];
+    [importItem setEnabled:[items objectForKey:OLMenuItemImport]];
     
     [fileSubmenu addItem:newItem];
     [fileSubmenu addItem:saveItem];
