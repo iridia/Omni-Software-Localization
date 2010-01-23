@@ -13,6 +13,7 @@ var uploadURL = @"Upload/upload.php";
     
     CPPopUpButton   fileButton;
     CPPopUpButton   languageButton;
+    CPButton        importNewFileUpload;
 }
 
 - (id)initWithContentRect:(CGRect)aFrame styleMask:(CPWindowStyleMask)aStyleMask
@@ -47,16 +48,22 @@ var uploadURL = @"Upload/upload.php";
 		[selectLanguageText sizeToFit];
 		
 		fileButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0.0, 0.0, 150.0, 24.0)];
-		languageButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0.0, 0.0, 150.0, 24.0)];
 		[fileButton addItemsWithTitles:["Test1", "Test2", "Test3"]];
+		[fileButton setTarget:self];
+		[fileButton setAction:@selector(fileSelectionDidChange:)];
+		
+		languageButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0.0, 0.0, 150.0, 24.0)];
+		[languageButton setTarget:self];
+		[languageButton setAction:@selector(languageSelectionDidChange:)];
         
         var back = [CPButton buttonWithTitle:@"Back"];
         [back setTarget:self];
         [back setAction:@selector(showMain:)];
         
-        var importNewFileUpload = [UploadButton buttonWithTitle:@"Import New File"];
+        importNewFileUpload = [UploadButton buttonWithTitle:@"Import New File"];
 		[importNewFileUpload setDelegate:self];
 		[importNewFileUpload setURL:uploadURL];
+        [importNewFileUpload setEnabled:NO];
 		
 		[importFileView addSubview:selectLanguageText positioned:CPViewWidthCentered | CPViewTopAligned
 		    relativeTo:importFileView withPadding:5.0];
@@ -88,7 +95,13 @@ var uploadURL = @"Upload/upload.php";
 - (void)reloadLanguageData
 {
     [languageButton removeAllItems];
-    [languageButton addItemsWithTitles:[]];
+    [languageButton addItemsWithTitles:["A", "B", "C"]];
+}
+
+- (void)reloadFileData
+{
+    [fileButton removeAllItems];
+    [fileButton addItemsWithTitles:["1", "2", "3"]];
 }
 
 - (void)showReplaceFile:(id)sender
@@ -99,6 +112,16 @@ var uploadURL = @"Upload/upload.php";
 - (void)showMain:(id)sender
 {
     [[self contentView] replaceSubview:importFileView with:importVersionAndFileView];
+}
+
+- (void)fileSelectionDidChange:(id)sender
+{
+    [importNewFileUpload setEnabled:YES];
+}
+
+- (void)languageSelectionDidChange:(id)sender
+{
+    [self reloadFileData];
 }
 
 - (void)close
