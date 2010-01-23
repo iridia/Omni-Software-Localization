@@ -79,6 +79,12 @@
        selector:@selector(downloadSelectedProject:)
        name:@"OLProjectShouldDownloadNotification"
        object:nil];
+
+  [[CPNotificationCenter defaultCenter]
+      addObserver:self
+      selector:@selector(downloadSelectedProject:)
+      name:@"OLProjectShouldImportNotification"
+      object:nil];
 }
 
 - (void)loadProjects
