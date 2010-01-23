@@ -1,12 +1,14 @@
 @import "OLActiveRecord.j"
+@import "OLUser.j"
 
 @implementation OLMessage : OLActiveRecord
 {
-    CPString subject    @accessors;
-	CPString content    @accessors;
-	CPDate   dateSent   @accessors;
-	CPString toUserID   @accessors;
-	CPString fromUserID @accessors;  // could possibly change to the user object later (depending on session manager)
+    CPString    subject         @accessors;
+	CPString    content         @accessors;
+	CPDate      dateSent        @accessors;
+	CPString    toUserID        @accessors;
+	CPString    fromUserID      @accessors;
+	CPString    fromUserEmail   @accessors;   
 }
 
 + (void)findByToUserID:(CPString)toUserID callback:(Function)callback
@@ -14,25 +16,21 @@
     [self find:@"touserid" by:toUserID callback:callback];
 }
 
-- (id)initWithUserID:(CPString)aUserID to:(CPString)toID
+- (id)initFromUser:(OLUser)from toUser:(OLUser)to
 {
-    [self initWithUserID:aUserID subject:@"No Subject" content:@"" to:toID];
+    [self initFromUser:from toUser:to subject:@"No Subject" content:@""];
 }
 
-- (id)initWithUserID:(CPString)aUserID content:(CPString)someContent
-{
-	[self initWithUserID:aUserID subject:@"No Subject" content:someContent to:@"No one."];
-}
-
-- (id)initWithUserID:(CPString)fromID subject:(CPString)aSubject content:(CPString)someContent to:(CPString)toID
+- (id)initFromUser:(OLUser)from toUser:(OLUser)to subject:(CPString)aSubject content:(CPString)someContent
 {
     if(self = [super init])
 	{
-		fromUserID = fromID;
+		fromUserID = [from userIdentifier];
+		fromUserEmail = [from email];
+		toUserID = [to userIdentifier];
 		subject = aSubject;
 		content = someContent;
 		dateSent = [CPDate date];
-		toUserID = toID;
 	}
 	return self;
 }
@@ -40,6 +38,7 @@
 @end
 
 var OLMessageFromUserIDKey= @"OLMessageFromUserIDKey";
+var OLMessageFromUserEmailKey = @"OLMessageFromUserEmailKey";
 var OLMessageSubjectKey = @"OLMessageSubjectKey";
 var OLMessageContentKey = @"OLMessageContentKey";
 var OLMessageDateSentKey = @"OLMessageDateSentKey";
@@ -54,6 +53,7 @@ var OLMessageToUserIDKey = @"OLMessageToUserIDKey";
     if (self)
     {
 		fromUserID = [aCoder decodeObjectForKey:OLMessageFromUserIDKey];
+		fromUserEmail = [aCoder decodeObjectForKey:OLMessageFromUserEmailKey];
         subject = [aCoder decodeObjectForKey:OLMessageSubjectKey];
         content = [aCoder decodeObjectForKey:OLMessageContentKey];
         dateSent = [aCoder decodeObjectForKey:OLMessageDateSentKey];
@@ -66,6 +66,7 @@ var OLMessageToUserIDKey = @"OLMessageToUserIDKey";
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
 	[aCoder encodeObject:fromUserID forKey:OLMessageFromUserIDKey];
+	[aCoder encodeObject:fromUserEmail forKey:OLMessageFromUserEmailKey];
     [aCoder encodeObject:subject forKey:OLMessageSubjectKey];
     [aCoder encodeObject:content forKey:OLMessageContentKey];
     [aCoder encodeObject:dateSent forKey:OLMessageDateSentKey];

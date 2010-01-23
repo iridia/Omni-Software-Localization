@@ -109,7 +109,7 @@
     var subject = [messageDictionary objectForKey:@"subject"];
     var text = [messageDictionary objectForKey:@"content"];
     var dateSent = [messageDictionary objectForKey:@"dateSent"];
-    var fromUserID = [[OLUserSessionManager defaultSessionManager] userIdentifier];
+    var fromUser = [[OLUserSessionManager defaultSessionManager] user];
     
     var wasFound = NO;
     [OLUser listWithCallback:function(user)
@@ -117,7 +117,7 @@
             if(toUser === [user email])
             {
                 wasFound = YES;
-                var message = [[OLMessage alloc] initWithUserID:fromUserID subject:subject content:text to:[user userIdentifier]];
+                var message = [[OLMessage alloc] initFromUser:fromUser toUser:user subject:subject content:text];
                 [message setDelegate:self];
                 [message save];
             }
@@ -156,7 +156,7 @@
 
     if ([tableColumn identifier] === OLMailViewFromUserIDColumnHeader)
     {
-       return [message fromUserID];
+       return [message fromUserEmail];
     }
     else if ([tableColumn identifier] === OLMailViewSubjectColumnHeader)
     {
