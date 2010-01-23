@@ -48,7 +48,7 @@ var OLDefaultUserSessionManager = nil;
     if (status !== OLUserSessionLoggedInStatus)
     {
         [self setUser:nil];
-    }    
+    }
 }
 
 - (void)setUser:(id)aUser
@@ -66,10 +66,8 @@ var OLDefaultUserSessionManager = nil;
     {
         [self setStatus:OLUserSessionLoggedOutStatus];
     }
-
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLUserSessionManagerUserDidChangeNotification
-        object:self];
+    
+    [[CPNotificationCenter defaultCenter] postNotificationName:OLUserSessionManagerUserDidChangeNotification object:self];
 }
 
 - (BOOL)isUserLoggedIn

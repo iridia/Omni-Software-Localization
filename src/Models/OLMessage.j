@@ -16,9 +16,14 @@
     [self find:@"touserid" by:toUserID callback:callback];
 }
 
+- (id)init
+{
+    return [self initFromUser:nil toUser:nil subject:@"" content:""];
+}
+
 - (id)initFromUser:(OLUser)from toUser:(OLUser)to
 {
-    [self initFromUser:from toUser:to subject:@"No Subject" content:@""];
+    return [self initFromUser:from toUser:to subject:@"No Subject" content:@""];
 }
 
 - (id)initFromUser:(OLUser)from toUser:(OLUser)to subject:(CPString)aSubject content:(CPString)someContent
