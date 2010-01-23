@@ -106,4 +106,9 @@ OLMenuItemDisabled = NO;
     [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectShouldDownloadNotification" object:self];
 }
 
+- (void)importItem:(id)sender
+{
+    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectShouldImportNotification" object:self];
+}
+
 @end
