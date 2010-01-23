@@ -45,7 +45,7 @@ task ("press", ["build", "test"], function()
 task ("deploy", ["build", "test"], function()
 {
     //var cmd = "scp -r projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/ ../Pressed";
-    var cmd = "scp -r projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/ .";
+    var cmd = "scp -r . projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/";
     
     OS.system(cmd);
 });
