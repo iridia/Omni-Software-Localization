@@ -302,7 +302,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 {
     if (!isEditing)
     {
-        return [splitView maxPossiblePositionOfDividerAtIndex:dividerIndex];
+        return proposedMin;
     }
     
     return proposedMin + 150.0;
