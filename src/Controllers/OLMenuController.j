@@ -34,6 +34,7 @@ OLMenuItemDisabled = NO;
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemSave];
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemNewLanguage];
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemDeleteLanguage];
+        [items setObject:OLMenuItemDisabled forKey:OLMenuItemImport];
         
         menu = [[OLMenu alloc] initWithTitle:@"Omni Software Localization" controller:self];
         [[CPApplication sharedApplication] setMainMenu:menu];

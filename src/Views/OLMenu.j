@@ -8,6 +8,7 @@ OLMenuItemNew = @"OLMenuItemNew";
 OLMenuItemSave = @"OLMenuItemSave";
 OLMenuItemNewLanguage = @"OLMenuItemNewLanguage";
 OLMenuItemDeleteLanguage = @"OLMenuItemDeleteLanguage";
+OLMenuItemImport = @"OLMenuItemImport";
 
 @implementation OLMenu : CPMenu
 {
@@ -54,8 +55,9 @@ OLMenuItemDeleteLanguage = @"OLMenuItemDeleteLanguage";
     
     var projectMenu = [[CPMenuItem alloc] initWithTitle:@"Project" action:nil keyEquivalent:nil];
     var projectSubmenu = [[CPMenu alloc] initWithTitle:@"ProjectMenu"];
-    var newLanguage = [[CPMenuItem alloc] initWithTitle:@"New Language.." action:@selector(newLanguage:) keyEquivalent:nil];
-    var deleteLanguage = [[CPMenuItem alloc] initWithTitle:@"Delete Language.." action:@selector(deleteLanguage:) keyEquivalent:nil];
+    var newLanguage = [[CPMenuItem alloc] initWithTitle:@"New Language..." action:@selector(newLanguage:) keyEquivalent:nil];
+    var deleteLanguage = [[CPMenuItem alloc] initWithTitle:@"Delete Language..." action:@selector(deleteLanguage:) keyEquivalent:nil];
+    var import = [[CPMenuItem alloc] initWithTitle:@"Import..." action:@selector(import:) keyEquivalent:"i"];
     
     [newLanguage setTarget:controller];
     [deleteLanguage setTarget:controller];
@@ -68,6 +70,7 @@ OLMenuItemDeleteLanguage = @"OLMenuItemDeleteLanguage";
     [saveItem setEnabled:[items objectForKey:OLMenuItemSave]];
     [newLanguage setEnabled:[items objectForKey:OLMenuItemNewLanguage]];
     [deleteLanguage setEnabled:[items objectForKey:OLMenuItemDeleteLanguage]];
+    [import setEnabled:[items objectForKey:OLMenuItemImport]];
     
     [fileSubmenu addItem:newItem];
     [fileSubmenu addItem:saveItem];
