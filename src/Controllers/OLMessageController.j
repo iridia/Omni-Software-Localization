@@ -77,6 +77,7 @@
 - (void)didReceiveUserDidChangeNotification:(CPNotification)aNotification
 {
     [self loadMessages];
+    [mailView reloadData];
 }
 
 @end

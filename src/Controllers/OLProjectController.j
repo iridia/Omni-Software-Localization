@@ -77,7 +77,10 @@
 
 - (void)loadProjects
 {
+    [self willChangeValueForKey:@"projects"];
     projects = [CPArray array];
+    [self didChangeValueForKey:@"projects"];
+    
     if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
