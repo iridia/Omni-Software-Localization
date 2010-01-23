@@ -59,6 +59,7 @@ OLMenuItemDownload = @"OLMenuItemDownload";
     var newLanguage = [[CPMenuItem alloc] initWithTitle:@"New Language.." action:@selector(newLanguage:) keyEquivalent:nil];
     var deleteLanguage = [[CPMenuItem alloc] initWithTitle:@"Delete Language.." action:@selector(deleteLanguage:) keyEquivalent:nil];
     var download = [[CPMenuItem alloc] initWithTitle:@"Download" action:@selector(download:) keyEquivalent:"d"];
+    var importItem = [[CPMenuItem alloc] initWithTitle:@"Import..." action:@selector(import:) keyEquivalent:"i"];
     
     [newLanguage setTarget:controller];
     [deleteLanguage setTarget:controller];
@@ -86,6 +87,7 @@ OLMenuItemDownload = @"OLMenuItemDownload";
     [projectSubmenu addItem:newLanguage];
     [projectSubmenu addItem:deleteLanguage];
     [projectSubmenu addItem:download];
+    [projectSubmenu addItem:importItem];
     
     [self addItem:appMenu];
     [self addItem:fileMenu];
