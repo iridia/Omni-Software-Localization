@@ -57,6 +57,8 @@ OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
         [contentView addSubview:contentViewScrollView];
         [splitView addSubview:contentView];
         
+        [splitView setPosition:[splitView minPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
+        
         [self addSubview:splitView];
 	}
 	return self;
