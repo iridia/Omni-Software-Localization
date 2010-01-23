@@ -5,6 +5,7 @@
 @import "../Views/OLProjectView.j"
 
 @import "OLResourceBundleController.j"
+@import "OLImportProjectController.j"
 
 // Manages an array of projects
 @implementation OLProjectController : CPObject
@@ -26,7 +27,7 @@
 		resourceBundleController = [[OLResourceBundleController alloc] init];
         [self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
         
-        importProjectController = nil;
+        importProjectController = [[OLImportProjectController alloc] init];
    		
    		[self registerForNotifications];
     }
