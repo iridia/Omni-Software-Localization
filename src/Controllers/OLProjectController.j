@@ -73,6 +73,12 @@
        selector:@selector(startDeleteBundle:)
        name:@"CPLanguageShouldDeleteLanguageNotification"
        object:nil];
+       
+   [[CPNotificationCenter defaultCenter]
+       addObserver:self
+       selector:@selector(downloadSelectedProject:)
+       name:@"OLProjectShouldDownloadNotification"
+       object:nil];
 }
 
 - (void)loadProjects
@@ -90,6 +96,23 @@
         }];
     }
 	
+}
+
+- (void)downloadSelectedProject:(CPNotification)notification
+{
+    var request = [CPURLRequest requestWithURL:@"/~hammerdr/osl/src/Download/Download.php"];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:[selectedProject recordID]];
+    [OLURLConnectionFactory createConnectionWithRequest:request delegate:self];
+}
+
+- (void)connection:(CPURLConnection)connection didReceiveData:(CPString)data
+{
+    // This downloads the application without opening a window. This is pretty jank, but works.
+    var webView = [[CPWebView alloc] initWithFrame:CGRectMake(0,0,0,0)];
+    [webView setMainFrameURL:@"http://localhost/~hammerdr/osl/src/Download/" + [selectedProject name] + ".zip"];
+    [projectView addSubview:webView];
+    [CPTimer scheduledTimerWithTimeInterval:1 callback:function(){[webView removeFromSuperview];} repeats:NO];
 }
 
 - (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index
@@ -431,7 +454,7 @@
 	    if (selectedProject !== item)
 	    {
 	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldEnableItemsNotification" 
-	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage]];
+	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload]];
     	    [self setSelectedProject:item];
     	    [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
             [projectView setTitle:[[self selectedProject] name]];

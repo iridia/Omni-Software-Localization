@@ -35,6 +35,7 @@ OLMenuItemDisabled = NO;
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemNewLanguage];
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemDeleteLanguage];
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemImport];
+        [items setObject:OLMenuItemDisabled forKey:OLMenuItemDownload];
         
         menu = [[OLMenu alloc] initWithTitle:@"Omni Software Localization" controller:self];
         [[CPApplication sharedApplication] setMainMenu:menu];
@@ -98,6 +99,11 @@ OLMenuItemDisabled = NO;
 - (void)new:(id)sender
 {
     [uploadWindowController startUpload:self];
+}
+
+- (void)download:(id)sender
+{
+    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectShouldDownloadNotification" object:self];
 }
 
 @end
