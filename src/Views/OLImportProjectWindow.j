@@ -6,7 +6,13 @@ var uploadURL = @"Upload/upload.php";
 
 @implementation OLImportProjectWindow : CPWindow
 {
-    id      delegate        @accessors;
+    id              delegate                    @accessors;
+    
+    CPView          importVersionAndFileView;
+    CPView          importFileView;
+    
+    CPPopUpButton   fileButton;
+    CPPopUpButton   languageButton;
 }
 
 - (id)initWithContentRect:(CGRect)aFrame styleMask:(CPWindowStyleMask)aStyleMask
@@ -18,17 +24,81 @@ var uploadURL = @"Upload/upload.php";
         
         var contentView = [self contentView];
         
+        var importVersionAndFileView = [[CPView alloc] initWithFrame:[contentView bounds]];
+        var importFileView = [[CPView alloc] initWithFrame:[contentView bounds]];
+        
         var importNewVersion = [UploadButton buttonWithTitle:@"Replace with New Version"];
-        [contentView addSubview:importNewVersion positioned:CPViewWidthCentered | CPViewTopAligned relativeTo:contentView withPadding:5.0];
+        [importVersionAndFileView addSubview:importNewVersion positioned:CPViewWidthCentered | CPViewTopAligned 
+            relativeTo:importVersionAndFileView withPadding:5.0];
 		[importNewVersion setDelegate:self];
 		[importNewVersion setURL:uploadURL];
         
-        var importNewFile = [UploadButton buttonWithTitle:@"Import New File"];
-        [contentView addSubview:importNewFile positioned:CPViewWidthCentered | CPViewBottomAligned relativeTo:contentView withPadding:5.0];
-		[importNewVersion setDelegate:self];
-		[importNewVersion setURL:uploadURL];
+        var importNewFile = [CPButton buttonWithTitle:@"Import New File"];
+        [importVersionAndFileView addSubview:importNewFile positioned:CPViewWidthCentered | CPViewBottomAligned 
+            relativeTo:importVersionAndFileView withPadding:5.0];
+        [importNewFile setTarget:self];
+        [importNewFile setAction:@selector(showReplaceFile:)];
+		
+		var selectFileText = [CPTextField labelWithTitle:@"replace the file"];
+		[selectFileText setFont:[CPFont systemFontOfSize:16.0]];
+		[selectFileText sizeToFit];
+		var selectLanguageText = [CPTextField labelWithTitle:@"For the language"];
+		[selectLanguageText setFont:[CPFont systemFontOfSize:16.0]];
+		[selectLanguageText sizeToFit];
+		
+		fileButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0.0, 0.0, 150.0, 24.0)];
+		languageButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0.0, 0.0, 150.0, 24.0)];
+		[fileButton addItemsWithTitles:["Test1", "Test2", "Test3"]];
+        
+        var back = [CPButton buttonWithTitle:@"Back"];
+        [back setTarget:self];
+        [back setAction:@selector(showMain:)];
+        
+        var importNewFileUpload = [UploadButton buttonWithTitle:@"Import New File"];
+		[importNewFileUpload setDelegate:self];
+		[importNewFileUpload setURL:uploadURL];
+		
+		[importFileView addSubview:selectLanguageText positioned:CPViewWidthCentered | CPViewTopAligned
+		    relativeTo:importFileView withPadding:5.0];
+		[importFileView addSubview:languageButton positioned:CPViewWidthCentered | CPViewBelow
+		    relativeTo:selectLanguageText withPadding:5.0];
+		[importFileView addSubview:selectFileText positioned:CPViewWidthCentered | CPViewBelow
+		    relativeTo:languageButton withPadding:5.0];
+		[importFileView addSubview:fileButton positioned:CPViewWidthCentered | CPViewBelow
+		    relativeTo:selectFileText withPadding:5.0];
+		    
+		    
+		[importFileView addSubview:importNewFileUpload positioned:CPViewRightAligned | CPViewBottomAligned
+		    relativeTo:importFileView withPadding:5.0];
+		[importFileView addSubview:back positioned:CPViewHeightSame | CPViewOnTheLeft
+		    relativeTo:importNewFileUpload withPadding:5.0];
+		    
+		[contentView addSubview:importVersionAndFileView];
     }
     return self;
+}
+
+- (void)setDelegate:(id)aDelegate
+{
+    delegate = aDelegate;
+    
+    [self reloadLanguageData];
+}
+
+- (void)reloadLanguageData
+{
+    [languageButton removeAllItems];
+    [languageButton addItemsWithTitles:[]];
+}
+
+- (void)showReplaceFile:(id)sender
+{
+    [[self contentView] replaceSubview:importVersionAndFileView with:importFileView];
+}
+
+- (void)showMain:(id)sender
+{
+    [[self contentView] replaceSubview:importFileView with:importVersionAndFileView];
 }
 
 - (void)close
