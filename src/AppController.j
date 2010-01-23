@@ -41,23 +41,13 @@
 
     @outlet						OLSidebarController     sidebarController;
     @outlet						OLContentViewController contentViewController;
-	
-	OLProjectController			projectController;
-	OLResourceController		resourceController;
-	OLLineItemController		lineItemController;
-	OLGlossaryController		glossaryController;
-	OLMenuController            menuController;
-	OLMessageController         messageController;
-	OLCommunityController       communityController;
-
-    OLToolbarController         toolbarController       @accessors;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
     var uploadWindowController = [[OLUploadWindowController alloc] init];
 	
-	projectController = [[OLProjectController alloc] init];
+	var projectController = [[OLProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
     
@@ -65,7 +55,7 @@
     [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [projectController setProjectView:projectView];
     
- 	glossaryController = [[OLGlossaryController alloc] init];
+ 	var glossaryController = [[OLGlossaryController alloc] init];
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:glossaryController];
 	
@@ -73,13 +63,13 @@
 	[glossariesView setGlossaryController:glossaryController];
 	[glossaryController setGlossariesView:glossariesView];
     
-    communityController = [[OLCommunityController alloc] init];
-    [communityController addObserver:sidebarController forKeyPath:@"community" options:CPKeyValueObservingOptionNew context:nil];
+    var communityController = [[OLCommunityController alloc] init];
+    [communityController addObserver:sidebarController forKeyPath:@"items" options:CPKeyValueObservingOptionNew context:nil];
     [communityController setContentViewController:contentViewController];
     [sidebarController addSidebarItem:communityController];
     
     var mailView = [[OLMailView alloc] initWithFrame:[mainContentView bounds]];
-    [mailView setCommunityController:communityController];
+    [mailView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [communityController setMailView:mailView];
     
     var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
@@ -87,12 +77,10 @@
     [communityController setProjectView:[[OLProjectResultView alloc] initWithFrame:[mainContentView bounds]]];
     [communityController setContentViewController:contentViewController];
  
-	menuController = [[OLMenuController alloc] init];
+	var menuController = [[OLMenuController alloc] init];
     [CPMenu setMenuBarVisible:YES];
     
     [glossaryController loadGlossaries];
-    [projectController loadProjects];
-    [communityController loadMessages];
 	
 	var loginController = [[OLLoginController alloc] init];
     var toolbarController = [[OLToolbarController alloc] init];
