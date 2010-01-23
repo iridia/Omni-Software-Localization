@@ -43,6 +43,8 @@
         emailTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"email@example.com" width:CGRectGetWidth([paddedView bounds])];
         [emailTextField setFont:inputFont];
         [emailTextField sizeToFit];
+		[emailTextField setTarget:self];
+		[emailTextField setAction:@selector(login:)];
         [paddedView addSubview:emailTextField positioned:CPViewBelow relativeTo:emailText withPadding:0];
         
         // Uncomment once DB supports passwords.
