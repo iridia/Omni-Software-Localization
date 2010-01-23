@@ -15,9 +15,9 @@ var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
         }
         
         var minutes = self.getMinutes();
-        minutes = (minutes < 10) ? @"0" + minutes : @"" + minutes;
+        minutes = (minutes < 10) ? ("0" + minutes) : ("" + minutes);
         
-        return [CPString stringWithFormat:@"%d:%d %s", hour, minutes, am_or_pm];
+        return [CPString stringWithFormat:@"%d:%s %s", hour, minutes, am_or_pm];
     }
     
     if (self.getDate() + 1 === anotherDate.getDate()) // Yesterday
