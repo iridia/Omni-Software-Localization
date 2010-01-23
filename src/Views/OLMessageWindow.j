@@ -1,6 +1,6 @@
 @import <AppKit/CPWindow.j>
 
-@import "../models/OLMessage.j"
+@import "../Categories/CPView+Positioning.j"
 
 @implementation OLMessageWindow : CPWindow
 {
@@ -9,11 +9,13 @@
     CPView submittedMessageView;
     CPView currentView; // Keeps track of the current content view
     
-    CPTextField emailTextField @accessors;
-    CPTextField messageTextView;  
-    CPButton    submitButton;
+    CPTextField emailTextField;
+    CPTextField messageTextView;
     CPTextField messageTextLabel;
     CPTextField statusLabel;
+    
+    CPButton    closeButton;
+    CPButton    submitButton;
     
     id delegate @accessors;
 }
@@ -25,63 +27,81 @@
     if (self)
     {
         [self setTitle:@"Send Message"];
-                
-                var contentView = [self contentView];
-                var inputFont = [CPFont systemFontOfSize:16.0];
-                
-                messageView = [[CPView alloc] initWithFrame:CGRectInset([contentView bounds], 10, 10)];
-                
-                var emailLabel = [CPTextField labelWithTitle:@"To"];
-                [messageView addSubview:emailLabel];
-                
-                emailTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"email@example.com" width:CGRectGetWidth([messageView bounds])];
-                [emailTextField setFont:inputFont];
-                [emailTextField sizeToFit];
-                [emailTextField setFrameOrigin:CPMakePoint(0, CGRectGetHeight([emailLabel bounds]))];
-                [messageView addSubview:emailTextField];
-                                
-                var subjectLabel = [CPTextField labelWithTitle:@"Subject"];
-                [subjectLabel setFrameOrigin:CPMakePoint(0, calculateNextYPosition(emailTextField, 5))];
-                [messageView addSubview:subjectLabel];
-                                
-                subjectTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"Urgent" width:CGRectGetWidth([messageView bounds])];
-                [subjectTextField setFont:inputFont];
-                [subjectTextField sizeToFit];
-                [subjectTextField setFrameOrigin:CPMakePoint(0, calculateNextYPosition(subjectLabel, 5))];
-                [messageView addSubview:subjectTextField];
-                                
-                messageTextView = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([messageView bounds]), 130)];
-                [messageTextView setFrameOrigin:CPMakePoint(0, calculateNextYPosition(subjectTextField, 5))];
-                [messageTextView setFont:inputFont];
-                [messageTextView setEditable:YES];
-                [messageTextView setBezeled:YES];
-                [messageTextView setLineBreakMode:CPLineBreakByWordWrapping];
-                [messageTextView setTarget:self];
-                [messageTextView setAction:@selector(sendMessage:)]
-                [messageView addSubview:messageTextView];
-                
-                submitButton = [CPButton buttonWithTitle:@"Send Message"];
-                [submitButton setTarget:self];
-                [submitButton setAction:@selector(sendMessage:)];
-                [submitButton setFrameOrigin:CPMakePoint(CGRectGetWidth([messageView bounds]) - CGRectGetWidth([submitButton bounds]), CGRectGetHeight([messageView bounds]) - CGRectGetHeight([submitButton bounds]))];
-                [messageView addSubview:submitButton];
-                                
-                var cancelButton = [CPButton buttonWithTitle:@"Cancel"];
-                [cancelButton setTarget:self];
-                [cancelButton setAction:@selector(cancel:)];
-                [cancelButton setFrameOrigin:CPMakePoint([submitButton frame].origin.x - CGRectGetWidth([cancelButton bounds]) - 5, CGRectGetHeight([messageView bounds]) - CGRectGetHeight([cancelButton bounds]))];
-                [messageView addSubview:cancelButton];
-                
-                var statusLabel = [CPTextField labelWithTitle:@""];
-                [messageView addSubview:statusLabel];
-                                
-                [contentView addSubview:messageView];
-                
-                currentView = messageView;
+
+        var contentView = [self contentView];
+        var inputFont = [CPFont systemFontOfSize:16.0];
+        
+        messageView = [[CPView alloc] initWithFrame:CGRectInset([contentView bounds], 10, 10)];
+
+        var emailLabel = [CPTextField labelWithTitle:@"To"];
+        [messageView addSubview:emailLabel];
+
+        emailTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"email@example.com" width:CGRectGetWidth([messageView bounds])];
+        [emailTextField setFont:inputFont];
+        [emailTextField sizeToFit];
+        [messageView addSubview:emailTextField positioned:CPViewBelow relativeTo:emailLabel withPadding:0.0];
+                        
+        var subjectLabel = [CPTextField labelWithTitle:@"Subject"];
+        [messageView addSubview:subjectLabel positioned:CPViewBelow relativeTo:emailTextField withPadding:5.0];
+                        
+        subjectTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"Urgent" width:CGRectGetWidth([messageView bounds])];
+        [subjectTextField setFont:inputFont];
+        [subjectTextField sizeToFit];
+        [messageView addSubview:subjectTextField positioned:CPViewBelow relativeTo:subjectLabel withPadding:0.0];
+                        
+        messageTextView = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([messageView bounds]), 130)];
+        [messageTextView setFont:inputFont];
+        [messageTextView setEditable:YES];
+        [messageTextView setBezeled:YES];
+        [messageTextView setLineBreakMode:CPLineBreakByWordWrapping];
+        [messageTextView setTarget:self];
+        [messageTextView setAction:@selector(sendMessage:)]
+        [messageView addSubview:messageTextView positioned:CPViewBelow relativeTo:subjectTextField withPadding:5.0];
+        
+        submitButton = [CPButton buttonWithTitle:@"Send Message"];
+        [submitButton setTarget:self];
+        [submitButton setAction:@selector(sendMessage:)];
+        [messageView addSubview:submitButton positioned:CPViewRightAligned | CPViewBottomAligned relativeTo:messageView withPadding:0.0];
+        
+        [self setDefaultButton:submitButton];
+                        
+        var cancelButton = [CPButton buttonWithTitle:@"Cancel"];
+        [cancelButton setTarget:self];
+        [cancelButton setAction:@selector(cancel:)];
+        [messageView addSubview:cancelButton positioned:CPViewOnTheLeft | CPViewHeightSame relativeTo:submitButton withPadding:5.0];
+        
+        var statusLabel = [CPTextField labelWithTitle:@""];
+        [messageView addSubview:statusLabel];
+                        
+        [contentView addSubview:messageView];
+        
+        currentView = messageView;
         
         // Create other views up front
-        submittingMessageView = createSubmittingMessageView(self, contentView);
-        submittedMessageView = createSubmittedMessageView(self, contentView);
+        submittingMessageView = [[CPView alloc] initWithFrame:CGRectInset([contentView bounds], 10, 10)];
+
+        var sendingText = [CPTextField labelWithTitle:@"Sending message..."];
+        [sendingText setFont:[CPFont boldSystemFontOfSize:18.0]];
+        [sendingText sizeToFit];
+        [submittingMessageView addSubview:sendingText positioned:CPViewHeightCentered | CPViewWidthCentered relativeTo:submittingMessageView withPadding:0.0];
+
+        var indeterminateProgressIndicator = [[CPProgressIndicator alloc] initWithFrame:CGRectMakeZero()];
+        [indeterminateProgressIndicator setIndeterminate:YES];
+        [indeterminateProgressIndicator setStyle:CPProgressIndicatorSpinningStyle];
+        [indeterminateProgressIndicator sizeToFit];
+        [submittingMessageView addSubview:indeterminateProgressIndicator positioned:CPViewBelow | CPViewWidthCentered relativeTo:sendingText withPadding:5.0];
+
+        submittedMessageView = [[CPView alloc] initWithFrame:CGRectInset([contentView bounds], 10, 10)];
+
+        var thankYouText = [CPTextField labelWithTitle:@"Message was sent!"];
+        [thankYouText setFont:[CPFont boldSystemFontOfSize:18.0]];
+        [thankYouText sizeToFit];
+        [submittedMessageView addSubview:thankYouText positioned:CPViewHeightCentered | CPViewWidthCentered relativeTo:submittedMessageView withPadding:0.0];
+
+        closeButton = [CPButton buttonWithTitle:@"Close"];
+        [closeButton setTarget:self];
+        [closeButton setAction:@selector(cancel:)];
+        [submittedMessageView addSubview:closeButton positioned:CPViewBelow | CPViewWidthCentered relativeTo:thankYouText withPadding:5.0];
     }
     
     return self;
@@ -125,7 +145,7 @@
     
     // Reset to empty values
     [messageTextView setStringValue:@""];
-    [submitButton setTitle:@"Send Message"];
+    [self setDefaultButton:submitButton];
     
     // Put back first view
     [self setCurrentView:messageView];
@@ -138,58 +158,8 @@
 
 - (void)showSentMessageView
 {
+    [self setDefaultButton:closeButton];
     [self setCurrentView:submittedMessageView];
 }
 
 @end
-
-function createSubmittingMessageView(self, contentView)
-{
-    var view = [[CPView alloc] initWithFrame:CGRectInset([contentView bounds], 10, 10)];
-    
-    var sendingText = [CPTextField labelWithTitle:@"Sending message..."];
-    [sendingText setFont:[CPFont boldSystemFontOfSize:18.0]];
-    [sendingText sizeToFit];
-    [sendingText setFrameOrigin:calculateCenter(view, sendingText)];
-    [view addSubview:sendingText];
-    
-    var indeterminateProgressIndicator = [[CPProgressIndicator alloc] initWithFrame:CGRectMakeZero()];
-    [indeterminateProgressIndicator setIndeterminate:YES];
-    [indeterminateProgressIndicator setStyle:CPProgressIndicatorSpinningStyle];
-    [indeterminateProgressIndicator sizeToFit];
-    [indeterminateProgressIndicator setFrameOrigin:CPMakePoint((CGRectGetWidth([view bounds]) / 2.0) - (CGRectGetWidth([indeterminateProgressIndicator bounds]) / 2.0), calculateNextYPosition(sendingText))];
-    [view addSubview:indeterminateProgressIndicator];
-    
-    return view;
-}
-
-function createSubmittedMessageView(self, contentView)
-{
-    var view = [[CPView alloc] initWithFrame:CGRectInset([contentView bounds], 10, 10)];
-    
-    var thankYouText = [CPTextField labelWithTitle:@"Message was sent!"];
-    [thankYouText setFont:[CPFont boldSystemFontOfSize:18.0]];
-    [thankYouText sizeToFit];
-    [thankYouText setFrameOrigin:calculateCenter(view, thankYouText)];
-    [view addSubview:thankYouText];
-    
-    var closeButton = [CPButton buttonWithTitle:@"Close"];
-    [closeButton setTarget:self];
-    [closeButton setAction:@selector(cancel:)];
-    [closeButton setFrameOrigin:CPMakePoint((CGRectGetWidth([view bounds]) / 2.0) - (CGRectGetWidth([closeButton bounds]) / 2.0), calculateNextYPosition(thankYouText))];
-    [view addSubview:closeButton];
-    
-    return view;
-}
-
-function calculateNextYPosition(previousView, padding)
-{
-    padding = padding || 0;
-    return CGRectGetHeight([previousView bounds]) + [previousView frame].origin.y + padding;
-}
-
-function calculateCenter(viewRelativeTo, view)
-{
-    return CPMakePoint((CGRectGetWidth([viewRelativeTo bounds]) / 2.0) - (CGRectGetWidth([view bounds]) / 2.0),
-        (CGRectGetHeight([viewRelativeTo bounds]) / 2.0) - CGRectGetHeight([view bounds]));
-}
