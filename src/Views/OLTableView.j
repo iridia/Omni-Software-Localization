@@ -66,12 +66,17 @@
 
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
+    if ([super respondsToSelector:aSelector])
+    {
+        return YES;
+    }
+    
     if ([tableView respondsToSelector:aSelector])
     {
         return YES;
     }
     
-    return [super respondsToSelector:aSelector];
+    return NO;
 }
 
 @end
