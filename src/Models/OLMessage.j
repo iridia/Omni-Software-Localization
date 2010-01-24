@@ -11,11 +11,6 @@
 	CPString    fromUserEmail   @accessors;   
 }
 
-+ (void)findByToUserID:(CPString)toUserID callback:(Function)callback
-{
-    [self find:@"touserid" by:toUserID callback:callback];
-}
-
 - (id)init
 {
     return [self initFromUser:nil toUser:nil subject:@"" content:""];

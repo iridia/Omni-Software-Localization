@@ -358,3 +358,61 @@ var __createURLConnectionFunction = nil;
 }
 
 @end
+
+// Automagically gives all subclasses a nice search API based on the accessors they have
+@implementation OLActiveRecord (SearchAPI)
+
++ (CPMethodSignature)methodSignatureForSelector:(SEL)aSelector
+{
+    return [self instancesRespondToSelector:[self accessorFromSearchSelector:aSelector]];    
+}
+
++ (void)forwardInvocation:(CPInvocation)anInvocation
+{
+    var searchSelector = CPSelectorFromString(@"find:by:callback:");
+    var accessorString = CPStringFromSelector([self accessorFromSearchSelector:[anInvocation selector]]);
+    var searchKey = [anInvocation argumentAtIndex:2];
+    var callback = [anInvocation argumentAtIndex:3];
+    
+    if (searchKey && callback && [self respondsToSelector:searchSelector])
+    {
+        [anInvocation setSelector:searchSelector];
+        [anInvocation setArgument:accessorString atIndex:2];
+        [anInvocation setArgument:searchKey atIndex:3];
+        [anInvocation setArgument:callback atIndex:4];
+    
+        for (var i = 5; ; i++)
+        {
+            var unwantedArg = [anInvocation argumentAtIndex:i];
+            if (unwantedArg === nil || (typeof (unwantedArg)) == "undefined")
+            {
+                break;
+            }
+            [anInvocation setArgument:nil atIndex:i];            
+        }
+
+        [anInvocation invoke];
+    }
+    else
+    {
+        [super forwardInvocation:anInvocation];
+    }
+}
+
++ (SEL)accessorFromSearchSelector:(SEL)aSelector
+{
+    var accessors = accessorRegEx.exec(CPStringFromSelector(aSelector));
+
+    if (accessors)
+    {
+        var accessor = accessors[1];
+        accessor = accessor.charAt(0).toLowerCase() + accessor.substring(1);
+        return CPSelectorFromString(accessor);
+    }
+    
+    return CPSelectorFromString("VERYBOGUSSELECTOR_1234");
+}
+
+@end
+
+var accessorRegEx = new RegExp("findBy(.*?):", "");
