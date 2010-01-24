@@ -3,7 +3,7 @@
        "all": {
            "map": "function(doc) {\n  emit(doc._id, {'id':doc._id});\n}"
        },
-	   "touserid": {
+	   "toUserID": {
            "map": "function(doc) {\n  emit(doc.OLMessageToUserIDKey, {'id':doc._id});\n}"
        }
     }

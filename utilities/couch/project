@@ -6,7 +6,7 @@
        "name": {
            "map": "function(doc) {\n  emit(doc.OLProjectNameKey, {'id':doc._id});\n}"
        },
-	   "useridentifier": {
+	   "userIdentifier": {
            "map": "function(doc) {\n  emit(doc.OLProjectUserKey, {'id':doc._id});\n}"
        },
        "all_by_project_name": {
