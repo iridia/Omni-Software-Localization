@@ -8,27 +8,21 @@
 var __createURLConnectionFunction = nil;
 var API_PREFIX = "api/";
 
+var SaveConnection = @"SaveConnection";
+var CreateConnection = @"CreateConnection";
+var GetConnection = @"GetConnection";
+var ListConnection = @"ListConnection";
+var SearchConnection = @"SearchConnection";
+var SearchAllConnection = @"SearchAllConnection";
+
 @implementation OLActiveRecord : CPObject
 {
-	CPString _recordID @accessors(property=recordID);
-	CPString _revision @accessors(property=revision);
-
-	CPURLConnection _saveConnection;
-	CPURLConnection _createConnection;
-	CPURLConnection _getConnection;
-	CPURLConnection _listConnection;
-	CPURLConnection findByConnection;
-	CPURLConnection findAllConnection;
+	CPString        recordID    @accessors;
+	CPString        revision    @accessors;
 	
-	Function        getCallback;
-	Function        saveCallback;
-	Function        createCallback;
-	Function        findByCallback;
-	Function        findAllCallback;
+	CPDictionary    connections;
 	
-	CPString        findAllSelector;
-	
-	id _delegate @accessors(property=delegate);
+	id              delegate    @accessors;
 }
 
 /*
@@ -89,9 +83,7 @@ var API_PREFIX = "api/";
     
     if (self)
     {
-        _recordID = nil;
-        _revision = nil;
-        _delegate = nil;
+        connections = [CPDictionary dictionary];
     }
     
     return self;
@@ -101,11 +93,11 @@ var API_PREFIX = "api/";
 {
 	try
 	{
-	    getCallback = callback;
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"GET"];
-	
-    	_getConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
+    	
+    	var options = [CPDictionary dictionaryWithObjects:[callback, GetConnection] forKeys:[@"callback", @"type"]];
+    	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
 	}
 	catch(ex)
 	{
@@ -128,7 +120,7 @@ var API_PREFIX = "api/";
 
 - (void)saveWithCallback:(Function)callback
 {
-	if (!_recordID)
+	if (![self recordID])
 	{
         [self _createWithCallback:callback];
 	}
@@ -140,12 +132,12 @@ var API_PREFIX = "api/";
 			[urlRequest setHTTPMethod:"POST"];
 	
             var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
-            archivedJSON["_rev"] = _revision;
+            archivedJSON["_rev"] = [self revision];
                      
             [urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
-	
-	    	saveCallback = callback;
-	    	_saveConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
+
+	    	var options = [CPDictionary dictionaryWithObjects:[callback, SaveConnection] forKeys:[@"callback", @"type"]];
+	    	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
 		}
 		catch(ex)
 		{
@@ -169,13 +161,13 @@ var API_PREFIX = "api/";
 	    var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
 	    [urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
 	
-		if ([_delegate respondsToSelector:@selector(willCreateRecord:)])
+		if ([[self delegate] respondsToSelector:@selector(willCreateRecord:)])
 		{
-		    [_delegate willCreateRecord:self];
+		    [[self delegate] willCreateRecord:self];
 		}
 		
-		createCallback = callback;
-		_createConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
+		var options = [CPDictionary dictionaryWithObjects:[callback, CreateConnection] forKeys:[@"callback", @"type"]];
+    	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
 	}
 	catch(ex)
 	{
@@ -216,103 +208,13 @@ var API_PREFIX = "api/";
     
     if (shouldAppendRecordID)
     {
-        url += "/" + _recordID;
+        url += "/" + [self recordID];
     }
 
     return [CPURL URLWithString:url];
 }
 
 @end
-
-
-
-@implementation OLActiveRecord (CPURLConnectionDelegate)
-
-- (void)connection:(CPURLConnection)connection didReceiveData:(CPString)data
-{
-	try
-	{
-	    var json = eval('(' + data + ')');
-	    switch (connection)
-	    {
-	        case findAllConnection:
-	            for(var i = 0; i < [json.rows count]; i++)
-	            {
-	                var record = [[[self class] alloc] init];
-	                [record setRecordID:json.rows[i].id];
-	                
-	                var selector = CPSelectorFromString("set" + [findAllSelector capitalizedString] + ":");
-	                
-	                objj_msgSend(record, selector, json.rows[i].value[findAllSelector]);
-	                findAllCallback(record);
-	            }
-	            break;
-	        case findByConnection:
-            	for(var i = 0; i < [json.rows count]; i++)
-            	{
-            		[self findByRecordID:json.rows[i].id withCallback:function(user)
-            		{
-            		    findByCallback(user); 
-            		}];
-            	}
-            	break;
-	        case _createConnection:
-	            _recordID = json["id"];
-	            _revision = json["rev"];
-	            if ([_delegate respondsToSelector:@selector(didCreateRecord:)])
-	        	{
-	        	    [_delegate didCreateRecord:self];
-	        	}
-	        	createCallback(self);
-	            break;
-	        case _saveConnection:
-	            _revision = json["rev"] || _revision;
-	            saveCallback(self);
-	            break;
-	        case _getConnection:
-        		// Unarchive the data
-        		var rootObject = [OLJSONKeyedUnarchiver unarchiveObjectWithData:json];
-
-        		[rootObject setRevision:json._rev];
-        		[rootObject setRecordID:json._id];
-        		
-        		try
-        		{
-        		    getCallback(rootObject);
-    		    }
-    		    catch(ex)
-    		    {
-            		var exception = [OLException exceptionFromCPException:ex];
-
-                    [exception setClassWithError:[self className]];
-                    [exception setMethodWithError:_cmd];
-                    [exception setUserMessage:@"Could not handle the response from the server"];
-                    [exception addUserInfo:data forKey:@"response"];
-                    [exception addUserInfo:rootObject forKey:@"rootObject"];
-                    [exception addUserInfo:@"get" forKey:@"connectionType"];
-
-            		[exception raise];
-    		    }
-	            break;
-	        default:
-	            break;
-	    }
-	}
-	catch(ex)
-	{
-        var exception = [OLException exceptionFromCPException:ex];
-         
-        [exception setClassWithError:[self className]];
-        [exception setMethodWithError:_cmd];
-        [exception setUserMessage:@"Could not handle response form server"];
-        [exception addUserInfo:data forKey:@"response"];
-        
-        [exception raise];
-	}
-}
-
-@end
-
 
 
 @implementation OLActiveRecord (SearchAPI)
@@ -343,27 +245,122 @@ var API_PREFIX = "api/";
 	[record getWithCallback:callback];
 }
 
-+ (void)findAllBy:(CPString)aString withCallback:(Function)callback
++ (void)findAllBy:(CPString)property withCallback:(Function)callback
 {
     var record = [[self alloc] init];
-    [record findAllBy:aString withCallback:callback];
+    [record findAllBy:property withCallback:callback];
 }
 
-- (void)findAllBy:(CPString)aString withCallback:(Function)callback
+- (void)findAllBy:(CPString)property withCallback:(Function)callback
 {
-    aString = [aString lowercaseString];
+    property = [property lowercaseString];
     var modifiedClassName = apiNameFromClass([self class]);
-    var url = API_PREFIX + modifiedClassName + "/find/all_by_" + modifiedClassName + "_" + aString;
+    var url = API_PREFIX + modifiedClassName + "/find/all_by_" + modifiedClassName + "_" + property;
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	[urlRequest setHTTPMethod:"GET"];
-
-    findAllSelector = aString;
-    findAllCallback = callback;
-	findAllConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
+	
+	var setSelector = [CPString stringWithFormat:@"set%s:", [property capitalizedString]];
+	var options = [CPDictionary dictionaryWithObjects:[callback, SearchAllConnection, setSelector, property]
+	                    forKeys:[@"callback", @"type", @"SetSelector", @"SearchProperty"]];
+	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
 }
 
 @end
 
+
+@implementation OLActiveRecord (CPURLConnectionDelegate)
+
+- (void)connection:(CPURLConnection)connection didReceiveData:(CPString)data
+{
+    var options = [connections objectForKey:connection];
+    var type = [options objectForKey:@"type"];
+    var callback = [options objectForKey:@"callback"];
+    
+	try
+	{
+	    var json = eval('(' + data + ')');
+	    switch (type)
+	    {
+	        case SearchAllConnection:
+	            for(var i = 0; i < [json.rows count]; i++)
+	            {
+	                var record = [[[self class] alloc] init];
+	                [record setRecordID:json.rows[i].id];
+	                
+	                var setSelector = CPSelectorFromString([options objectForKey:@"SetSelector"]);
+	                var searchProperty = [options objectForKey:@"SearchProperty"];
+	                
+	                [record performSelector:setSelector withObject:json.rows[i].value[searchProperty]];
+	                callback(record);
+	            }
+	            break;
+	        case SearchConnection:
+            	for(var i = 0; i < [json.rows count]; i++)
+            	{
+            		[self findByRecordID:json.rows[i].id withCallback:function(user)
+            		{
+            		    callback(user); 
+            		}];
+            	}
+            	break;
+	        case CreateConnection:
+	            [self setRecordID:json["id"]];
+	            [self setRevision:json["rev"]];
+	            if ([[self delegate] respondsToSelector:@selector(didCreateRecord:)])
+	        	{
+	        	    [[self delegate] didCreateRecord:self];
+	        	}
+	        	callback(self);
+	            break;
+	        case SaveConnection:
+	            var newRev = json["rev"] || [self revision];
+	            [self setRevision:newRev];
+	            callback(self);
+	            break;
+	        case GetConnection:
+        		// Unarchive the data
+        		var rootObject = [OLJSONKeyedUnarchiver unarchiveObjectWithData:json];
+
+        		[rootObject setRevision:json._rev];
+        		[rootObject setRecordID:json._id];
+        		
+        		try
+        		{
+        		    callback(rootObject);
+    		    }
+    		    catch(ex)
+    		    {
+            		var exception = [OLException exceptionFromCPException:ex];
+
+                    [exception setClassWithError:[self className]];
+                    [exception setMethodWithError:_cmd];
+                    [exception setUserMessage:@"Could not handle the response from the server"];
+                    [exception addUserInfo:data forKey:@"response"];
+                    [exception addUserInfo:rootObject forKey:@"rootObject"];
+                    [exception addUserInfo:@"get" forKey:@"connectionType"];
+
+            		[exception raise];
+    		    }
+	            break;
+	        default:
+	            CPLog.warn("Unhandled case: %s in %s for class %s", type, _cmd, [self className]);
+	            break;
+	    }
+	}
+	catch(ex)
+	{
+        var exception = [OLException exceptionFromCPException:ex];
+         
+        [exception setClassWithError:[self className]];
+        [exception setMethodWithError:_cmd];
+        [exception setUserMessage:@"Could not handle response form server"];
+        [exception addUserInfo:data forKey:@"response"];
+        
+        [exception raise];
+	}
+}
+
+@end
 
 
 // Automagically gives all subclasses a nice search API based on the accessors they have
