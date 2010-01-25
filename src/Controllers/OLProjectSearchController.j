@@ -33,7 +33,7 @@
 - (id)loadProjects
 {
     projects = [CPArray array];
-    [OLProject findAllProjectNamesWithCallback:function(project){[self addProject:project];}];
+    [OLProject findAllProjectsByNameWithCallback:function(project){[self addProject:project];}];
 }
 
 - (void)setSearchView:(CPView)aSearchView
