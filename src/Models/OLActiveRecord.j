@@ -259,7 +259,7 @@ var SearchAllConnection = @"SearchAllConnection";
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	[urlRequest setHTTPMethod:"GET"];
 	
-	var setSelector = [CPString stringWithFormat:@"set%s:", [property capitalizedString]];
+	var setSelector = CPSelectorFromString([CPString stringWithFormat:@"set%s:", [property capitalizedString]]);
 	var options = [CPDictionary dictionaryWithObjects:[callback, SearchAllConnection, setSelector, property]
 	                    forKeys:[@"callback", @"type", @"SetSelector", @"SearchProperty"]];
 	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
@@ -287,7 +287,7 @@ var SearchAllConnection = @"SearchAllConnection";
 	                var record = [[[self class] alloc] init];
 	                [record setRecordID:json.rows[i].id];
 	                
-	                var setSelector = CPSelectorFromString([options objectForKey:@"SetSelector"]);
+	                var setSelector = [options objectForKey:@"SetSelector"];
 	                var searchProperty = [options objectForKey:@"SearchProperty"];
 	                
 	                [record performSelector:setSelector withObject:json.rows[i].value[searchProperty]];
