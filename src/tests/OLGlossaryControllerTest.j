@@ -12,7 +12,7 @@
     var tempGlossary = OLGlossary;
     OLGlossary = moq();
     
-    [OLGlossary expectSelector:@selector(listWithCallback:) times:1];
+    [OLGlossary selector:@selector(listWithCallback:) times:1];
     
     var target = [[OLGlossaryController alloc] init];
     

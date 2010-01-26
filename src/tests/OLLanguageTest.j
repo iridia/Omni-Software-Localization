@@ -13,7 +13,7 @@
 {
     var coder = moq();
     
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLLanguageNameKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLLanguageNameKey"]];
     
     var target = [[OLLanguage alloc] initWithCoder:coder];
     

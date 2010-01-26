@@ -69,7 +69,7 @@ CPApp._windows = moq();
     var loginAndRegisterWindowMoq = moq();
     target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
     
-    [loginAndRegisterWindowMoq expectSelector:@selector(showLoggingIn) times:1];
+    [loginAndRegisterWindowMoq selector:@selector(showLoggingIn) times:1];
     
 	[target willLogin];
 	
@@ -91,7 +91,7 @@ CPApp._windows = moq();
 	var loginAndRegisterWindowMoq = moq();
     target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
     
-    [loginAndRegisterWindowMoq expectSelector:@selector(close) times:1];
+    [loginAndRegisterWindowMoq selector:@selector(close) times:1];
     
 	[target hasLoggedIn:moq()];
 	
@@ -125,7 +125,7 @@ CPApp._windows = moq();
     var loginAndRegisterWindowMoq = moq();
     target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
     
-    [loginAndRegisterWindowMoq expectSelector:@selector(loginFailed) times:1];
+    [loginAndRegisterWindowMoq selector:@selector(loginFailed) times:1];
     
 	[target loginFailed];
 	
