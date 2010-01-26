@@ -28,7 +28,7 @@
     var tempCPURLConnection = CPURLConnection;
     try
     {
-        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:2];
 
         CPURLConnection = moq();
         [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[{'id':1}, {'id':2}]}"}]
@@ -153,7 +153,7 @@
     var tempCPURLConnection = CPURLConnection;
     try
     {
-        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:2];
 
         CPURLConnection = moq();
         [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[{'id':1}, {'id':2}]}"}]
