@@ -46,30 +46,30 @@
 - (void)testThatOLLanguageDoesGetEnglishFromLProj
 {
     var target = [OLLanguage languageFromLProj:@"English.lproj"];
-    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"English"]]];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"English (United States)"]]];
 }
 
 - (void)testThatOLLanguageDoesGetFrenchFromLProj
 {
     var target = [OLLanguage languageFromLProj:@"French.lproj"];
-    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"French"]]];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"French (France)"]]];
 }
 
 - (void)testThatOLLanguageDoesGetSpanishFromLProj
 {
     var target = [OLLanguage languageFromLProj:@"Spanish.lproj"];
-    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"Spanish"]]];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"Spanish (Spain)"]]];
 }
 
 - (void)testThatOLLanguageDoesGetGermanFromLProj
 {
     var target = [OLLanguage languageFromLProj:@"German.lproj"];
-    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"German"]]];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"German (Germany)"]]];
 }
 
 - (void)testThatOLLanguageDoesGetArabicFromLProj
 {
-    var target = [OLLanguage languageFromLProj:@"ar.lproj"];
+    var target = [OLLanguage languageFromLProj:@"Arabic.lproj"];
     [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"Arabic"]]];
 }
 
@@ -87,13 +87,13 @@
 
 - (void)testThatOLLanguageDoesClone
 {
-    var target = [[OLLanguage alloc] initWithName:@"English"];
+    var target = [[OLLanguage alloc] initWithName:@"English (United States)"];
     [self assert:[target clone] notSame:target];
 }
 
 - (void)testThatOLLanguageDoesCloneName
 {
-    var target = [[OLLanguage alloc] initWithName:@"Spanish"];
+    var target = [[OLLanguage alloc] initWithName:@"Spanish (Spain)"];
     [self assert:[[target clone] name] equals:[target name]];
 }
 

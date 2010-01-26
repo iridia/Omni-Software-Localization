@@ -8,6 +8,7 @@
     CPString    name                @accessors;
     CPArray     resourceBundles     @accessors(readonly);
     CPString    userIdentifier      @accessors;
+    long        votes               @accessors;
 }
 
 + (void)findByName:(CPString)aName callback:(Function)callback
@@ -101,6 +102,17 @@
     return [self name];
 }
 
+- (long)getTotalVotes
+{
+    for(var i=0; i < [resourceBundles count]; i++)
+    {
+        var currentBundle = [resourceBundles objectAtIndex:i];
+        for(varj=0; j < [[currentBundle resources] count]; j++)
+        {
+            
+        }
+    }
+}
 @end
 
 var OLProjectNameKey = @"OLProjectNameKey";

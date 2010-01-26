@@ -19,7 +19,7 @@ var json = {"name":"English.lproj","resources":[{"fileName":"Chess.app/Contents/
 
 - (void)testThatOLResourceBundleDoesInitializeWithDefaultParameters
 {
-    [self assertNotNull:[[OLResourceBundle alloc] initWithResources:[CPArray array] language:[[OLLanguage alloc] initWithName:@"English"]]]];
+    [self assertNotNull:[[OLResourceBundle alloc] initWithResources:[CPArray array] language:[[OLLanguage alloc] initWithName:@"English"]]];
 }
 
 - (void)testThatOLResourceBundleDoesInitalizeWithLanguageOnly
