@@ -11,6 +11,12 @@
 
 - (void)registerForNotifications
 {
+    [[CPNotificationCenter defaultCenter]
+		addObserver:self
+		selector:@selector(didReceiveParseServerResponseNotification:)
+		name:@"OLUploadControllerDidParseServerResponse"
+		object:nil];
+		
 	[[CPNotificationCenter defaultCenter]
 	    addObserver:self
 	    selector:@selector(didReceiveProjectDidChangeNotification:)
@@ -33,6 +39,9 @@
 - (id)loadProjects
 {
     projects = [CPArray array];
+    // [[OLProject findAllProjectNamesWithCallback:
+        // function(project){[self addProject:project];}] 
+            // sortByFunction:function(project1,project2){[project1 votes] > [project2 votes];}];
     [OLProject findAllProjectNamesWithCallback:function(project){[self addProject:project];}];
 }
 
@@ -60,6 +69,11 @@
     contentView = aView;
     
     [contentViewController setCurrentView:contentView];
+}
+
+- (void)didReceiveParseServerResponseNotification
+{
+    [self reloadData];
 }
 
 @end
