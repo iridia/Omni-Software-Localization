@@ -49,13 +49,26 @@
 
 - (CPArray)titlesOfLanguages
 {
-    result = [CPArray array];
+    var result = [CPArray array];
     
     for(var i = 0; i < [[project resourceBundles] count]; i++)
     {
         var resourceBundle = [[project resourceBundles] objectAtIndex:i];
         
         [result addObject:[[resourceBundle language] name]];
+    }
+    
+    return result;
+}
+
+- (CPArray)titlesOfFiles
+{
+    var result = [CPArray array];
+    var resourceBundle = [[project resourceBundles] objectAtIndex:[[importProjectWindow languageButton] indexOfSelectedItem]];
+    
+    for(var i = 0; i < [[resourceBundle resources] count]; i++)
+    {
+        [result addObject:[[[resourceBundle resources] objectAtIndex:i] fileName]];
     }
     
     return result;

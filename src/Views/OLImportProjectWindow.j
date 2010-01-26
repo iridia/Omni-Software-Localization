@@ -12,7 +12,7 @@ var uploadURL = @"Upload/upload.php";
     CPView          importFileView;
     
     CPPopUpButton   fileButton;
-    CPPopUpButton   languageButton;
+    CPPopUpButton   languageButton              @accessors;
     CPButton        importNewFileUpload;
 }
 
@@ -48,7 +48,6 @@ var uploadURL = @"Upload/upload.php";
 		[selectLanguageText sizeToFit];
 		
 		fileButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0.0, 0.0, 150.0, 24.0)];
-		[fileButton addItemsWithTitles:["Test1", "Test2", "Test3"]];
 		[fileButton setTarget:self];
 		[fileButton setAction:@selector(fileSelectionDidChange:)];
 		
@@ -95,17 +94,18 @@ var uploadURL = @"Upload/upload.php";
 - (void)reloadLanguageData
 {
     [languageButton removeAllItems];
-    [languageButton addItemsWithTitles:["A", "B", "C"]];
+    [languageButton addItemsWithTitles:[delegate titlesOfLanguages]];
 }
 
 - (void)reloadFileData
 {
     [fileButton removeAllItems];
-    [fileButton addItemsWithTitles:["1", "2", "3"]];
+    [fileButton addItemsWithTitles:[delegate titlesOfFiles]];
 }
 
 - (void)showReplaceFile:(id)sender
 {
+    [self reloadLanguageData];
     [[self contentView] replaceSubview:importVersionAndFileView with:importFileView];
 }
 
@@ -121,6 +121,7 @@ var uploadURL = @"Upload/upload.php";
 
 - (void)languageSelectionDidChange:(id)sender
 {
+    console.log("Here");
     [self reloadFileData];
 }
 
