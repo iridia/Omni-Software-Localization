@@ -294,10 +294,8 @@ var OLActiveRecordRecordIDKey = @"_id";
 	        case SearchConnection:
             	for(var i = 0; i < json.rows.length; i++)
             	{
-            		[[self class] findByRecordID:json.rows[i].id withCallback:function(record)
-            		{
-            		    callback(record, (i === json.rows.length - 1));
-            		}];
+            		var decodedObject = [self _objectFromJSON:json.rows[i].value];
+            		callback(decodedObject, (i === json.rows.length - 1));
             	}
             	break;
 

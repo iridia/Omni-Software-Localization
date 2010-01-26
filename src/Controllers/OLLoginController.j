@@ -52,15 +52,16 @@
 - (void)didSubmitLogin:(CPDictionary)userInfo
 {
     [self willLogin];
-    var foundUser = NO;
-    [OLUser listWithCallback:function(user, isFinal)
+    var email = [userInfo objectForKey:@"username"];
+    [OLUser findByEmail:email withCallback:function(user, isFinal)
     {
-        if([[user email] isEqualToString:[userInfo objectForKey:@"username"]])
+        if (user && [[user email] isEqualToString:email])
         {
-            foundUser = YES;
             [self hasLoggedIn:user];
+            return;
         }
-        if(isFinal && !foundUser)
+        
+        if (isFinal)
         {
             [self loginFailed];
         }
