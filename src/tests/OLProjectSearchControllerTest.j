@@ -15,7 +15,7 @@
     {
         OLProject = moq();
         
-        [OLProject expectSelector:@selector(findAllProjectsByNameWithCallback:) times:1];
+        [OLProject selector:@selector(findAllProjectNamesWithCallback:) times:1];
         
         var target = [[OLProjectSearchController alloc] init];
         [target loadProjects];

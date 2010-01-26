@@ -31,7 +31,7 @@
 
 - (void)testThatOLUploadControllerDoesPostNotificationOnHandleServerResponse
 {
-    [[CPNotificationCenter defaultCenter] expectSelector:@selector(postNotificationName:object:) times:1];
+    [[CPNotificationCenter defaultCenter] selector:@selector(postNotificationName:object:) times:1];
     
     var target = [[OLUploadController alloc] init];
     

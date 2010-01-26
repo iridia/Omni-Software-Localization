@@ -28,7 +28,7 @@
     var tempCPURLConnection = CPURLConnection;
     try
     {
-        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+        [urlConnection selectorelector:@selector(createConnectionWithRequest:delegate:) times:2];
 
         CPURLConnection = moq();
         [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[{'id':1}, {'id':2}]}"}]
@@ -44,7 +44,7 @@
 
 - (void)testThatOLActiveRecordDoesFindByRecordID
 {
-    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
     
     [OLActiveRecord findByRecordID:@"123" withCallback:function(){}];
 
@@ -53,7 +53,7 @@
 
 - (void)testThatOLActiveRecordDoesGetWithCallback
 {
-    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
     
     [[[OLActiveRecord alloc] init] getWithCallback:function(){}];
     
@@ -68,7 +68,7 @@
         OLJSONKeyedArchiver = moq();
         [OLJSONKeyedArchiver selector:@selector(archivedDataWithRootObject:) returns:@"asdf"];
     
-        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+        [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
 
         var target = [[OLActiveRecord alloc] init];
         [target setRecordID:@"asdf"];
@@ -90,7 +90,7 @@
         OLJSONKeyedArchiver = moq();
         [OLJSONKeyedArchiver selector:@selector(archivedDataWithRootObject:) returns:@"asdf"];
 
-        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+        [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
 
         var target = [[OLActiveRecord alloc] init];
         [target save];
@@ -105,7 +105,7 @@
 
 - (void)testThatOLActiveRecordDoesDelete
 {
-    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
 
     [[[OLActiveRecord alloc] init] delete];
 
@@ -153,7 +153,7 @@
     var tempCPURLConnection = CPURLConnection;
     try
     {
-        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+        [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:2];
 
         CPURLConnection = moq();
         [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[{'id':1}, {'id':2}]}"}]
@@ -169,7 +169,7 @@
 
 - (void)testThatOLActiveRecordDoesFindAllByCallback
 {
-    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
     
     [OLActiveRecord findAllBy:@"name" withCallback:function(){}];
 

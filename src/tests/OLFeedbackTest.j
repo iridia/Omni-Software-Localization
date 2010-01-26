@@ -25,9 +25,9 @@
 {
 	var coder = moq();
 	
-	[coder expectSelector:@selector(encodeObject:forKey:) times:1 arguments:[CPArray arrayWithObjects:@"anEmail", @"OLFeedbackEmailKey"]];
-	[coder expectSelector:@selector(encodeObject:forKey:) times:1 arguments:[CPArray arrayWithObjects:@"aType", @"OLFeedbackTypeKey"]];
-	[coder expectSelector:@selector(encodeObject:forKey:) times:1 arguments:[CPArray arrayWithObjects:@"someText", @"OLFeedbackTextKey"]];
+	[coder selector:@selector(encodeObject:forKey:) times:1 arguments:[CPArray arrayWithObjects:@"anEmail", @"OLFeedbackEmailKey"]];
+	[coder selector:@selector(encodeObject:forKey:) times:1 arguments:[CPArray arrayWithObjects:@"aType", @"OLFeedbackTypeKey"]];
+	[coder selector:@selector(encodeObject:forKey:) times:1 arguments:[CPArray arrayWithObjects:@"someText", @"OLFeedbackTextKey"]];
 	
 	var target = [[OLFeedback alloc] initWithEmail:@"anEmail" type:@"aType" text:@"someText"];
 	
