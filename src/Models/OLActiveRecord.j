@@ -293,6 +293,7 @@ var SearchAllConnection = @"SearchAllConnection";
 	                [record performSelector:setSelector withObject:json.rows[i].value[searchProperty]];
 	                callback(record);
 	            }
+	            
 	            break;
 	        case SearchConnection:
             	for(var i = 0; i < [json.rows count]; i++)
