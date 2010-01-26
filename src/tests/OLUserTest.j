@@ -27,7 +27,7 @@ var OLUserEmailKey =@"OLUserEmailKey";
 
 - (void)testThatOLUserDoesEncodeData
 {	
-	[mockCoder expectSelector:@selector(encodeObject:forKey:) times:1
+	[mockCoder selector:@selector(encodeObject:forKey:) times:1
 		arguments:[emailAddress, OLUserEmailKey]];
 		
 	[target encodeWithCoder:mockCoder];
@@ -38,12 +38,10 @@ var OLUserEmailKey =@"OLUserEmailKey";
 
 - (void)testThatOLUserDoesInitWithCoder
 {
-	[mockCoder selector:@selector(decodeObjectForKey:) withArguments:[OLUserEmailKey] 
-		returns:emailAddress];
+    [mockCoder selector:@selector(decodeObjectForKey:) times:1 arguments:[OLUserEmailKey]];
+	[mockCoder selector:@selector(decodeObjectForKey:) returns:emailAddress arguments:[OLUserEmailKey]];
 	
 	var encodeTarget = [[OLUser alloc] initWithCoder:mockCoder];
-	
-	[mockCoder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[OLUserEmailKey]];
 	
 	[mockCoder verifyThatAllExpectationsHaveBeenMet];
 	

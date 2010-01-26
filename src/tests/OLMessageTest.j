@@ -46,12 +46,12 @@
 {
     var coder = moq();
     
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageFromUserIDKey"]];
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageSubjectKey"]];
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageContentKey"]];
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageFromUserEmailKey"]];
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageDateSentKey"]];
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageToUserIDKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageFromUserIDKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageSubjectKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageContentKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageFromUserEmailKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageDateSentKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLMessageToUserIDKey"]];
     
     var target = [[OLMessage alloc] initWithCoder:coder];
     

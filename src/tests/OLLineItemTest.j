@@ -31,9 +31,9 @@ var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.str
 {
     var coder = moq();
     
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLLineItemCommentKey"]];
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLLineItemIdentifierKey"]];
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLLineItemValueKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLLineItemCommentKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLLineItemIdentifierKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLLineItemValueKey"]];
     
     var target = [[OLLineItem alloc] initWithCoder:coder];
     

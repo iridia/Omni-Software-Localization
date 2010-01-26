@@ -46,8 +46,8 @@ var uploadedJSON = {"fileType":"zip","fileName":"Chess.app","resourcebundles":[{
 {
     var coder = moq();
     
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:["OLProjectNameKey"]];
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:["OLProjectResourceBundlesKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:["OLProjectNameKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:["OLProjectResourceBundlesKey"]];
     
     var target = [[OLProject alloc] initWithCoder:coder];
     

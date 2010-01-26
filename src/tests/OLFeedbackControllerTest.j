@@ -46,8 +46,8 @@
   var feedbackWindow = moq();
   var emailTextField = moq();
   target._feedbackWindow = feedbackWindow;
+  [emailTextField selector:@selector(setStringValue:) times:1 arguments:[@""]];
   [feedbackWindow selector:@selector(emailTextField) returns:emailTextField];
-  [emailTextField expectSelector:@selector(setStringValue:) times:1 arguments:[@""]];
   
   [target userDidChange:moq()];
   
@@ -63,8 +63,8 @@
     var user = moq();
     var email = @"derek@derek.com";
     target._feedbackWindow = feedbackWindow;
+    [emailTextField selector:@selector(setStringValue:) times:1 arguments:[email]];
     [feedbackWindow selector:@selector(emailTextField) returns:emailTextField];
-    [emailTextField expectSelector:@selector(setStringValue:) times:1 arguments:[email]];
     [[OLUserSessionManager defaultSessionManager] setUser:user];
     [user selector:@selector(email) returns:email];
 

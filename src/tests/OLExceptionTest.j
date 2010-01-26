@@ -34,12 +34,13 @@
 {
 	var mockApp = moq();
 	
-	[mockApp expectSelector:@selector(delegate) times:1];
+	[mockApp selector:@selector(delegate) times:1];
 	[mockApp selector:@selector(delegate) returns:moq()];
 	
 	CPApp = mockApp;
 	
 	var target = [OLException raise:@"aName" reason:@"aReason"];
+	
 	
 	[mockApp verifyThatAllExpectationsHaveBeenMet];
 }
@@ -53,9 +54,9 @@
 
 	CPApp = mockApp;
 	
-	var target = [OLException raise:@"aName" reason:@"aReason"];
+	[mockDelegate selector:@selector(handleException:) times:1 arguments:[CPArray arrayWithObject:target]];
 	
-	[mockDelegate expectSelector:@selector(handleException:) times:1 arguments:[CPArray arrayWithObject:target]];
+	var target = [OLException raise:@"aName" reason:@"aReason"];
 	
 	[mockDelegate verifyThatAllExpectationsHaveBeenMet];
 }

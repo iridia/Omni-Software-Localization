@@ -10,21 +10,6 @@
     CPString    userIdentifier      @accessors;
 }
 
-+ (void)findByName:(CPString)aName callback:(Function)callback
-{
-    [self find:"name" by:aName callback:callback];
-}
-
-+ (void)findByUserIdentifier:(CPString)userIdentifier callback:(Function)callback
-{
-    [self find:"useridentifier" by:userIdentifier callback:callback];
-}
-
-+ (void)findAllProjectNamesWithCallback:(Function)callback
-{
-    [self findAllBy:@"name" withCallback:callback];
-}
-
 + (id)projectFromJSON:(JSON)json
 {
     var userIdentifier = @"";
