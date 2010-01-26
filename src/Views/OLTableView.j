@@ -21,12 +21,10 @@
 		[tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 
 		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
-		[[tableView cornerView] setBackgroundColor:headerColor];
 		
 		for (var i = 0; i < [columns count]; i++)
 		{
 		    var column = [columns objectAtIndex:i];
-		    [[column headerView] setBackgroundColor:headerColor];
 		    [tableView addTableColumn:column];
 		}
 		
