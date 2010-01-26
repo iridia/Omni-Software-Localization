@@ -24,8 +24,8 @@
     
     testContentViewController.contentView = contentView;
     
-    [view expectSelector:@selector(setFrame:) times:1];
-    [contentView expectSelector:@selector(addSubview:) times:1 arguments:[view]];
+    [view selector:@selector(setFrame:) times:1];
+    [contentView selector:@selector(addSubview:) times:1 arguments:[view]];
     
     [testContentViewController setCurrentView:view];
     
@@ -39,7 +39,7 @@
     var view = moq();
     var view2 = moq();
     
-    [view expectSelector:@selector(removeFromSuperview) times:1];
+    [view selector:@selector(removeFromSuperview) times:1];
     
     [testContentViewController setCurrentView:view];
     [testContentViewController setCurrentView:view2];
