@@ -8,7 +8,6 @@
     CPString    name                @accessors;
     CPArray     resourceBundles     @accessors(readonly);
     CPString    userIdentifier      @accessors;
-    long        votes               @acecssors;
 }
 
 + (void)findByName:(CPString)aName callback:(Function)callback
@@ -110,7 +109,7 @@
         var currentBundle = [resourceBundles objectAtIndex:i];
         for(var j=0; j< [[currentBundle resources] count]; j++)
         {
-            votes+=[[[currentBundle resources] objectAtIndex:j] votes];
+            votes += [[[currentBundle resources] objectAtIndex:j] numberOfVotes];
         }
     }
     return votes;
@@ -120,7 +119,6 @@
 var OLProjectNameKey = @"OLProjectNameKey";
 var OLProjectResourceBundlesKey = @"OLProjectResourceBundlesKey";
 var OLProjectUserKey = @"OLProjectUserKey";
-var OLVotesKey = @"OLVotesKey";
 
 @implementation OLProject (CPCoding)
 
@@ -133,7 +131,6 @@ var OLVotesKey = @"OLVotesKey";
         name = [aCoder decodeObjectForKey:OLProjectNameKey];
         resourceBundles = [aCoder decodeObjectForKey:OLProjectResourceBundlesKey];
         userIdentifier = [aCoder decodeObjectForKey:OLProjectUserKey];
-        votes = [aCoder decodeObjectForKey:OLVotesKey];
     }
     
     return self;
@@ -144,7 +141,6 @@ var OLVotesKey = @"OLVotesKey";
     [aCoder encodeObject:name forKey:OLProjectNameKey];
     [aCoder encodeObject:resourceBundles forKey:OLProjectResourceBundlesKey];
     [aCoder encodeObject:userIdentifier forKey:OLProjectUserKey];
-    [aCoder encodeObject:votes forKey:OLVotesKey];
 }
 
 @end

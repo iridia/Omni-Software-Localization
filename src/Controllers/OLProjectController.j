@@ -127,6 +127,7 @@
 
 - (void)didReceiveParseServerResponseNotification:(CPNotification)notification
 {
+    alert("create");
 	var jsonResponse = [[notification object] jsonResponse];
 
 	if (jsonResponse.fileType === @"zip")

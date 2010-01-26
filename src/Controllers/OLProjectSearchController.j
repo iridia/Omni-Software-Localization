@@ -38,11 +38,13 @@
 
 - (id)loadProjects
 {
-    projects = [CPArray array];
-    // [[OLProject findAllProjectNamesWithCallback:
-        // function(project){[self addProject:project];}] 
-            // sortByFunction:function(project1,project2){[project1 votes] > [project2 votes];}];
-    [OLProject findAllProjectNamesWithCallback:function(project){[self addProject:project];}];
+    projects = [CPArray array]; 
+    // [OLProject findAllProjectNamesWithCallback:function(project){[self addProject:project];}];
+    [[OLProject findAllProjectNamesWithCallback:function(project){[self addProject:project];}] 
+        sortbyFunction:function(lhs, rhs, context){
+            alert([[rhs totalAllVotes] compare:[lhs totalAllVotes]]);   
+            return [[rhs totalAllVotes] compare:[lhs totalAllVotes]];
+        }];
 }
 
 - (void)setSearchView:(CPView)aSearchView
