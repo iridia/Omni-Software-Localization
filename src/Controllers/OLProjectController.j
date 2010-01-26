@@ -127,7 +127,6 @@
 
 - (void)didReceiveParseServerResponseNotification:(CPNotification)notification
 {
-    alert("create");
 	var jsonResponse = [[notification object] jsonResponse];
 
 	if (jsonResponse.fileType === @"zip")
@@ -135,6 +134,7 @@
 		var newProject = [OLProject projectFromJSON:jsonResponse];
 		[self addProject:newProject];
     	[newProject save];
+    	[[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectControllerDidFinishSavingNotification" object:nil];
 	}
 }
 
@@ -382,7 +382,6 @@
     [resourceBundleController voteUp];
     [projectView reloadVoting];
     [selectedProject totalAllVotes];
-    [selectedProject save];
 }
 
 - (void)voteDown:(id)sender
@@ -390,7 +389,6 @@
     [resourceBundleController voteDown];
     [projectView reloadVoting];
     [selectedProject totalAllVotes];
-    [selectedProject save];
 }
 
 - (int)numberOfVotesForSelectedResource

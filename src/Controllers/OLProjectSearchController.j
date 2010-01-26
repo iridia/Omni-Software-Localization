@@ -13,8 +13,8 @@
 {
     [[CPNotificationCenter defaultCenter]
 		addObserver:self
-		selector:@selector(didReceiveParseServerResponseNotification:)
-		name:@"OLUploadControllerDidParseServerResponse"
+		selector:@selector(didReceiveProjectControllerFinished:)
+		name:@"OLProjectControllerDidFinishSavingNotification"
 		object:nil];
 		
 	[[CPNotificationCenter defaultCenter]
@@ -73,9 +73,12 @@
     [contentViewController setCurrentView:contentView];
 }
 
-- (void)didReceiveParseServerResponseNotification
+- (void)didReceiveProjectControllerFinished:(CPNotification)notification
 {
-    [self reloadData];
+    [OLProject findAllProjectsByNameWithCallback:function(){
+        [self reloadData];
+        [self loadProjects];
+    }];
 }
 
 @end
