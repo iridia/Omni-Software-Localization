@@ -1,7 +1,7 @@
 @import <OJMoq/OJMoq.j>
 @import "../Models/OLUser.j"
 
-var OLUserEmailKey =@"OLUserEmailKey";
+var OLUserEmailKey = @"OLUserEmailKey";
 
 @implementation OLUserTest : OJTestCase
 {
@@ -46,6 +46,7 @@ var OLUserEmailKey =@"OLUserEmailKey";
 	[mockCoder verifyThatAllExpectationsHaveBeenMet];
 	
 	[self assertNotNull:encodeTarget];
+	print([encodeTarget email]);
 	[self assert:emailAddress equals:[encodeTarget email]];
 }
 
