@@ -19,17 +19,17 @@ var json = {"name":"English.lproj","resources":[{"fileName":"Chess.app/Contents/
 
 - (void)testThatOLResourceBundleDoesInitializeWithDefaultParameters
 {
-    [self assertNotNull:[[OLResourceBundle alloc] initWithResources:[CPArray array] language:[OLLanguage english]]];
+    [self assertNotNull:[[OLResourceBundle alloc] initWithResources:[CPArray array] language:[[OLLanguage alloc] initWithName:@"English"]]]];
 }
 
 - (void)testThatOLResourceBundleDoesInitalizeWithLanguageOnly
 {
-    [self assertNotNull:[[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]]];
+    [self assertNotNull:[[OLResourceBundle alloc] initWithLanguage:[[OLLanguage alloc] initWithName:@"English"]]];
 }
 
 - (void)testThatOLResourceBundleDoesInsertObjectsInResources
 {
-    var target = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];
+    var target = [[OLResourceBundle alloc] initWithLanguage:[[OLLanguage alloc] initWithName:@"English"]];
     var resource = moq();
     
     [target insertObject:resource inResourcesAtIndex:0];
@@ -39,7 +39,7 @@ var json = {"name":"English.lproj","resources":[{"fileName":"Chess.app/Contents/
 
 - (void)testThatOLResourceBundleDoesReplaceObjectsInResources
 {
-    var target = [[OLResourceBundle alloc] initWithLanguage:[OLLanguage english]];
+    var target = [[OLResourceBundle alloc] initWithLanguage:[[OLLanguage alloc] initWithName:@"English"]];
     var resource = moq();
     var replacementResource = moq();
 
