@@ -98,6 +98,12 @@
 	
 }
 
+- (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
+{
+    [self loadProjects];
+    [self reloadData];
+}
+
 - (void)downloadSelectedProject:(CPNotification)notification
 {
     var request = [CPURLRequest requestWithURL:@"/~hammerdr/osl/src/Download/Download.php"];
@@ -133,7 +139,11 @@
 	{
 		var newProject = [OLProject projectFromJSON:jsonResponse];
 		[self addProject:newProject];
-    	[newProject save];
+    	[newProject saveWithCallback:function(){
+    	    [[CPNotificationCenter defaultCenter]
+                        postNotificationName:@"OLProjectsShouldReload"
+                        object:self];
+    	}];
 	}
 }
 
