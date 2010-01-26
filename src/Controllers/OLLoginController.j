@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 
+@import "OLToolbarController.j"
 @import "../Utilities/OLUserSessionManager.j"
 @import "../Categories/CPArray+Find.j"
 @import "../Views/OLLoginAndRegisterWindow.j"
@@ -23,7 +24,7 @@
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(showLoginAndRegisterWindow:)
-            name:@"OLUserShouldLoginNotification"
+            name:OLToolbarControllerShouldLogin
             object:nil];
     }
     return self;

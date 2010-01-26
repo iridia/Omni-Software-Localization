@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 
+@import "OLToolbarController.j"
 @import "../Categories/CPDate+RelativeDate.j"
 @import "../Models/OLUser.j";
 @import "../Views/OLMessageWindow.j"
@@ -29,6 +30,12 @@
     		selector:@selector(didReceiveUserDidChangeNotification:)
     		name:OLUserSessionManagerUserDidChangeNotification
     		object:nil];
+    		
+    	[[CPNotificationCenter defaultCenter]
+    	   addObserver:self
+    	   selector:@selector(showMessageWindow:)
+    	   name:OLToolbarControllerShouldCreateNewMessage
+    	   object:nil];
     }
     
     return self;

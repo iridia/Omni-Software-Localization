@@ -9,13 +9,14 @@ var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
 var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
 var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 
+// Notifications
+OLToolbarControllerShouldCreateNewMessage = @"OLToolbarControllerShouldCreateNewMessage";
+OLToolbarControllerShouldLogin = @"OLToolbarControllerShouldLogin";
+
+
 @implementation OLToolbarController : CPObject
 {
     OLFeedbackController feedbackController;
-    OLProjectController  projectController;
-    OLLoginController    loginController;
-    OLGlossaryController glossaryController;
-    OLMessageController  messageController;
     CPMenuItem           loginMenuItem;
     CPToolbar            toolbar                @accessors;
     CPString             loginValue;
@@ -27,7 +28,6 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     
     if (self)
     {
-        messageController = [[OLMessageController alloc] init];
         feedbackController = [[OLFeedbackController alloc] init];
         loginValue = "Login / Register";
         
@@ -100,8 +100,8 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
         [menuItem setMaxSize:CGSizeMake(32, 32)];
         [menuItem setLabel:"New Message"];
 
-        [menuItem setTarget:messageController];
-        [menuItem setAction:@selector(showMessageWindow:)];
+        [menuItem setTarget:self];
+        [menuItem setAction:@selector(newMessage:)];
         
         loginMenuItem = menuItem;
         
@@ -112,7 +112,9 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 
 - (void)login:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLUserShouldLoginNotification" object:self userInfo:[CPDictionary dictionary]];
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLToolbarControllerShouldLogin
+        object:self];
 }
 
 - (void)updateLoginInfo:(CPNotification)notification
@@ -120,6 +122,13 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     var user = [[OLUserSessionManager defaultSessionManager] user];
     loginValue = "Welcome, " + [user email]; 
     [toolbar _reloadToolbarItems];
+}
+
+- (void)newMessage:(id)sender
+{
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLToolbarControllerShouldCreateNewMessage
+        object:self];
 }
 
 @end
