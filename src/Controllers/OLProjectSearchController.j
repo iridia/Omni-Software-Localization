@@ -36,15 +36,18 @@
 	   object:[[resourceBundleController resourceController] lineItemController]];
 }
 
-- (id)loadProjects
+- (void)loadProjects
 {
-    projects = [CPArray array]; 
-    // [OLProject findAllProjectNamesWithCallback:function(project){[self addProject:project];}];
-    [[OLProject findAllProjectNamesWithCallback:function(project){[self addProject:project];}] 
-        sortbyFunction:function(lhs, rhs, context){
-            alert([[rhs totalAllVotes] compare:[lhs totalAllVotes]]);   
-            return [[rhs totalAllVotes] compare:[lhs totalAllVotes]];
-        }];
+    projects = [CPArray array];
+    [OLProject findAllProjectsByNameWithCallback:function(project)
+        {
+            [self addProject:project];
+            [self reloadData];
+        }
+    ];
+        // sortbyFunction:function(lhs, rhs, context){  
+        //     return [[rhs totalAllVotes] compare:[lhs totalAllVotes]];
+        // }];
 }
 
 - (void)setSearchView:(CPView)aSearchView
@@ -75,10 +78,8 @@
 
 - (void)didReceiveProjectControllerFinished:(CPNotification)notification
 {
-    [OLProject findAllProjectsByNameWithCallback:function(){
-        [self reloadData];
-        [self loadProjects];
-    }];
+    console.log(_cmd);
+    [self loadProjects];
 }
 
 @end

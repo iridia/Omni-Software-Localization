@@ -133,8 +133,9 @@
 	{
 		var newProject = [OLProject projectFromJSON:jsonResponse];
 		[self addProject:newProject];
-    	[newProject save];
-    	[[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectControllerDidFinishSavingNotification" object:nil];
+    	[newProject saveWithCallback:function() {
+    	   [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectControllerDidFinishSavingNotification" object:nil]; 
+    	}];	
 	}
 }
 
