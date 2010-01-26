@@ -6,28 +6,23 @@
 @import "../Utilities/OLURLConnectionFactory.j"
 
 var __createURLConnectionFunction = nil;
+var API_PREFIX = "api/";
+
+var SaveConnection = @"SaveConnection";
+var CreateConnection = @"CreateConnection";
+var GetConnection = @"GetConnection";
+var ListConnection = @"ListConnection";
+var SearchConnection = @"SearchConnection";
+var SearchAllConnection = @"SearchAllConnection";
 
 @implementation OLActiveRecord : CPObject
 {
-	CPString _recordID @accessors(property=recordID);
-	CPString _revision @accessors(property=revision);
-
-	CPURLConnection _saveConnection;
-	CPURLConnection _createConnection;
-	CPURLConnection _getConnection;
-	CPURLConnection _listConnection;
-	CPURLConnection findByConnection;
-	CPURLConnection findAllConnection;
+	CPString        recordID    @accessors;
+	CPString        revision    @accessors;
 	
-	Function        getCallback;
-	Function        saveCallback;
-	Function        createCallback;
-	Function        findByCallback;
-	Function        findAllCallback;
+	CPDictionary    connections;
 	
-	CPString        findAllSelector;
-	
-	id _delegate @accessors(property=delegate);
+	id              delegate    @accessors;
 }
 
 /*
@@ -43,8 +38,7 @@ var __createURLConnectionFunction = nil;
 {
 	try
 	{
-		var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
-	    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find";
+        var url = API_PREFIX + apiNameFromClass(self) + "/find/all";
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 		var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
 		var numberCalledBack = 0;
@@ -83,61 +77,13 @@ var __createURLConnectionFunction = nil;
 	}
 }
 
-+ (void)find:(CPString)propertyToSearchOn by:(JSON)object callback:(Function)callback
-{
-	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
-    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find_by_" + propertyToSearchOn + "?key=\"" + object + "\"";
-    
-	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
-	
-	var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
-	
-	var data = eval('(' + JSONresponse.string + ')');
-    
-	for(var i = 0; i < [data.rows count]; i++)
-	{
-		[self findByRecordID:data.rows[i].id withCallback:function(record)
-		{
-		    callback(record);
-		}];
-	}
-}
-
-+ (void)findByRecordID:(CPString)aRecordID withCallback:(Function)callback
-{
-	var record = [[self alloc] init];
-	[record setRecordID:aRecordID];
-	[record getWithCallback:callback];
-}
-
-+ (void)findAllBy:(CPString)aString withCallback:(Function)callback
-{
-    var record = [[self alloc] init];
-    [record findAllBy:aString withCallback:callback];
-}
-
-- (void)findAllBy:(CPString)aString withCallback:(Function)callback
-{
-    aString = [aString lowercaseString];
-	var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
-    var url = @"api/" + modifiedClassName + "/_design/finder/_view/find_all_by_" + modifiedClassName + "_" + aString;
-	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
-	[urlRequest setHTTPMethod:"GET"];
-
-    findAllSelector = aString;
-    findAllCallback = callback;
-	findAllConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
-}
-
 - (id)init
 {
     self = [super init];
     
     if (self)
     {
-        _recordID = nil;
-        _revision = nil;
-        _delegate = nil;
+        connections = [CPDictionary dictionary];
     }
     
     return self;
@@ -147,11 +93,11 @@ var __createURLConnectionFunction = nil;
 {
 	try
 	{
-	    getCallback = callback;
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"GET"];
-	
-    	_getConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
+    	
+    	var options = [CPDictionary dictionaryWithObjects:[callback, GetConnection] forKeys:[@"callback", @"type"]];
+    	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
 	}
 	catch(ex)
 	{
@@ -174,7 +120,7 @@ var __createURLConnectionFunction = nil;
 
 - (void)saveWithCallback:(Function)callback
 {
-	if (!_recordID)
+	if (![self recordID])
 	{
         [self _createWithCallback:callback];
 	}
@@ -186,12 +132,12 @@ var __createURLConnectionFunction = nil;
 			[urlRequest setHTTPMethod:"POST"];
 	
             var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
-            archivedJSON["_rev"] = _revision;
+            archivedJSON["_rev"] = [self revision];
                      
             [urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
-	
-	    	saveCallback = callback;
-	    	_saveConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
+
+	    	var options = [CPDictionary dictionaryWithObjects:[callback, SaveConnection] forKeys:[@"callback", @"type"]];
+	    	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
 		}
 		catch(ex)
 		{
@@ -215,13 +161,13 @@ var __createURLConnectionFunction = nil;
 	    var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
 	    [urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
 	
-		if ([_delegate respondsToSelector:@selector(willCreateRecord:)])
+		if ([[self delegate] respondsToSelector:@selector(willCreateRecord:)])
 		{
-		    [_delegate willCreateRecord:self];
+		    [[self delegate] willCreateRecord:self];
 		}
 		
-		createCallback = callback;
-		_createConnection = [OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self];
+		var options = [CPDictionary dictionaryWithObjects:[callback, CreateConnection] forKeys:[@"callback", @"type"]];
+    	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
 	}
 	catch(ex)
 	{
@@ -256,49 +202,122 @@ var __createURLConnectionFunction = nil;
 	}
 }
 
+- (CPURL)apiURLWithRecordID:(BOOL)shouldAppendRecordID
+{
+    var url = API_PREFIX + apiNameFromClass([self class]);
+    
+    if (shouldAppendRecordID)
+    {
+        url += "/" + [self recordID];
+    }
+
+    return [CPURL URLWithString:url];
+}
+
+@end
+
+
+@implementation OLActiveRecord (SearchAPI)
+
++ (void)find:(CPString)propertyToSearchOn by:(JSON)object withCallback:(Function)callback
+{
+    var url = API_PREFIX + apiNameFromClass(self) + "/find/" + propertyToSearchOn + "?key=\"" + object + "\"";
+    
+	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
+	
+	var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
+	
+	var data = eval('(' + JSONresponse.string + ')');
+    
+	for(var i = 0; i < [data.rows count]; i++)
+	{
+		[self findByRecordID:data.rows[i].id withCallback:function(record)
+		{
+		    callback(record);
+		}];
+	}
+}
+
++ (void)findByRecordID:(CPString)aRecordID withCallback:(Function)callback
+{
+	var record = [[self alloc] init];
+	[record setRecordID:aRecordID];
+	[record getWithCallback:callback];
+}
+
++ (void)findAllBy:(CPString)property withCallback:(Function)callback
+{
+    var record = [[self alloc] init];
+    [record findAllBy:property withCallback:callback];
+}
+
+- (void)findAllBy:(CPString)property withCallback:(Function)callback
+{
+    property = [property lowercaseString];
+    var modifiedClassName = apiNameFromClass([self class]);
+    var url = API_PREFIX + modifiedClassName + "/find/all_by_" + modifiedClassName + "_" + property;
+	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
+	[urlRequest setHTTPMethod:"GET"];
+	
+	var setSelector = CPSelectorFromString([CPString stringWithFormat:@"set%s:", [property capitalizedString]]);
+	var options = [CPDictionary dictionaryWithObjects:[callback, SearchAllConnection, setSelector, property]
+	                    forKeys:[@"callback", @"type", @"SetSelector", @"SearchProperty"]];
+	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
+}
+
+@end
+
+
+@implementation OLActiveRecord (CPURLConnectionDelegate)
+
 - (void)connection:(CPURLConnection)connection didReceiveData:(CPString)data
 {
+    var options = [connections objectForKey:connection];
+    var type = [options objectForKey:@"type"];
+    var callback = [options objectForKey:@"callback"];
+    
 	try
 	{
 	    var json = eval('(' + data + ')');
-	    switch (connection)
+	    switch (type)
 	    {
-	        case findAllConnection:
+	        case SearchAllConnection:
 	            for(var i = 0; i < [json.rows count]; i++)
 	            {
 	                var record = [[[self class] alloc] init];
 	                [record setRecordID:json.rows[i].id];
 	                
-	                var selector = CPSelectorFromString("set" + [findAllSelector capitalizedString] + ":");
+	                var setSelector = [options objectForKey:@"SetSelector"];
+	                var searchProperty = [options objectForKey:@"SearchProperty"];
 	                
-	                objj_msgSend(record, selector, json.rows[i].value[findAllSelector]);
-	                findAllCallback(record);
+	                [record performSelector:setSelector withObject:json.rows[i].value[searchProperty]];
+	                callback(record);
 	            }
 	            break;
-	        case findByConnection:
-
+	        case SearchConnection:
             	for(var i = 0; i < [json.rows count]; i++)
             	{
             		[self findByRecordID:json.rows[i].id withCallback:function(user)
             		{
-            		    findByCallback(user); 
+            		    callback(user); 
             		}];
             	}
             	break;
-	        case _createConnection:
-	            _recordID = json["id"];
-	            _revision = json["rev"];
-	            if ([_delegate respondsToSelector:@selector(didCreateRecord:)])
+	        case CreateConnection:
+	            [self setRecordID:json["id"]];
+	            [self setRevision:json["rev"]];
+	            if ([[self delegate] respondsToSelector:@selector(didCreateRecord:)])
 	        	{
-	        	    [_delegate didCreateRecord:self];
+	        	    [[self delegate] didCreateRecord:self];
 	        	}
-	        	createCallback(self);
+	        	callback(self);
 	            break;
-	        case _saveConnection:
-	            _revision = json["rev"] || _revision;
-	            saveCallback(self);
+	        case SaveConnection:
+	            var newRev = json["rev"] || [self revision];
+	            [self setRevision:newRev];
+	            callback(self);
 	            break;
-	        case _getConnection:
+	        case GetConnection:
         		// Unarchive the data
         		var rootObject = [OLJSONKeyedUnarchiver unarchiveObjectWithData:json];
 
@@ -307,7 +326,7 @@ var __createURLConnectionFunction = nil;
         		
         		try
         		{
-        		    getCallback(rootObject);
+        		    callback(rootObject);
     		    }
     		    catch(ex)
     		    {
@@ -322,9 +341,9 @@ var __createURLConnectionFunction = nil;
 
             		[exception raise];
     		    }
-    		    
 	            break;
 	        default:
+	            CPLog.warn("Unhandled case: %s in %s for class %s", type, _cmd, [self className]);
 	            break;
 	    }
 	}
@@ -341,17 +360,151 @@ var __createURLConnectionFunction = nil;
 	}
 }
 
-- (CPURL)apiURLWithRecordID:(BOOL)shouldAppendRecordID
-{
-    var modifiedClassName = class_getName([self class]).replace("OL","").toLowerCase();
-    var url = @"api/" + modifiedClassName;
-    
-    if (shouldAppendRecordID)
-    {
-        url += "/" + _recordID;
-    }
+@end
 
-    return [CPURL URLWithString:url];
+
+// Automagically gives all subclasses a nice search API based on the accessors they have
+@implementation OLActiveRecord (ForwardingForSearchAPI)
+
+// Right now, objj doesn't have method signatures, so we just need to return a truthy value
++ (CPMethodSignature)methodSignatureForSelector:(SEL)aSelector
+{
+    var accessor = getAccessorForSelector(_cmd, self, aSelector);
+    return (accessor && [self instancesRespondToSelector:accessor]);    
+}
+
+// Does the all the work to forward the message to the right selector
++ (void)forwardInvocation:(CPInvocation)anInvocation
+{
+    var accessorString = CPStringFromSelector(getAccessorForSelector(_cmd, self, [anInvocation selector]));
+    var apiSelector = getAPIMethodForSelector(_cmd, self, [anInvocation selector]);
+    
+    if (CPStringFromSelector(apiSelector) === searchAPIMethod)
+    {
+        var searchKey = [anInvocation argumentAtIndex:2];
+        var callback = [anInvocation argumentAtIndex:3];
+    
+        if (searchKey && callback)
+        {
+            [anInvocation setSelector:apiSelector];
+            [anInvocation setArgument:accessorString atIndex:2];
+            [anInvocation setArgument:searchKey atIndex:3];
+            [anInvocation setArgument:callback atIndex:4];
+    
+            removeAllArgumentsFromInvocationAboveIndex(anInvocation, 5);
+
+            [anInvocation invoke];
+        }
+    }
+    else if (CPStringFromSelector(apiSelector) === findAllAPIMethod)
+    {
+        var callback = [anInvocation argumentAtIndex:2];
+        
+        if (callback)
+        {
+            [anInvocation setSelector:apiSelector];
+            [anInvocation setArgument:accessorString atIndex:2];
+            [anInvocation setArgument:callback atIndex:3];
+    
+            removeAllArgumentsFromInvocationAboveIndex(anInvocation, 4);
+
+            [anInvocation invoke];  
+        }
+    }
+    else
+    {
+        [super forwardInvocation:anInvocation];
+    }
 }
 
 @end
+
+// Private variables and functions for forwarding
+var searchAccessorRegEx = new RegExp("findBy(.*?):withCallback:", "");
+var searchAPIMethod = @"find:by:withCallback:";
+var findAllAPIMethod = @"findAllBy:withCallback:";
+
+// Gets the accessor method (the getter) for the given selector
+// You can then test to see if you respond to this selector
+function getAccessorForSelector(_cmd, self, aSelector)
+{
+    var selectorString = CPStringFromSelector(aSelector);
+    
+    // Are we of the form findBy<getter>:callback: ??
+    var accessors = searchAccessorRegEx.exec(selectorString);
+    if (accessors)
+    {
+        return getAccessorFromAccessors(accessors);
+    }
+
+    // Are we of the form findAll<model>sBy<getter>WithCallback:
+    var searchAllAccessorRegEx = getFindAllRegExpForModel(apiNameFromClass(self));
+    var accessors = searchAllAccessorRegEx.exec(selectorString);
+    if (accessors)
+    {
+        return getAccessorFromAccessors(accessors);
+    }
+
+    return NO;
+}
+
+// Converts the selector into the desired API method on OLActiveRecord
+function getAPIMethodForSelector(_cmd, self, aSelector)
+{
+    var selectorString = CPStringFromSelector(aSelector);
+    
+    // Are we of the form findBy<getter>:callback: ??
+    var accessors = searchAccessorRegEx.exec(selectorString);
+    if (accessors)
+    {
+        return CPSelectorFromString(searchAPIMethod);
+    }
+
+    // Are we of the form findAll<model>sBy<getter>WithCallback:
+    var searchAllAccessorRegEx = getFindAllRegExpForModel(apiNameFromClass(self));
+    var accessors = searchAllAccessorRegEx.exec(selectorString);
+    if (accessors)
+    {
+        return CPSelectorFromString(findAllAPIMethod);
+    }
+    
+    // Return a bogus selector. Technically we should never get here, but just in case...
+    return CPSelectorFromString(@"__WESHOULDNEVERGETHERE__");
+}
+
+// Transform what was pulled from the selector into an actual accessor
+// Basically just makes the first letter lowercase
+function getAccessorFromAccessors(accessors)
+{
+    var accessor = accessors[1];
+    return CPSelectorFromString((accessor.charAt(0).toLowerCase() + accessor.substring(1)));
+}
+
+// Build a regex based on the model string (i.e. converts project into Project)
+function getFindAllRegExpForModel(aModel)
+{
+    return new RegExp("findAll" + [aModel capitalizedString] + "sBy(.*?)WithCallback:", "");
+}
+
+// If an invocation object has extra params., get rid of them
+function removeAllArgumentsFromInvocationAboveIndex(anInvocation, startingIndex)
+{
+    for (var i = startingIndex; ; i++)
+    {
+        var unwantedArg = [anInvocation argumentAtIndex:i];
+        if (unwantedArg === nil || (typeof (unwantedArg)) == "undefined")
+        {
+            break;
+        }
+        [anInvocation setArgument:nil atIndex:i];            
+    }
+}
+
+
+// Other private functions
+
+// Convert a class into the api string
+function apiNameFromClass(aClass)
+{
+    return CPStringFromClass(aClass).replace("OL", "").toLowerCase();
+}

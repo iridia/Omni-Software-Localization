@@ -1,9 +1,9 @@
 {
     "views" : {
-       "find": {
+       "all": {
            "map": "function(doc) {\n  emit(doc._id, {'id':doc._id});\n}"
        },
-       "find_by_email": {
+       "email": {
            "map": "function(doc) {\n  emit(doc.OLUserEmailKey, {'id':doc._id});\n}"
        }
     }

@@ -9,26 +9,43 @@ $getArgs = $_GET;
 $putOrPostArgs = file_get_contents('php://input');
 parse_str(file_get_contents('php://input'), $deleteArgs);
 
+// Remove everything up to api/
+// So this turns this (http://shellder.omnigroup.com/osl/src/api/project/find/all)
+// into (project/find/all)
 $apiCall = str_replace($urlPrefix, "", $url);
+
+// Get the query string (the part with the ?)
 if(preg_match("\?", $apiCall) != 0)
 {
     $queryString = strstr($apiCall, "?");
 }
+
+// Extract the model name (i.e. project, user, message)
 $exploded = explode("/",$apiCall);
 $dbName = $exploded[0];
-$call = str_replace($dbName."/", "", $apiCall) . $queryString;
+
+// Remove the model name
+$call = str_replace($dbName."/", "", $apiCall);
+
+// Replace find with the actual couch URL necessary
+$searchAPIName = "find";
+$couchSearchPrefix = "_design/finder/_view";
+$call = str_replace($searchAPIName . "/", $couchSearchPrefix . "/", $call);
+
+// Add the query string onto the end
+$call .= $queryString;
 $db = new CouchDB($dbName);
 
-/* DEBUG
-echo $dbName;
-echo "<br />";
-echo $apiCall;
-echo "<br />";
-echo $call;
-echo "<br />";
-echo $query;
-echo "<br />";
-*/
+//  // DEBUG
+// echo "Database: " . $dbName;
+// echo "\n";
+// echo "API call: " . $apiCall;
+// echo "\n";
+// echo "Couch call: " . $call;
+// echo "\n";
+// echo "Query string: " . $query;
+// echo "\n";
+
 
 header("Content-Type: application/json" );
 

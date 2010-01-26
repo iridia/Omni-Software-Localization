@@ -53,8 +53,8 @@ var json = {"name":"English.lproj","resources":[{"fileName":"Chess.app/Contents/
 {
     var coder = moq();
     
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLResourceBundleLanguageKey"]];
-    [coder expectSelector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLResourceBundleResourcesKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLResourceBundleLanguageKey"]];
+    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLResourceBundleResourcesKey"]];
     
     var target = [[OLResourceBundle alloc] initWithCoder:coder];
     

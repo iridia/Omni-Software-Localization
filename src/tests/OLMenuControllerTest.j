@@ -65,7 +65,7 @@
 {
     var uploadWindowController = moq();
     
-    [uploadWindowController expectSelector:@selector(startUpload:) times:1];
+    [uploadWindowController selector:@selector(startUpload:) times:1];
     
     var target = [[OLMenuController alloc] init];
     [target setUploadWindowController:uploadWindowController];

@@ -52,7 +52,7 @@
     if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
-        [OLMessage findByToUserID:userLoggedIn callback:function(message)
+        [OLMessage findByToUserID:userLoggedIn withCallback:function(message)
     	{
             [self addMessage:message];
         }];
