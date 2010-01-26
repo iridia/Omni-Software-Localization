@@ -112,23 +112,20 @@
     var fromUser = [[OLUserSessionManager defaultSessionManager] user];
     
     var wasFound = NO;
-    [OLUser listWithCallback:function(user)
+    [OLUser listWithCallback:function(user, isFinal)
+    {
+        if(toUser === [user email])
         {
-            if(toUser === [user email])
-            {
-                wasFound = YES;
-                var message = [[OLMessage alloc] initFromUser:fromUser toUser:user subject:subject content:text];
-                [message setDelegate:self];
-                [message save];
-            }
-        } 
-        finalCallback:function(user)
+            wasFound = YES;
+            var message = [[OLMessage alloc] initFromUser:fromUser toUser:user subject:subject content:text];
+            [message setDelegate:self];
+            [message save];
+        }
+        if(isFinal && !wasFound)
         {
-            if(!wasFound)
-            {
-                [messageWindow setStatus:@"Invalid To field."];
-            }
-        }];
+            [messageWindow setStatus:@"Invalid To field."];
+        }
+    }];
 }
 
 - (void)willCreateRecord:(OLMessage)message

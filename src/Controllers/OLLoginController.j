@@ -53,11 +53,18 @@
 {
     [self willLogin];
     var foundUser = NO;
-    [OLUser listWithCallback:function(user){if([[user email] isEqualToString:[userInfo objectForKey:@"username"]])
+    [OLUser listWithCallback:function(user, isFinal)
+    {
+        if([[user email] isEqualToString:[userInfo objectForKey:@"username"]])
         {
             foundUser = YES;
             [self hasLoggedIn:user];
-        }} finalCallback:function(){if(!foundUser){[self loginFailed];}}];
+        }
+        if(isFinal && !foundUser)
+        {
+            [self loginFailed];
+        }
+    }];
 }
 
 - (void)showLoginAndRegisterWindow:(CPNotification)notification
