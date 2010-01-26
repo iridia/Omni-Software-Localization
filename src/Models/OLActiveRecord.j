@@ -75,7 +75,7 @@ var OLActiveRecordRecordIDKey = @"_id";
 {
 	try
 	{
-		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
+		var urlRequest = [[CPURLRequest alloc] initWithURL:[self _apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"GET"];
     	
     	var options = [CPDictionary dictionaryWithObjects:[callback, GetConnection] forKeys:[@"callback", @"type"]];
@@ -110,7 +110,7 @@ var OLActiveRecordRecordIDKey = @"_id";
 	{	
 		try
 		{
-			var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
+			var urlRequest = [[CPURLRequest alloc] initWithURL:[self _apiURLWithRecordID:YES]];
 			[urlRequest setHTTPMethod:"POST"];
 	
             var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
@@ -137,7 +137,7 @@ var OLActiveRecordRecordIDKey = @"_id";
 {
 	try
 	{
-	    var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:NO]];
+	    var urlRequest = [[CPURLRequest alloc] initWithURL:[self _apiURLWithRecordID:NO]];
 		[urlRequest setHTTPMethod:"PUT"];
 
 	    var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
@@ -167,10 +167,10 @@ var OLActiveRecordRecordIDKey = @"_id";
 {
 	try
 	{
-		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
+		var urlRequest = [[CPURLRequest alloc] initWithURL:[self _apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"DELETE"];
 	
-		[[self class] createConnectionWithRequest:urlRequest delegate:nil];
+    	[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:nil];
 	}
 	catch(ex)
 	{
@@ -184,7 +184,7 @@ var OLActiveRecordRecordIDKey = @"_id";
 	}
 }
 
-- (CPURL)apiURLWithRecordID:(BOOL)shouldAppendRecordID
+- (CPURL)_apiURLWithRecordID:(BOOL)shouldAppendRecordID
 {
     var url = API_PREFIX + apiNameFromClass([self class]);
     
