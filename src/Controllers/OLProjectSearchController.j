@@ -39,10 +39,6 @@
 
 - (void)loadProjects
 {
-    if (_isLoading)
-        return;
-
-    _isLoading = YES;
     console.log("first", projects);
     projects = [CPArray array];
     [OLProject findAllProjectsByNameWithCallback:function(project, isFinal)
@@ -54,7 +50,6 @@
             [self sortProjects];
             [self reloadData];
             console.log("second", projects);
-            _isLoading = NO;
         }
     }];
 }
