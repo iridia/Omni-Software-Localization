@@ -148,53 +148,81 @@ function transformStringsToJson($data, $fileName)
 	$values = array();
 	$comments = array();
 	
+	$current_key = "";
+	$current_comment = "";
 	$current_value = "";
 	$is_comment = false;
 	$is_string = false;
 	$is_value = false;
+	$previous_character = "";
 	
 	foreach($characters as $char)
 	{
 	    if($char == "\"")
 	    {
-	        if(!$is_string)
+	        if($is_comment)
+	        {
+	            // do nothing
+	        }
+	        else if(!$is_string)
 	        {
 	            $is_string = true;
-    	        continue;
-	        }
-	        
-	        if($is_value)
-	        {
-	            $values[] = $current_value;
-	            $current_value = "";
-	            continue;
 	        }
 	        else
 	        {
-	            $keys[] = $current_value;
-	            $current_value = "";
-	            continue;
+	            $is_string = false;
 	        }
 	    }
-	    
-	    if($char == "/*")
+	    else if($char == "/" && $previous_character == "*")
+	    {
+	        $is_comment = false;
+	    }
+	    else if($char == "*" && $previous_character == "/")
 	    {
 	        $is_comment = true;
-	        continue;
 	    }
-	    
-	    if($char == "\n")
+	    else if($char == "\n")
 	    {
 	        $is_string = false;
 	        $is_value = false;
 	        if(!$is_comment)
 	        {
+	            if(strlen($current_key) > 0)
+	            {
+	                $values[] = $current_value;
+    	            $keys[] = $current_key;
+    	            $comments[] = $current_comment;
+	            }
+	            
 	            $current_value = "";
+                $current_key = "";
+                $current_comment = "";
 	        }
-	        continue;
+	    }
+	    else if($char == "=")
+	    {
+	        $is_value = true;
+	    }
+	    else
+	    {
+	        if($is_string)
+	        {
+	            if($is_value)
+	            {
+            	    $current_value .= $char;
+                }
+                else
+                {
+    	            $current_key .= $char;
+                }
+	        }
+	        else if($is_comment)
+	        {
+    	        $current_comment .= $char;
+	        }
 	    }
 	    
-	    $current_value .= $char;
+	    $previous_character = $char;
 	}
 	
 	$json .= "key:[";
