@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 
+@import "OLToolbarController.j"
 @import "../Utilities/OLUserSessionManager.j"
 @import "../Categories/CPArray+Find.j"
 @import "../Views/OLLoginAndRegisterWindow.j"
@@ -23,7 +24,7 @@
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(showLoginAndRegisterWindow:)
-            name:@"OLUserShouldLoginNotification"
+            name:OLToolbarControllerShouldLogin
             object:nil];
     }
     return self;
@@ -52,12 +53,20 @@
 - (void)didSubmitLogin:(CPDictionary)userInfo
 {
     [self willLogin];
-    var foundUser = NO;
-    [OLUser listWithCallback:function(user){if([[user email] isEqualToString:[userInfo objectForKey:@"username"]])
+    var email = [userInfo objectForKey:@"username"];
+    [OLUser findByEmail:email withCallback:function(user, isFinal)
+    {
+        if (user && [[user email] isEqualToString:email])
         {
-            foundUser = YES;
             [self hasLoggedIn:user];
-        }} finalCallback:function(){if(!foundUser){[self loginFailed];}}];
+            return;
+        }
+        
+        if (isFinal)
+        {
+            [self loginFailed];
+        }
+    }];
 }
 - (void)showLoginAndRegisterWindow:(CPNotification)notification
 {   

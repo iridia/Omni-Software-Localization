@@ -15,6 +15,10 @@ var ListConnection = @"ListConnection";
 var SearchConnection = @"SearchConnection";
 var SearchAllConnection = @"SearchAllConnection";
 
+var OLActiveRecordRevisionKey = @"_rev";
+var OLActiveRecordRecordIDKey = @"_id";
+
+
 @implementation OLActiveRecord : CPObject
 {
 	CPString        recordID    @accessors;
@@ -25,43 +29,21 @@ var SearchAllConnection = @"SearchAllConnection";
 	id              delegate    @accessors;
 }
 
-/*
- * This has a special callback requirement. Because we want our lists to load when available (rather than when all are loaded)
- * we need this callback to ADD to a list rather than SET a list. Expect a single record as an argument!
- */
 + (void)listWithCallback:(Function)callback
 {
-    [self listWithCallback:callback finalCallback:function(){}];
+    var instance = [[self alloc] init];
+    [instance _listWithCallback:callback];
 }
 
-+ (void)listWithCallback:(Function)callback finalCallback:(Function)finalCallback
+- (void)_listWithCallback:(Function)callback
 {
 	try
 	{
-        var url = API_PREFIX + apiNameFromClass(self) + "/find/all";
+        var url = API_PREFIX + apiNameFromClass([self class]) + "/find/all";
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
-		var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
-		var numberCalledBack = 0;
-	
-		var data = eval('(' + JSONresponse.string + ')');
-	
-		for(var i = 0; i < [data.rows count]; i++)
-		{
-			[self findByRecordID:data.rows[i].id withCallback:function(record)
-			{
-			    callback(record); 
-			    numberCalledBack++; 
-			    if(numberCalledBack == [data.rows count]) 
-			    {
-			        finalCallback();
-			    }
-			}];
-		}
 		
-		if([data.rows count] == 0)
-		{
-		    finalCallback();
-		}
+		var options = [CPDictionary dictionaryWithObjects:[callback, ListConnection] forKeys:[@"callback", @"type"]];
+    	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
 	}
 	catch(ex)
 	{
@@ -93,7 +75,7 @@ var SearchAllConnection = @"SearchAllConnection";
 {
 	try
 	{
-		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
+		var urlRequest = [[CPURLRequest alloc] initWithURL:[self _apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"GET"];
     	
     	var options = [CPDictionary dictionaryWithObjects:[callback, GetConnection] forKeys:[@"callback", @"type"]];
@@ -128,11 +110,11 @@ var SearchAllConnection = @"SearchAllConnection";
 	{	
 		try
 		{
-			var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
+			var urlRequest = [[CPURLRequest alloc] initWithURL:[self _apiURLWithRecordID:YES]];
 			[urlRequest setHTTPMethod:"POST"];
 	
             var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
-            archivedJSON["_rev"] = [self revision];
+            archivedJSON[OLActiveRecordRevisionKey] = [self revision];
                      
             [urlRequest setHTTPBody:JSON.stringify(archivedJSON)];
 
@@ -155,7 +137,7 @@ var SearchAllConnection = @"SearchAllConnection";
 {
 	try
 	{
-	    var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:NO]];
+	    var urlRequest = [[CPURLRequest alloc] initWithURL:[self _apiURLWithRecordID:NO]];
 		[urlRequest setHTTPMethod:"PUT"];
 
 	    var archivedJSON = [OLJSONKeyedArchiver archivedDataWithRootObject:self];
@@ -185,10 +167,10 @@ var SearchAllConnection = @"SearchAllConnection";
 {
 	try
 	{
-		var urlRequest = [[CPURLRequest alloc] initWithURL:[self apiURLWithRecordID:YES]];
+		var urlRequest = [[CPURLRequest alloc] initWithURL:[self _apiURLWithRecordID:YES]];
 		[urlRequest setHTTPMethod:"DELETE"];
 	
-		[[self class] createConnectionWithRequest:urlRequest delegate:nil];
+    	[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:nil];
 	}
 	catch(ex)
 	{
@@ -202,7 +184,7 @@ var SearchAllConnection = @"SearchAllConnection";
 	}
 }
 
-- (CPURL)apiURLWithRecordID:(BOOL)shouldAppendRecordID
+- (CPURL)_apiURLWithRecordID:(BOOL)shouldAppendRecordID
 {
     var url = API_PREFIX + apiNameFromClass([self class]);
     
@@ -219,23 +201,19 @@ var SearchAllConnection = @"SearchAllConnection";
 
 @implementation OLActiveRecord (SearchAPI)
 
-+ (void)find:(CPString)propertyToSearchOn by:(JSON)object withCallback:(Function)callback
++ (void)find:(CPString)property by:(JSON)searchParameter withCallback:(Function)callback
 {
-    var url = API_PREFIX + apiNameFromClass(self) + "/find/" + propertyToSearchOn + "?key=\"" + object + "\"";
-    
+    var instance = [[self alloc] init];
+    [instance _find:property by:searchParameter withCallback:callback];
+}
+
+- (void)_find:(CPString)propertyToSearchOn by:(JSON)object withCallback:(Function)callback
+{
+    var url = API_PREFIX + apiNameFromClass([self class]) + "/find/" + propertyToSearchOn + "?key=\"" + object + "\"";
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	
-	var JSONresponse = [CPURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
-	
-	var data = eval('(' + JSONresponse.string + ')');
-    
-	for(var i = 0; i < [data.rows count]; i++)
-	{
-		[self findByRecordID:data.rows[i].id withCallback:function(record)
-		{
-		    callback(record);
-		}];
-	}
+	var options = [CPDictionary dictionaryWithObjects:[callback, SearchConnection] forKeys:[@"callback", @"type"]];
+	[connections setObject:options forKey:[OLURLConnectionFactory createConnectionWithRequest:urlRequest delegate:self]];
 }
 
 + (void)findByRecordID:(CPString)aRecordID withCallback:(Function)callback
@@ -248,10 +226,10 @@ var SearchAllConnection = @"SearchAllConnection";
 + (void)findAllBy:(CPString)property withCallback:(Function)callback
 {
     var record = [[self alloc] init];
-    [record findAllBy:property withCallback:callback];
+    [record _findAllBy:property withCallback:callback];
 }
 
-- (void)findAllBy:(CPString)property withCallback:(Function)callback
+- (void)_findAllBy:(CPString)property withCallback:(Function)callback
 {
     property = [property lowercaseString];
     var modifiedClassName = apiNameFromClass([self class]);
@@ -281,29 +259,47 @@ var SearchAllConnection = @"SearchAllConnection";
 	    var json = eval('(' + data + ')');
 	    switch (type)
 	    {
-	        case SearchAllConnection:
-	            for(var i = 0; i < [json.rows count]; i++)
+	        case ListConnection:
+	            if (json.rows.length === 0)
 	            {
+	                callback(nil, YES);
+	            }
+	            
+        		for (var i = 0; i < json.rows.length; i++)
+        		{
+        		    var objectJSON = json.rows[i].value;
+        		    
+        		    var decodedObject = [self _objectFromJSON:objectJSON];
+            		
+            		callback(decodedObject, (i === json.rows.length - 1));
+        		}
+        		break;
+
+	        case SearchAllConnection:
+	            for(var i = 0; i < json.rows.length; i++)
+	            {
+	                var row = json.rows[i];
+	                
 	                var record = [[[self class] alloc] init];
-	                [record setRecordID:json.rows[i].id];
+	                [record setRecordID:row.id];
 	                
 	                var setSelector = [options objectForKey:@"SetSelector"];
 	                var searchProperty = [options objectForKey:@"SearchProperty"];
 	                
-	                [record performSelector:setSelector withObject:json.rows[i].value[searchProperty]];
-	                callback(record);
+	                [record performSelector:setSelector withObject:row.value[searchProperty]];
+	                callback(record, (i === json.rows.length - 1));
 	            }
 	            
 	            break;
+
 	        case SearchConnection:
-            	for(var i = 0; i < [json.rows count]; i++)
+            	for(var i = 0; i < json.rows.length; i++)
             	{
-            		[self findByRecordID:json.rows[i].id withCallback:function(user)
-            		{
-            		    callback(user); 
-            		}];
+            		var decodedObject = [self _objectFromJSON:json.rows[i].value];
+            		callback(decodedObject, (i === json.rows.length - 1));
             	}
             	break;
+
 	        case CreateConnection:
 	            [self setRecordID:json["id"]];
 	            [self setRevision:json["rev"]];
@@ -311,23 +307,21 @@ var SearchAllConnection = @"SearchAllConnection";
 	        	{
 	        	    [[self delegate] didCreateRecord:self];
 	        	}
-	        	callback(self);
+	        	callback(self, YES);
 	            break;
+
 	        case SaveConnection:
 	            var newRev = json["rev"] || [self revision];
 	            [self setRevision:newRev];
-	            callback(self);
+	            callback(self, YES);
 	            break;
-	        case GetConnection:
-        		// Unarchive the data
-        		var rootObject = [OLJSONKeyedUnarchiver unarchiveObjectWithData:json];
 
-        		[rootObject setRevision:json._rev];
-        		[rootObject setRecordID:json._id];
+	        case GetConnection:
+        		var decodedObject = [self _objectFromJSON:json];
         		
         		try
         		{
-        		    callback(rootObject);
+        		    callback(decodedObject, YES);
     		    }
     		    catch(ex)
     		    {
@@ -337,12 +331,13 @@ var SearchAllConnection = @"SearchAllConnection";
                     [exception setMethodWithError:_cmd];
                     [exception setUserMessage:@"Could not handle the response from the server"];
                     [exception addUserInfo:data forKey:@"response"];
-                    [exception addUserInfo:rootObject forKey:@"rootObject"];
+                    [exception addUserInfo:decodedObject forKey:@"rootObject"];
                     [exception addUserInfo:@"get" forKey:@"connectionType"];
 
             		[exception raise];
     		    }
 	            break;
+
 	        default:
 	            CPLog.warn("Unhandled case: %s in %s for class %s", type, _cmd, [self className]);
 	            break;
@@ -361,6 +356,17 @@ var SearchAllConnection = @"SearchAllConnection";
 	}
 }
 
+
+// Properly unarchives an object.
+- (id)_objectFromJSON:(JSON)json
+{
+    var rootObject = [OLJSONKeyedUnarchiver unarchiveObjectWithData:json];
+    [rootObject setRevision:json[OLActiveRecordRevisionKey]];
+    [rootObject setRecordID:json[OLActiveRecordRecordIDKey]];
+    
+    return rootObject;
+}
+
 @end
 
 
@@ -368,13 +374,14 @@ var SearchAllConnection = @"SearchAllConnection";
 @implementation OLActiveRecord (ForwardingForSearchAPI)
 
 // Right now, objj doesn't have method signatures, so we just need to return a truthy value
+// to let the forwarding know we want to forward
 + (CPMethodSignature)methodSignatureForSelector:(SEL)aSelector
 {
     var accessor = getAccessorForSelector(_cmd, self, aSelector);
     return (accessor && [self instancesRespondToSelector:accessor]);    
 }
 
-// Does the all the work to forward the message to the right selector
+// Does all the work to forward the message to the right selector.
 + (void)forwardInvocation:(CPInvocation)anInvocation
 {
     var accessorString = CPStringFromSelector(getAccessorForSelector(_cmd, self, [anInvocation selector]));

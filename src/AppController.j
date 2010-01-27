@@ -66,6 +66,7 @@
     [communityController setMailView:mailView];
     
     var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
+    [searchView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [communityController setSearchView:searchView];
     [communityController setProjectView:[[OLProjectResultView alloc] initWithFrame:[mainContentView bounds]]];
     [communityController setContentViewController:contentViewController];
