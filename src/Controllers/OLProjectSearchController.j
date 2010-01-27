@@ -39,12 +39,27 @@
 - (void)loadProjects
 {
     projects = [CPArray array];
-    [OLProject findAllProjectsByNameWithCallback:function(project)
-        {
-            [self addProject:project];
-            [self reloadData];
-        }
-    ];
+    [OLProject listWithCallback:
+                        function(project)
+                        {
+                            [self addProject:project];
+                            [self reloadData];
+                        }
+                        finalCallback:
+                        function(project)
+                        {
+                            [projects sortedArrayUsingFunction:
+                                function(lhs,rhs,context)
+                                {
+                                    return [[lhs totalAllVotes] compare:[rhs totalAllVotes]];
+                                }];
+                        }];
+    // [OLProject findAllProjectsByNameWithCallback:function(project)
+    //                    {
+    //                        [self addProject:project];
+    //                        [self reloadData];
+    //                    }
+    //                ];
         // sortbyFunction:function(lhs, rhs, context){  
         //     return [[rhs totalAllVotes] compare:[lhs totalAllVotes]];
         // }];
@@ -78,7 +93,6 @@
 
 - (void)didReceiveProjectControllerFinished:(CPNotification)notification
 {
-    console.log(_cmd);
     [self loadProjects];
 }
 

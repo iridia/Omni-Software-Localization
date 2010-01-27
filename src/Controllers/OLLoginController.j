@@ -59,7 +59,6 @@
             [self hasLoggedIn:user];
         }} finalCallback:function(){if(!foundUser){[self loginFailed];}}];
 }
-
 - (void)showLoginAndRegisterWindow:(CPNotification)notification
 {   
     successfulLoginTarget = nil;

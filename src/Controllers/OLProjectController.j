@@ -382,14 +382,14 @@
 {
     [resourceBundleController voteUp];
     [projectView reloadVoting];
-    [selectedProject totalAllVotes];
+    [selectedProject save];
 }
 
 - (void)voteDown:(id)sender
 {
     [resourceBundleController voteDown];
     [projectView reloadVoting];
-    [selectedProject totalAllVotes];
+    [selectedProject save];
 }
 
 - (int)numberOfVotesForSelectedResource
