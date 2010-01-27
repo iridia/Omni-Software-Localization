@@ -14,7 +14,7 @@
     self = [super init];
     if(self)
     {
-        importProjectWindow = [[OLImportProjectWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 200) 
+        importProjectWindow = [[OLImportProjectWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 180) 
                 styleMask:CPTitledWindowMask | CPClosableWindowMask];
         [importProjectWindow setDelegate:self];
     }
@@ -24,6 +24,7 @@
 - (void)startImport:(OLProject)aProject
 {
     project = aProject;
+    [importProjectWindow showMain:self];
     [[CPApplication sharedApplication] runModalForWindow:importProjectWindow];
 }
 
