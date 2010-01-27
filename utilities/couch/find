@@ -1,1 +1,7 @@
-{"views" : {"find" : { "map": "function(doc) { emit(doc._id, {'id':doc._id}) }" } }}
+{
+    "views" : {
+        "all" : {
+            "map": "function(doc) { emit(doc._id, doc); }"
+        }
+    }
+}

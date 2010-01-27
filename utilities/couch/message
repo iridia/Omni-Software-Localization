@@ -1,10 +1,10 @@
 {
     "views" : {
-       "find": {
-           "map": "function(doc) {\n  emit(doc._id, {'id':doc._id});\n}"
-       },
-	   "find_by_touserid": {
-           "map": "function(doc) {\n  emit(doc.OLMessageToUserIDKey, {'id':doc._id});\n}"
-       }
+        "all" : {
+           "map": "function(doc) { emit(doc._id, doc); }"
+        },
+        "toUserID": {
+           "map": "function(doc) { emit(doc.OLMessageToUserIDKey, doc); }"
+        }
     }
 }
