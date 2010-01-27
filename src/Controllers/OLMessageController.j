@@ -128,8 +128,12 @@ OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShould
             wasFound = YES;
             var message = [[OLMessage alloc] initFromUser:fromUser toUser:user subject:subject content:text];
             [message setDelegate:self];
-            [message save];
+            [message saveWithCallback:function(){
+                [self loadMessages]; 
+                [mailView reloadData];
+            }];
         }
+        
         if(isFinal && !wasFound)
         {
             [messageWindow setStatus:@"Invalid To field."];
