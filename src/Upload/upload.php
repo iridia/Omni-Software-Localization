@@ -143,57 +143,86 @@ function transformStringsToJson($data, $fileName)
 {
     $data = str_replace("\”", "”", $data);
 	$json = "({\"fileName\": \"" . $fileName . "\", \"fileType\": \"strings\", \"dict\": {";
-	$lines = split("\n", $data);
+    $characters = preg_split('//', $data, -1, PREG_SPLIT_NO_EMPTY);
 	$keys = array();
 	$values = array();
 	$comments = array();
-	$current_comment = "";
-	$commenting = false;
 	
-	foreach($lines as $line)
+	$current_key = "";
+	$current_comment = "";
+	$current_value = "";
+	$is_comment = false;
+	$is_string = false;
+	$is_value = false;
+	$previous_character = "";
+	
+	foreach($characters as $char)
 	{
-		if(preg_match("/^\s*$/", $line))
-		{
-			continue;
-		}
-		
-		if($commenting)
-		{
-			if(preg_match("/(.*)\*\//", $line, $regs))
-			{
-				$commenting = false;
-				$current_comment .= $regs[1];
-			}
-			else
-			{
-				$current_comment .= $line;
-			}
-			continue;
-		}
-		else if(preg_match("/((?:\/\*(.*)(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:\/\/(.*)))/", $line, $regs))
-		{
-			if($regs[2] != "")
-			{
-				$current_comment = $regs[2];
-			}
-			else
-			{
-				$current_comment = $regs[3];
-			}
-			continue;
-		}
-		else if(preg_match("/\/\*(.*)/", $line, $regs))
-		{
-			$current_comment = $regs[1];
-			$commenting = true;
-			continue;
-		}
-		
-		preg_match("/\"(.+)\"\s*=\s*\"(.+)\";/", $line, $regs);
-		$keys[] = $regs[1];
-		$values[] = $regs[2];
-		$comments[] = $current_comment;
-		$current_comment = "";
+	    if($char == "\"")
+	    {
+	        if($is_comment)
+	        {
+	            // do nothing
+	        }
+	        else if(!$is_string)
+	        {
+	            $is_string = true;
+	        }
+	        else
+	        {
+	            $is_string = false;
+	        }
+	    }
+	    else if($char == "/" && $previous_character == "*")
+	    {
+	        $is_comment = false;
+	    }
+	    else if($char == "*" && $previous_character == "/")
+	    {
+	        $is_comment = true;
+	    }
+	    else if($char == "\n")
+	    {
+	        $is_string = false;
+	        $is_value = false;
+	        if(!$is_comment)
+	        {
+	            if(strlen($current_key) > 0)
+	            {
+	                $values[] = $current_value;
+    	            $keys[] = $current_key;
+    	            $comments[] = $current_comment;
+	            }
+	            
+	            $current_value = "";
+                $current_key = "";
+                $current_comment = "";
+	        }
+	    }
+	    else if($char == "=")
+	    {
+	        $is_value = true;
+	    }
+	    else
+	    {
+	        if($is_string)
+	        {
+	            if($is_value)
+	            {
+            	    $current_value .= $char;
+                }
+                else
+                {
+    	            $current_key .= $char;
+                }
+	        }
+	        else if($is_comment)
+	        {
+    	        $current_comment .= $char;
+	        }
+	    }
+	    
+	    $previous_character = $char;
 	}
 	
 	$json .= "key:[";
