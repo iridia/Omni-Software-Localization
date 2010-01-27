@@ -407,21 +407,54 @@
 
 - (void)voteUp:(id)sender
 {
-    [resourceBundleController voteUp];
-    [projectView reloadVoting];
-    [selectedProject save];
+    var oldVoteValue = [self usersCurrentVoteValue];
+    if(oldVoteValue !== 1)
+    {
+        [resourceBundleController voteUp];
+        [projectView reloadVoting];
+        if(oldVoteValue === -1)
+        {
+            [selectedProject voteUp];
+            [selectedProject voteUp];
+        }
+        else
+        {
+            [selectedProject voteUp];
+        }
+        [selectedProject save];
+    }
+
 }
 
 - (void)voteDown:(id)sender
 {
-    [resourceBundleController voteDown];
-    [projectView reloadVoting];
-    [selectedProject save];
+    var oldVoteValue = [self usersCurrentVoteValue];
+    if(oldVoteValue !== -1)
+    {
+        [resourceBundleController voteDown];
+        [projectView reloadVoting];
+        if(oldVoteValue === 1)
+        {
+            [selectedProject voteDown];
+            [selectedProject voteDown];
+        }
+        else
+        {
+            [selectedProject voteDown];
+        }
+        [selectedProject save];
+    }
 }
 
 - (int)numberOfVotesForSelectedResource
 {
     return [resourceBundleController numberOfVotesForSelectedResource];
+}
+
+- (int)usersCurrentVoteValue
+{
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+    return [[[[resourceBundleController resourceController] selectedResource] votes] objectForKey:[user recordID]];
 }
 
 @end

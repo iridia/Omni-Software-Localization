@@ -39,30 +39,24 @@
 - (void)loadProjects
 {
     projects = [CPArray array];
-    [OLProject listWithCallback:
-                        function(project)
-                        {
-                            [self addProject:project];
-                            [self reloadData];
-                        }
-                        finalCallback:
-                        function(project)
-                        {
-                            [projects sortedArrayUsingFunction:
-                                function(lhs,rhs,context)
-                                {
-                                    return [[lhs totalAllVotes] compare:[rhs totalAllVotes]];
-                                }];
-                        }];
-    // [OLProject findAllProjectsByNameWithCallback:function(project)
-    //                    {
-    //                        [self addProject:project];
-    //                        [self reloadData];
-    //                    }
-    //                ];
-        // sortbyFunction:function(lhs, rhs, context){  
-        //     return [[rhs totalAllVotes] compare:[lhs totalAllVotes]];
-        // }];
+    [OLProject findAllProjectsByNameWithCallback:function(project, isFinal)
+                           {
+                               console.log(project);
+                               [self addProject:project];
+                               [self reloadData];
+                               
+                               if(isFinal)
+                               {
+                                   [self sortProjects];
+                               }
+                           }];
+}
+
+- (void)sortProjects
+{
+   projects = [projects sortedArrayUsingFunction:function(lhs, rhs, context){  
+           return [[rhs totalOfAllVotes] compare:[lhs totalOfAllVotes]];
+       }];
 }
 
 - (void)setSearchView:(CPView)aSearchView
@@ -126,9 +120,18 @@
  
 - (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
-    if(tableView === [searchView allProjectsTableView])
+    var projectTableView = [searchView allProjectsTableView];
+    if(tableView === projectTableView)
     {
-        return [[projects objectAtIndex:row] name];
+        if([tableColumn identifier] === @"ProjectName")
+        {
+            return [[projects objectAtIndex:row] name];
+        }
+        else if ([tableColumn identifier] === @"TotalVotes")
+        {
+            return [[projects objectAtIndex:row] totalOfAllVotes];
+        }
+
     }
     
     return [super tableView:tableView objectValueForTableColumn:tableColumn row:row];
@@ -140,6 +143,7 @@
     {
         var index = [[aTableView selectedRowIndexes] firstIndex];
         var theProject = [projects objectAtIndex:index];
+        
         [theProject getWithCallback:function(project)
         {
             [OLUser findByRecordID:[project userIdentifier] withCallback:function(user)

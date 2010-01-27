@@ -278,15 +278,19 @@ var OLActiveRecordRecordIDKey = @"_id";
 	        case SearchAllConnection:
 	            for(var i = 0; i < json.rows.length; i++)
 	            {
-	                var row = json.rows[i];
+	                var jsonRecord = json.rows[i].value;
 	                
 	                var record = [[[self class] alloc] init];
-	                [record setRecordID:row.id];
-	                
-	                var setSelector = [options objectForKey:@"SetSelector"];
-	                var searchProperty = [options objectForKey:@"SearchProperty"];
-	                
-	                [record performSelector:setSelector withObject:row.value[searchProperty]];
+	                for (var property in jsonRecord)
+	                {
+	                    var setter = CPSelectorFromString("set" + property.charAt(0).toUpperCase() + property.substring(1) + ":");
+
+	                    if ([record respondsToSelector:setter])
+	                    {
+	                        [record performSelector:setter withObject:jsonRecord[property]];
+                        }
+	                }
+                    
 	                callback(record, (i === json.rows.length - 1));
 	            }
 	            

@@ -8,6 +8,7 @@
     CPString    name                @accessors;
     CPArray     resourceBundles     @accessors(readonly);
     CPString    userIdentifier      @accessors;
+    long        votes;
 }
 
 + (id)projectFromJSON:(JSON)json
@@ -49,6 +50,7 @@
         name = aName;
         resourceBundles = [CPArray array];
         userIdentifier = aUserIdentifier;
+        votes = 0;
     }
     return self;
 }
@@ -86,24 +88,31 @@
     return [self name];
 }
 
-- (long)totalAllVotes
+- (void)setVotes:(long)someVotes
 {
-    var votes = 0;
-    for(var i=0; i < [resourceBundles count]; i++)
-    {
-        var currentBundle = [resourceBundles objectAtIndex:i];
-        for(var j=0; j< [[currentBundle resources] count]; j++)
-        {
-            votes += [[[currentBundle resources] objectAtIndex:j] numberOfVotes];
-        }
-    }
+    votes = someVotes;
+}
+
+- (long)totalOfAllVotes
+{
     return votes;
+}
+
+- (void)voteUp
+{
+    votes += 1;
+}
+
+- (void)voteDown
+{
+    votes-=1;
 }
 @end
 
 var OLProjectNameKey = @"OLProjectNameKey";
 var OLProjectResourceBundlesKey = @"OLProjectResourceBundlesKey";
 var OLProjectUserKey = @"OLProjectUserKey";
+var OLProjectVotesKey = @"OLProjectVotesKey";
 
 @implementation OLProject (CPCoding)
 
@@ -116,6 +125,7 @@ var OLProjectUserKey = @"OLProjectUserKey";
         name = [aCoder decodeObjectForKey:OLProjectNameKey];
         resourceBundles = [aCoder decodeObjectForKey:OLProjectResourceBundlesKey];
         userIdentifier = [aCoder decodeObjectForKey:OLProjectUserKey];
+        votes = [aCoder decodeObjectForKey:OLProjectVotesKey];
     }
     
     return self;
@@ -126,6 +136,7 @@ var OLProjectUserKey = @"OLProjectUserKey";
     [aCoder encodeObject:name forKey:OLProjectNameKey];
     [aCoder encodeObject:resourceBundles forKey:OLProjectResourceBundlesKey];
     [aCoder encodeObject:userIdentifier forKey:OLProjectUserKey];
+    [aCoder encodeObject:votes forKey:OLProjectVotesKey];
 }
 
 @end
