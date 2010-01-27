@@ -1,6 +1,8 @@
 @import <Foundation/CPObject.j>
 
+@import "../Utilities/OLUserSessionManager.j"
 @import "../Views/CPUploadButton.j"
+@import "OLLoginController.j"
 @import "OLUploadController.j"
 
 var uploadURL = @"Upload/upload.php";
@@ -79,7 +81,7 @@ var uploadURL = @"Upload/upload.php";
 
 - (void)startUpload:(id)sender
 {
-    if([[CPUserSessionManager defaultManager] status] !== CPUserSessionLoggedInStatus)
+    if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userInfo = [CPDictionary dictionary];
         [userInfo setObject:@"You must log in to create a new project/glossary!" forKey:@"StatusMessageText"];
@@ -87,7 +89,7 @@ var uploadURL = @"Upload/upload.php";
         [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
     
         [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLUserShouldLoginNotification"
+            postNotificationName:OLLoginControllerShouldLoginNotification
             object:nil
             userInfo:userInfo];
     

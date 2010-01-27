@@ -13,7 +13,8 @@
     if(self)
     {
         view = [self contentView];
-        popUpButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0, 0, 150, 25)];
+        [self setTitle:@"Add a Language..."];
+        popUpButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0, 0, 150, 24)];
         [popUpButton setCenter:CGPointMake(CGRectGetWidth([view frame])-90, 20)];
         
         createButton = [CPButton buttonWithTitle:@"Create"];
@@ -33,7 +34,8 @@
 {
     [createButton setTarget:resourceBundleController];
     [cancelButton setTarget:resourceBundleController];
-    
+ 
+    [popUpButton removeAllItems];
     [popUpButton addItemsWithTitles:[resourceBundleController titlesOfAvailableLanguage]];
 }
 

@@ -45,7 +45,23 @@ task ("press", ["build", "test"], function()
 task ("deploy", ["build", "test"], function()
 {
     //var cmd = "scp -r projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/ ../Pressed";
-    var cmd = "scp -r projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/ .";
+    var cmd = "scp -r . projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/";
     
     OS.system(cmd);
+});
+
+task("metrics", function()
+{
+   var releases = ["Release-1", "Release-2", "Release-3", "Release-4", "Release-5", "Release-6"];
+   
+   var checkout = "git checkout ";
+   for (var i = 0; i < releases.length; i++)
+   {
+       print(releases[i]);
+       OS.system(checkout + releases[i]);
+       OS.system("beancounter");
+       print("\n\n");
+   }
+   
+   OS.system(checkout + "master");
 });

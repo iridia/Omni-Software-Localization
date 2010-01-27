@@ -10,7 +10,7 @@
 
 - (void)assert:(CPArray)anArray doesNotContain:(CPObject)anObject message:(CPString)failMessage
 {
-	if([anArray contains:anObject])
+	if([anArray containsObject:anObject])
 	{
 		[self fail:failMessage];
 	}
@@ -23,7 +23,7 @@
 
 - (void)assert:(CPArray)anArray contains:(CPObject)anObject message:(CPString)failMessage
 {
-	if(![anArray contains:anObject])
+	if(![anArray containsObject:anObject])
 	{
 		[self fail:failMessage];
 	}

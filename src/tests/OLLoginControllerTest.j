@@ -1,4 +1,6 @@
 @import "../Controllers/OLLoginController.j"
+@import "../Utilities/OLUserSessionManager.j"
+@import "utilities/OLUserSessionManager+Testing.j"
 
 CPApp = moq();
 CPApp._windows = moq();
@@ -67,7 +69,7 @@ CPApp._windows = moq();
     var loginAndRegisterWindowMoq = moq();
     target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
     
-    [loginAndRegisterWindowMoq expectSelector:@selector(showLoggingIn) times:1];
+    [loginAndRegisterWindowMoq selector:@selector(showLoggingIn) times:1];
     
 	[target willLogin];
 	
@@ -89,7 +91,7 @@ CPApp._windows = moq();
 	var loginAndRegisterWindowMoq = moq();
     target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
     
-    [loginAndRegisterWindowMoq expectSelector:@selector(close) times:1];
+    [loginAndRegisterWindowMoq selector:@selector(close) times:1];
     
 	[target hasLoggedIn:moq()];
 	
@@ -102,12 +104,11 @@ CPApp._windows = moq();
     var loginAndRegisterWindowMoq = moq();
     target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
     var mockedUser = moq();
-    [mockedUser selector:@selector(recordID) returns:@"123"];
     
 	[target hasLoggedIn:mockedUser];
 	
-	[self assert:@"123" equals:[[CPUserSessionManager defaultManager] userIdentifier]];
-	[self assert:CPUserSessionLoggedInStatus equals:[[CPUserSessionManager defaultManager] status]];
+	[self assert:mockedUser equals:[[OLUserSessionManager defaultSessionManager] user]];
+	[self assert:OLUserSessionLoggedInStatus equals:[[OLUserSessionManager defaultSessionManager] status]];
 }
 
 
@@ -124,7 +125,7 @@ CPApp._windows = moq();
     var loginAndRegisterWindowMoq = moq();
     target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
     
-    [loginAndRegisterWindowMoq expectSelector:@selector(loginFailed) times:1];
+    [loginAndRegisterWindowMoq selector:@selector(loginFailed) times:1];
     
 	[target loginFailed];
 	
@@ -136,6 +137,11 @@ CPApp._windows = moq();
 	var target = [[OLLoginController alloc] init];
 	[target didSubmitRegistration:moq()];
 	[self assertTrue:YES];
+}
+
+- (void)tearDown
+{
+    [OLUserSessionManager resetDefaultSessionManager];
 }
 
 @end

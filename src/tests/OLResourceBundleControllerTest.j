@@ -12,7 +12,7 @@
 - (void)testThatOLResourceBundleControllerDoesSetListOfResourceBundles
 {
     var mockResourceBundle = moq();
-    [mockResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+    [mockResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
     
     var resourceBundles = [mockResourceBundle, mockResourceBundle, mockResourceBundle];
     
@@ -26,12 +26,12 @@
 - (void)testThatOLResourceBundleControllerDoesSetInitialResourceBundleToEnglishBundle
 {
     var mockResourceBundle = moq();
-    [mockResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+    [mockResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
 
     var englishBundle = moq();
     var resourceBundles = [mockResourceBundle, englishBundle, mockResourceBundle];
     
-    [englishBundle selector:@selector(language) returns:[OLLanguage english]];
+    [englishBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"English"]];
     
     var target = [[OLResourceBundleController alloc] init];
     
@@ -44,8 +44,8 @@
 {
     var mockResourceBundle = moq();
     var firstResourceBundle = moq();
-    [firstResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
-    [mockResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+    [firstResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
+    [mockResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
     
     var resourceBundles = [firstResourceBundle, mockResourceBundle, mockResourceBundle];
     
@@ -60,12 +60,8 @@
 {
     var firstResourceBundle = moq();
     var secondResourceBundle = moq();
-    [firstResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
-    [secondResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
-    
-    var aPopUpButton = moq();
-    
-    [aPopUpButton selector:@selector(indexOfSelectedItem) returns:2];
+    [firstResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
+    [secondResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
     
     var resourceBundles = [firstResourceBundle, secondResourceBundle];
     
@@ -75,7 +71,7 @@
     
     [self assert:firstResourceBundle equals:[target selectedResourceBundle]];
     
-    [target selectedResourceBundleDidChange:aPopUpButton];
+    [target selectResourceBundleAtIndex:2];
     
     [self assert:secondResourceBundle equals:[target selectedResourceBundle]];
 }
@@ -84,8 +80,8 @@
 {
     var mockResourceBundle = moq();
     var firstResourceBundle = moq();
-    [firstResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
-    [mockResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+    [firstResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
+    [mockResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
 
     var resourceBundles = [firstResourceBundle, mockResourceBundle, mockResourceBundle];
 
@@ -100,12 +96,8 @@
 {
     var firstResourceBundle = moq();
     var secondResourceBundle = moq();
-    [firstResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
-    [secondResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
-
-    var aPopUpButton = moq();
-
-    [aPopUpButton selector:@selector(indexOfSelectedItem) returns:1];
+    [firstResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
+    [secondResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
 
     var resourceBundles = [firstResourceBundle, secondResourceBundle];
 
@@ -115,7 +107,7 @@
 
     [self assert:firstResourceBundle equals:[target selectedResourceBundle]];
 
-    [target selectedResourceBundleDidChange:aPopUpButton];
+    [target selectResourceBundleAtIndex:1];
 
     [self assert:1 equals:[target indexOfSelectedResourceBundle]];
 }
@@ -124,8 +116,8 @@
 {
     var mockResourceBundle = moq();
     var firstResourceBundle = moq();
-    [firstResourceBundle selector:@selector(language) returns:[OLLanguage german]];
-    [mockResourceBundle selector:@selector(language) returns:[OLLanguage spanish]];
+    [firstResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"German"]];
+    [mockResourceBundle selector:@selector(language) returns:[[OLLanguage alloc] initWithName:@"Spanish"]];
 
     var resourceBundles = [firstResourceBundle, mockResourceBundle, mockResourceBundle];
 

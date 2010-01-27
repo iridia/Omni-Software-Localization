@@ -40,7 +40,12 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 
 - (void)loadGlossaries
 {
-	var glossariesList = [OLGlossary listWithCallback:function(glossary){[self addGlossary:glossary];}];
+	[OLGlossary listWithCallback:function(glossary){
+	    if (glossary)
+	    {
+            [self addGlossary:glossary];
+	    }
+	}];
 }
 
 - (void)insertObject:(OLGlossary)glossary inGlossariesAtIndex:(int)index
@@ -121,6 +126,11 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
     return @"Glossaries";
 }
 
+- (BOOL)shouldExpandSidebarItemOnReload
+{
+    return YES;
+}
+
 - (CPView)contentView
 {
     return glossariesView;
@@ -139,6 +149,8 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 	{
 	    if (item !== selectedGlossary)
 	    {
+	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldDisableItemsNotification" 
+	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport]];
     		[self setSelectedGlossary:item];
     		[[[self glossariesView] tableView] reloadData];
     	}

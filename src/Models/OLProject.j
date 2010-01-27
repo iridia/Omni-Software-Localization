@@ -1,6 +1,7 @@
 @import "OLActiveRecord.j"
 @import "OLResourceBundle.j"
 @import "OLUser.j"
+@import "../Utilities/OLUserSessionManager.j"
 
 @implementation OLProject : OLActiveRecord
 {
@@ -8,19 +9,15 @@
     CPArray     resourceBundles     @accessors(readonly);
     CPString    userIdentifier      @accessors;
     CPArray     subscribers;
-}
-
-+ (void)findByName:(CPString)aName callback:(Function)callback
-{
-    [self find:"name" by:aName callback:callback];
+    long        votes               @accessors;
 }
 
 + (id)projectFromJSON:(JSON)json
 {
     var userIdentifier = @"";
-    if ([[CPUserSessionManager defaultManager] status] === CPUserSessionLoggedInStatus)
+    if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
-        userIdentifier = [[CPUserSessionManager defaultManager] userIdentifier];
+        userIdentifier = [[OLUserSessionManager defaultSessionManager] userIdentifier];
     }
     else
     {
@@ -97,6 +94,22 @@
     [subscribers addObject:subscriberId];
 }
 
+- (CPString)sidebarName
+{
+    return [self name];
+}
+
+- (long)getTotalVotes
+{
+    for(var i=0; i < [resourceBundles count]; i++)
+    {
+        var currentBundle = [resourceBundles objectAtIndex:i];
+        for(varj=0; j < [[currentBundle resources] count]; j++)
+        {
+            
+        }
+    }
+}
 @end
 
 var OLProjectNameKey = @"OLProjectNameKey";

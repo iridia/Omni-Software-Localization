@@ -24,16 +24,27 @@
 
 - (void)testThatOLActiveRecordDoesFindByName
 {
-    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
     
-    [OLActiveRecord find:@"name" by:@"joe" callback:function(){}];
-    
-    [urlConnection verifyThatAllExpectationsHaveBeenMet];
+    var tempCPURLConnection = CPURLConnection;
+    try
+    {
+        [urlConnection selectorelector:@selector(createConnectionWithRequest:delegate:) times:2];
+
+        CPURLConnection = moq();
+        [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[{'id':1}, {'id':2}]}"}]
+        [OLActiveRecord listWithCallback:function(){}];
+
+        [urlConnection verifyThatAllExpectationsHaveBeenMet];
+    }
+    finally
+    {
+        CPURLConnection = tempCPURLConnection;
+    }
 }
 
 - (void)testThatOLActiveRecordDoesFindByRecordID
 {
-    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
     
     [OLActiveRecord findByRecordID:@"123" withCallback:function(){}];
 
@@ -42,7 +53,7 @@
 
 - (void)testThatOLActiveRecordDoesGetWithCallback
 {
-    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
     
     [[[OLActiveRecord alloc] init] getWithCallback:function(){}];
     
@@ -57,7 +68,7 @@
         OLJSONKeyedArchiver = moq();
         [OLJSONKeyedArchiver selector:@selector(archivedDataWithRootObject:) returns:@"asdf"];
     
-        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+        [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
 
         var target = [[OLActiveRecord alloc] init];
         [target setRecordID:@"asdf"];
@@ -79,7 +90,7 @@
         OLJSONKeyedArchiver = moq();
         [OLJSONKeyedArchiver selector:@selector(archivedDataWithRootObject:) returns:@"asdf"];
 
-        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+        [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
 
         var target = [[OLActiveRecord alloc] init];
         [target save];
@@ -94,7 +105,7 @@
 
 - (void)testThatOLActiveRecordDoesDelete
 {
-    [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
 
     [[[OLActiveRecord alloc] init] delete];
 
@@ -105,7 +116,7 @@
 {
     var target = [[OLActiveRecord alloc] init];
     [target setRecordID:@"asdf"];
-    var result = [target apiURLWithRecordID:YES];
+    var result = [target _apiURLWithRecordID:YES];
     
     [self assertTrue:@"api/activerecord/asdf" == result];
 }
@@ -113,47 +124,27 @@
 - (void)testThatOLActiveRecordDoesReturnAPI
 {
     var target = [[OLActiveRecord alloc] init];
-    var result = [target apiURLWithRecordID:NO];
+    var result = [target _apiURLWithRecordID:NO];
 
     [self assertTrue:@"api/activerecord" == result];
 }
 
-- (void)testThatOLActiveRecordDoesListWithCallbackWithNoData
+- (void)testThatOLActiveRecordDoesListWithCallback
 {
-    var tempCPURLConnection = CPURLConnection;
-    try
-    {
-        wasCalled = false;
-        
-        CPURLConnection = moq();
-        [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[]}"}]
-        [OLActiveRecord listWithCallback:function(){} finalCallback:function(){wasCalled=true;}];
-        
-        [self assertTrue:wasCalled];
-    }
-    finally
-    {
-        CPURLConnection = tempCPURLConnection;
-    }
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
+
+    [OLActiveRecord listWithCallback:function(){}];
+
+    [urlConnection verifyThatAllExpectationsHaveBeenMet];
 }
 
-- (void)testThatOLActiveRecordDoesListWithCallbackWithData
+- (void)testThatOLActiveRecordDoesFindAllByCallback
 {
-    var tempCPURLConnection = CPURLConnection;
-    try
-    {
-        [urlConnection expectSelector:@selector(createConnectionWithRequest:delegate:) times:1];
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
+    
+    [OLActiveRecord findAllBy:@"name" withCallback:function(){}];
 
-        CPURLConnection = moq();
-        [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[{'id':1}, {'id':2}]}"}]
-        [OLActiveRecord listWithCallback:function(){}];
-
-        [urlConnection verifyThatAllExpectationsHaveBeenMet];
-    }
-    finally
-    {
-        CPURLConnection = tempCPURLConnection;
-    }
+    [urlConnection verifyThatAllExpectationsHaveBeenMet];
 }
 
 @end

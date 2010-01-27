@@ -1,6 +1,10 @@
 @import <Foundation/CPObject.j>
+
+@import "../Utilities/OLUserSessionManager.j"
 @import "../Views/OLCreateNewBundleWindow.j"
 @import "../Views/OLDeleteBundleWindow.j"
+
+@import "OLResourceController.j"
 
 @implementation OLResourceBundleController : CPObject
 {
@@ -8,9 +12,10 @@
     CPString            ownerId                     @accessors;
     CPArray             resourceBundles             @accessors(readonly);
     CPResourceBundle    selectedResourceBundle      @accessors;
-    CPView              resourcesView               @accessors;
     CPView              createNewBundleWindow       @accessors;
     CPView              deleteBundleWindow          @accessors;
+    
+    OLResourceController    resourceController      @accessors(readonly);
 }
 
 - (id)init
@@ -20,19 +25,72 @@
         createNewBundleWindow = [[OLCreateNewBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
         deleteBundleWindow = [[OLDeleteBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
         
-        [[CPNotificationCenter defaultCenter]
-            addObserver:self
-            selector:@selector(startCreateNewBundle:)
-            name:@"CPLanguageShouldAddLanguageNotification"
-            object:nil];
-            
-        [[CPNotificationCenter defaultCenter]
-            addObserver:self
-            selector:@selector(startDeleteBundle:)
-            name:@"CPLanguageShouldDeleteLanguageNotification"
-            object:nil];
+        resourceController = [[OLResourceController alloc] init];
+        [self addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
     }
     return self;
+}
+
+- (void)voteUp
+{
+    [resourceController voteUp];
+}
+
+- (void)voteDown
+{
+    [resourceController voteDown];
+}
+
+- (int)numberOfVotesForSelectedResource
+{
+    return [resourceController numberOfVotesForSelectedResource];
+}
+
+- (int)numberOfResources
+{
+    return [[selectedResourceBundle resources] count];
+}
+
+- (int)numberOfLineItems
+{
+    return [resourceController numberOfLineItems];
+}
+
+- (OLLineItem)lineItemAtIndex:(int)index
+{
+    return [resourceController lineItemAtIndex:index];
+}
+
+- (CPString)resourceNameAtIndex:(int)index
+{
+    return [[[selectedResourceBundle resources] objectAtIndex:index] fileName];
+}
+
+- (void)editSelectedLineItem
+{
+    [resourceController editSelectedLineItem];
+}
+
+- (void)selectResourceBundleAtIndex:(int)index
+{
+    if(index === 0)
+    {
+        [self startCreateNewBundle:self];
+        
+        return;
+    }
+    
+    [self setSelectedResourceBundle:[resourceBundles objectAtIndex:(index - 1)]];
+}
+
+- (void)selectResourceAtIndex:(int)index
+{
+    [resourceController selectResourceAtIndex:index];
+}
+
+- (void)selectLineItemAtIndex:(int)index
+{
+    [resourceController selectLineItemAtIndex:index];
 }
 
 - (void)setResourceBundles:(CPArray)someResourceBundles
@@ -47,7 +105,7 @@
     
     for(var i = 0; i < [resourceBundles count]; i++)
     {
-        if([[OLLanguage english] equals:[[resourceBundles objectAtIndex:i] language]])
+        if([[[OLLanguage alloc] initWithName:@"English"] equals:[[resourceBundles objectAtIndex:i] language]])
         {
             found = true;
             [self setSelectedResourceBundle:[resourceBundles objectAtIndex:i]];
@@ -58,18 +116,6 @@
     {
         [self setSelectedResourceBundle:[resourceBundles objectAtIndex:0]];
     }
-}
-
-- (void)selectedResourceBundleDidChange:(CPPopUpButton)aButton
-{
-    if([aButton indexOfSelectedItem] === 0)
-    {
-        [self startCreateNewBundle:self];
-        
-        return;
-    }
-    
-    [self setSelectedResourceBundle:[resourceBundles objectAtIndex:[aButton indexOfSelectedItem]-1]];
 }
 
 - (CPNumber)indexOfSelectedResourceBundle
@@ -99,58 +145,12 @@
 
 - (void)startCreateNewBundle:(id)sender
 {
-    if([[CPUserSessionManager defaultManager] status] !== CPUserSessionLoggedInStatus)
-    {
-        var userInfo = [CPDictionary dictionary];
-        [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
-        [userInfo setObject:@selector(startCreateNewBundle:) forKey:@"SuccessfulLoginAction"];
-        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
-        
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLUserShouldLoginNotification"
-            object:nil
-            userInfo:userInfo];
-        
-        return;
-    }
-    else if([[CPUserSessionManager defaultManager] userIdentifier] !== ownerId)
-    {
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLProjectShouldBranchNotification"
-            object:nil];
-        
-        return;
-    }
-    
     [[CPApplication sharedApplication] runModalForWindow:createNewBundleWindow];
     [createNewBundleWindow setUp:self];
 }
 
 - (void)startDeleteBundle:(id)sender
 {
-    if([[CPUserSessionManager defaultManager] status] !== CPUserSessionLoggedInStatus)
-    {
-        var userInfo = [CPDictionary dictionary];
-        [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
-        [userInfo setObject:@selector(startDeleteBundle:) forKey:@"SuccessfulLoginAction"];
-        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
-
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLUserShouldLoginNotification"
-            object:nil
-            userInfo:userInfo];
-
-        return;
-    }
-    else if([[CPUserSessionManager defaultManager] userIdentifier] !== ownerId)
-    {
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLProjectShouldBranchNotification"
-            object:nil];
-
-        return;
-    }
-
     [[CPApplication sharedApplication] runModalForWindow:deleteBundleWindow];
     [deleteBundleWindow setUp:self];
 }
@@ -182,14 +182,14 @@
 - (CPArray)availableLanguages
 {
     var result = [CPArray array];
-    
-    for(var i = 0; i < [[OLLanguage allLanguages] count]; i++)
+    var allLanguages = [OLLanguage allLanguages];
+    for(var i = 0; i < [allLanguages count]; i++)
     {
-        var theLanguage = [[OLLanguage allLanguages] objectAtIndex:i];
+        var theLanguage = [allLanguages objectAtIndex:i];
         
         if(![self isLanguageAlreadyLocalized:theLanguage])
         {
-            [result addObject:[[OLLanguage allLanguages] objectAtIndex:i]];
+            [result addObject:[allLanguages objectAtIndex:i]];
         }
     }
     
@@ -225,7 +225,8 @@
     
     replaceEnglishWithNewResourceBundleName(clone, [[clone language] name]);
     [resourceBundles addObject:clone];
-    [resourcesView reloadData:self];
+    
+    [self setSelectedResourceBundle:clone];
     
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLProjectDidChangeNotification"
@@ -236,8 +237,13 @@
 
 - (void)delete:(id)sender
 {
-    [resourceBundles removeObjectAtIndex:[[deleteBundleWindow popUpButton] indexOfSelectedItem]];
-    [resourcesView reloadData:self];
+    var objectToRemove = [resourceBundles objectAtIndex:[[deleteBundleWindow popUpButton] indexOfSelectedItem]];
+    [resourceBundles removeObject:objectToRemove];
+    
+    if(selectedResourceBundle === objectToRemove)
+    {
+        [self resetCurrentBundle];
+    }
     
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLProjectDidChangeNotification"
@@ -250,7 +256,7 @@
 {
     for(var i = 0; i < [resourceBundles count]; i++)
     {
-        if([[[resourceBundles objectAtIndex:i] language] equals:[OLLanguage english]])
+        if([[[resourceBundles objectAtIndex:i] language] equals:[[OLLanguage alloc] initWithName:@"English"]])
         {
             return [resourceBundles objectAtIndex:i];
         }
@@ -281,7 +287,7 @@ function replaceEnglishWithNewResourceBundleName(bundle, name)
             ownerId = [[object selectedProject] userIdentifier]
             projectName = [[object selectedProject] name];
             [self setResourceBundles:[[object selectedProject] resourceBundles]];
-			[resourcesView reloadData:self];
+            [self resetCurrentBundle];
             break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);

@@ -26,4 +26,9 @@ var isMocked = true;
     isMocked = shouldBeMocked;
 }
 
++ (void)reset
+{
+    CPNotificationDefaultCenter = nil;
+}
+
 @end

@@ -1,18 +1,15 @@
 @import <Foundation/CPObject.j>
 
+@import "../Utilities/OLUserSessionManager.j"
 @import "OLLineItemEditWindowController.j"
-@import "../Views/OLResourcesView.j"
 @import "../Models/OLLineItem.j"
 
-var OLResourceEditorViewIdentifierColumnHeader = @"OLResourceEditorViewIdentifierColumnHeader";
-var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHeader";
+OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineItemIndexDidChangeNotification";
 
 @implementation OLLineItemController : CPObject
 {
 	CPArray		    lineItems;
-	CPString        ownerId             @accessors;
 	OLLineItem      selectedLineItem    @accessors;
-	OLResourcesView resourcesView       @accessors;
 }
 
 - (id)init
@@ -20,41 +17,24 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
 	if(self = [super init])
 	{
 	    lineItems = [CPArray array];
-	    
-    	[[CPNotificationCenter defaultCenter]
-    	    addObserver:self
-    	    selector:@selector(didReceiveProjectDidChangeNotification:)
-    	    name:@"OLProjectDidChangeNotification"
-    	    object:nil];
 	}
 	return self;
 }
 
-- (void)editSelectedLineItem:(id)sender
+- (void)selectLineItemAtIndex:(int)index
 {
-    var loggedInUserId = [[CPUserSessionManager defaultManager] userIdentifier];
-    if(!loggedInUserId)
+    if (index === CPNotFound)
     {
-        var userInfo = [CPDictionary dictionary];
-        [userInfo setObject:@"You must log in to edit this item!" forKey:@"StatusMessageText"];
-        [userInfo setObject:@selector(editSelectedLineItem:) forKey:@"SuccessfulLoginAction"];
-        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
-        
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLUserShouldLoginNotification"
-            object:nil
-            userInfo:userInfo];
-        return;
+        [self setSelectedLineItem:nil];
     }
-    else if([loggedInUserId isEqualToString:@""] || ![loggedInUserId isEqualToString:ownerId])
+    else
     {
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLProjectShouldBranchNotification"
-            object:nil];
-            
-        return;
+        [self setSelectedLineItem:[lineItems objectAtIndex:index]];
     }
-    
+}
+
+- (void)editSelectedLineItem
+{   
     var lineItemEditWindowController = [[OLLineItemEditWindowController alloc] initWithWindowCibName:@"LineItemEditor.cib" lineItem:selectedLineItem];
     [lineItemEditWindowController setDelegate:self];
     [self addObserver:lineItemEditWindowController forKeyPath:@"selectedLineItem" options:CPKeyValueObservingOptionNew context:nil];
@@ -71,8 +51,14 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
         nextIndex = 0;
     }
 
-    [self setSelectedLineItem:[lineItems objectAtIndex:nextIndex]];
-    [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:nextIndex] byExtendingSelection:NO];
+    [self selectLineItemAtIndex:nextIndex];
+    
+    var userInfo = [CPDictionary dictionary];
+    [userInfo setObject:nextIndex forKey:@"SelectedIndex"];
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLLineItemSelectedLineItemIndexDidChangeNotification
+        object:self
+        userInfo:userInfo];
 }
 
 - (void)previousLineItem
@@ -85,13 +71,14 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
         previousIndex = [lineItems count] - 1;
     }
 
-    [self setSelectedLineItem:[lineItems objectAtIndex:previousIndex]];
-    [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSetWithIndex:previousIndex] byExtendingSelection:NO];
-}
-
-- (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
-{
-    [[[resourcesView editingView] lineItemsTableView] reloadData];
+    [self selectLineItemAtIndex:previousIndex];
+    
+    var userInfo = [CPDictionary dictionary];
+    [userInfo setObject:previousIndex forKey:@"SelectedIndex"];
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLLineItemSelectedLineItemIndexDidChangeNotification
+        object:self
+        userInfo:userInfo];
 }
 
 @end
@@ -106,58 +93,12 @@ var OLResourceEditorViewValueColumnHeader = @"OLResourceEditorViewValueColumnHea
             var selectedResource = [object selectedResource];
             if (selectedResource)
             {
-                ownerId = [object ownerId];
                 lineItems = [[object selectedResource] lineItems];
-                [[[resourcesView editingView] lineItemsTableView] reloadData];
-                [resourcesView showLineItemsTableView];
-    			[resourcesView setVoteCount:[selectedResource numberOfVotes]];
-                [[[resourcesView editingView] lineItemsTableView] selectRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
-            }
-            else
-            {
-                [resourcesView hideLineItemsTableView];
             }
             break;
         default:
             CPLog.warn(@"%s: Unhandled keypath: %s, in: %s", _cmd, keyPath, [self className]);
             break;
-    }
-}
-
-@end
-
-@implementation OLLineItemController (OLLineItemsTableViewDataSource)
-
-- (int)numberOfRowsInTableView:(CPTableView)resourceTableView
-{
-    return [lineItems count];
-}
-
-- (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
-{
-    if ([tableColumn identifier] === OLResourceEditorViewIdentifierColumnHeader)
-    {
-        return [[lineItems objectAtIndex:row] identifier];
-    }
-    else if ([tableColumn identifier] === OLResourceEditorViewValueColumnHeader)
-    {
-        return [[lineItems objectAtIndex:row] value];
-    }
-}
-
-
-@end
-
-@implementation OLLineItemController (OLLineItemsTableViewDelegate)
-
-- (void)tableViewSelectionDidChange:(CPNotification)aNotification
-{
-    var tableView = [aNotification object];
-
-    if(![[tableView selectedRowIndexes] isEqualToIndexSet:[CPIndexSet indexSet]])
-    {
-        var selectedRow = [[tableView selectedRowIndexes] firstIndex];
-        [self setSelectedLineItem:[lineItems objectAtIndex:selectedRow]];
     }
 }
 

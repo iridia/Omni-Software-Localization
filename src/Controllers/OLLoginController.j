@@ -1,7 +1,12 @@
 @import <Foundation/CPObject.j>
+
+@import "OLToolbarController.j"
+@import "../Utilities/OLUserSessionManager.j"
 @import "../Categories/CPArray+Find.j"
 @import "../Views/OLLoginAndRegisterWindow.j"
 @import "../Models/OLUser.j"
+
+OLLoginControllerShouldLoginNotification = @"OLLoginControllerShouldLoginNotification";
 
 @implementation OLLoginController : CPObject
 {
@@ -21,7 +26,7 @@
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(showLoginAndRegisterWindow:)
-            name:@"OLUserShouldLoginNotification"
+            name:OLLoginControllerShouldLoginNotification
             object:nil];
     }
     return self;
@@ -36,10 +41,9 @@
 {
     [loginAndRegisterWindow close];
     
-    var sessionManager = [CPUserSessionManager defaultManager];
-    [sessionManager setStatus:CPUserSessionLoggedInStatus];
-    [sessionManager setUserIdentifier:[aUser recordID]];
-    
+    var sessionManager = [OLUserSessionManager defaultSessionManager];
+    [sessionManager setUser:aUser];
+
     [successfulLoginTarget performSelector:successfulLoginAction withObject:self];
 }
 
@@ -51,12 +55,20 @@
 - (void)didSubmitLogin:(CPDictionary)userInfo
 {
     [self willLogin];
-    var foundUser = NO;
-    [OLUser listWithCallback:function(user){if([[user email] isEqualToString:[userInfo objectForKey:@"username"]])
+    var email = [userInfo objectForKey:@"username"];
+    [OLUser findByEmail:email withCallback:function(user, isFinal)
+    {
+        if (user && [[user email] isEqualToString:email])
         {
-            foundUser = YES;
             [self hasLoggedIn:user];
-        }} finalCallback:function(){if(!foundUser){[self loginFailed];}}];
+            return;
+        }
+        
+        if (isFinal)
+        {
+            [self loginFailed];
+        }
+    }];
 }
 
 - (void)showLoginAndRegisterWindow:(CPNotification)notification

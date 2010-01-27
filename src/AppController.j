@@ -9,26 +9,20 @@
 
 @import <Foundation/CPObject.j>
 
-@import "Categories/CPColor+OLColors.j"
-
 @import "Controllers/OLProjectController.j"
-@import "Controllers/OLLineItemController.j"
-@import "Controllers/OLResourceController.j"
 @import "Controllers/OLGlossaryController.j"
-@import "Controllers/OLResourceBundleController.j"
-
 @import "Controllers/OLContentViewController.j"
 @import "Controllers/OLToolbarController.j"
 @import "Controllers/OLSidebarController.j"
-@import "Controllers/OLWelcomeController.j"
-@import "Controllers/OLUploadController.j"
-@import "Controllers/OLMessageController.j"
+@import "Controllers/OLMenuController.j"
+@import "Controllers/OLCommunityController.j"
 
 @import "Views/OLMenu.j"
-@import "Views/OLResourcesView.j"
 @import "Views/OLGlossariesView.j"
-
-var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
+@import "Views/OLMailView.j"
+@import "Views/OLProjectView.j"
+@import "Views/OLProjectSearchView.j"
+@import "Views/OLProjectResultView.j"
 
 @implementation AppController : CPObject
 {
@@ -40,79 +34,58 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 
     @outlet						OLSidebarController     sidebarController;
     @outlet						OLContentViewController contentViewController;
-	
-	OLProjectController			projectController;
-	OLResourceController		resourceController;
-	OLLineItemController		lineItemController;
-	OLGlossaryController		glossaryController;
-	OLMessageController         messageController;
-	
-	OLResourcesView				resourcesView;
-	OLGlossariesView			glossariesView;
-
-    OLToolbarController         toolbarController @accessors(property=toolbarController);
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-    // var welcomeController = [[OLWelcomeController alloc] init];
-    //     [welcomeController setDelegate:self];
-    // [welcomeController setUploadController:uploadController];
-    
     var uploadWindowController = [[OLUploadWindowController alloc] init];
 	
-	projectController = [[OLProjectController alloc] init];
+	var projectController = [[OLProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
     
-    resourceBundleController = [[OLResourceBundleController alloc] init];
-    [projectController addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
-	
-	resourceController = [[OLResourceController alloc] init];
-    [resourceBundleController addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
-	
-	lineItemController = [[OLLineItemController alloc] init];
-	[lineItemController setResourcesView:[resourceController resourcesView]];
-	[resourceController addObserver:lineItemController forKeyPath:@"selectedResource" options:CPKeyValueObservingOptionNew context:nil];
-	
-    resourcesView = [[OLResourcesView alloc] initWithFrame:[mainContentView bounds]];
-    [resourcesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    [resourcesView setResourceController:resourceController];
-    [resourcesView setLineItemController:lineItemController];
-    [resourcesView setResourceBundleController:resourceBundleController];
-    [[resourcesView editingView] setVoteTarget:resourceController downAction:@selector(voteDown:) upAction:@selector(voteUp:)];
+    var projectView = [[OLProjectView alloc] initWithFrame:[mainContentView bounds]];
+    [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [projectController setProjectView:projectView];
     
-    [resourceController setResourcesView:resourcesView];
-    [resourceBundleController setResourcesView:resourcesView];
-    [lineItemController setResourcesView:resourcesView];
-    [projectController setProjectView:resourcesView];
-	
-	glossaryController = [[OLGlossaryController alloc] init];
+ 	var glossaryController = [[OLGlossaryController alloc] init];
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:glossaryController];
 	
-	glossariesView = [[OLGlossariesView alloc] initWithFrame:[mainContentView bounds]];
+	var glossariesView = [[OLGlossariesView alloc] initWithFrame:[mainContentView bounds]];
 	[glossariesView setGlossaryController:glossaryController];
 	[glossaryController setGlossariesView:glossariesView];
-	
-	messageController = [[OLMessageController alloc] init];
-	
-    [projectController loadProjects];
-	[glossaryController loadGlossaries];
+    
+    var communityController = [[OLCommunityController alloc] init];
+    [communityController addObserver:sidebarController forKeyPath:@"items" options:CPKeyValueObservingOptionNew context:nil];
+    [communityController setContentViewController:contentViewController];
+    [sidebarController addSidebarItem:communityController];
+    
+    var mailView = [[OLMailView alloc] initWithFrame:[mainContentView bounds]];
+    [mailView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [communityController setMailView:mailView];
+    
+    var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
+    [searchView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [communityController setSearchView:searchView];
+    [communityController setProjectView:[[OLProjectResultView alloc] initWithFrame:[mainContentView bounds]]];
+    [communityController setContentViewController:contentViewController];
+ 
+	var menuController = [[OLMenuController alloc] init];
+    [CPMenu setMenuBarVisible:YES];
+    
+    [glossaryController loadGlossaries];
 	
 	var loginController = [[OLLoginController alloc] init];
-	
-    setupToolbar(self, theWindow, loginController, projectController, nil);
+    var toolbarController = [[OLToolbarController alloc] init];
+ 
+    [theWindow setToolbar:[toolbarController toolbar]];
 }
 
 - (void)awakeFromCib
 {
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
-    
-    var menu = [[OLMenu alloc] init];
-    [[CPApplication sharedApplication] setMainMenu:menu];
-    [CPMenu setMenuBarVisible:YES];
 }
 
 - (void)handleException:(OLException)anException
@@ -156,17 +129,3 @@ var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 }
 
 @end
-
-function setupToolbar(self, theWindow, loginController, projectController, glossaryController)
-{
-    var feedbackController = [[OLFeedbackController alloc] init];
-    var toolbarController = [[OLToolbarController alloc] initWithFeedbackController:feedbackController loginController:loginController
-            projectController:projectController glossaryController:glossaryController];
-
-    var toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
-    [toolbar setDelegate:toolbarController];
-    [toolbarController setToolbar:toolbar];
- 
-    [theWindow setToolbar:toolbar];
-    [self setToolbarController:toolbarController];
-}
