@@ -45,8 +45,8 @@ OLMenuItemDownload = @"OLMenuItemDownload";
     
     var appMenu = [[CPMenuItem alloc] initWithTitle:@"Omni Software Localization" action:nil keyEquivalent:nil];
     var appSubmenu = [[CPMenu alloc] initWithTitle:@"AppMenu"];
+    var feedbackItem = [[CPMenuItem alloc] initWithTitle:@"Send Feedback" action:@selector(feedback:) keyEquivalent:nil];
     var aboutItem = [[CPMenuItem alloc] initWithTitle:@"About Omni Software Localization" action:@selector(about:) keyEquivalent:nil];
-    
     
     var fileMenu = [[CPMenuItem alloc] initWithTitle:@"File" action:nil keyEquivalent:nil];
     var fileSubmenu = [[CPMenu alloc] initWithTitle:@"FileMenu"];
@@ -61,12 +61,20 @@ OLMenuItemDownload = @"OLMenuItemDownload";
     var download = [[CPMenuItem alloc] initWithTitle:@"Download" action:@selector(download:) keyEquivalent:"d"];
     var importItem = [[CPMenuItem alloc] initWithTitle:@"Import..." action:@selector(importItem:) keyEquivalent:"i"];
     
+    var communityMenu = [[CPMenuItem alloc] initWithTitle:@"Community" action:nil keyEquivalent:nil];
+    var communitySubmenu = [[CPMenu alloc] initWithTitle:@"CommunityMenu"];
+    var loginItem = [[CPMenuItem alloc] initWithTitle:@"Login" action:@selector(login:) keyEquivalent:nil];
+    var sendMessageItem = [[CPMenuItem alloc] initWithTitle:@"Send Message" action:@selector(sendMessage:) keyEquivalent:nil];
+    
     [newLanguage setTarget:controller];
     [deleteLanguage setTarget:controller];
     [aboutItem setTarget:controller];
     [newItem setTarget:controller];
     [download setTarget:controller];
     [importItem setTarget:controller];
+    [feedbackItem setTarget:controller];
+    [loginItem setTarget:controller];
+    [sendMessageItem setTarget:controller];
     
     var items = [controller items];
 
@@ -82,6 +90,7 @@ OLMenuItemDownload = @"OLMenuItemDownload";
     
     [fileMenu setSubmenu:fileSubmenu];
     
+    [appSubmenu addItem:feedbackItem];
     [appSubmenu addItem:aboutItem];
     [appMenu setSubmenu:appSubmenu];
     
@@ -91,9 +100,14 @@ OLMenuItemDownload = @"OLMenuItemDownload";
     [projectSubmenu addItem:download];
     [projectSubmenu addItem:importItem];
     
+    [communityMenu setSubmenu:communitySubmenu];
+    [communitySubmenu addItem:loginItem];
+    [communitySubmenu addItem:sendMessageItem];
+    
     [self addItem:appMenu];
     [self addItem:fileMenu];
     [self addItem:projectMenu];
+    [self addItem:communityMenu];
     [self addItem:[CPMenuItem separatorItem]];
 }
 
