@@ -121,7 +121,7 @@ OLMenuItemDisabled = NO;
 - (void)login:(id)sender
 {
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLToolbarControllerShouldLogin
+        postNotificationName:OLLoginControllerShouldLoginNotification
         object:self];    
 }
 
@@ -129,7 +129,7 @@ OLMenuItemDisabled = NO;
 {
     console.log("Here");
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLToolbarControllerShouldCreateNewMessage
+        postNotificationName:OLMessageControllerShouldCreateMessageNotification
         object:self];
 }
 
