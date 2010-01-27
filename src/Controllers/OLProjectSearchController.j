@@ -41,7 +41,6 @@
     projects = [CPArray array];
     [OLProject findAllProjectsByNameWithCallback:function(project, isFinal)
                            {
-                               console.log(project);
                                [self addProject:project];
                                [self reloadData];
                                

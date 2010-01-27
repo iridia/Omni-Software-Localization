@@ -117,7 +117,14 @@
             [self addProject:project];
         }];
     }
-	
+}
+
+- (void)loadVotes
+{
+    for(var project in projects)
+    {
+        
+    }
 }
 
 - (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
@@ -408,42 +415,50 @@
 
 - (void)voteUp:(id)sender
 {
-    var oldVoteValue = [self usersCurrentVoteValue];
-    if(oldVoteValue !== 1)
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+    if(user)
     {
-        [resourceBundleController voteUp];
-        [projectView reloadVoting];
-        if(oldVoteValue === -1)
+        var oldVoteValue = [self usersCurrentVoteValue:user];
+        if(oldVoteValue !== 1)
         {
-            [selectedProject voteUp];
-            [selectedProject voteUp];
+            [resourceBundleController voteUp];
+            [projectView reloadVoting];
+            if(oldVoteValue === -1)
+            {
+                [selectedProject voteUp];
+                [selectedProject voteUp];
+            }
+            else
+            {
+                [selectedProject voteUp];
+            }
+            [selectedProject save];
         }
-        else
-        {
-            [selectedProject voteUp];
-        }
-        [selectedProject save];
     }
-
+    console.log(projects);
 }
 
 - (void)voteDown:(id)sender
 {
-    var oldVoteValue = [self usersCurrentVoteValue];
-    if(oldVoteValue !== -1)
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+    if(user)
     {
-        [resourceBundleController voteDown];
-        [projectView reloadVoting];
-        if(oldVoteValue === 1)
+        var oldVoteValue = [self usersCurrentVoteValue:user];
+        if(oldVoteValue !== -1)
         {
-            [selectedProject voteDown];
-            [selectedProject voteDown];
+            [resourceBundleController voteDown];
+            [projectView reloadVoting];
+            if(oldVoteValue === 1)
+            {
+                [selectedProject voteDown];
+                [selectedProject voteDown];
+            }
+            else
+            {
+                [selectedProject voteDown];
+            }
+            [selectedProject save];
         }
-        else
-        {
-            [selectedProject voteDown];
-        }
-        [selectedProject save];
     }
 }
 
@@ -452,9 +467,8 @@
     return [resourceBundleController numberOfVotesForSelectedResource];
 }
 
-- (int)usersCurrentVoteValue
+- (int)usersCurrentVoteValue:(OLUser)user
 {
-    var user = [[OLUserSessionManager defaultSessionManager] user];
     return [[[[resourceBundleController resourceController] selectedResource] votes] objectForKey:[user recordID]];
 }
 
