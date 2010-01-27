@@ -116,7 +116,7 @@
 {
     var target = [[OLActiveRecord alloc] init];
     [target setRecordID:@"asdf"];
-    var result = [target apiURLWithRecordID:YES];
+    var result = [target _apiURLWithRecordID:YES];
     
     [self assertTrue:@"api/activerecord/asdf" == result];
 }
@@ -124,47 +124,18 @@
 - (void)testThatOLActiveRecordDoesReturnAPI
 {
     var target = [[OLActiveRecord alloc] init];
-    var result = [target apiURLWithRecordID:NO];
+    var result = [target _apiURLWithRecordID:NO];
 
     [self assertTrue:@"api/activerecord" == result];
 }
 
-- (void)testThatOLActiveRecordDoesListWithCallbackWithNoData
+- (void)testThatOLActiveRecordDoesListWithCallback
 {
-    var tempCPURLConnection = CPURLConnection;
-    try
-    {
-        wasCalled = false;
-        
-        CPURLConnection = moq();
-        [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[]}"}]
-        [OLActiveRecord listWithCallback:function(){} finalCallback:function(){wasCalled=true;}];
-        
-        [self assertTrue:wasCalled];
-    }
-    finally
-    {
-        CPURLConnection = tempCPURLConnection;
-    }
-}
+    [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:1];
 
-- (void)testThatOLActiveRecordDoesListWithCallbackWithData
-{
-    var tempCPURLConnection = CPURLConnection;
-    try
-    {
-        [urlConnection selector:@selector(createConnectionWithRequest:delegate:) times:2];
+    [OLActiveRecord listWithCallback:function(){}];
 
-        CPURLConnection = moq();
-        [CPURLConnection selector:@selector(sendSynchronousRequest:returningResponse:error:) returns:{"string":"{'rows':[{'id':1}, {'id':2}]}"}]
-        [OLActiveRecord listWithCallback:function(){}];
-
-        [urlConnection verifyThatAllExpectationsHaveBeenMet];
-    }
-    finally
-    {
-        CPURLConnection = tempCPURLConnection;
-    }
+    [urlConnection verifyThatAllExpectationsHaveBeenMet];
 }
 
 - (void)testThatOLActiveRecordDoesFindAllByCallback

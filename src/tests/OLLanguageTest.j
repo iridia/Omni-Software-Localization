@@ -46,37 +46,37 @@
 - (void)testThatOLLanguageDoesGetEnglishFromLProj
 {
     var target = [OLLanguage languageFromLProj:@"English.lproj"];
-    [self assertTrue:[target equals:[OLLanguage english]]];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"English (United States)"]]];
 }
 
 - (void)testThatOLLanguageDoesGetFrenchFromLProj
 {
     var target = [OLLanguage languageFromLProj:@"French.lproj"];
-    [self assertTrue:[target equals:[OLLanguage french]]];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"French (France)"]]];
 }
 
 - (void)testThatOLLanguageDoesGetSpanishFromLProj
 {
     var target = [OLLanguage languageFromLProj:@"Spanish.lproj"];
-    [self assertTrue:[target equals:[OLLanguage spanish]]];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"Spanish (Spain)"]]];
 }
 
 - (void)testThatOLLanguageDoesGetGermanFromLProj
 {
     var target = [OLLanguage languageFromLProj:@"German.lproj"];
-    [self assertTrue:[target equals:[OLLanguage german]]];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"German (Germany)"]]];
 }
 
 - (void)testThatOLLanguageDoesGetArabicFromLProj
 {
-    var target = [OLLanguage languageFromLProj:@"ar.lproj"];
-    [self assertTrue:[target equals:[OLLanguage arabic]]];
+    var target = [OLLanguage languageFromLProj:@"Arabic.lproj"];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"Arabic"]]];
 }
 
 - (void)testThatOLLanguageDoesGetJapaneseFromLProj
 {
     var target = [OLLanguage languageFromLProj:@"Japanese.lproj"];
-    [self assertTrue:[target equals:[OLLanguage japanese]]];
+    [self assertTrue:[target equals:[[OLLanguage alloc] initWithName:@"Japanese"]]];
 }
 
 - (void)testThatOLLanguageDoesGetAsdfFromLProj
@@ -87,13 +87,13 @@
 
 - (void)testThatOLLanguageDoesClone
 {
-    var target = [OLLanguage english];
+    var target = [[OLLanguage alloc] initWithName:@"English (United States)"];
     [self assert:[target clone] notSame:target];
 }
 
 - (void)testThatOLLanguageDoesCloneName
 {
-    var target = [OLLanguage spanish];
+    var target = [[OLLanguage alloc] initWithName:@"Spanish (Spain)"];
     [self assert:[[target clone] name] equals:[target name]];
 }
 
