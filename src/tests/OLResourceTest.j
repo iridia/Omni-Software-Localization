@@ -172,4 +172,11 @@ var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.str
     [self assert:clonedLineItem equals:[[clone lineItems] objectAtIndex:0]];
 }
 
+- (void)testThatOLResourceDoesGetShortFileName
+{
+    var target = [[OLResource alloc] initWithFileName:@"Resources/en.lproj/Menu.strings" fileType:@"strings" lineItems:[CPArray array]];
+    
+    [self assert:@"Menu.strings" equals:[target shortFileName]];
+}
+
 @end

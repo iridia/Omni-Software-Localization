@@ -113,6 +113,18 @@
     [self assertFalse:[[target items] objectForKey:OLMenuItemNewLanguage]];
 }
 
+- (void)testThatOLMenuControllerDoesPostImportNotification
+{
+    var observer = [[Observer alloc] init];
+
+    var target = [[OLMenuController alloc] init];
+
+    [observer startObserving:@"OLProjectShouldImportNotification"];
+
+    [target importItem:self];
+
+    [self assertTrue:[observer didObserve:@"OLProjectShouldImportNotification"]];
+}
 
 - (void)assert:(id)target registered:(CPString)aNotification
 {

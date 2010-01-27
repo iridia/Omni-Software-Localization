@@ -5,6 +5,7 @@
 @import "../Views/OLProjectView.j"
 
 @import "OLResourceBundleController.j"
+@import "OLImportProjectController.j"
 
 // Manages an array of projects
 @implementation OLProjectController : CPObject
@@ -14,6 +15,7 @@
 	OLProjectView   projectView         @accessors;
 	
 	OLResourceBundleController  resourceBundleController;
+	OLImportProjectController   importProjectController;
 }
 
 - (id)init
@@ -24,6 +26,8 @@
 		
 		resourceBundleController = [[OLResourceBundleController alloc] init];
         [self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+        
+        importProjectController = [[OLImportProjectController alloc] init];
    		
    		[self registerForNotifications];
     }
@@ -48,6 +52,12 @@
 	    addObserver:self
 	    selector:@selector(didReceiveProjectDidChangeNotification:)
 	    name:@"OLProjectDidChangeNotification"
+	    object:nil];
+		
+	[[CPNotificationCenter defaultCenter]
+	    addObserver:self
+	    selector:@selector(loadProjects)
+	    name:@"OLMyProjectsShouldReloadNotification"
 	    object:nil];
 	    
     [[CPNotificationCenter defaultCenter]
@@ -79,6 +89,17 @@
        selector:@selector(downloadSelectedProject:)
        name:@"OLProjectShouldDownloadNotification"
        object:nil];
+
+  [[CPNotificationCenter defaultCenter]
+      addObserver:self
+      selector:@selector(startImport:)
+      name:@"OLProjectShouldImportNotification"
+      object:nil];
+}
+
+- (void)startImport:(CPNotification)notification
+{
+    [importProjectController startImport:selectedProject];
 }
 
 - (void)loadProjects
@@ -96,6 +117,12 @@
         }];
     }
 	
+}
+
+- (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
+{
+    [self loadProjects];
+    [self reloadData];
 }
 
 - (void)downloadSelectedProject:(CPNotification)notification
@@ -458,7 +485,7 @@
 	    if (selectedProject !== item)
 	    {
 	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldEnableItemsNotification" 
-	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload]];
+	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport]];
     	    [self setSelectedProject:item];
     	    [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
             [projectView setTitle:[[self selectedProject] name]];

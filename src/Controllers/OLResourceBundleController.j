@@ -105,7 +105,7 @@
     
     for(var i = 0; i < [resourceBundles count]; i++)
     {
-        if([[OLLanguage english] equals:[[resourceBundles objectAtIndex:i] language]])
+        if([[[OLLanguage alloc] initWithName:@"English"] equals:[[resourceBundles objectAtIndex:i] language]])
         {
             found = true;
             [self setSelectedResourceBundle:[resourceBundles objectAtIndex:i]];
@@ -182,14 +182,14 @@
 - (CPArray)availableLanguages
 {
     var result = [CPArray array];
-    
-    for(var i = 0; i < [[OLLanguage allLanguages] count]; i++)
+    var allLanguages = [OLLanguage allLanguages];
+    for(var i = 0; i < [allLanguages count]; i++)
     {
-        var theLanguage = [[OLLanguage allLanguages] objectAtIndex:i];
+        var theLanguage = [allLanguages objectAtIndex:i];
         
         if(![self isLanguageAlreadyLocalized:theLanguage])
         {
-            [result addObject:[[OLLanguage allLanguages] objectAtIndex:i]];
+            [result addObject:[allLanguages objectAtIndex:i]];
         }
     }
     
@@ -256,7 +256,7 @@
 {
     for(var i = 0; i < [resourceBundles count]; i++)
     {
-        if([[[resourceBundles objectAtIndex:i] language] equals:[OLLanguage english]])
+        if([[[resourceBundles objectAtIndex:i] language] equals:[[OLLanguage alloc] initWithName:@"English"]])
         {
             return [resourceBundles objectAtIndex:i];
         }

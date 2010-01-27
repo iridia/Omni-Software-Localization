@@ -105,7 +105,7 @@ var OLCommunitySearchItem = @"Search";
 	if (parent === self)
 	{	    
         [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldDisableItemsNotification" 
-            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload]];
+            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport]];
 	    [self setSelectedItem:item];
 	}
 	else
