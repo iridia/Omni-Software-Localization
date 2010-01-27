@@ -1,4 +1,5 @@
 @import <AppKit/CPView.j>
+@import "OLTableView.j"
 
 var OLGlossaryViewIdentifierColumnHeader = @"OLGlossaryViewIdentifierColumnHeader";
 var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
@@ -12,35 +13,19 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 {
 	if (self = [super initWithFrame:frame])
 	{
-		[self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-		
-		var scrollView = [[CPScrollView alloc] initWithFrame:frame];
-		[scrollView setAutohidesScrollers:YES];
-		[scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-		
-		tableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];
-		[tableView setUsesAlternatingRowBackgroundColors:YES];
-		[tableView setAutoresizingMask:CPViewWidthSizable | CPViewWidthSizable];
-				
-		// define the header color
-		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
-		[[tableView cornerView] setBackgroundColor:headerColor];
-		
 		// add the first column
-		var column = [[CPTableColumn alloc] initWithIdentifier:OLGlossaryViewIdentifierColumnHeader];
-		[[column headerView] setStringValue:@"Identifier"];
-		[[column headerView] setBackgroundColor:headerColor];
-		[column setWidth:200.0];
-		[tableView addTableColumn:column];
+		var columnOne = [[CPTableColumn alloc] initWithIdentifier:OLGlossaryViewIdentifierColumnHeader];
+		[[columnOne headerView] setStringValue:@"Identifier"];
+		[columnOne setWidth:200.0];
 		
-		var column = [[CPTableColumn alloc] initWithIdentifier:OLGlossaryViewValueColumnHeader];
-		[[column headerView] setStringValue:@"Value"];
-		[[column headerView] setBackgroundColor:headerColor];
-		[column setWidth:(CGRectGetWidth(frame) - 200.0)];
-		[tableView addTableColumn:column];
+		var columnTwo = [[CPTableColumn alloc] initWithIdentifier:OLGlossaryViewValueColumnHeader];
+		[[columnTwo headerView] setStringValue:@"Value"];
+		[columnTwo setWidth:(CGRectGetWidth(frame) - 200.0)];
 		
-		[scrollView setDocumentView:tableView];
-		[self addSubview:scrollView];
+		tableView = [[OLTableView alloc] initWithFrame:frame columns:[columnOne, columnTwo]];
+    	[tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+		
+		[self addSubview:tableView];
 	}
 	return self;
 }
