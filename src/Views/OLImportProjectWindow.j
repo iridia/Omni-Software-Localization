@@ -11,7 +11,7 @@ var uploadURL = @"Upload/upload.php";
     CPView          importVersionAndFileView;
     CPView          importFileView;
     
-    CPPopUpButton   fileButton;
+    CPPopUpButton   fileButton                  @accessors;
     CPPopUpButton   languageButton              @accessors;
     CPButton        importNewFileUpload;
 }
@@ -121,7 +121,6 @@ var uploadURL = @"Upload/upload.php";
 
 - (void)languageSelectionDidChange:(id)sender
 {
-    console.log("Here");
     [self reloadFileData];
 }
 

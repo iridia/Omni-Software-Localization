@@ -45,6 +45,14 @@
                 object:self];
 	    }];
 	}
+	else if(jsonResponse.fileType === @"strings")
+	{
+	    var newResource = [OLResource resourceFromJSON:jsonResponse];
+        var resourceBundle = [[project resourceBundles] objectAtIndex:[[importProjectWindow languageButton] indexOfSelectedItem]];
+        var oldResourceIndex = [[importProjectWindow fileButton] indexOfSelectedItem];
+	    [resourceBundle replaceObjectInResourcesAtIndex:oldResourceIndex withObject:newResource];
+	    [project save];
+	}
 }
 
 - (CPArray)titlesOfLanguages
@@ -68,7 +76,7 @@
     
     for(var i = 0; i < [[resourceBundle resources] count]; i++)
     {
-        [result addObject:[[[resourceBundle resources] objectAtIndex:i] fileName]];
+        [result addObject:[[[resourceBundle resources] objectAtIndex:i] shortFileName]];
     }
     
     return result;
