@@ -24116,7 +24116,7 @@ CGContextSetFillColor(_3f,_color);
 CGContextFillPath(_3f);
 }
 })]);
-p;12;CPMenuItem.jI;20;Foundation/CPCoder.jI;21;Foundation/CPObject.jI;21;Foundation/CPString.ji;9;CPImage.ji;8;CPMenu.ji;8;CPView.ji;17;_CPMenuItemView.jc;14606;
+p;12;CPMenuItem.jI;20;Foundation/CPCoder.jI;21;Foundation/CPObject.jI;21;Foundation/CPString.ji;9;CPImage.ji;8;CPMenu.ji;8;CPView.ji;17;_CPMenuItemView.jc;14668;
 var _1=objj_allocateClassPair(CPObject,"CPMenuItem"),_2=_1.isa;
 class_addIvars(_1,[new objj_ivar("_isSeparator"),new objj_ivar("_title"),new objj_ivar("_font"),new objj_ivar("_target"),new objj_ivar("_action"),new objj_ivar("_isEnabled"),new objj_ivar("_isHidden"),new objj_ivar("_tag"),new objj_ivar("_state"),new objj_ivar("_image"),new objj_ivar("_alternateImage"),new objj_ivar("_onStateImage"),new objj_ivar("_offStateImage"),new objj_ivar("_mixedStateImage"),new objj_ivar("_submenu"),new objj_ivar("_menu"),new objj_ivar("_keyEquivalent"),new objj_ivar("_keyEquivalentModifierMask"),new objj_ivar("_mnemonicLocation"),new objj_ivar("_isAlternate"),new objj_ivar("_indentationLevel"),new objj_ivar("_toolTip"),new objj_ivar("_representedObject"),new objj_ivar("_view"),new objj_ivar("_menuItemView")]);
 objj_registerClassPair(_1);
@@ -24338,6 +24338,9 @@ return _isSeparator;
 }),new objj_method(sel_getUid("setMenu:"),function(_5b,_5c,_5d){
 with(_5b){
 _menu=_5d;
+if(_submenu){
+objj_msgSend(_submenu,"setSupermenu:",_menu);
+}
 }
 }),new objj_method(sel_getUid("menu"),function(_5e,_5f){
 with(_5e){
