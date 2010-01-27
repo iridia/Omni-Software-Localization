@@ -10,8 +10,9 @@ var uploadURL = @"Upload/upload.php";
     
     CPView          importVersionAndFileView;
     CPView          importFileView;
+    CPView          currentView;
     
-    CPPopUpButton   fileButton;
+    CPPopUpButton   fileButton                  @accessors;
     CPPopUpButton   languageButton              @accessors;
     CPButton        importNewFileUpload;
 }
@@ -30,13 +31,13 @@ var uploadURL = @"Upload/upload.php";
         
         var importNewVersion = [UploadButton buttonWithTitle:@"Replace with New Version"];
         [importVersionAndFileView addSubview:importNewVersion positioned:CPViewWidthCentered | CPViewTopAligned 
-            relativeTo:importVersionAndFileView withPadding:5.0];
+            relativeTo:importVersionAndFileView withPadding:8.0];
 		[importNewVersion setDelegate:self];
 		[importNewVersion setURL:uploadURL];
         
         var importNewFile = [CPButton buttonWithTitle:@"Import New File"];
-        [importVersionAndFileView addSubview:importNewFile positioned:CPViewWidthCentered | CPViewBottomAligned 
-            relativeTo:importVersionAndFileView withPadding:5.0];
+        [importVersionAndFileView addSubview:importNewFile positioned:CPViewWidthCentered | CPViewBelow 
+            relativeTo:importNewVersion withPadding:12.0];
         [importNewFile setTarget:self];
         [importNewFile setAction:@selector(showReplaceFile:)];
 		
@@ -104,14 +105,30 @@ var uploadURL = @"Upload/upload.php";
 }
 
 - (void)showReplaceFile:(id)sender
-{
-    [self reloadLanguageData];
-    [[self contentView] replaceSubview:importVersionAndFileView with:importFileView];
+{       
+    if(currentView !== importFileView)
+    {
+        var currentFrame = [self frame];
+        currentFrame.size.height += 100;
+        [self setFrame:currentFrame display:YES animate:YES];
+        [self reloadLanguageData];
+        [[self contentView] replaceSubview:importVersionAndFileView with:importFileView];
+        currentView = importFileView;
+    }
 }
 
 - (void)showMain:(id)sender
 {
-    [[self contentView] replaceSubview:importFileView with:importVersionAndFileView];
+    if(currentView !== importVersionAndFileView)
+    {
+        var currentFrame = [self frame];
+        currentFrame.size.height -= 100;
+        [self setFrame:currentFrame display:sender !== delegate animate:sender !== delegate];
+    
+        [[self contentView] replaceSubview:importFileView with:importVersionAndFileView];
+        
+        currentView = importVersionAndFileView;
+    }
 }
 
 - (void)fileSelectionDidChange:(id)sender
@@ -121,7 +138,6 @@ var uploadURL = @"Upload/upload.php";
 
 - (void)languageSelectionDidChange:(id)sender
 {
-    console.log("Here");
     [self reloadFileData];
 }
 

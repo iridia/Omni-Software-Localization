@@ -73,8 +73,7 @@
 {
     var target = [[OLProjectController alloc] init];
     
-    [target startImport:moq()];
-    [self assertTrue:YES];
+    [self assertTrue:[target respondsToSelector:@selector(startImport:)]];
 }
 
 - (void)tearDown

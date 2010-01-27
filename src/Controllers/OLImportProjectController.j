@@ -14,7 +14,7 @@
     self = [super init];
     if(self)
     {
-        importProjectWindow = [[OLImportProjectWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 200) 
+        importProjectWindow = [[OLImportProjectWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 180) 
                 styleMask:CPTitledWindowMask | CPClosableWindowMask];
         [importProjectWindow setDelegate:self];
     }
@@ -24,6 +24,7 @@
 - (void)startImport:(OLProject)aProject
 {
     project = aProject;
+    [importProjectWindow showMain:self];
     [[CPApplication sharedApplication] runModalForWindow:importProjectWindow];
 }
 
@@ -44,6 +45,14 @@
                 postNotificationName:@"OLMyProjectsShouldReloadNotification"
                 object:self];
 	    }];
+	}
+	else if(jsonResponse.fileType === @"strings")
+	{
+	    var newResource = [OLResource resourceFromJSON:jsonResponse];
+        var resourceBundle = [[project resourceBundles] objectAtIndex:[[importProjectWindow languageButton] indexOfSelectedItem]];
+        var oldResourceIndex = [[importProjectWindow fileButton] indexOfSelectedItem];
+	    [resourceBundle replaceObjectInResourcesAtIndex:oldResourceIndex withObject:newResource];
+	    [project save];
 	}
 }
 
@@ -68,7 +77,7 @@
     
     for(var i = 0; i < [[resourceBundle resources] count]; i++)
     {
-        [result addObject:[[[resourceBundle resources] objectAtIndex:i] fileName]];
+        [result addObject:[[[resourceBundle resources] objectAtIndex:i] shortFileName]];
     }
     
     return result;

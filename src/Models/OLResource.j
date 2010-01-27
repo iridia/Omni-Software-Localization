@@ -39,6 +39,11 @@
 	return self;
 }
 
+- (CPString)shortFileName
+{
+    return (/.*\/(.*)/).exec(_fileName)[1];
+}
+
 - (void)voteUp:(OLUser)user
 {
     if (user)
