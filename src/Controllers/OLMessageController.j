@@ -61,11 +61,22 @@ OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShould
     if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
-        [OLMessage findByToUserID:userLoggedIn withCallback:function(message)
+        [OLMessage findByToUserID:userLoggedIn withCallback:function(message,isFinal)
     	{
             [self addMessage:message];
+            if(isFinal)
+            {
+                [self sortMessages];
+            }
         }];
     }
+}
+
+- (void)sortMessages
+{
+    messages = [messages sortedArrayUsingFunction:function(lhs, rhs, context){  
+               return [[rhs dateSent] compare:[lhs dateSent]];
+           }];
 }
 
 - (void)addMessage:(OLMessage)message
