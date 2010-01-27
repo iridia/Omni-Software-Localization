@@ -11929,7 +11929,7 @@ with(_8){
 return objj_msgSend(CPPlatformString,"sizeOfString:withFont:forWidth:",_8,_a,_b);
 }
 })]);
-p;15;CPTableColumn.jI;25;Foundation/CPDictionary.jI;21;Foundation/CPObject.jI;29;Foundation/CPSortDescriptor.jI;21;Foundation/CPString.ji;19;CPTableHeaderView.jc;9137;
+p;15;CPTableColumn.jI;25;Foundation/CPDictionary.jI;21;Foundation/CPObject.jI;29;Foundation/CPSortDescriptor.jI;21;Foundation/CPString.ji;19;CPTableHeaderView.jc;9209;
 CPTableColumnNoResizing=0;
 CPTableColumnAutoresizingMask=1;
 CPTableColumnUserResizingMask=2;
@@ -11956,6 +11956,7 @@ objj_msgSend(_5,"setHeaderView:",_8);
 var _9=objj_msgSend(CPTextField,"new");
 objj_msgSend(_9,"setValue:forThemeAttribute:inState:",objj_msgSend(CPColor,"whiteColor"),"text-color",CPThemeStateHighlighted);
 objj_msgSend(_9,"setValue:forThemeAttribute:inState:",objj_msgSend(CPFont,"boldSystemFontOfSize:",12),"font",CPThemeStateHighlighted);
+objj_msgSend(_9,"setVerticalAlignment:",CPCenterVerticalTextAlignment);
 objj_msgSend(_5,"setDataView:",_9);
 }
 return _5;
@@ -12278,7 +12279,7 @@ CGContextStrokePath(_2c);
 }
 }
 })]);
-p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;72748;
+p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;72591;
 CPTableViewColumnDidMoveNotification="CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification="CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification="CPTableViewSelectionDidChangeNotification";
@@ -12661,6 +12662,9 @@ objj_msgSend(_94,"_noteSelectionDidChange");
 }),new objj_method(sel_getUid("selectRowIndexes:byExtendingSelection:"),function(_99,_9a,_9b,_9c){
 with(_99){
 if((objj_msgSend(_9b,"firstIndex")!=CPNotFound&&objj_msgSend(_9b,"firstIndex")<0)||objj_msgSend(_9b,"lastIndex")>=objj_msgSend(_99,"numberOfRows")){
+return;
+}
+if(objj_msgSend(_9b,"isEqualToIndexSet:",_selectedRowIndexes)){
 return;
 }
 if(objj_msgSend(_selectedColumnIndexes,"count")>0){
@@ -13603,9 +13607,6 @@ _previouslySelectedRowIndexes=objj_msgSend(_selectedRowIndexes,"copy");
 objj_msgSend(self,"_updateSelectionWithMouseAtRow:",_1cb);
 }
 }
-if(!objj_msgSend(_previouslySelectedRowIndexes,"isEqualToIndexSet:",_selectedRowIndexes)){
-objj_msgSend(self,"_noteSelectionDidChange");
-}
 if(_1c7&&(_implementedDataSourceMethods&_1)&&!_trackingPointMovedOutOfClickSlop&&(objj_msgSend(objj_msgSend(CPApp,"currentEvent"),"clickCount")>1)){
 _1c9=objj_msgSend(self,"columnAtPoint:",_1c5);
 if(_1c9!==-1){
@@ -13866,7 +13867,6 @@ return;
 objj_msgSend(self,"selectRowIndexes:byExtendingSelection:",objj_msgSend(CPIndexSet,"indexSetWithIndex:",i),_208);
 if(i){
 objj_msgSend(self,"scrollRowToVisible:",i);
-objj_msgSend(self,"_noteSelectionDidChange");
 }
 }
 }),new objj_method(sel_getUid("moveUp:"),function(self,_209,_20a){
@@ -13901,7 +13901,6 @@ return;
 objj_msgSend(self,"selectRowIndexes:byExtendingSelection:",objj_msgSend(CPIndexSet,"indexSetWithIndex:",i),_20c);
 if(i){
 objj_msgSend(self,"scrollRowToVisible:",i);
-objj_msgSend(self,"_noteSelectionDidChange");
 }
 }
 }),new objj_method(sel_getUid("deleteBackward:"),function(self,_20d,_20e){
