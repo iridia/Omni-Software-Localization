@@ -61,11 +61,22 @@ OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShould
     if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
-        [OLMessage findByToUserID:userLoggedIn withCallback:function(message)
+        [OLMessage findByToUserID:userLoggedIn withCallback:function(message,isFinal)
     	{
             [self addMessage:message];
+            if(isFinal)
+            {
+                [self sortMessages];
+            }
         }];
     }
+}
+
+- (void)sortMessages
+{
+    messages = [messages sortedArrayUsingFunction:function(lhs, rhs, context){  
+               return [[rhs dateSent] compare:[lhs dateSent]];
+           }];
 }
 
 - (void)addMessage:(OLMessage)message
@@ -128,9 +139,12 @@ OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShould
             wasFound = YES;
             var message = [[OLMessage alloc] initFromUser:fromUser toUser:user subject:subject content:text];
             [message setDelegate:self];
-            console.log(_cmd,message);
-            [message save];
+            [message saveWithCallback:function(){
+                [self loadMessages]; 
+                [mailView reloadData];
+            }];
         }
+        
         if(isFinal && !wasFound)
         {
             [messageWindow setStatus:@"Invalid To field."];

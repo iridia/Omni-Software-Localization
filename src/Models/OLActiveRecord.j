@@ -294,6 +294,10 @@ var OLActiveRecordRecordIDKey = @"_id";
 	                callback(record, (i === json.rows.length - 1));
 	            }
 	            
+	            if(json.rows.length === 0)
+	            {
+	                callback(nil, true);
+	            }
 	            break;
 
 	        case SearchConnection:
@@ -302,6 +306,11 @@ var OLActiveRecordRecordIDKey = @"_id";
             		var decodedObject = [self _objectFromJSON:json.rows[i].value];
             		callback(decodedObject, (i === json.rows.length - 1));
             	}
+
+	            if(json.rows.length === 0)
+	            {
+	                callback(nil, true);
+	            }
             	break;
 
 	        case CreateConnection:
