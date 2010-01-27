@@ -4,6 +4,7 @@
 @import "../Models/OLProject.j"
 @import "../Views/OLProjectView.j"
 
+@import "OLLoginController.j"
 @import "OLResourceBundleController.j"
 @import "OLImportProjectController.j"
 
@@ -300,7 +301,7 @@
         [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
         
         [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLUserShouldLoginNotification"
+            postNotificationName:OLLoginControllerShouldLoginNotification
             object:nil
             userInfo:userInfo];
         
@@ -328,7 +329,7 @@
         [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
 
         [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLUserShouldLoginNotification"
+            postNotificationName:OLLoginControllerShouldLoginNotification
             object:nil
             userInfo:userInfo];
 
@@ -382,7 +383,7 @@
         [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
         
         [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLUserShouldLoginNotification"
+            postNotificationName:OLLoginControllerShouldLoginNotification
             object:nil
             userInfo:userInfo];
         return;

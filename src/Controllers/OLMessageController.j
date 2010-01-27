@@ -1,11 +1,13 @@
 @import <Foundation/CPObject.j>
 
-@import "OLToolbarController.j"
+@import "OLLoginController.j"
 @import "../Categories/CPDate+RelativeDate.j"
 @import "../Models/OLUser.j";
 @import "../Views/OLMessageWindow.j"
 @import "../Views/OLMailView.j"
 @import "../Models/OLMessage.j"
+
+OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShouldSendMessageNotification";
 
 @implementation OLMessageController : CPObject
 {
@@ -34,7 +36,7 @@
     	[[CPNotificationCenter defaultCenter]
     	   addObserver:self
     	   selector:@selector(showMessageWindow:)
-    	   name:OLToolbarControllerShouldCreateNewMessage
+    	   name:OLMessageControllerShouldCreateMessageNotification
     	   object:nil];
     }
     
@@ -101,7 +103,7 @@
         [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
         
         [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLUserShouldLoginNotification"
+            postNotificationName:OLLoginControllerShouldLoginNotification
             object:nil
             userInfo:userInfo];
         
