@@ -8,6 +8,7 @@
 @import "../Models/OLMessage.j"
 
 OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShouldSendMessageNotification";
+OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerShouldShowBroadcastViewNotification";
 
 @implementation OLMessageController : CPObject
 {
@@ -35,24 +36,31 @@ OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShould
     		
     	[[CPNotificationCenter defaultCenter]
     	   addObserver:self
-    	   selector:@selector(showMessageWindow:)
+    	   selector:@selector(createMessage:)
     	   name:OLMessageControllerShouldCreateMessageNotification
     	   object:nil];
         
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(createBroadcastMessage:)
-            name:@"CPMessageShouldBroadcastNotification"
+            name:OLMessageControllerShouldShowBroadcastViewNotification
             object:nil];
     }
     
     return self;
 }
 
-- (void)createBroadcastMessage:(id)sender
+- (void)createBroadcastMessage:(CPNotification)notification
 {
-    [self showMessageWindow:sender];
-//    [messageWindow ]
+    var project = [[notification userInfo] objectForKey:@"project"];
+    [messageWindow setIsBroadcastMessage:YES forProject:project];
+    [self showMessageWindow:self];
+}
+
+- (void)createMessage:(CPNotification)notification
+{
+    [messageWindow setIsBroadcastMessage:NO forProject:nil];
+    [self showMessageWindow:self];
 }
 
 - (void)setMailView:(OLMailView)aMailView
@@ -126,10 +134,9 @@ OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShould
 
 - (void)didSendMessage:(CPDictionary)messageDictionary
 {
-    var toUser = [messageDictionary objectForKey:@"ToUserID"];
+    var toUser = [messageDictionary objectForKey:@"email"];
     var subject = [messageDictionary objectForKey:@"subject"];
     var text = [messageDictionary objectForKey:@"content"];
-    var dateSent = [messageDictionary objectForKey:@"dateSent"];
     var fromUser = [[OLUserSessionManager defaultSessionManager] user];
     
     var wasFound = NO;
@@ -147,6 +154,19 @@ OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShould
             [messageWindow setStatus:@"Invalid To field."];
         }
     }];
+}
+
+- (void)didSendBroadcastMessage:(CPDictionary)messageDictionary
+{
+    var subject = [messageDictionary objectForKey:@"subject"];
+    var content = [messageDictionary objectForKey:@"content"];
+    var project = [messageDictionary objectForKey:@"project"];
+    var fromUser = [[OLUserSessionManager defaultSessionManager] user];
+    
+    var toUsers = [project subscribers];
+    var message = [[OLMessage alloc] initFromUser:fromUser toUsers:toUsers subject:subject content:content];
+    [message setDelegate:self];
+    [message save];
 }
 
 - (void)willCreateRecord:(OLMessage)message

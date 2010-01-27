@@ -8,6 +8,8 @@
 @import "OLResourceBundleController.j"
 @import "OLImportProjectController.j"
 
+OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsNotification";
+
 // Manages an array of projects
 @implementation OLProjectController : CPObject
 {
@@ -58,7 +60,7 @@
 	[[CPNotificationCenter defaultCenter]
 	    addObserver:self
 	    selector:@selector(loadProjects)
-	    name:@"OLMyProjectsShouldReloadNotification"
+	    name:OLProjectShouldReloadMyProjectsNotification
 	    object:nil];
 	    
     [[CPNotificationCenter defaultCenter]
@@ -91,16 +93,31 @@
        name:@"OLProjectShouldDownloadNotification"
        object:nil];
 
-  [[CPNotificationCenter defaultCenter]
-      addObserver:self
-      selector:@selector(startImport:)
-      name:@"OLProjectShouldImportNotification"
-      object:nil];
+    [[CPNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(startImport:)
+        name:@"OLProjectShouldImportNotification"
+        object:nil];
+     
+    [[CPNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(createBroadcastMessage:)
+        name:@"CPMessageShouldBroadcastNotification"
+        object:nil];
 }
 
 - (void)startImport:(CPNotification)notification
 {
     [importProjectController startImport:selectedProject];
+}
+
+- (void)createBroadcastMessage:(CPNotification)notification
+{
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLMessageControllerShouldShowBroadcastViewNotification
+        object:self
+        userInfo:[CPDictionary dictionaryWithObjects:[selectedProject] forKeys:[@"project"]]];
+        
 }
 
 - (void)loadProjects
@@ -163,7 +180,7 @@
 		[self addProject:newProject];
     	[newProject saveWithCallback:function(){
     	    [[CPNotificationCenter defaultCenter]
-                        postNotificationName:@"OLProjectsShouldReload"
+                        postNotificationName:OLProjectShouldReloadMyProjectsNotification
                         object:self];
     	}];
 	}
@@ -173,20 +190,6 @@
 {
     [selectedProject save];
     [projectView reloadAllData];
-}
-
-- (void)didReceiveProjectShouldBranchNotification:(CPNotification)notification
-{
-    [selectedProject addSubscriber:[[CPUserSessionManager defaultManager] userIdentifier]];
-    
-    var alert = [[CPAlert alloc] init];
-    [alert setTitle:@"Not your project!"];
-    [alert setMessageText:@"This is not your project. In order to start localizing, you will need to create your own. Do you want to create your own project of this application?"];
-    [alert setAlertStyle:CPInformationalAlertStyle];
-    [alert addButtonWithTitle:@"No"];
-    [alert addButtonWithTitle:@"Yes"];
-    [alert setDelegate:self];
-    [alert runModal];
 }
 
 - (void)didReceiveUserDidChangeNotification:(CPNotification)notification
@@ -199,20 +202,6 @@
     var index = [[notification userInfo] objectForKey:@"SelectedIndex"];
     
     [projectView selectLineItemsTableViewRowIndexes:[CPIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
-}
-
-- (void)alertDidEnd:(CPAlert)theAlert returnCode:(int)returnCode
-{
-    if(returnCode === 1 && [[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
-    {
-        var clonedProject = [selectedProject clone];
-        [clonedProject setUserIdentifier:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
-        [clonedProject saveWithCallback:function(project){
-            [[CPNotificationCenter defaultCenter]
-                postNotificationName:@"OLProjectsShouldReload"
-                object:self];
-        }];
-    }
 }
 
 - (void)setProjectView:(OLProjectView)aProjectView
@@ -311,10 +300,7 @@
     }
     else if(![[OLUserSessionManager defaultSessionManager] isUserTheLoggedInUser:[selectedProject userIdentifier]])
     {
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLProjectShouldBranchNotification"
-            object:nil];
-        
+        [self branchSelectedProject];        
         return;
     }
     
@@ -339,10 +325,7 @@
     }
     else if(![[OLUserSessionManager defaultSessionManager] isUserTheLoggedInUser:[selectedProject userIdentifier]])
     {
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:@"OLProjectShouldBranchNotification"
-            object:nil];
-
+        [self branchSelectedProject];
         return;
     }
     
@@ -392,8 +375,8 @@
     }
     else if(![userSessionManager isUserTheLoggedInUser:[selectedProject userIdentifier]])
     {
-        [self didReceiveProjectShouldBranchNotification:nil];
-            
+        [self branchSelectedProject];
+          
         return;
     }
     

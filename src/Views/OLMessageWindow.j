@@ -9,6 +9,7 @@
     CPView submittedMessageView;
     CPView currentView; // Keeps track of the current content view
     
+    CPTextField emailLabel;
     CPTextField emailTextField;
     CPTextField messageTextView;
     CPTextField messageTextLabel;
@@ -16,6 +17,8 @@
     
     CPButton    closeButton;
     CPButton    submitButton;
+    
+    CPDictionary    messageDictionary;
     
     id delegate @accessors;
 }
@@ -33,7 +36,7 @@
         
         messageView = [[CPView alloc] initWithFrame:CGRectInset([contentView bounds], 10, 10)];
 
-        var emailLabel = [CPTextField labelWithTitle:@"To"];
+        emailLabel = [CPTextField labelWithTitle:@"To"];
         [messageView addSubview:emailLabel];
 
         emailTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"email@example.com" width:CGRectGetWidth([messageView bounds])];
@@ -55,7 +58,7 @@
         [messageTextView setBezeled:YES];
         [messageTextView setLineBreakMode:CPLineBreakByWordWrapping];
         [messageTextView setTarget:self];
-        [messageTextView setAction:@selector(sendMessage:)]
+        [messageTextView setAction:@selector(sendMessage:)];
         [messageView addSubview:messageTextView positioned:CPViewBelow relativeTo:subjectTextField withPadding:5.0];
         
         submitButton = [CPButton buttonWithTitle:@"Send Message"];
@@ -102,23 +105,57 @@
         [closeButton setTarget:self];
         [closeButton setAction:@selector(cancel:)];
         [submittedMessageView addSubview:closeButton positioned:CPViewBelow | CPViewWidthCentered relativeTo:thankYouText withPadding:5.0];
+        
+        messageDictionary = [CPDictionary dictionary];
     }
     
     return self;
+}
+
+- (void)setIsBroadcastMessage:(BOOL)isBroadcast forProject:(OLProject)aProject
+{
+    if (isBroadcast)
+    {
+        [emailLabel setHidden:YES];
+        [emailTextField setHidden:YES];
+        [submitButton setAction:@selector(sendBroadcastMessage:)];
+        [messageTextView setAction:@selector(sendBroadcastMessage:)];
+        [messageDictionary setObject:aProject forKey:@"project"];
+    }
+    else
+    {
+        [emailLabel setHidden:NO];
+        [emailTextField setHidden:NO];
+        [submitButton setAction:@selector(sendMessage:)];
+        [messageTextView setAction:@selector(sendMessage:)];
+        [messageDictionary removeObjectForKey:@"project"];
+    }
+}
+
+- (void)sendBroadcastMessage:(id)sender
+{
+    [self setStatus:@""];
+    
+    [messageDictionary setObject:[subjectTextField stringValue] forKey:@"subject"];
+    [messageDictionary setObject:[messageTextView stringValue] forKey:@"content"];
+    
+    if ([delegate respondsToSelector:@selector(didSendBroadcastMessage:)])
+	{
+	    [delegate didSendBroadcastMessage:messageDictionary];
+	}
 }
 
 - (void)sendMessage:(id)sender
 {
     [self setStatus:@""];
     
-    var message = [CPDictionary dictionary];
-    [message setObject:[emailTextField stringValue] forKey:@"ToUserID"];
-    [message setObject:[subjectTextField stringValue] forKey:@"subject"];
-    [message setObject:[messageTextView stringValue] forKey:@"content"];
+    [messageDictionary setObject:[emailTextField stringValue] forKey:@"email"];
+    [messageDictionary setObject:[subjectTextField stringValue] forKey:@"subject"];
+    [messageDictionary setObject:[messageTextView stringValue] forKey:@"content"];
     
     if ([delegate respondsToSelector:@selector(didSendMessage:)])
 	{
-	    [delegate didSendMessage:message];
+	    [delegate didSendMessage:messageDictionary];
 	}
 }
 

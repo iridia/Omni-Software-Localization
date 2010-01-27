@@ -91,7 +91,9 @@
 
 - (void)addSubscriber:(CPString)subscriberId
 {
+    console.log(_cmd, subscribers, subscriberId);
     [subscribers addObject:subscriberId];
+    console.log(_cmd, subscribers, subscriberId);
 }
 
 - (CPString)sidebarName
@@ -115,6 +117,7 @@
 var OLProjectNameKey = @"OLProjectNameKey";
 var OLProjectResourceBundlesKey = @"OLProjectResourceBundlesKey";
 var OLProjectUserKey = @"OLProjectUserKey";
+var OLProjectSubscribersKey = @"OLProjectSubscribersKey";
 
 @implementation OLProject (CPCoding)
 
@@ -127,6 +130,7 @@ var OLProjectUserKey = @"OLProjectUserKey";
         name = [aCoder decodeObjectForKey:OLProjectNameKey];
         resourceBundles = [aCoder decodeObjectForKey:OLProjectResourceBundlesKey];
         userIdentifier = [aCoder decodeObjectForKey:OLProjectUserKey];
+        subscribers = [aCoder decodeObjectForKey:OLProjectSubscribersKey];
     }
     
     return self;
@@ -137,6 +141,7 @@ var OLProjectUserKey = @"OLProjectUserKey";
     [aCoder encodeObject:name forKey:OLProjectNameKey];
     [aCoder encodeObject:resourceBundles forKey:OLProjectResourceBundlesKey];
     [aCoder encodeObject:userIdentifier forKey:OLProjectUserKey];
+    [aCoder encodeObject:subscribers forKey:OLProjectSubscribersKey];
 }
 
 @end

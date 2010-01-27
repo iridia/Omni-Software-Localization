@@ -22,7 +22,7 @@
 
 - (id)initFromUser:(OLUser)from toUser:(OLUser)to subject:(CPString)aSubject content:(CPString)someContent
 {
-    return [self initFromUser:from toUsers:[to] subject:aSubject content:someContent];
+    return [self initFromUser:from toUsers:[[to userIdentifier]] subject:aSubject content:someContent];
 }
 
 - (id)initFromUser:(OLUser)from toUsers:(CPArray)to subject:(CPString)aSubject content:(CPString)someContent
@@ -34,7 +34,7 @@
 		toUsers = [];
 		for (var i = 0; i < [to count]; i++)
 		{
-		    [toUsers addObject:[[to objectAtIndex:i] userIdentifier]];
+		    [toUsers addObject:[to objectAtIndex:i]];
 		}
 		
 		subject = aSubject;

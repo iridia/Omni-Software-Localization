@@ -137,3 +137,37 @@
 }
 
 @end
+
+@implementation OLProjectSearchController (Branching)
+
+- (void)alertDidEnd:(CPAlert)theAlert returnCode:(int)returnCode
+{
+    if(returnCode === 1 && [[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
+    {
+        [selectedProject addSubscriber:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
+        [selectedProject save];
+        console.log(selectedProject);
+        
+        var clonedProject = [selectedProject clone];
+        [clonedProject setUserIdentifier:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
+        [clonedProject saveWithCallback:function(project){
+            [[CPNotificationCenter defaultCenter]
+                postNotificationName:OLProjectShouldReloadMyProjectsNotification
+                object:self];
+        }];
+    }
+}
+
+- (void)branchSelectedProject
+{    
+    var alert = [[CPAlert alloc] init];
+    [alert setTitle:@"Not your project!"];
+    [alert setMessageText:@"This is not your project. In order to start localizing, you will need to create your own. Do you want to create your own project of this application?"];
+    [alert setAlertStyle:CPInformationalAlertStyle];
+    [alert addButtonWithTitle:@"No"];
+    [alert addButtonWithTitle:@"Yes"];
+    [alert setDelegate:self];
+    [alert runModal];
+}
+
+@end
