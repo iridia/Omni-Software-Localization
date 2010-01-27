@@ -6,28 +6,37 @@
     CPString    subject         @accessors;
 	CPString    content         @accessors;
 	CPDate      dateSent        @accessors;
-	CPString    toUserID        @accessors;
-	CPString    fromUserID      @accessors;
+	CPArray     toUsers         @accessors;
 	CPString    fromUserEmail   @accessors;   
 }
 
 - (id)init
 {
-    return [self initFromUser:nil toUser:nil subject:@"" content:""];
+    return [self initFromUser:nil toUsers:nil subject:@"" content:""];
 }
 
-- (id)initFromUser:(OLUser)from toUser:(OLUser)to
+- (id)initFromUser:(OLUser)from toUsers:(CPArray)to
 {
     return [self initFromUser:from toUser:to subject:@"No Subject" content:@""];
 }
 
 - (id)initFromUser:(OLUser)from toUser:(OLUser)to subject:(CPString)aSubject content:(CPString)someContent
 {
+    return [self initFromUser:from toUsers:[to] subject:aSubject content:someContent];
+}
+
+- (id)initFromUser:(OLUser)from toUsers:(CPArray)to subject:(CPString)aSubject content:(CPString)someContent
+{
     if(self = [super init])
 	{
-		fromUserID = [from userIdentifier];
 		fromUserEmail = [from email];
-		toUserID = [to userIdentifier];
+		
+		toUsers = [];
+		for (var i = 0; i < [to count]; i++)
+		{
+		    [toUsers addObject:[[to objectAtIndex:i] userIdentifier]];
+		}
+		
 		subject = aSubject;
 		content = someContent;
 		dateSent = [CPDate date];
@@ -37,12 +46,11 @@
 
 @end
 
-var OLMessageFromUserIDKey= @"OLMessageFromUserIDKey";
 var OLMessageFromUserEmailKey = @"OLMessageFromUserEmailKey";
 var OLMessageSubjectKey = @"OLMessageSubjectKey";
 var OLMessageContentKey = @"OLMessageContentKey";
 var OLMessageDateSentKey = @"OLMessageDateSentKey";
-var OLMessageToUserIDKey = @"OLMessageToUserIDKey";
+var OLMessageToUsersKey = @"OLMessageToUsersKey";
 
 @implementation OLMessage (CPCoding)
 
@@ -52,12 +60,11 @@ var OLMessageToUserIDKey = @"OLMessageToUserIDKey";
     
     if (self)
     {
-		fromUserID = [aCoder decodeObjectForKey:OLMessageFromUserIDKey];
 		fromUserEmail = [aCoder decodeObjectForKey:OLMessageFromUserEmailKey];
         subject = [aCoder decodeObjectForKey:OLMessageSubjectKey];
         content = [aCoder decodeObjectForKey:OLMessageContentKey];
         dateSent = [aCoder decodeObjectForKey:OLMessageDateSentKey];
-        toUserID = [aCoder decodeObjectForKey:OLMessageToUserIDKey];
+        toUsers = [aCoder decodeObjectForKey:OLMessageToUsersKey];
     }
     
     return self;
@@ -65,12 +72,11 @@ var OLMessageToUserIDKey = @"OLMessageToUserIDKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-	[aCoder encodeObject:fromUserID forKey:OLMessageFromUserIDKey];
 	[aCoder encodeObject:fromUserEmail forKey:OLMessageFromUserEmailKey];
     [aCoder encodeObject:subject forKey:OLMessageSubjectKey];
     [aCoder encodeObject:content forKey:OLMessageContentKey];
     [aCoder encodeObject:dateSent forKey:OLMessageDateSentKey];
-    [aCoder encodeObject:toUserID forKey:OLMessageToUserIDKey];
+    [aCoder encodeObject:toUsers forKey:OLMessageToUsersKey];
 }
 
 @end

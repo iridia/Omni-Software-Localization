@@ -111,4 +111,9 @@ OLMenuItemDisabled = NO;
     [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectShouldImportNotification" object:self];
 }
 
+- (void)broadcastMessage:(id)sender
+{
+    [[CPNotificationCenter defaultCenter] postNotificationName:@"CPMessageShouldBroadcastNotification" object:self];
+}
+
 @end

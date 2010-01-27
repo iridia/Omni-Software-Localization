@@ -73,7 +73,7 @@ OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShould
     if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
-        [OLMessage findByToUserID:userLoggedIn withCallback:function(message)
+        [OLMessage findByToUsers:userLoggedIn withCallback:function(message)
     	{
             [self addMessage:message];
         }];
