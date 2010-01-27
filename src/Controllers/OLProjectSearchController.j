@@ -7,6 +7,7 @@
     CPString                ownerName;
     
     OLContentViewController contentViewController   @accessors;
+    BOOL                    _isLoading;
 }
 
 - (void)registerForNotifications
@@ -22,12 +23,12 @@
 	    selector:@selector(didReceiveProjectDidChangeNotification:)
 	    name:@"OLProjectDidChangeNotification"
 	    object:nil];
-
-    [[CPNotificationCenter defaultCenter]
-	    addObserver:self
-		selector:@selector(didReceiveProjectsShouldReloadNotification:)
-		name:@"OLProjectsShouldReload"
-		object:nil];
+        // 
+        //     [[CPNotificationCenter defaultCenter]
+        //      addObserver:self
+        // selector:@selector(didReceiveProjectsShouldReloadNotification:)
+        // name:@"OLProjectsShouldReload"
+        // object:nil];
         
 	[[CPNotificationCenter defaultCenter]
 	   addObserver:self
@@ -38,17 +39,24 @@
 
 - (void)loadProjects
 {
+    if (_isLoading)
+        return;
+
+    _isLoading = YES;
+    console.log("first", projects);
     projects = [CPArray array];
     [OLProject findAllProjectsByNameWithCallback:function(project, isFinal)
-                           {
-                               [self addProject:project];
-                               [self reloadData];
-                               
-                               if(isFinal)
-                               {
-                                   [self sortProjects];
-                               }
-                           }];
+    {
+        [self addProject:project];
+
+        if(isFinal)
+        {
+            [self sortProjects];
+            [self reloadData];
+            console.log("second", projects);
+            _isLoading = NO;
+        }
+    }];
 }
 
 - (void)sortProjects
@@ -86,6 +94,7 @@
 
 - (void)didReceiveProjectControllerFinished:(CPNotification)notification
 {
+    console.log(_cmd, [self className]);
     [self loadProjects];
 }
 

@@ -21,6 +21,7 @@ var OLCommunitySearchItem = @"Search";
         if(self = [super init])
         {        		
         	searchController = [[OLProjectSearchController alloc] init];
+        	console.log(_cmd, [self className]);
         	[searchController loadProjects];
         	
         	messageController = [[OLMessageController alloc] init];
@@ -83,7 +84,8 @@ var OLCommunitySearchItem = @"Search";
             break;
         case OLCommunitySearchItem:
             view = [searchController contentView];
-            [searchController reloadData];
+            console.log(_cmd, [self className]);
+            [searchController loadProjects];
             break;
         default:
             CPLog.warn(@"Unhandled case in %s, %s", [self className], _cmd);

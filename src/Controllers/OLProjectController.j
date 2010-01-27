@@ -129,6 +129,7 @@
 
 - (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
 {
+    console.log(_cmd, [self className]);
     [self loadProjects];
     [self reloadData];
 }
@@ -194,6 +195,7 @@
 
 - (void)didReceiveUserDidChangeNotification:(CPNotification)notification
 {
+    console.log(_cmd, [self className]);
     [self loadProjects];
 }
 
@@ -212,7 +214,7 @@
         [clonedProject setUserIdentifier:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
         [clonedProject saveWithCallback:function(project){
             [[CPNotificationCenter defaultCenter]
-                postNotificationName:@"OLProjectsShouldReload"
+                postNotificationName:@"OLMyProjectsShouldReloadNotification"
                 object:self];
         }];
     }
@@ -435,7 +437,10 @@
             [selectedProject save];
         }
     }
-    console.log(projects);
+    else
+    {
+        [[CPNotificationCenter defaultCenter] postNotificationName:OLLoginControllerShouldLoginNotification object:self];
+    }
 }
 
 - (void)voteDown:(id)sender
@@ -459,6 +464,10 @@
             }
             [selectedProject save];
         }
+    }
+    else
+    {
+        [[CPNotificationCenter defaultCenter] postNotificationName:OLLoginControllerShouldLoginNotification object:self];
     }
 }
 
