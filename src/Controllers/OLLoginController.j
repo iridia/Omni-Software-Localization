@@ -6,6 +6,8 @@
 @import "../Views/OLLoginAndRegisterWindow.j"
 @import "../Models/OLUser.j"
 
+OLLoginControllerShouldLoginNotification = @"OLLoginControllerShouldLoginNotification";
+
 @implementation OLLoginController : CPObject
 {
     CPWindow    loginAndRegisterWindow;
@@ -24,7 +26,7 @@
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(showLoginAndRegisterWindow:)
-            name:OLToolbarControllerShouldLogin
+            name:OLLoginControllerShouldLoginNotification
             object:nil];
     }
     return self;

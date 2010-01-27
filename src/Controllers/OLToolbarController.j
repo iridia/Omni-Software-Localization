@@ -9,10 +9,6 @@ var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
 var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
 var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 
-// Notifications
-OLToolbarControllerShouldCreateNewMessage = @"OLToolbarControllerShouldCreateNewMessage";
-OLToolbarControllerShouldLogin = @"OLToolbarControllerShouldLogin";
-
 
 @implementation OLToolbarController : CPObject
 {
@@ -113,7 +109,7 @@ OLToolbarControllerShouldLogin = @"OLToolbarControllerShouldLogin";
 - (void)login:(id)sender
 {
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLToolbarControllerShouldLogin
+        postNotificationName:OLLoginControllerShouldLoginNotification
         object:self];
 }
 
@@ -127,7 +123,7 @@ OLToolbarControllerShouldLogin = @"OLToolbarControllerShouldLogin";
 - (void)newMessage:(id)sender
 {
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLToolbarControllerShouldCreateNewMessage
+        postNotificationName:OLMessageControllerShouldCreateMessageNotification
         object:self];
 }
 
