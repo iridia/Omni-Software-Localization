@@ -13,7 +13,7 @@
 {
     CPArray         projects       	    @accessors;
 	OLProject	    selectedProject		@accessors;
-	OLProjectView   projectView;
+	OLProjectView   projectView         @accessors;
 	
 	OLResourceBundleController  resourceBundleController;
 	OLImportProjectController   importProjectController;
@@ -117,11 +117,19 @@
             [self addProject:project];
         }];
     }
-	
+}
+
+- (void)loadVotes
+{
+    for(var project in projects)
+    {
+        
+    }
 }
 
 - (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
 {
+    console.log(_cmd, [self className]);
     [self loadProjects];
     [self reloadData];
 }
@@ -161,11 +169,9 @@
 	{
 		var newProject = [OLProject projectFromJSON:jsonResponse];
 		[self addProject:newProject];
-    	[newProject saveWithCallback:function(){
-    	    [[CPNotificationCenter defaultCenter]
-                        postNotificationName:@"OLProjectsShouldReload"
-                        object:self];
-    	}];
+    	[newProject saveWithCallback:function() {
+    	   [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectControllerDidFinishSavingNotification" object:nil]; 
+    	}];	
 	}
 }
 
@@ -189,6 +195,7 @@
 
 - (void)didReceiveUserDidChangeNotification:(CPNotification)notification
 {
+    console.log(_cmd, [self className]);
     [self loadProjects];
 }
 
@@ -207,7 +214,7 @@
         [clonedProject setUserIdentifier:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
         [clonedProject saveWithCallback:function(project){
             [[CPNotificationCenter defaultCenter]
-                postNotificationName:@"OLProjectsShouldReload"
+                postNotificationName:@"OLMyProjectsShouldReloadNotification"
                 object:self];
         }];
     }
@@ -410,19 +417,68 @@
 
 - (void)voteUp:(id)sender
 {
-    [resourceBundleController voteUp];
-    [projectView reloadVoting];
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+    if(user)
+    {
+        var oldVoteValue = [self usersCurrentVoteValue:user];
+        if(oldVoteValue !== 1)
+        {
+            [resourceBundleController voteUp];
+            [projectView reloadVoting];
+            if(oldVoteValue === -1)
+            {
+                [selectedProject voteUp];
+                [selectedProject voteUp];
+            }
+            else
+            {
+                [selectedProject voteUp];
+            }
+            [selectedProject save];
+        }
+    }
+    else
+    {
+        [[CPNotificationCenter defaultCenter] postNotificationName:OLLoginControllerShouldLoginNotification object:self];
+    }
 }
 
 - (void)voteDown:(id)sender
 {
-    [resourceBundleController voteDown];
-    [projectView reloadVoting];
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+    if(user)
+    {
+        var oldVoteValue = [self usersCurrentVoteValue:user];
+        if(oldVoteValue !== -1)
+        {
+            [resourceBundleController voteDown];
+            [projectView reloadVoting];
+            if(oldVoteValue === 1)
+            {
+                [selectedProject voteDown];
+                [selectedProject voteDown];
+            }
+            else
+            {
+                [selectedProject voteDown];
+            }
+            [selectedProject save];
+        }
+    }
+    else
+    {
+        [[CPNotificationCenter defaultCenter] postNotificationName:OLLoginControllerShouldLoginNotification object:self];
+    }
 }
 
 - (int)numberOfVotesForSelectedResource
 {
     return [resourceBundleController numberOfVotesForSelectedResource];
+}
+
+- (int)usersCurrentVoteValue:(OLUser)user
+{
+    return [[[[resourceBundleController resourceController] selectedResource] votes] objectForKey:[user recordID]];
 }
 
 @end

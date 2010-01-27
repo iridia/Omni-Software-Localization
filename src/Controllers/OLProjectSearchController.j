@@ -11,17 +11,17 @@
 
 - (void)registerForNotifications
 {
+    [[CPNotificationCenter defaultCenter]
+		addObserver:self
+		selector:@selector(didReceiveProjectControllerFinished:)
+		name:@"OLProjectControllerDidFinishSavingNotification"
+		object:nil];
+		
 	[[CPNotificationCenter defaultCenter]
 	    addObserver:self
 	    selector:@selector(didReceiveProjectDidChangeNotification:)
 	    name:@"OLProjectDidChangeNotification"
 	    object:nil];
-
-    [[CPNotificationCenter defaultCenter]
-	    addObserver:self
-		selector:@selector(didReceiveProjectsShouldReloadNotification:)
-		name:@"OLProjectsShouldReload"
-		object:nil];
         
 	[[CPNotificationCenter defaultCenter]
 	   addObserver:self
@@ -30,10 +30,26 @@
 	   object:[[resourceBundleController resourceController] lineItemController]];
 }
 
-- (id)loadProjects
+- (void)loadProjects
 {
     projects = [CPArray array];
-    [OLProject findAllProjectsByNameWithCallback:function(project){[self addProject:project];}];
+    [OLProject findAllProjectsByNameWithCallback:function(project, isFinal)
+    {
+        [self addProject:project];
+
+        if(isFinal)
+        {
+            [self sortProjects];
+            [self reloadData];
+        }
+    }];
+}
+
+- (void)sortProjects
+{
+   projects = [projects sortedArrayUsingFunction:function(lhs, rhs, context){  
+           return [[rhs totalOfAllVotes] compare:[lhs totalOfAllVotes]];
+       }];
 }
 
 - (void)setSearchView:(CPView)aSearchView
@@ -60,6 +76,12 @@
     contentView = aView;
     
     [contentViewController setCurrentView:contentView];
+}
+
+- (void)didReceiveProjectControllerFinished:(CPNotification)notification
+{
+    console.log(_cmd, [self className]);
+    [self loadProjects];
 }
 
 @end
@@ -92,9 +114,18 @@
  
 - (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
-    if(tableView === [searchView allProjectsTableView])
+    var projectTableView = [searchView allProjectsTableView];
+    if(tableView === projectTableView)
     {
-        return [[projects objectAtIndex:row] name];
+        if([tableColumn identifier] === @"ProjectName")
+        {
+            return [[projects objectAtIndex:row] name];
+        }
+        else if ([tableColumn identifier] === @"TotalVotes")
+        {
+            return [[projects objectAtIndex:row] totalOfAllVotes];
+        }
+
     }
     
     return [super tableView:tableView objectValueForTableColumn:tableColumn row:row];
@@ -106,6 +137,7 @@
     {
         var index = [[aTableView selectedRowIndexes] firstIndex];
         var theProject = [projects objectAtIndex:index];
+        
         [theProject getWithCallback:function(project)
         {
             [OLUser findByRecordID:[project userIdentifier] withCallback:function(user)

@@ -70,7 +70,6 @@ OLLoginControllerShouldLoginNotification = @"OLLoginControllerShouldLoginNotific
         }
     }];
 }
-
 - (void)showLoginAndRegisterWindow:(CPNotification)notification
 {   
     successfulLoginTarget = nil;
