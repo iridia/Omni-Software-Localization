@@ -128,6 +128,7 @@ OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShould
             wasFound = YES;
             var message = [[OLMessage alloc] initFromUser:fromUser toUser:user subject:subject content:text];
             [message setDelegate:self];
+            console.log(_cmd,message);
             [message save];
         }
         if(isFinal && !wasFound)
