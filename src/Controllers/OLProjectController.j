@@ -4,6 +4,8 @@
 @import "../Models/OLProject.j"
 @import "../Views/OLProjectView.j"
 
+@import "../Config/config.js"
+
 @import "OLLoginController.j"
 @import "OLResourceBundleController.j"
 @import "OLImportProjectController.j"
@@ -136,7 +138,7 @@
 
 - (void)downloadSelectedProject:(CPNotification)notification
 {
-    var request = [CPURLRequest requestWithURL:@"/~hammerdr/osl/src/Download/Download.php"];
+    var request = [CPURLRequest requestWithURL:@"Download/Download.php"];
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:[selectedProject recordID]];
     [OLURLConnectionFactory createConnectionWithRequest:request delegate:self];
@@ -146,7 +148,7 @@
 {
     // This downloads the application without opening a window. This is pretty jank, but works.
     var webView = [[CPWebView alloc] initWithFrame:CGRectMake(0,0,0,0)];
-    [webView setMainFrameURL:@"http://localhost/~hammerdr/osl/src/Download/" + [selectedProject name] + ".zip"];
+    [webView setMainFrameURL:@"Download/" + [selectedProject name] + ".zip"];
     [projectView addSubview:webView];
     [CPTimer scheduledTimerWithTimeInterval:1 callback:function(){[webView removeFromSuperview];} repeats:NO];
 }

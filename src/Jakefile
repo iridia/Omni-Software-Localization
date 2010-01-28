@@ -9,6 +9,7 @@
 var ENV = require("system").env,
     FILE = require("file"),
     task = require("jake").task,
+    SYSTEM = require("system"),
 	OS = require("os"),
     FileList = require("jake").FileList,
     app = require("cappuccino/jake").app,
@@ -64,4 +65,30 @@ task("metrics", function()
    }
    
    OS.system(checkout + "master");
+});
+
+task("couch", function()
+{
+    p = OS.popen("couch"); 
+    var x = p.stdout.read();
+});
+
+task("genconfig", function()
+{
+    print("Generating your configuration files\n");
+    print("===================================\n");
+    print("Please input your base url\n");
+    print("  e.g. /~hammerdr/osl/src/\n\n");
+    var baseURL = SYSTEM.stdin.readLine();
+    
+    var baseURL = baseURL.replace("\n", "");
+    
+    var htaccess = "RewriteEngine On\nRewriteBase " + baseURL + "\nRewriteRule ^(.*)$ REST.php\n";
+    var phpConfig = "<?php\n$urlPrefix = \"" + baseURL + "api/\";\n$couchDbBaseUrl = \"http://localhost:5984/\";\n?>";
+    
+    FILE.remove("api/.htaccess");
+    FILE.remove("api/REST-config.php");
+    
+    FILE.write("api/.htaccess", htaccess);
+    FILE.write("api/REST-config.php", phpConfig);
 });
