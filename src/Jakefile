@@ -67,11 +67,10 @@ task("metrics", function()
    OS.system(checkout + "master");
 });
 
-task("couch", function()
-{
-    p = OS.popen("couch"); 
-    var x = p.stdout.read();
-    
+task("couch:reset", ["couch:reset:views"]);
+
+task("couch:reset:views", function()
+{    
     var databases = ["error", "project", "user", "message", "glossary", "feedback"];
     var views = ["find", "project", "user", "message", "find", "find"];
     var couch_url = "http://localhost:5984";
