@@ -15,9 +15,11 @@ var ENV = require("system").env,
     app = require("cappuccino/jake").app,
     configuration = ENV["CONFIG"] || ENV["CONFIGURATION"] || ENV["c"] || "Debug";
     
-task ("build", function(){});
+var COUCH_URL = "http://localhost:5984";
+    
+task("build", function(){});
 
-task ("test", function()
+task("test", function()
 {
     var tests = new FileList('tests/*Test.j');
     var cmd = ["ojtest"].concat(tests.items());
@@ -28,7 +30,7 @@ task ("test", function()
         OS.exit(code);
 });
 
-task ("press", ["build", "test"], function()
+task("press", ["build", "test"], function()
 {
     var cmd = "press . ../Pressed";
     
@@ -43,7 +45,7 @@ task ("press", ["build", "test"], function()
 });
 
 // task ("deploy", ["build", "test", "press"], function()
-task ("deploy", ["build", "test"], function()
+task("deploy", ["build", "test"], function()
 {
     //var cmd = "scp -r projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/ ../Pressed";
     var cmd = "scp -r . projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/";
@@ -71,9 +73,8 @@ task("couch:reset", ["couch:reset:views"]);
 
 task("couch:reset:views", function()
 {    
-    var databases = ["error", "project", "user", "message", "glossary", "feedback"];
+    var databases = getDatabases();
     var views = ["find", "project", "user", "message", "find", "find"];
-    var couch_url = "http://localhost:5984";
     var view_path = "_design/finder";
     var path_to_views = "../utilities/couch/";
     
@@ -81,7 +82,7 @@ task("couch:reset:views", function()
     var revs = [];
     for (var i = 0; i < databases.length; i++)
     {
-        var command = "curl " + couch_url + "/" + databases[i] + "/" + view_path;
+        var command = "curl " + COUCH_URL + "/" + databases[i] + "/" + view_path;
         var process = OS.popen(command);
         var view = process.stdout.read();
         var json = eval("(" + view + ")");
@@ -91,17 +92,34 @@ task("couch:reset:views", function()
     // delete old views
     for (var i = 0; i < databases.length; i++)
     {
-        var command = "curl -X DELETE " + couch_url + "/" + databases[i] + "/" + view_path + "?rev=" + revs[i];
-        print(command);
+        var command = "curl -X DELETE " + COUCH_URL + "/" + databases[i] + "/" + view_path + "?rev=" + revs[i];
         OS.system(command);
     }
     
     // create new views
     for (var i = 0; i < databases.length; i++)
     {
-        var command = "curl -T " + path_to_views + views[i] + " -H \"Content-Type: application/json\" " + couch_url + "/" + databases[i] + "/" + view_path;
-        print(command);
+        var command = "curl -T " + path_to_views + views[i] + " -H \"Content-Type: application/json\" " + COUCH_URL + "/" + databases[i] + "/" + view_path;
         OS.system(command);
+    }
+});
+
+task("couch:reset:all", function()
+{
+    var databases = getDatabases();
+
+    // Delete databases
+    for (var i = 0; i < databases.length; i++)
+    {
+        var command = "curl -X DELETE " + COUCH_URL + "/" + databases[i];
+        OS.system(command);   
+    }
+
+    // Create databases
+    for (var i = 0; i < databases.length; i++)
+    {
+        var command = "curl -X PUT " + COUCH_URL + "/" + databases[i];
+        OS.system(command); 
     }
 });
 
@@ -124,3 +142,7 @@ task("genconfig", function()
     FILE.write("api/.htaccess", htaccess);
     FILE.write("api/REST-config.php", phpConfig);
 });
+
+function getDatabases() {
+    return ["error", "project", "user", "message", "glossary", "feedback"];
+}
