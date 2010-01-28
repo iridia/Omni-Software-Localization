@@ -121,6 +121,7 @@ OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShould
         return;
     }
     [[CPApplication sharedApplication] runModalForWindow:messageWindow];
+    [messageWindow isBeingShown];
 }
 
 - (void)didSendMessage:(CPDictionary)messageDictionary
