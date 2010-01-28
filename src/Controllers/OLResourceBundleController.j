@@ -100,21 +100,14 @@
 }
 
 - (void)resetCurrentBundle
-{
-    var found = false;
-    
-    for(var i = 0; i < [resourceBundles count]; i++)
-    {
-        if([[[OLLanguage alloc] initWithName:@"English"] equals:[[resourceBundles objectAtIndex:i] language]])
-        {
-            found = true;
-            [self setSelectedResourceBundle:[resourceBundles objectAtIndex:i]];
-        }
-    }
-    
-    if(!found)
+{    
+    if(![self defaultBundle])
     {
         [self setSelectedResourceBundle:[resourceBundles objectAtIndex:0]];
+    }
+    else
+    {
+        [self setSelectedResourceBundle:[self defaultBundle]];
     }
 }
 
@@ -279,7 +272,8 @@
 {
     for(var i = 0; i < [resourceBundles count]; i++)
     {
-        if([[[resourceBundles objectAtIndex:i] language] equals:[[OLLanguage alloc] initWithName:@"English (United States)"]])
+        if([[[resourceBundles objectAtIndex:i] language] equals:[[OLLanguage alloc] initWithName:@"English (United States)"]] ||
+           [[[resourceBundles objectAtIndex:i] language] equals:[[OLLanguage alloc] initWithName:@"English"]])
         {
             return [resourceBundles objectAtIndex:i];
         }
