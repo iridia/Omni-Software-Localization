@@ -150,6 +150,8 @@
 	[comment setStringValue:[lineItem comment]];
 	[collectionView setContent:[lineItem comments]];
 	[collectionView reloadContent];
+
+	[[self window] makeFirstResponder:value];
 }
 
 - (void)controlTextDidChange:(CPNotification)aNotification

@@ -100,21 +100,14 @@
 }
 
 - (void)resetCurrentBundle
-{
-    var found = false;
-    
-    for(var i = 0; i < [resourceBundles count]; i++)
-    {
-        if([[[OLLanguage alloc] initWithName:@"English"] equals:[[resourceBundles objectAtIndex:i] language]])
-        {
-            found = true;
-            [self setSelectedResourceBundle:[resourceBundles objectAtIndex:i]];
-        }
-    }
-    
-    if(!found)
+{    
+    if(![self defaultBundle])
     {
         [self setSelectedResourceBundle:[resourceBundles objectAtIndex:0]];
+    }
+    else
+    {
+        [self setSelectedResourceBundle:[self defaultBundle]];
     }
 }
 
@@ -145,14 +138,38 @@
 
 - (void)startCreateNewBundle:(id)sender
 {
-    [[CPApplication sharedApplication] runModalForWindow:createNewBundleWindow];
-    [createNewBundleWindow setUp:self];
+    if([[self availableLanguages] count] > 0)
+    {
+        [[CPApplication sharedApplication] runModalForWindow:createNewBundleWindow];
+        [createNewBundleWindow setUp:self];
+    }
+    else
+    {
+        var alert = [[CPAlert alloc] init];
+        [alert setTitle:@"No languages available!"];
+        [alert setMessageText:@"You cannot add a language to this project because all possible languages are already added!"];
+        [alert setAlertStyle:CPWarningAlertStyle];
+        [alert addButtonWithTitle:@"OK"];
+        [alert runModal];
+    }
 }
 
 - (void)startDeleteBundle:(id)sender
 {
-    [[CPApplication sharedApplication] runModalForWindow:deleteBundleWindow];
-    [deleteBundleWindow setUp:self];
+    if([resourceBundles count] > 1)
+    {
+        [[CPApplication sharedApplication] runModalForWindow:deleteBundleWindow];
+        [deleteBundleWindow setUp:self];
+    }
+    else
+    {
+        var alert = [[CPAlert alloc] init];
+        [alert setTitle:@"No languages available!"];
+        [alert setMessageText:@"You cannot delete a language from this project because there are no languages to delete!"];
+        [alert setAlertStyle:CPWarningAlertStyle];
+        [alert addButtonWithTitle:@"OK"];
+        [alert runModal];
+    }
 }
 
 - (CPArray)titlesOfAvailableLanguage
@@ -187,7 +204,7 @@
     {
         var theLanguage = [allLanguages objectAtIndex:i];
         
-        if(![self isLanguageAlreadyLocalized:theLanguage])
+        if(![self isLanguageAlreadyLocalized:theLanguage] && ![theLanguage equals:[[OLLanguage alloc] initWithName:@"English"]])
         {
             [result addObject:[allLanguages objectAtIndex:i]];
         }
@@ -220,10 +237,9 @@
 - (void)create:(id)sender
 {
     var clone = [[self defaultBundle] clone];
-    
     [clone setLanguage:[[self availableLanguages] objectAtIndex:[[createNewBundleWindow popUpButton] indexOfSelectedItem]]];
     
-    replaceEnglishWithNewResourceBundleName(clone, [[clone language] name]);
+    replaceEnglishWithNewResourceBundleName(clone, [[clone language] shortName]);
     [resourceBundles addObject:clone];
     
     [self setSelectedResourceBundle:clone];
@@ -256,7 +272,8 @@
 {
     for(var i = 0; i < [resourceBundles count]; i++)
     {
-        if([[[resourceBundles objectAtIndex:i] language] equals:[[OLLanguage alloc] initWithName:@"English"]])
+        if([[[resourceBundles objectAtIndex:i] language] equals:[[OLLanguage alloc] initWithName:@"English (United States)"]] ||
+           [[[resourceBundles objectAtIndex:i] language] equals:[[OLLanguage alloc] initWithName:@"English"]])
         {
             return [resourceBundles objectAtIndex:i];
         }

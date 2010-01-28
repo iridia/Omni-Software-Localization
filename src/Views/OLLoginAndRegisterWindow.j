@@ -140,6 +140,8 @@
 	[self centerStatusTextField];
 	
 	[self setTitle:@"Register"];
+    
+    [self makeFirstResponder:emailTextField];
 }
 
 - (void)transitionToLoginView:(id)sender
@@ -167,6 +169,8 @@
 	[self centerStatusTextField];
 	
 	[self setTitle:@"Login"];
+    
+    [self makeFirstResponder:emailTextField];
 }
 
 - (void)cancel:(id)sender

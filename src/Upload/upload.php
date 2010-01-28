@@ -199,7 +199,7 @@ function transformStringsToJson($data, $fileName)
                 $current_comment = "";
 	        }
 	    }
-	    else if($char == "=")
+	    else if($char == "=" && !$is_string)
 	    {
 	        $is_value = true;
 	    }

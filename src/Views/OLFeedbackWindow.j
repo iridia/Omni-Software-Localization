@@ -91,6 +91,11 @@
     return self;
 }
 
+- (void)isBeingShown
+{
+    [self makeFirstResponder:_emailTextField];
+}
+
 - (void)feedbackTypeDidChange:(id)sender
 {
     var selectedItemTitle = [sender titleOfSelectedItem];
