@@ -4,8 +4,6 @@
 @import "../Models/OLProject.j"
 @import "../Views/OLProjectView.j"
 
-@import "../Config/config.js"
-
 @import "OLLoginController.j"
 @import "OLResourceBundleController.j"
 @import "OLImportProjectController.j"
