@@ -32,8 +32,6 @@
 	[value setLineBreakMode:CPLineBreakByWordWrapping];
 	
     [[CPApplication sharedApplication] runModalForWindow:[self window]];
-    
-    [window makeFirstResponder:value];
 }
 
 - (@action)done:(id)sender
@@ -68,6 +66,8 @@
     [[self window] setTitle:[aLineItem identifier]];
     [value setStringValue:[aLineItem value]];
 	[comment setStringValue:[aLineItem comment]];
+    
+    [[self window] makeFirstResponder:value];
 }
 
 - (void)controlTextDidChange:(CPNotification)aNotification
