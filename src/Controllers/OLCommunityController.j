@@ -21,7 +21,6 @@ var OLCommunitySearchItem = @"Search";
         if(self = [super init])
         {        		
         	searchController = [[OLProjectSearchController alloc] init];
-        	console.log(_cmd, [self className]);
         	[searchController loadProjects];
         	
         	messageController = [[OLMessageController alloc] init];
@@ -84,7 +83,6 @@ var OLCommunitySearchItem = @"Search";
             break;
         case OLCommunitySearchItem:
             view = [searchController contentView];
-            console.log(_cmd, [self className]);
             [searchController loadProjects];
             break;
         default:

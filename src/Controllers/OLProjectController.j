@@ -8,6 +8,8 @@
 @import "OLResourceBundleController.j"
 @import "OLImportProjectController.j"
 
+OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotification";
+
 // Manages an array of projects
 @implementation OLProjectController : CPObject
 {
@@ -91,11 +93,17 @@
        name:@"OLProjectShouldDownloadNotification"
        object:nil];
 
-  [[CPNotificationCenter defaultCenter]
-      addObserver:self
-      selector:@selector(startImport:)
-      name:@"OLProjectShouldImportNotification"
-      object:nil];
+    [[CPNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(startImport:)
+        name:@"OLProjectShouldImportNotification"
+        object:nil];
+    
+    [[CPNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(didReceiveShouldCreateCommentNotification:)
+        name:OLProjectShouldCreateCommentNotification
+        object:nil];
 }
 
 - (void)startImport:(CPNotification)notification
@@ -122,19 +130,23 @@
     }
 }
 
-- (void)loadVotes
-{
-    for(var project in projects)
-    {
-        
-    }
-}
-
 - (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
 {
-    console.log(_cmd, [self className]);
     [self loadProjects];
     [self reloadData];
+}
+
+- (void)didReceiveShouldCreateCommentNotification:(CPNotification)notification
+{
+    var options = [notification userInfo];
+    var content = [options objectForKey:@"content"];
+    var item = [options objectForKey:@"item"];
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+
+    var comment = [[OLComment alloc] initFromUser:user withContent:content];
+    [item addComment:comment];
+    
+    [selectedProject save];
 }
 
 - (void)downloadSelectedProject:(CPNotification)notification
@@ -198,7 +210,6 @@
 
 - (void)didReceiveUserDidChangeNotification:(CPNotification)notification
 {
-    console.log(_cmd, [self className]);
     [self loadProjects];
 }
 

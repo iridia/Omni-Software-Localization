@@ -33,6 +33,14 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
     }
 }
 
+- (void)saveCommentWithOptions:(CPDictionary)options
+{
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLProjectShouldCreateCommentNotification
+        object:self
+        userInfo:options];
+}
+
 - (void)editSelectedLineItem
 {   
     var lineItemEditWindowController = [[OLLineItemEditWindowController alloc] initWithWindowCibName:@"LineItemEditor.cib" lineItem:selectedLineItem];
