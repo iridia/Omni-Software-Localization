@@ -17,7 +17,7 @@
 
 - (id)initFromUser:(OLUser)from toUsers:(CPArray)to
 {
-    return [self initFromUser:from toUser:to subject:@"No Subject" content:@""];
+    return [self initFromUser:from toUsers:to subject:@"No Subject" content:@""];
 }
 
 - (id)initFromUser:(OLUser)from toUser:(OLUser)to subject:(CPString)aSubject content:(CPString)someContent
