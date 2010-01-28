@@ -71,6 +71,39 @@ task("couch", function()
 {
     p = OS.popen("couch"); 
     var x = p.stdout.read();
+    
+    var databases = ["error", "project", "user", "message", "glossary", "feedback"];
+    var views = ["find", "project", "user", "message", "find", "find"];
+    var couch_url = "http://localhost:5984";
+    var view_path = "_design/finder";
+    var path_to_views = "../utilities/couch/";
+    
+    // get current revs
+    var revs = [];
+    for (var i = 0; i < databases.length; i++)
+    {
+        var command = "curl " + couch_url + "/" + databases[i] + "/" + view_path;
+        var process = OS.popen(command);
+        var view = process.stdout.read();
+        var json = eval("(" + view + ")");
+        revs[i] = json._rev;
+    }
+    
+    // delete old views
+    for (var i = 0; i < databases.length; i++)
+    {
+        var command = "curl -X DELETE " + couch_url + "/" + databases[i] + "/" + view_path + "?rev=" + revs[i];
+        print(command);
+        OS.system(command);
+    }
+    
+    // create new views
+    for (var i = 0; i < databases.length; i++)
+    {
+        var command = "curl -T " + path_to_views + views[i] + " -H \"Content-Type: application/json\" " + couch_url + "/" + databases[i] + "/" + view_path;
+        print(command);
+        OS.system(command);
+    }
 });
 
 task("genconfig", function()
