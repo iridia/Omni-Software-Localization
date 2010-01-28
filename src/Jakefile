@@ -83,7 +83,7 @@ task("genconfig", function()
     
     var baseURL = baseURL.replace("\n", "");
     
-    var htaccess = "RewriteEngine On\nRewriteBase " + baseURL + "\nRewriteRule ^(.*)$ REST.php\n";
+    var htaccess = "RewriteEngine On\nRewriteBase " + baseURL + "api/\nRewriteRule ^(.*)$ REST.php\n";
     var phpConfig = "<?php\n$urlPrefix = \"" + baseURL + "api/\";\n$couchDbBaseUrl = \"http://localhost:5984/\";\n?>";
     
     FILE.remove("api/.htaccess");
