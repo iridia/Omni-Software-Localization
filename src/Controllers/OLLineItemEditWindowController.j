@@ -32,6 +32,8 @@
 	[value setLineBreakMode:CPLineBreakByWordWrapping];
 	
     [[CPApplication sharedApplication] runModalForWindow:[self window]];
+    
+    [window makeFirstResponder:value];
 }
 
 - (@action)done:(id)sender
