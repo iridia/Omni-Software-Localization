@@ -244,10 +244,9 @@
 - (void)create:(id)sender
 {
     var clone = [[self defaultBundle] clone];
-    
     [clone setLanguage:[[self availableLanguages] objectAtIndex:[[createNewBundleWindow popUpButton] indexOfSelectedItem]]];
     
-    replaceEnglishWithNewResourceBundleName(clone, [[clone language] name]);
+    replaceEnglishWithNewResourceBundleName(clone, [[clone language] shortName]);
     [resourceBundles addObject:clone];
     
     [self setSelectedResourceBundle:clone];
@@ -280,7 +279,7 @@
 {
     for(var i = 0; i < [resourceBundles count]; i++)
     {
-        if([[[resourceBundles objectAtIndex:i] language] equals:[[OLLanguage alloc] initWithName:@"English"]])
+        if([[[resourceBundles objectAtIndex:i] language] equals:[[OLLanguage alloc] initWithName:@"English (United States)"]])
         {
             return [resourceBundles objectAtIndex:i];
         }
