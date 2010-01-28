@@ -7,3 +7,4 @@ curl -T user -H "Content-Type: application/json" localhost:5984/user/_design/fin
 curl -T message -H "Content-Type: application/json" localhost:5984/message/_design/finder
 curl -T find -H "Content-Type: application/json" localhost:5984/glossary/_design/finder
 curl -T find -H "Content-Type: application/json" localhost:5984/feedback/_design/finder
+curl -T find -H "Content-Type: application/json" localhost:5984/comment/_design/finder

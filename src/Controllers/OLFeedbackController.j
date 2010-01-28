@@ -42,6 +42,7 @@
 - (void)showFeedbackWindow:(id)sender
 {
     [[CPApplication sharedApplication] runModalForWindow:_feedbackWindow];
+    [_feedbackWindow isBeingShown];
 }
 
 - (void)didSubmitFeedback:(CPDictionary)feedbackDictionary

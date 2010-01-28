@@ -159,6 +159,12 @@
 	}
 }
 
+- (void)isBeingShown
+{
+    [self makeFirstResponder:emailTextField];
+}
+
+
 - (void)setStatus:(CPString)statusString
 {
     [statusLabel setStringValue:statusString];

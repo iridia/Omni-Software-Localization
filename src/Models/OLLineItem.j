@@ -1,10 +1,12 @@
 @import "OLActiveRecord.j"
+@import "OLComment.j"
 
 @implementation OLLineItem : OLActiveRecord
 {
-	CPString comment		@accessors(readonly);
-	CPString identifier 	@accessors(readonly);
-	CPObject value	 		@accessors;
+	CPString    comment		@accessors(readonly);
+	CPString    identifier 	@accessors(readonly);
+	CPObject    value       @accessors;
+	CPArray     comments    @accessors(readonly);
 }
 
 + (CPArray)lineItemsFromJSON:(JSON)json
@@ -46,8 +48,14 @@
 		comment = aComment;
 		identifier = anIdentifier;
 		value = aValue;
+		comments = [CPArray array];
 	}
 	return self;
+}
+
+- (void)addComment:(OLComment)aComment
+{
+    [comments addObject:aComment];
 }
 
 - (OLLineItem)clone
@@ -60,6 +68,7 @@
 var OLLineItemCommentKey = @"OLLineItemCommentKey";
 var OLLineItemIdentifierKey = @"OLLineItemIdentifierKey";
 var OLLineItemValueKey = @"OLLineItemValueKey";
+var OLLineItemCommentsKey = @"OLLineItemCommentsKey";
 
 @implementation OLLineItem (CPCoding)
 
@@ -72,6 +81,7 @@ var OLLineItemValueKey = @"OLLineItemValueKey";
 		comment = [aCoder decodeObjectForKey:OLLineItemCommentKey];
         identifier = [aCoder decodeObjectForKey:OLLineItemIdentifierKey];
         value = [aCoder decodeObjectForKey:OLLineItemValueKey];
+        comments = [aCoder decodeObjectForKey:OLLineItemCommentsKey];
     }
     
     return self;
@@ -82,6 +92,7 @@ var OLLineItemValueKey = @"OLLineItemValueKey";
 	[aCoder encodeObject:comment forKey:OLLineItemCommentKey];
     [aCoder encodeObject:identifier forKey:OLLineItemIdentifierKey];
     [aCoder encodeObject:value forKey:OLLineItemValueKey];
+    [aCoder encodeObject:comments forKey:OLLineItemCommentsKey];
 }
 
 @end

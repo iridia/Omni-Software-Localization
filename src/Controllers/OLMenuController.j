@@ -9,6 +9,7 @@ OLMenuItemDisabled = NO;
     CPMenu                      menu;
     CPUploadWindowController    uploadWindowController  @accessors;
     CPDictionary                items;
+    CPFeedbackController        feedbackController;
 }
 
 - (id)init
@@ -41,6 +42,7 @@ OLMenuItemDisabled = NO;
         [[CPApplication sharedApplication] setMainMenu:menu];
         
         uploadWindowController = [[OLUploadWindowController alloc] init];
+        feedbackController = [[OLFeedbackController alloc] init];
     }
     return self;
 }
@@ -109,6 +111,26 @@ OLMenuItemDisabled = NO;
 - (void)importItem:(id)sender
 {
     [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectShouldImportNotification" object:self];
+}
+
+- (void)feedback:(id)sender
+{
+    [feedbackController showFeedbackWindow:sender];
+}
+
+- (void)login:(id)sender
+{
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLLoginControllerShouldLoginNotification
+        object:self];    
+}
+
+- (void)sendMessage:(id)sender
+{
+    console.log("Here");
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLMessageControllerShouldCreateMessageNotification
+        object:self];
 }
 
 - (void)broadcastMessage:(id)sender

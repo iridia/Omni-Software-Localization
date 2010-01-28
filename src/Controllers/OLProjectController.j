@@ -10,12 +10,14 @@
 
 OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsNotification";
 
+OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotification";
+
 // Manages an array of projects
 @implementation OLProjectController : CPObject
 {
     CPArray         projects       	    @accessors;
 	OLProject	    selectedProject		@accessors;
-	OLProjectView   projectView;
+	OLProjectView   projectView         @accessors;
 	
 	OLResourceBundleController  resourceBundleController;
 	OLImportProjectController   importProjectController;
@@ -95,14 +97,20 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 
     [[CPNotificationCenter defaultCenter]
         addObserver:self
+        selector:@selector(createBroadcastMessage:)
+        name:@"CPMessageShouldBroadcastNotification"
+        object:nil];
+
+    [[CPNotificationCenter defaultCenter]
+        addObserver:self
         selector:@selector(startImport:)
         name:@"OLProjectShouldImportNotification"
         object:nil];
-     
+    
     [[CPNotificationCenter defaultCenter]
         addObserver:self
-        selector:@selector(createBroadcastMessage:)
-        name:@"CPMessageShouldBroadcastNotification"
+        selector:@selector(didReceiveShouldCreateCommentNotification:)
+        name:OLProjectShouldCreateCommentNotification
         object:nil];
 }
 
@@ -131,10 +139,12 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
         [OLProject findByUserIdentifier:userLoggedIn withCallback:function(project)
     	{
-            [self addProject:project];
+    	    if (project)
+    	    {
+                [self addProject:project];
+            }
         }];
     }
-	
 }
 
 - (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
@@ -143,9 +153,22 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
     [self reloadData];
 }
 
+- (void)didReceiveShouldCreateCommentNotification:(CPNotification)notification
+{
+    var options = [notification userInfo];
+    var content = [options objectForKey:@"content"];
+    var item = [options objectForKey:@"item"];
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+
+    var comment = [[OLComment alloc] initFromUser:user withContent:content];
+    [item addComment:comment];
+    
+    [selectedProject save];
+}
+
 - (void)downloadSelectedProject:(CPNotification)notification
 {
-    var request = [CPURLRequest requestWithURL:@"/~hammerdr/osl/src/Download/Download.php"];
+    var request = [CPURLRequest requestWithURL:@"Download/Download.php"];
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:[selectedProject recordID]];
     [OLURLConnectionFactory createConnectionWithRequest:request delegate:self];
@@ -155,7 +178,7 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 {
     // This downloads the application without opening a window. This is pretty jank, but works.
     var webView = [[CPWebView alloc] initWithFrame:CGRectMake(0,0,0,0)];
-    [webView setMainFrameURL:@"http://localhost/~hammerdr/osl/src/Download/" + [selectedProject name] + ".zip"];
+    [webView setMainFrameURL:@"Download/" + [selectedProject name] + ".zip"];
     [projectView addSubview:webView];
     [CPTimer scheduledTimerWithTimeInterval:1 callback:function(){[webView removeFromSuperview];} repeats:NO];
 }
@@ -395,19 +418,68 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 
 - (void)voteUp:(id)sender
 {
-    [resourceBundleController voteUp];
-    [projectView reloadVoting];
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+    if(user)
+    {
+        var oldVoteValue = [self usersCurrentVoteValue:user];
+        if(oldVoteValue !== 1)
+        {
+            [resourceBundleController voteUp];
+            [projectView reloadVoting];
+            if(oldVoteValue === -1)
+            {
+                [selectedProject voteUp];
+                [selectedProject voteUp];
+            }
+            else
+            {
+                [selectedProject voteUp];
+            }
+            [selectedProject save];
+        }
+    }
+    else
+    {
+        [[CPNotificationCenter defaultCenter] postNotificationName:OLLoginControllerShouldLoginNotification object:self];
+    }
 }
 
 - (void)voteDown:(id)sender
 {
-    [resourceBundleController voteDown];
-    [projectView reloadVoting];
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+    if(user)
+    {
+        var oldVoteValue = [self usersCurrentVoteValue:user];
+        if(oldVoteValue !== -1)
+        {
+            [resourceBundleController voteDown];
+            [projectView reloadVoting];
+            if(oldVoteValue === 1)
+            {
+                [selectedProject voteDown];
+                [selectedProject voteDown];
+            }
+            else
+            {
+                [selectedProject voteDown];
+            }
+            [selectedProject save];
+        }
+    }
+    else
+    {
+        [[CPNotificationCenter defaultCenter] postNotificationName:OLLoginControllerShouldLoginNotification object:self];
+    }
 }
 
 - (int)numberOfVotesForSelectedResource
 {
     return [resourceBundleController numberOfVotesForSelectedResource];
+}
+
+- (int)usersCurrentVoteValue:(OLUser)user
+{
+    return [[[[resourceBundleController resourceController] selectedResource] votes] objectForKey:[user recordID]];
 }
 
 @end

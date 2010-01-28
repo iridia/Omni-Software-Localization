@@ -10,7 +10,7 @@
            "map": "function(doc) { emit(doc.OLProjectUserKey, doc); }"
         },
         "all_by_project_name": {
-           "map": "function(doc) { emit(doc._id, {'id':doc._id, 'name':doc.OLProjectNameKey}); }"
+           "map": "function(doc) { emit(doc._id, {'recordID':doc._id, 'name':doc.OLProjectNameKey, 'votes':doc.OLProjectVotesKey}); }"
         }
     }
 }

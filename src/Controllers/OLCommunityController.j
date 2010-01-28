@@ -83,7 +83,7 @@ var OLCommunitySearchItem = @"Search";
             break;
         case OLCommunitySearchItem:
             view = [searchController contentView];
-            [searchController reloadData];
+            [searchController loadProjects];
             break;
         default:
             CPLog.warn(@"Unhandled case in %s, %s", [self className], _cmd);

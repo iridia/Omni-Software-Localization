@@ -81,11 +81,22 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
     if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
-        [OLMessage findByToUsers:userLoggedIn withCallback:function(message)
+        [OLMessage findByToUsers:userLoggedIn withCallback:function(message, isFinal)
     	{
             [self addMessage:message];
+            if(isFinal)
+            {
+                [self sortMessages];
+            }
         }];
     }
+}
+
+- (void)sortMessages
+{
+    messages = [messages sortedArrayUsingFunction:function(lhs, rhs, context){  
+               return [[rhs dateSent] compare:[lhs dateSent]];
+           }];
 }
 
 - (void)addMessage:(OLMessage)message
@@ -130,6 +141,7 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
         return;
     }
     [[CPApplication sharedApplication] runModalForWindow:messageWindow];
+    [messageWindow isBeingShown];
 }
 
 - (void)didSendMessage:(CPDictionary)messageDictionary
@@ -147,8 +159,12 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
             wasFound = YES;
             var message = [[OLMessage alloc] initFromUser:fromUser toUser:user subject:subject content:text];
             [message setDelegate:self];
-            [message save];
+            [message saveWithCallback:function(){
+                [self loadMessages]; 
+                [mailView reloadData];
+            }];
         }
+        
         if(isFinal && !wasFound)
         {
             [messageWindow setStatus:@"Invalid To field."];

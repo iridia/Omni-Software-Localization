@@ -63,14 +63,13 @@ OLLoginControllerShouldLoginNotification = @"OLLoginControllerShouldLoginNotific
             [self hasLoggedIn:user];
             return;
         }
-        
+
         if (isFinal)
         {
             [self loginFailed];
         }
     }];
 }
-
 - (void)showLoginAndRegisterWindow:(CPNotification)notification
 {   
     successfulLoginTarget = nil;

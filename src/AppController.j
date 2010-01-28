@@ -53,6 +53,7 @@
     [sidebarController addSidebarItem:glossaryController];
 	
 	var glossariesView = [[OLGlossariesView alloc] initWithFrame:[mainContentView bounds]];
+	[glossariesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 	[glossariesView setGlossaryController:glossaryController];
 	[glossaryController setGlossariesView:glossariesView];
     

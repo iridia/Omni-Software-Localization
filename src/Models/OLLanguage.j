@@ -3,6 +3,7 @@
 @implementation OLLanguage : OLActiveRecord
 {
 	CPString _name @accessors(property=name, readonly);
+	CPString    shortName   @accessors(readonly);
 }
 
 + (OLLanguage)languageFromLProj:(CPString)lproj
@@ -28,11 +29,17 @@
 
 - (id)initWithName:(CPString)aName
 {
-	if(self = [super init])
-	{
-		_name = aName;
-	}
-	return self;
+    return [self initWithName:aName shortName:[SHORT_NAME objectForKey:aName]];
+}
+
+- (id)initWithName:(CPString)aName shortName:(CPString)aShortName
+{
+    if(self = [super init])
+    {
+        _name = aName;
+        shortName = aShortName;
+    }
+    return self;
 }
 
 - (BOOL)equals:(OLLanguage)otherLanguage
@@ -48,6 +55,7 @@
 @end
 
 var OLLanguageNameKey = @"OLLanguageNameKey";
+var OLLanguageShortNameKey = @"OLLanguageShortNameKey";
 
 @implementation OLLanguage (CPCoding)
 
@@ -58,6 +66,7 @@ var OLLanguageNameKey = @"OLLanguageNameKey";
     if (self)
     {
         _name = [aCoder decodeObjectForKey:OLLanguageNameKey];
+        shortName = [aCoder decodeObjectForKey:OLLanguageShortNameKey];
     }
     
     return self;
@@ -66,9 +75,79 @@ var OLLanguageNameKey = @"OLLanguageNameKey";
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
     [aCoder encodeObject:_name forKey:OLLanguageNameKey];
+    [aCoder encodeObject:shortName forKey:OLLanguageShortNameKey];
 }
 
 @end
+
+var SHORT_NAME = [CPDictionary dictionary];
+[SHORT_NAME setObject:@"af_ZA" forKey:@"Afrikaans (South Africa)"];
+[SHORT_NAME setObject:@"am_ET" forKey:@"Amharic"];
+[SHORT_NAME setObject:@"be_BY" forKey:@"Belarusian"];
+[SHORT_NAME setObject:@"bg_BG" forKey:@"Bulgarian"];
+[SHORT_NAME setObject:@"ca_ES" forKey:@"Catalan (Spain)"];
+[SHORT_NAME setObject:@"cs_CZ" forKey:@"Czech"];
+[SHORT_NAME setObject:@"da" forKey:@"Danish"];
+[SHORT_NAME setObject:@"da_DK" forKey:@"Danish (Denmark)"];
+[SHORT_NAME setObject:@"de_AT" forKey:@"German (Austria)"];
+[SHORT_NAME setObject:@"de_CH" forKey:@"German (Swiss)"];
+[SHORT_NAME setObject:@"de_DE" forKey:"German (Germany)"];
+[SHORT_NAME setObject:@"de" forKey:@"German"];
+[SHORT_NAME setObject:@"el_GR" forKey:@"Greek"];
+[SHORT_NAME setObject:@"en_AU" forKey:@"English (Australia)"];
+[SHORT_NAME setObject:@"en_CA" forKey:@"English (Canada)"];
+[SHORT_NAME setObject:@"en_GB" forKey:@"English (Great Britain)"];
+[SHORT_NAME setObject:@"en_IE" forKey:@"English (Ireland)"];
+[SHORT_NAME setObject:@"en_NZ" forKey:@"English (New Zealand)"];
+[SHORT_NAME setObject:@"en_US" forKey:@"English (United States)"];
+[SHORT_NAME setObject:@"en" forKey:@"English"];
+[SHORT_NAME setObject:@"es_ES" forKey:@"Spanish (Spain)"];
+[SHORT_NAME setObject:@"et_EE" forKey:@"Estonian"];
+[SHORT_NAME setObject:@"eu_ES" forKey:@"Basque (Spain)"];
+[SHORT_NAME setObject:@"fi" forKey:@"Finnish"];
+[SHORT_NAME setObject:@"fi_FI" forKey:@"Finnish (Finland)"];
+[SHORT_NAME setObject:@"fr_BE" forKey:@"French (Belgian)"];
+[SHORT_NAME setObject:@"fr_CA" forKey:@"French (Canada)"];
+[SHORT_NAME setObject:@"fr_CH" forKey:@"French (Switzerland)"];
+[SHORT_NAME setObject:@"fr_FR" forKey:@"French (France)"];
+[SHORT_NAME setObject:@"fr" forKey:@"French"];
+[SHORT_NAME setObject:@"he_IL" forKey:@"Hebrew"];
+[SHORT_NAME setObject:@"hi_IN" forKey:@"Hindi"];
+[SHORT_NAME setObject:@"hr_HR" forKey:@"Croatian"];
+[SHORT_NAME setObject:@"hu_HU" forKey:@"Hungarian"];
+[SHORT_NAME setObject:@"hy_AM" forKey:@"Armenian"];
+[SHORT_NAME setObject:@"is_IS" forKey:@"Icelandic"];
+[SHORT_NAME setObject:@"it_CH" forKey:@"Italian (Switzerland)"];
+[SHORT_NAME setObject:@"it_IT" forKey:@"Italian (Italy)"];
+[SHORT_NAME setObject:@"ja_JP" forKey:@"Japanese"];
+[SHORT_NAME setObject:@"kk_KZ" forKey:@"Kazakh"];
+[SHORT_NAME setObject:@"ko" forKey:@"Korean"];
+[SHORT_NAME setObject:@"ko_KR" forKey:@"Korean (Korea)"];
+[SHORT_NAME setObject:@"lt_LT" forKey:@"Lithuanian"];
+[SHORT_NAME setObject:@"nl_BE" forKey:@"Dutch (Belgium)"];
+[SHORT_NAME setObject:@"nl_NL" forKey:@"Dutch (Netherlands)"];
+[SHORT_NAME setObject:@"nl" forKey:@"Dutch"];
+[SHORT_NAME setObject:@"no" forKey:@"Norwegian"];
+[SHORT_NAME setObject:@"no_NO" forKey:@"Norwegian (Norway)"];
+[SHORT_NAME setObject:@"pl" forKey:@"Polish"];
+[SHORT_NAME setObject:@"pl_PL" forKey:@"Polish (Poland)"];
+[SHORT_NAME setObject:@"pt_BR" forKey:@"Portuguese (Brazil)"];
+[SHORT_NAME setObject:@"pt_PT" forKey:@"Portuguese (Portugal)"];
+[SHORT_NAME setObject:@"pt" forKey:@"Portuguese"];
+[SHORT_NAME setObject:@"ro_RO" forKey:@"Romanian"];
+[SHORT_NAME setObject:@"ru" forKey:@"Russian"];
+[SHORT_NAME setObject:@"ru_RU" forKey:@"Russian (Russia)"];
+[SHORT_NAME setObject:@"sk_SK" forKey:@"Slovak"];
+[SHORT_NAME setObject:@"sl_SI" forKey:@"Slovenian"];
+[SHORT_NAME setObject:@"sr_YU" forKey:@"Serbian"];
+[SHORT_NAME setObject:@"sv" forKey:@"Swedish"];
+[SHORT_NAME setObject:@"sv_SE" forKey:@"Swedish (Sweden)"];
+[SHORT_NAME setObject:@"tr_TR" forKey:@"Turkish"];
+[SHORT_NAME setObject:@"uk_UR" forKey:@"Ukranian"];
+[SHORT_NAME setObject:@"zh_CN" forKey:@"Chinese (Simplified)"];
+[SHORT_NAME setObject:@"zh_HK" forKey:@"Chinese (Hong Kong)"];
+[SHORT_NAME setObject:@"zh_TW" forKey:@"Chinese (Traditional)"];
+[SHORT_NAME setObject:@"zh" forKey:@"Chinese (China)"];
 
 var languageMapping = [CPDictionary dictionary];
 [languageMapping setObject:[[OLLanguage alloc] initWithName:@"Afrikaans (South Africa)"] forKey:@"af_ZA"];
