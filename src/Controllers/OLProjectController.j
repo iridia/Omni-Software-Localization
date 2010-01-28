@@ -114,7 +114,10 @@
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
         [OLProject findByUserIdentifier:userLoggedIn withCallback:function(project)
     	{
-            [self addProject:project];
+    	    if (project)
+    	    {
+                [self addProject:project];
+            }
         }];
     }
 }
