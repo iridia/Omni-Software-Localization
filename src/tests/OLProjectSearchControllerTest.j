@@ -28,4 +28,33 @@
     }
 }
 
+- (void)testThatOLProjectSearchControllerDoesAddSubscribersWhenBranching
+{
+    var CPAlertTemp = CPAlert;
+    try
+    {
+        CPAlert = moq();
+
+        [CPAlert selector:@selector(alloc) returns:CPAlert];
+        [CPAlert selector:@selector(init) returns:CPAlert];
+
+        var project = moq();
+        [project selector:@selector(addSubscriber:) times:1];
+        [project selector:@selector(clone) returns:moq()];
+        [[OLUserSessionManager defaultSessionManager] setUser:moq()];
+
+        var target = [[OLProjectSearchController alloc] init];
+
+        target.selectedProject = project;
+
+        [target alertDidEnd:moq() returnCode:1];
+
+        [project verifyThatAllExpectationsHaveBeenMet];
+    }
+    finally
+    {
+        CPAlert = CPAlertTemp;
+    }
+}
+
 @end

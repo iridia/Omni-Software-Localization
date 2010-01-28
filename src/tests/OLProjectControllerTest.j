@@ -62,33 +62,6 @@
     [self assert:project equals:[[target projects] objectAtIndex:0]];
 }
 
-- (void)testThatOLProjectControllerDoesAddSubscribersWhenBranching
-{
-    var CPAlertTemp = CPAlert;
-    try
-    {
-        CPAlert = moq();
-        
-        [CPAlert selector:@selector(alloc) returns:CPAlert];
-        [CPAlert selector:@selector(init) returns:CPAlert];
-    
-        var project = moq();
-        [project expectSelector:@selector(addSubscriber:) times:1];
-    
-        var target = [[OLProjectController alloc] init];
-    
-        target.selectedProject = project;
-    
-        [target didReceiveProjectShouldBranchNotification:moq()];
-    
-        [project verifyThatAllExpectationsHaveBeenMet];
-    }
-    finally
-    {
-        CPAlert = CPAlertTemp;
-    }
-}
-
 - (void)testThatOLProjectControllerDoesRegisterForImportNotification
 {
     var target = [[OLProjectController alloc] init];
