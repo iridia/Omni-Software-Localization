@@ -145,14 +145,38 @@
 
 - (void)startCreateNewBundle:(id)sender
 {
-    [[CPApplication sharedApplication] runModalForWindow:createNewBundleWindow];
-    [createNewBundleWindow setUp:self];
+    if([[self availableLanguages] count] > 0)
+    {
+        [[CPApplication sharedApplication] runModalForWindow:createNewBundleWindow];
+        [createNewBundleWindow setUp:self];
+    }
+    else
+    {
+        var alert = [[CPAlert alloc] init];
+        [alert setTitle:@"No languages available!"];
+        [alert setMessageText:@"You cannot add a language to this project because all possible languages are already added!"];
+        [alert setAlertStyle:CPWarningAlertStyle];
+        [alert addButtonWithTitle:@"OK"];
+        [alert runModal];
+    }
 }
 
 - (void)startDeleteBundle:(id)sender
 {
-    [[CPApplication sharedApplication] runModalForWindow:deleteBundleWindow];
-    [deleteBundleWindow setUp:self];
+    if([resourceBundles count] > 1)
+    {
+        [[CPApplication sharedApplication] runModalForWindow:deleteBundleWindow];
+        [deleteBundleWindow setUp:self];
+    }
+    else
+    {
+        var alert = [[CPAlert alloc] init];
+        [alert setTitle:@"No languages available!"];
+        [alert setMessageText:@"You cannot delete a language from this project because there are no languages to delete!"];
+        [alert setAlertStyle:CPWarningAlertStyle];
+        [alert addButtonWithTitle:@"OK"];
+        [alert runModal];
+    }
 }
 
 - (CPArray)titlesOfAvailableLanguage
@@ -187,7 +211,7 @@
     {
         var theLanguage = [allLanguages objectAtIndex:i];
         
-        if(![self isLanguageAlreadyLocalized:theLanguage])
+        if(![self isLanguageAlreadyLocalized:theLanguage] && ![theLanguage equals:[[OLLanguage alloc] initWithName:@"English"]])
         {
             [result addObject:[allLanguages objectAtIndex:i]];
         }
