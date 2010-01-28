@@ -50,8 +50,9 @@
         // Uncomment once DB supports passwords.
         var passwordText = [CPTextField labelWithTitle:@"Password:"];
         [paddedView addSubview:passwordText positioned:CPViewBelow relativeTo:emailTextField withPadding:5.0];
+        [passwordText setTextColor:[CPColor grayColor]];
         
-        passwordTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"" width:CGRectGetWidth([paddedView bounds])];
+        passwordTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"Not Required" width:CGRectGetWidth([paddedView bounds])];
         [passwordTextField setSecure:YES];
         [passwordTextField setFont:inputFont];
         [passwordTextField sizeToFit];
@@ -61,8 +62,9 @@
         confirmPasswordText = [CPTextField labelWithTitle:@"Confirm Password:"];
         [confirmPasswordText setHidden:YES];
         [paddedView addSubview:confirmPasswordText positioned:CPViewBelow relativeTo:passwordTextField withPadding:5.0];
+        [confirmPasswordText setTextColor:[CPColor grayColor]];
         
-        confirmPasswordTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"" width:CGRectGetWidth([paddedView bounds])];
+        confirmPasswordTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"Not Required" width:CGRectGetWidth([paddedView bounds])];
         [confirmPasswordTextField setSecure:YES];
         [confirmPasswordTextField setFont:inputFont];
         [confirmPasswordTextField sizeToFit];
