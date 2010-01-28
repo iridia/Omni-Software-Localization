@@ -74,9 +74,13 @@ task("couch:reset", ["couch:reset:views"]);
 task("couch:reset:views", function()
 {    
     var databases = getDatabases();
+    
+    // the view definitions need to match up with the databases
     var views = ["find", "project", "user", "message", "find", "find"];
-    var view_path = "_design/finder";
+    // the relative path to the view definitions
     var path_to_views = "../utilities/couch/";
+    // the couch url path to a view
+    var view_path = "_design/finder";
     
     // get current revs
     var revs = [];
