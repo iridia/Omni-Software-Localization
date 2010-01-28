@@ -29,6 +29,11 @@ var OLActiveRecordRecordIDKey = @"_id";
 	id              delegate    @accessors;
 }
 
++ (CPString)databaseName
+{
+    return CPStringFromClass([self class]).replace("OL", "").toLowerCase();
+}
+
 + (void)listWithCallback:(Function)callback
 {
     var instance = [[self alloc] init];
@@ -39,7 +44,7 @@ var OLActiveRecordRecordIDKey = @"_id";
 {
 	try
 	{
-        var url = API_PREFIX + apiNameFromClass([self class]) + "/find/all";
+        var url = API_PREFIX + [[self class] databaseName] + "/find/all";
 		var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 		
 		var options = [CPDictionary dictionaryWithObjects:[callback, ListConnection] forKeys:[@"callback", @"type"]];
@@ -186,7 +191,7 @@ var OLActiveRecordRecordIDKey = @"_id";
 
 - (CPURL)_apiURLWithRecordID:(BOOL)shouldAppendRecordID
 {
-    var url = API_PREFIX + apiNameFromClass([self class]);
+    var url = API_PREFIX + [[self class] databaseName];
     
     if (shouldAppendRecordID)
     {
@@ -209,7 +214,7 @@ var OLActiveRecordRecordIDKey = @"_id";
 
 - (void)_find:(CPString)propertyToSearchOn by:(JSON)object withCallback:(Function)callback
 {
-    var url = API_PREFIX + apiNameFromClass([self class]) + "/find/" + propertyToSearchOn + "?key=\"" + object + "\"";
+    var url = API_PREFIX + [[self class] databaseName] + "/find/" + propertyToSearchOn + "?key=\"" + object + "\"";
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	
 	var options = [CPDictionary dictionaryWithObjects:[callback, SearchConnection] forKeys:[@"callback", @"type"]];
@@ -232,7 +237,7 @@ var OLActiveRecordRecordIDKey = @"_id";
 - (void)_findAllBy:(CPString)property withCallback:(Function)callback
 {
     property = [property lowercaseString];
-    var modifiedClassName = apiNameFromClass([self class]);
+    var modifiedClassName = [[self class] databaseName];
     var url = API_PREFIX + modifiedClassName + "/find/all_by_" + modifiedClassName + "_" + property;
 	var urlRequest = [[CPURLRequest alloc] initWithURL:[CPURL URLWithString:url]];
 	[urlRequest setHTTPMethod:"GET"];
@@ -459,7 +464,7 @@ function getAccessorForSelector(_cmd, self, aSelector)
     }
 
     // Are we of the form findAll<model>sBy<getter>WithCallback:
-    var searchAllAccessorRegEx = getFindAllRegExpForModel(apiNameFromClass(self));
+    var searchAllAccessorRegEx = getFindAllRegExpForModel([self databaseName]);
     var accessors = searchAllAccessorRegEx.exec(selectorString);
     if (accessors)
     {
@@ -482,7 +487,7 @@ function getAPIMethodForSelector(_cmd, self, aSelector)
     }
 
     // Are we of the form findAll<model>sBy<getter>WithCallback:
-    var searchAllAccessorRegEx = getFindAllRegExpForModel(apiNameFromClass(self));
+    var searchAllAccessorRegEx = getFindAllRegExpForModel([self databaseName]);
     var accessors = searchAllAccessorRegEx.exec(selectorString);
     if (accessors)
     {
@@ -519,13 +524,4 @@ function removeAllArgumentsFromInvocationAboveIndex(anInvocation, startingIndex)
         }
         [anInvocation setArgument:nil atIndex:i];            
     }
-}
-
-
-// Other private functions
-
-// Convert a class into the api string
-function apiNameFromClass(aClass)
-{
-    return CPStringFromClass(aClass).replace("OL", "").toLowerCase();
 }
