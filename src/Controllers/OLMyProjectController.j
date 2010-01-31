@@ -105,4 +105,18 @@
         object:nil];
 }
 
+- (void)startImport:(CPNotification)notification
+{
+    [importProjectController startImport:selectedProject];
+}
+
+- (void)createBroadcastMessage:(CPNotification)notification
+{
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLMessageControllerShouldShowBroadcastViewNotification
+        object:self
+        userInfo:[CPDictionary dictionaryWithObjects:[selectedProject] forKeys:[@"project"]]];
+}
+
+
 @end

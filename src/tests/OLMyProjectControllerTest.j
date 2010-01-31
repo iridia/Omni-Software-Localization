@@ -1,4 +1,6 @@
 @import "../Controllers/OLMyProjectController.j"
+@import "utilities/Observer.j"
+
 
 @implementation OLMyProjectControllerTest : OJTestCase
 
@@ -109,6 +111,35 @@
     var target = [[OLMyProjectController alloc] init];
 
     [self assert:target registered:"OLProjectShouldImportNotification"];
+}
+
+- (void)testThatOLMyProjectControllerDoesRespondToStartImport
+{
+    var importProjectController = moq();
+    var target = [[OLMyProjectController alloc] init];
+    
+    target.importProjectController = importProjectController;
+    
+    [importProjectController selector:@selector(startImport:) times:1];
+
+    [target startImport:moq()];
+    
+    [importProjectController verifyThatAllExpectationsHaveBeenMet];
+}
+
+- (void)testThatOLMyProjectControllerDoesSendNotificationWhenReceivingShouldBroadcastNotification
+{
+    var observer = [[Observer alloc] init];
+    var selectedProject = moq();
+    var target = [[OLMyProjectController alloc] init];
+
+    target.selectedProject = selectedProject;
+    
+    [observer startObserving:OLMessageControllerShouldShowBroadcastViewNotification];
+
+    [target createBroadcastMessage:moq()];
+    
+    [observer didObserve:OLMessageControllerShouldShowBroadcastViewNotification];
 }
 
 - (void)assert:(id)target registered:(CPString)aNotification

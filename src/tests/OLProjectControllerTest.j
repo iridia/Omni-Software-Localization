@@ -62,13 +62,6 @@
     [self assert:project equals:[[target projects] objectAtIndex:0]];
 }
 
-- (void)testThatOLProjectControllerDoesRespondToStartImport
-{
-    var target = [[OLProjectController alloc] init];
-    
-    [self assertTrue:[target respondsToSelector:@selector(startImport:)]];
-}
-
 - (void)tearDown
 {
     [OLUserSessionManager resetDefaultSessionManager];
