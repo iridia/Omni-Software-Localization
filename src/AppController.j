@@ -9,7 +9,7 @@
 
 @import <Foundation/CPObject.j>
 
-@import "Controllers/OLProjectController.j"
+@import "Controllers/OLMyProjectController.j"
 @import "Controllers/OLGlossaryController.j"
 @import "Controllers/OLContentViewController.j"
 @import "Controllers/OLToolbarController.j"
@@ -48,7 +48,7 @@ OSL_MAIN_VIEW_FRAME = nil;
     
     var uploadWindowController = [[OLUploadWindowController alloc] init];
 	
-	var projectController = [[OLProjectController alloc] init];
+	var projectController = [[OLMyProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
     
