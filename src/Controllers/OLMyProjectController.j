@@ -118,5 +118,23 @@
         userInfo:[CPDictionary dictionaryWithObjects:[selectedProject] forKeys:[@"project"]]];
 }
 
+- (void)loadProjects
+{
+    [self willChangeValueForKey:@"projects"];
+    projects = [CPArray array];
+    [self didChangeValueForKey:@"projects"];
+
+    if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
+    {
+        var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
+        [OLProject findByUserIdentifier:userLoggedIn withCallback:function(project)
+    	{
+    	    if (project)
+    	    {
+                [self addProject:project];
+            }
+        }];
+    }
+}
 
 @end

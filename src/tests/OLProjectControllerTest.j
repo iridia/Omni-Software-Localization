@@ -15,31 +15,6 @@
     [self assertNotNull:[[OLProjectController alloc] init]];
 }
 
-- (void)testThatOLProjectControllerDoesLoadProjects
-{
-    var user = moq();
-    [user selector:@selector(userIdentifier) returns:@"12345"];
-    [[OLUserSessionManager defaultSessionManager] setUser:user];
-    
-    var tempProject = OLProject;
-    try
-    {
-        OLProject = moq();
-    
-        [OLProject selector:@selector(findByUserIdentifier:withCallback:) times:1];
-    
-        var target = [[OLProjectController alloc] init];
-    
-        [target loadProjects];
-    
-        [OLProject verifyThatAllExpectationsHaveBeenMet];
-    } 
-    finally 
-    {
-        OLProject = tempProject;
-    }
-}
-
 - (void)testThatOLProjectControllerDoesAddProjects
 {
     var project = moq();
