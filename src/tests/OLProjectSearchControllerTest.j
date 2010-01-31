@@ -2,6 +2,16 @@
 
 @implementation OLProjectSearchControllerTest : OJTestCase
 
+- (void)setUp
+{
+    OSL_MAIN_VIEW_FRAME = CGRectMakeZero();
+}
+
+- (void)tearDown
+{
+    OSL_MAIN_VIEW_FRAME = nil;
+}
+
 - (void)testThatOLProjectSearchControllerDoesInitialize
 {
     [self assertNotNull:[[OLProjectSearchController alloc] init]];

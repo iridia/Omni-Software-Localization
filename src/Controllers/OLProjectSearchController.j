@@ -1,4 +1,6 @@
 @import "OLProjectController.j"
+@import "../Views/OLProjectSearchView.j"
+@import "../Views/OLProjectResultView.j"
 
 @implementation OLProjectSearchController : OLProjectController
 {

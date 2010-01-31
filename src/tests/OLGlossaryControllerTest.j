@@ -2,6 +2,16 @@
 
 @implementation OLGlossaryControllerTest : OJTestCase
 
+- (void)setUp
+{
+    OSL_MAIN_VIEW_FRAME = CGRectMakeZero();
+}
+
+- (void)tearDown
+{
+    OSL_MAIN_VIEW_FRAME = nil;
+}
+
 - (void)testThatOLGlossaryControllerDoesInitialize
 {
     [self assertNotNull:[[OLGlossaryController alloc] init]];
