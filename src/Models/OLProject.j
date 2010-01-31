@@ -92,9 +92,7 @@
 
 - (void)addSubscriber:(CPString)subscriberId
 {
-    console.log(_cmd, subscribers, subscriberId);
     [subscribers addObject:subscriberId];
-    console.log(_cmd, subscribers, subscriberId);
 }
 
 - (CPString)sidebarName

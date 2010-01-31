@@ -46,7 +46,6 @@ var OLUserEmailKey = @"OLUserEmailKey";
 	[mockCoder verifyThatAllExpectationsHaveBeenMet];
 	
 	[self assertNotNull:encodeTarget];
-	print([encodeTarget email]);
 	[self assert:emailAddress equals:[encodeTarget email]];
 }
 

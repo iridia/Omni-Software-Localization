@@ -23,7 +23,14 @@
 {
     var target = [[OLMyProjectController alloc] init];
 
-    [self assert:target registered:@"OLProjectShouldImportNotification"]
+    [self assert:target registered:@"OLProjectShouldImportNotification"];
+}
+
+- (void)testThatOLMyProjectControllerDoesRegisterForParseServerResponseNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+
+    [self assert:target registered:@"OLUploadControllerDidParseServerResponse"];
 }
 
 - (void)assert:(id)target registered:(CPString)aNotification
