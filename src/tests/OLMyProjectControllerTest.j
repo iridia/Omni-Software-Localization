@@ -83,6 +83,34 @@
     [self assert:target registered:"CPLanguageShouldAddLanguageNotification"];
 }
 
+- (void)testThatOLMyProjectControllerDoesRegisterForCPLanguageShouldDeleteLanguageNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+
+    [self assert:target registered:"CPLanguageShouldDeleteLanguageNotification"];
+}
+
+- (void)testThatOLMyProjectControllerDoesRegisterForOLProjectShouldDownloadNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+
+    [self assert:target registered:"OLProjectShouldDownloadNotification"];
+}
+
+- (void)testThatOLMyProjectControllerDoesRegisterForCPMessageShouldBroadcastNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+
+    [self assert:target registered:"CPMessageShouldBroadcastNotification"];
+}
+
+- (void)testThatOLMyProjectControllerDoesRegisterForOLProjectShouldImportNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+
+    [self assert:target registered:"OLProjectShouldImportNotification"];
+}
+
 - (void)assert:(id)target registered:(CPString)aNotification
 {
     var names = [[CPNotificationCenter defaultCenter]._namedRegistries keyEnumerator];
