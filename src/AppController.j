@@ -24,6 +24,10 @@
 @import "Views/OLProjectSearchView.j"
 @import "Views/OLProjectResultView.j"
 
+// This is a hack to get table views to show at a reasonable default size. When table
+// views can resize properly, this can go away.
+OSL_MAIN_VIEW_FRAME = nil;
+
 @implementation AppController : CPObject
 {
     @outlet						CPWindow                theWindow;
@@ -38,13 +42,17 @@
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
+    // This MUST come first!!
+    OSL_MAIN_VIEW_SIZE = [mainContentView bounds];
+    // DO NOT MOVE
+    
     var uploadWindowController = [[OLUploadWindowController alloc] init];
 	
 	var projectController = [[OLProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
     
-    var projectView = [[OLProjectView alloc] initWithFrame:[mainContentView bounds]];
+    var projectView = [[OLProjectView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
     [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [projectController setProjectView:projectView];
     
@@ -52,7 +60,7 @@
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:glossaryController];
 	
-	var glossariesView = [[OLGlossariesView alloc] initWithFrame:[mainContentView bounds]];
+	var glossariesView = [[OLGlossariesView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
 	[glossariesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 	[glossariesView setGlossaryController:glossaryController];
 	[glossaryController setGlossariesView:glossariesView];
@@ -62,11 +70,11 @@
     [communityController setContentViewController:contentViewController];
     [sidebarController addSidebarItem:communityController];
     
-    var mailView = [[OLMailView alloc] initWithFrame:[mainContentView bounds]];
+    var mailView = [[OLMailView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
     [mailView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [communityController setMailView:mailView];
     
-    var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
+    var searchView = [[OLProjectSearchView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
     [searchView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [communityController setSearchView:searchView];
     [communityController setProjectView:[[OLProjectResultView alloc] initWithFrame:[mainContentView bounds]]];
