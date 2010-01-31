@@ -20,35 +20,19 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 	OLProjectView   projectView         @accessors;
 	
 	OLResourceBundleController  resourceBundleController;
-	OLImportProjectController   importProjectController;
 }
 
-- (id)init
+- (void)init
 {
-    if(self = [super init])
+    self = [super init];
+    if(self)
     {
-        projectView = [[OLProjectView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
-        [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-        
 		projects = [CPArray array];
+   		
+   		[self registerForNotifications];
 		
 		resourceBundleController = [[OLResourceBundleController alloc] init];
         [self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
-        
-        importProjectController = [[OLImportProjectController alloc] init];
-   		
-   		[self registerForNotifications];
-   		
-        [projectView setResourcesTableViewDataSource:self];
-        [projectView setLineItemsTableViewDataSource:self];
-        [projectView setResourcesTableViewDelegate:self];
-        [projectView setLineItemsTableViewDelegate:self];
-        [projectView setLineItemsTarget:self doubleAction:@selector(lineItemsTableViewDoubleClick:)];
-        [projectView setResourceBundleDelegate:self];
-        [projectView setVotingDataSource:self];
-        [projectView setVotingDelegate:self];
-        [projectView setOwnerDataSource:self];
-        [projectView setTitleDataSource:self];
     }
     return self;
 }
