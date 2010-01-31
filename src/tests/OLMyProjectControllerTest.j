@@ -33,6 +33,20 @@
     [self assert:target registered:@"OLUploadControllerDidParseServerResponse"];
 }
 
+- (void)testThatOLMyProjectControllerDoesRegisterForOutlineViewSelectionDidChangeNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+
+    [self assert:target registered:CPOutlineViewSelectionDidChangeNotification];
+}
+
+- (void)testThatOLMyProjectControllerDoesRegisterForOLProjectDidChangeNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+    
+    [self assert:target registered:@"OLProjectDidChangeNotification"];
+}
+
 - (void)assert:(id)target registered:(CPString)aNotification
 {
     var names = [[CPNotificationCenter defaultCenter]._namedRegistries keyEnumerator];
