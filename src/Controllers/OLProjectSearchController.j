@@ -33,6 +33,8 @@
         [searchView setDataSource:self];
         [searchView setDelegate:self];
         contentView = searchView;
+   		
+   		[self registerForNotifications];
     }
     return self;
 }
