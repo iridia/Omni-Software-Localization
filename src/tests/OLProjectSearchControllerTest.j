@@ -5,11 +5,17 @@
 - (void)setUp
 {
     OSL_MAIN_VIEW_FRAME = CGRectMakeZero();
+    urlConnection = moq();
+    [OLURLConnectionFactory setConnectionFactoryMethod:function(request, delegate)
+    {
+        return [urlConnection createConnectionWithRequest:request delegate:delegate];
+    }];
 }
 
 - (void)tearDown
 {
     OSL_MAIN_VIEW_FRAME = nil;
+    [OLURLConnectionFactory setConnectionFactoryMethod:nil];
 }
 
 - (void)testThatOLProjectSearchControllerDoesInitialize

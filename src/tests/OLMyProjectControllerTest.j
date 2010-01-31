@@ -7,11 +7,17 @@
     OSL_MAIN_VIEW_FRAME = CGRectMakeZero();
     [CPNotificationCenter setIsMocked:NO];
     [CPNotificationCenter reset];
+    urlConnection = moq();
+    [OLURLConnectionFactory setConnectionFactoryMethod:function(request, delegate)
+    {
+        return [urlConnection createConnectionWithRequest:request delegate:delegate];
+    }];
 }
 
 - (void)tearDown
 {
     OSL_MAIN_VIEW_FRAME = nil;
+    [OLURLConnectionFactory setConnectionFactoryMethod:nil];
 }
 
 - (void)testThatOLMyProjectControllerDoesInitialize
@@ -45,6 +51,36 @@
     var target = [[OLMyProjectController alloc] init];
     
     [self assert:target registered:@"OLProjectDidChangeNotification"];
+}
+
+- (void)testThatOLMyProjectControllerDoesRegisterForOLProjectShouldReloadMyProjectsNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+    
+    [self assert:target registered:OLProjectShouldReloadMyProjectsNotification];
+}
+
+
+- (void)testThatOLMyProjectControllerDoesRegisterForOLUserSessionManagerUserDidChangeNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+    
+    [self assert:target registered:OLUserSessionManagerUserDidChangeNotification];
+}
+
+
+- (void)testThatOLMyProjectControllerDoesRegisterForOLLineItemSelectedLineItemIndexDidChangeNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+    
+    [self assert:target registered:OLLineItemSelectedLineItemIndexDidChangeNotification];
+}
+
+- (void)testThatOLMyProjectControllerDoesRegisterForCPLanguageShouldAddLanguageNotification
+{
+    var target = [[OLMyProjectController alloc] init];
+    
+    [self assert:target registered:"CPLanguageShouldAddLanguageNotification"];
 }
 
 - (void)assert:(id)target registered:(CPString)aNotification
