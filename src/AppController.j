@@ -43,7 +43,7 @@ OSL_MAIN_VIEW_FRAME = nil;
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
     // This MUST come first!!
-    OSL_MAIN_VIEW_SIZE = [mainContentView bounds];
+    OSL_MAIN_VIEW_FRAME = [mainContentView bounds];
     // DO NOT MOVE
     
     var uploadWindowController = [[OLUploadWindowController alloc] init];
@@ -52,33 +52,14 @@ OSL_MAIN_VIEW_FRAME = nil;
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
     
-    var projectView = [[OLProjectView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
-    [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    [projectController setProjectView:projectView];
-    
  	var glossaryController = [[OLGlossaryController alloc] init];
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:glossaryController];
-	
-	var glossariesView = [[OLGlossariesView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
-	[glossariesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-	[glossariesView setGlossaryController:glossaryController];
-	[glossaryController setGlossariesView:glossariesView];
     
     var communityController = [[OLCommunityController alloc] init];
     [communityController addObserver:sidebarController forKeyPath:@"items" options:CPKeyValueObservingOptionNew context:nil];
     [communityController setContentViewController:contentViewController];
     [sidebarController addSidebarItem:communityController];
-    
-    var mailView = [[OLMailView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
-    [mailView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    [communityController setMailView:mailView];
-    
-    var searchView = [[OLProjectSearchView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
-    [searchView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    [communityController setSearchView:searchView];
-    [communityController setProjectView:[[OLProjectResultView alloc] initWithFrame:[mainContentView bounds]]];
-    [communityController setContentViewController:contentViewController];
  
 	var menuController = [[OLMenuController alloc] init];
     [CPMenu setMenuBarVisible:YES];

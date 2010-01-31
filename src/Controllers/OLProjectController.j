@@ -26,7 +26,10 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 - (id)init
 {
     if(self = [super init])
-    {        
+    {
+        projectView = [[OLProjectView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
+        [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        
 		projects = [CPArray array];
 		
 		resourceBundleController = [[OLResourceBundleController alloc] init];
@@ -35,6 +38,17 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
         importProjectController = [[OLImportProjectController alloc] init];
    		
    		[self registerForNotifications];
+   		
+        [projectView setResourcesTableViewDataSource:self];
+        [projectView setLineItemsTableViewDataSource:self];
+        [projectView setResourcesTableViewDelegate:self];
+        [projectView setLineItemsTableViewDelegate:self];
+        [projectView setLineItemsTarget:self doubleAction:@selector(lineItemsTableViewDoubleClick:)];
+        [projectView setResourceBundleDelegate:self];
+        [projectView setVotingDataSource:self];
+        [projectView setVotingDelegate:self];
+        [projectView setOwnerDataSource:self];
+        [projectView setTitleDataSource:self];
     }
     return self;
 }
@@ -225,25 +239,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
     var index = [[notification userInfo] objectForKey:@"SelectedIndex"];
     
     [projectView selectLineItemsTableViewRowIndexes:[CPIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
-}
-
-- (void)setProjectView:(OLProjectView)aProjectView
-{
-    if (projectView === aProjectView)
-        return;
-        
-    projectView = aProjectView;
-    
-    [projectView setResourcesTableViewDataSource:self];
-    [projectView setLineItemsTableViewDataSource:self];
-    [projectView setResourcesTableViewDelegate:self];
-    [projectView setLineItemsTableViewDelegate:self];
-    [projectView setLineItemsTarget:self doubleAction:@selector(lineItemsTableViewDoubleClick:)];
-    [projectView setResourceBundleDelegate:self];
-    [projectView setVotingDataSource:self];
-    [projectView setVotingDelegate:self];
-    [projectView setOwnerDataSource:self];
-    [projectView setTitleDataSource:self];
 }
 
 @end

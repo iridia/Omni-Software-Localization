@@ -9,6 +9,34 @@
     OLContentViewController contentViewController   @accessors;
 }
 
+- (void)init
+{
+    self = [super init];
+    if(self)
+    {
+        searchView = [[OLProjectSearchView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
+        [searchView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        
+        projectView = [[OLProjectResultView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
+   		
+        [projectView setResourcesTableViewDataSource:self];
+        [projectView setLineItemsTableViewDataSource:self];
+        [projectView setResourcesTableViewDelegate:self];
+        [projectView setLineItemsTableViewDelegate:self];
+        [projectView setLineItemsTarget:self doubleAction:@selector(lineItemsTableViewDoubleClick:)];
+        [projectView setResourceBundleDelegate:self];
+        [projectView setVotingDataSource:self];
+        [projectView setVotingDelegate:self];
+        [projectView setOwnerDataSource:self];
+        [projectView setTitleDataSource:self];
+        
+        [searchView setDataSource:self];
+        [searchView setDelegate:self];
+        contentView = searchView;
+    }
+    return self;
+}
+
 - (void)registerForNotifications
 {
     [[CPNotificationCenter defaultCenter]
@@ -52,17 +80,6 @@
        }];
 }
 
-- (void)setSearchView:(CPView)aSearchView
-{
-    if(searchView === aSearchView)
-        return;
-    
-    searchView = aSearchView;
-    [searchView setDataSource:self];
-    [searchView setDelegate:self];
-    contentView = searchView;
-}
-
 - (void)reloadData
 {
     [searchView reloadData];
@@ -80,7 +97,6 @@
 
 - (void)didReceiveProjectControllerFinished:(CPNotification)notification
 {
-    console.log(_cmd, [self className]);
     [self loadProjects];
 }
 
@@ -178,7 +194,6 @@
     {
         [selectedProject addSubscriber:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
         [selectedProject save];
-        console.log(selectedProject);
         
         var clonedProject = [selectedProject clone];
         [clonedProject setUserIdentifier:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
