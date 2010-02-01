@@ -39,23 +39,14 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 {
 }
 
-- (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
+- (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index
 {
-    [self loadProjects];
-    [self reloadData];
+    [projects insertObject:project atIndex:index];
 }
 
-- (void)didReceiveShouldCreateCommentNotification:(CPNotification)notification
+- (void)addProject:(OLProject)project
 {
-    var options = [notification userInfo];
-    var content = [options objectForKey:@"content"];
-    var item = [options objectForKey:@"item"];
-    var user = [[OLUserSessionManager defaultSessionManager] user];
-
-    var comment = [[OLComment alloc] initFromUser:user withContent:content];
-    [item addComment:comment];
-    
-    [selectedProject save];
+    [self insertObject:project inProjectsAtIndex:[projects count]];
 }
 
 - (void)downloadSelectedProject:(CPNotification)notification
@@ -75,41 +66,10 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
     [CPTimer scheduledTimerWithTimeInterval:1 callback:function(){[webView removeFromSuperview];} repeats:NO];
 }
 
-- (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index
-{
-    [projects insertObject:project atIndex:index];
-}
-
-- (void)addProject:(OLProject)project
-{
-    [self insertObject:project inProjectsAtIndex:[projects count]];
-}
-
-- (void)didReceiveParseServerResponseNotification:(CPNotification)notification
-{
-	var jsonResponse = [[notification object] jsonResponse];
-
-	if (jsonResponse.fileType === @"zip")
-	{
-		var newProject = [OLProject projectFromJSON:jsonResponse];
-		[self addProject:newProject];
-    	[newProject saveWithCallback:function(){
-    	    [[CPNotificationCenter defaultCenter]
-                        postNotificationName:OLProjectShouldReloadMyProjectsNotification
-                        object:self];
-    	}];
-	}
-}
-
 - (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
 {
     [selectedProject save];
     [projectView reloadAllData];
-}
-
-- (void)didReceiveUserDidChangeNotification:(CPNotification)notification
-{
-    [self loadProjects];
 }
 
 - (void)didReceiveLineItemSelectedIndexDidChangeNotification:(CPNotification)notification

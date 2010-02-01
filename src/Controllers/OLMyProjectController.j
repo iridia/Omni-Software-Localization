@@ -137,4 +137,44 @@
     }
 }
 
+- (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification
+{
+    [self loadProjects];
+    [self reloadData];
+}
+
+- (void)didReceiveShouldCreateCommentNotification:(CPNotification)notification
+{
+    var options = [notification userInfo];
+    var content = [options objectForKey:@"content"];
+    var item = [options objectForKey:@"item"];
+    var user = [[OLUserSessionManager defaultSessionManager] user];
+
+    var comment = [[OLComment alloc] initFromUser:user withContent:content];
+    [item addComment:comment];
+    
+    [selectedProject save];
+}
+
+- (void)didReceiveParseServerResponseNotification:(CPNotification)notification
+{
+	var jsonResponse = [[notification object] jsonResponse];
+
+	if (jsonResponse.fileType === @"zip")
+	{
+		var newProject = [OLProject projectFromJSON:jsonResponse];
+		[self addProject:newProject];
+    	[newProject saveWithCallback:function(){
+    	    [[CPNotificationCenter defaultCenter]
+                        postNotificationName:OLProjectShouldReloadMyProjectsNotification
+                        object:self];
+    	}];
+	}
+}
+
+- (void)didReceiveUserDidChangeNotification:(CPNotification)notification
+{
+    [self loadProjects];
+}
+
 @end
