@@ -19,7 +19,7 @@ var OLCommunitySearchItem = @"Search";
 - (id)init
     {
         if(self = [super init])
-        {        		
+        {   
         	searchController = [[OLProjectSearchController alloc] init];
         	[searchController loadProjects];
         	
@@ -32,21 +32,6 @@ var OLCommunitySearchItem = @"Search";
     			object:nil];
         }
         return self;
-}
-
-- (void)setMailView:(CPView)aMailView
-{
-    [messageController setMailView:aMailView];
-}
-
-- (void)setSearchView:(CPView)aSearchView
-{
-    [searchController setSearchView:aSearchView];
-}
-
-- (void)setProjectView:(CPView)aProjectView
-{
-    [searchController setProjectView:aProjectView];
 }
 
 - (void)setContentViewController:(id)contentViewController
@@ -79,7 +64,7 @@ var OLCommunitySearchItem = @"Search";
     switch(selectedItem)
     {
         case OLCommunityInboxItem:
-            view = [messageController contentView];
+            view = [messageController mailView];
             break;
         case OLCommunitySearchItem:
             view = [searchController contentView];

@@ -9,7 +9,7 @@
 
 @import <Foundation/CPObject.j>
 
-@import "Controllers/OLProjectController.j"
+@import "Controllers/OLMyProjectController.j"
 @import "Controllers/OLGlossaryController.j"
 @import "Controllers/OLContentViewController.j"
 @import "Controllers/OLToolbarController.j"
@@ -26,6 +26,10 @@
 
 @import "Utilities/CPUserDefaults.j"
 
+// This is a hack to get table views to show at a reasonable default size. When table
+// views can resize properly, this can go away.
+OSL_MAIN_VIEW_FRAME = nil;
+
 @implementation AppController : CPObject
 {
     @outlet						CPWindow                theWindow;
@@ -40,39 +44,24 @@
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
+    // This MUST come first!!
+    OSL_MAIN_VIEW_FRAME = [mainContentView bounds];
+    // DO NOT MOVE
+    
     var uploadWindowController = [[OLUploadWindowController alloc] init];
 	
-	var projectController = [[OLProjectController alloc] init];
+	var projectController = [[OLMyProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
-    
-    var projectView = [[OLProjectView alloc] initWithFrame:[mainContentView bounds]];
-    [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    [projectController setProjectView:projectView];
     
  	var glossaryController = [[OLGlossaryController alloc] init];
 	[glossaryController addObserver:sidebarController forKeyPath:@"glossaries" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:glossaryController];
-	
-	var glossariesView = [[OLGlossariesView alloc] initWithFrame:[mainContentView bounds]];
-	[glossariesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-	[glossariesView setGlossaryController:glossaryController];
-	[glossaryController setGlossariesView:glossariesView];
     
     var communityController = [[OLCommunityController alloc] init];
     [communityController addObserver:sidebarController forKeyPath:@"items" options:CPKeyValueObservingOptionNew context:nil];
     [communityController setContentViewController:contentViewController];
     [sidebarController addSidebarItem:communityController];
-    
-    var mailView = [[OLMailView alloc] initWithFrame:[mainContentView bounds]];
-    [mailView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    [communityController setMailView:mailView];
-    
-    var searchView = [[OLProjectSearchView alloc] initWithFrame:[mainContentView bounds]];
-    [searchView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-    [communityController setSearchView:searchView];
-    [communityController setProjectView:[[OLProjectResultView alloc] initWithFrame:[mainContentView bounds]]];
-    [communityController setContentViewController:contentViewController];
  
 	var menuController = [[OLMenuController alloc] init];
     [CPMenu setMenuBarVisible:YES];
