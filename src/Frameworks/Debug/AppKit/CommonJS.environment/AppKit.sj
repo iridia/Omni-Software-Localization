@@ -13633,7 +13633,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["CGSize","CPFont","float"])]);
 }
 
-p;15;CPTableColumn.jI;25;Foundation/CPDictionary.jI;21;Foundation/CPObject.jI;29;Foundation/CPSortDescriptor.jI;21;Foundation/CPString.ji;19;CPTableHeaderView.jc;13001;
+p;15;CPTableColumn.jI;25;Foundation/CPDictionary.jI;21;Foundation/CPObject.jI;29;Foundation/CPSortDescriptor.jI;21;Foundation/CPString.ji;19;CPTableHeaderView.jc;13093;
 CPTableColumnNoResizing = 0;
 CPTableColumnAutoresizingMask = 1;
 CPTableColumnUserResizingMask = 2;
@@ -13662,6 +13662,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $CPTab
         var textDataView = objj_msgSend(CPTextField, "new");
         objj_msgSend(textDataView, "setValue:forThemeAttribute:inState:", objj_msgSend(CPColor, "whiteColor"), "text-color", CPThemeStateHighlighted);
         objj_msgSend(textDataView, "setValue:forThemeAttribute:inState:", objj_msgSend(CPFont, "boldSystemFontOfSize:", 12), "font", CPThemeStateHighlighted);
+        objj_msgSend(textDataView, "setVerticalAlignment:", CPCenterVerticalTextAlignment);
         objj_msgSend(self, "setDataView:", textDataView);
     }
     return self;
@@ -14179,7 +14180,7 @@ _tableView = newValue;
 },["void","CGRect"])]);
 }
 
-p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;108412;
+p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;108499;
 CPTableViewColumnDidMoveNotification = "CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification = "CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification = "CPTableViewSelectionDidChangeNotification";
@@ -14617,6 +14618,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 { with(self)
 {
     if (objj_msgSend(rows, "isEqualToIndexSet:", _selectedRowIndexes) || ((objj_msgSend(rows, "firstIndex") != CPNotFound && objj_msgSend(rows, "firstIndex") < 0) || objj_msgSend(rows, "lastIndex") >= objj_msgSend(self, "numberOfRows")))
+        return;
+    if (objj_msgSend(rows, "isEqualToIndexSet:", _selectedRowIndexes))
         return;
     if (objj_msgSend(_selectedColumnIndexes, "count") > 0)
     {
@@ -26529,7 +26532,7 @@ _font = newValue;
 },["void","CPMenu"])]);
 }
 
-p;8;CPMenu.jI;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPString.ji;16;_CPMenuManager.ji;15;CPApplication.ji;12;CPClipView.ji;12;CPMenuItem.ji;9;CPPanel.jc;33615;
+p;8;CPMenu.jI;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPString.ji;16;_CPMenuManager.ji;15;CPApplication.ji;12;CPClipView.ji;12;CPMenuItem.ji;9;CPPanel.jc;35100;
 CPMenuDidAddItemNotification = "CPMenuDidAddItemNotification";
 CPMenuDidChangeItemNotification = "CPMenuDidChangeItemNotification";
 CPMenuDidRemoveItemNotification = "CPMenuDidRemoveItemNotification";
@@ -26923,9 +26926,38 @@ class_addMethods(the_class, [new objj_method(sel_getUid("menuBarHeight"), functi
 { with(self)
 {
     var item = _items[anIndex];
+    var topLevelMenu = objj_msgSend(self, "_topLevelMenu");
+    var indexOfSuperMenuItem = objj_msgSend(topLevelMenu, "indexOfItemWithSubmenu:", self);
+    objj_msgSend(self, "_highlight:itemAtIndex:", YES, anIndex);
+    objj_msgSend(topLevelMenu, "_highlight:itemAtIndex:", YES, indexOfSuperMenuItem);
+    var unhighlight = function() {
+        objj_msgSend(self, "_highlight:itemAtIndex:", NO, anIndex);
+        objj_msgSend(topLevelMenu, "_highlight:itemAtIndex:", NO, indexOfSuperMenuItem);
+        objj_msgSend(topLevelMenu, "_stopTrackingOnHighlightedItem");
+    };
+    objj_msgSend(CPTimer, "scheduledTimerWithTimeInterval:callback:repeats:", 0.1, unhighlight, NO);
     objj_msgSend(CPApp, "sendAction:to:from:", objj_msgSend(item, "action"), objj_msgSend(item, "target"), item);
 }
-},["void","unsigned"]), new objj_method(sel_getUid("_itemIsHighlighted:"), function $CPMenu___itemIsHighlighted_(self, _cmd, aMenuItem)
+},["void","unsigned"]), new objj_method(sel_getUid("_topLevelMenu"), function $CPMenu___topLevelMenu(self, _cmd)
+{ with(self)
+{
+    var result = self;
+    while(objj_msgSend(result, "supermenu") !== null)
+    {
+        result = objj_msgSend(result, "supermenu");
+    }
+    return result;
+}
+},["void"]), new objj_method(sel_getUid("_stopTrackingOnHighlightedItem"), function $CPMenu___stopTrackingOnHighlightedItem(self, _cmd)
+{ with(self)
+{
+    itemIndex = _highlightedIndex;
+    if(itemIndex !== CPNotFound)
+    {
+        objj_msgSend(self, "cancelTracking");
+    }
+}
+},["void"]), new objj_method(sel_getUid("_itemIsHighlighted:"), function $CPMenu___itemIsHighlighted_(self, _cmd, aMenuItem)
 { with(self)
 {
     return _items[_highlightedIndex] == aMenuItem;
@@ -26936,11 +26968,16 @@ class_addMethods(the_class, [new objj_method(sel_getUid("menuBarHeight"), functi
     var previousHighlightedIndex = _highlightedIndex;
     _highlightedIndex = anIndex;
     if (previousHighlightedIndex !== CPNotFound)
-        objj_msgSend(objj_msgSend(_items[previousHighlightedIndex], "_menuItemView"), "highlight:", NO);
+        objj_msgSend(self, "_highlight:itemAtIndex:", NO, previousHighlightedIndex);
     if (_highlightedIndex !== CPNotFound)
-        objj_msgSend(objj_msgSend(_items[_highlightedIndex], "_menuItemView"), "highlight:", YES);
+        objj_msgSend(self, "_highlight:itemAtIndex:", YES, anIndex);
 }
-},["void","int"]), new objj_method(sel_getUid("_setMenuName:"), function $CPMenu___setMenuName_(self, _cmd, aName)
+},["void","int"]), new objj_method(sel_getUid("_highlight:itemAtIndex:"), function $CPMenu___highlight_itemAtIndex_(self, _cmd, shouldHighlight, index)
+{ with(self)
+{
+    objj_msgSend(objj_msgSend(objj_msgSend(self, "itemAtIndex:", index), "_menuItemView"), "highlight:", shouldHighlight);
+}
+},["void","BOOL","CPNumber"]), new objj_method(sel_getUid("_setMenuName:"), function $CPMenu___setMenuName_(self, _cmd, aName)
 { with(self)
 {
     if (_name === aName)
@@ -28033,7 +28070,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("setColor:"), function $
 },["void","CGRect"])]);
 }
 
-p;12;CPMenuItem.jI;20;Foundation/CPCoder.jI;21;Foundation/CPObject.jI;21;Foundation/CPString.ji;9;CPImage.ji;8;CPMenu.ji;8;CPView.ji;17;_CPMenuItemView.jc;21322;
+p;12;CPMenuItem.jI;20;Foundation/CPCoder.jI;21;Foundation/CPObject.jI;21;Foundation/CPString.ji;9;CPImage.ji;8;CPMenu.ji;8;CPView.ji;17;_CPMenuItemView.jc;21407;
 {var the_class = objj_allocateClassPair(CPObject, "CPMenuItem"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_isSeparator"), new objj_ivar("_title"), new objj_ivar("_font"), new objj_ivar("_target"), new objj_ivar("_action"), new objj_ivar("_isEnabled"), new objj_ivar("_isHidden"), new objj_ivar("_tag"), new objj_ivar("_state"), new objj_ivar("_image"), new objj_ivar("_alternateImage"), new objj_ivar("_onStateImage"), new objj_ivar("_offStateImage"), new objj_ivar("_mixedStateImage"), new objj_ivar("_submenu"), new objj_ivar("_menu"), new objj_ivar("_keyEquivalent"), new objj_ivar("_keyEquivalentModifierMask"), new objj_ivar("_mnemonicLocation"), new objj_ivar("_isAlternate"), new objj_ivar("_indentationLevel"), new objj_ivar("_toolTip"), new objj_ivar("_representedObject"), new objj_ivar("_view"), new objj_ivar("_menuItemView")]);
 objj_registerClassPair(the_class);
@@ -28281,6 +28318,10 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $CPMen
 { with(self)
 {
     _menu = aMenu;
+    if(_submenu)
+    {
+        objj_msgSend(_submenu, "setSupermenu:", _menu);
+    }
 }
 },["void","CPMenu"]), new objj_method(sel_getUid("menu"), function $CPMenuItem__menu(self, _cmd)
 { with(self)
