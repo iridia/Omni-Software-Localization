@@ -1,5 +1,0 @@
-# gittrb - git track remote branch
-# Usage:
-#  gittrb <branch-to-track>
-
-git checkout --track -b %1 origin/%1
