@@ -1,4 +1,5 @@
 @import "OLProjectController.j"
+@import "../Views/OLProjectDashboardView.j"
 
 @implementation OLMyProjectController : OLProjectController
 {
@@ -9,23 +10,24 @@
 {
     if(self = [super init])
     {
-        projectView = [[OLProjectView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
+        // projectView = [[OLProjectView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
+        projectView = [[OLProjectDashboardView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
         [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
         importProjectController = [[OLImportProjectController alloc] init];
    		
    		[self registerForNotifications];
    		
-        [projectView setResourcesTableViewDataSource:self];
-        [projectView setLineItemsTableViewDataSource:self];
-        [projectView setResourcesTableViewDelegate:self];
-        [projectView setLineItemsTableViewDelegate:self];
-        [projectView setLineItemsTarget:self doubleAction:@selector(lineItemsTableViewDoubleClick:)];
-        [projectView setResourceBundleDelegate:self];
-        [projectView setVotingDataSource:self];
-        [projectView setVotingDelegate:self];
-        [projectView setOwnerDataSource:self];
-        [projectView setTitleDataSource:self];
+        // [projectView setResourcesTableViewDataSource:self];
+        // [projectView setLineItemsTableViewDataSource:self];
+        // [projectView setResourcesTableViewDelegate:self];
+        // [projectView setLineItemsTableViewDelegate:self];
+        // [projectView setLineItemsTarget:self doubleAction:@selector(lineItemsTableViewDoubleClick:)];
+        // [projectView setResourceBundleDelegate:self];
+        // [projectView setVotingDataSource:self];
+        // [projectView setVotingDelegate:self];
+        // [projectView setOwnerDataSource:self];
+        // [projectView setTitleDataSource:self];
     }
     return self;
 }
