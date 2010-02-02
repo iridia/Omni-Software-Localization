@@ -51,9 +51,9 @@
     [self closeWelcomeWindow:self];
 }
 
-- (void)finishedUploadingWithResponse:(CPString)response
+- (void)showWindowOnLaunchDidChange:(BOOL)shouldShowWindowOnLaunch
 {
-	[_uploadController handleServerResponse:response];
+    [[CPUserDefaults standardUserDefaults] setObject:shouldShowWindowOnLaunch forKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey];
 }
 
 @end

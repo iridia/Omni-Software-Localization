@@ -16,6 +16,7 @@
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLMenuController.j"
 @import "Controllers/OLCommunityController.j"
+@import "Controllers/OLWelcomeController.j"
 
 @import "Views/OLMenu.j"
 @import "Views/OLGlossariesView.j"
@@ -24,7 +25,12 @@
 @import "Views/OLProjectSearchView.j"
 @import "Views/OLProjectResultView.j"
 
+@import "Utilities/OLUserSessionManager.j"
 @import "Utilities/CPUserDefaults.j"
+
+// User Default Keys. These are global so other places can access them by key
+OLUserDefaultsShouldShowWelcomeWindowOnStartupKey = @"OLUserDefaultsShouldShowWelcomeWindowOnStartupKey";
+OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifierKey";
 
 // This is a hack to get table views to show at a reasonable default size. When table
 // views can resize properly, this can go away.
@@ -42,13 +48,39 @@ OSL_MAIN_VIEW_FRAME = nil;
     @outlet						OLContentViewController contentViewController;
 }
 
++ (void)initialize
+{
+    // Setup the user defaults, these are overridden by the user's actual defaults stored in the cookie
+    var appDefaults = [CPDictionary dictionary];
+    
+    [appDefaults setObject:YES forKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey];
+    
+    [[CPUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+}
+
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
     // This MUST come first!!
     OSL_MAIN_VIEW_FRAME = [mainContentView bounds];
     // DO NOT MOVE
     
-    var uploadWindowController = [[OLUploadWindowController alloc] init];
+    [[CPNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(userDidChange:)
+        name:OLUserSessionManagerUserDidChangeNotification
+        object:nil];
+	
+	if ([[CPUserDefaults standardUserDefaults] objectForKey:OLUserDefaultsLoggedInUserIdentifierKey])
+	{
+	    var callback = function(user) {
+	        if (user)
+	        {
+                [[OLUserSessionManager defaultSessionManager] setUser:user];
+            }
+        };
+        
+	    [OLUser findByRecordID:[[CPUserDefaults standardUserDefaults] objectForKey:OLUserDefaultsLoggedInUserIdentifierKey] withCallback:callback];
+	}
 	
 	var projectController = [[OLMyProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
@@ -66,18 +98,33 @@ OSL_MAIN_VIEW_FRAME = nil;
 	var menuController = [[OLMenuController alloc] init];
     [CPMenu setMenuBarVisible:YES];
     
-    [glossaryController loadGlossaries];
+    var uploadWindowController = [[OLUploadWindowController alloc] init];
 	
 	var loginController = [[OLLoginController alloc] init];
     var toolbarController = [[OLToolbarController alloc] init];
  
     [theWindow setToolbar:[toolbarController toolbar]];
+    
+    if ([[CPUserDefaults standardUserDefaults] objectForKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey])
+    {
+        [[OLWelcomeController alloc] init];
+    }
+    
+    // Access the DB as late as possible
+    [glossaryController loadGlossaries];
 }
 
 - (void)awakeFromCib
 {
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
+}
+
+- (void)userDidChange:(CPNotification)notification
+{
+    var user = [[OLUserSessionManager defaultSessionManager] userIdentifier];
+    
+    [[CPUserDefaults standardUserDefaults] setObject:user forKey:OLUserDefaultsLoggedInUserIdentifierKey];
 }
 
 - (void)handleException:(OLException)anException
@@ -116,7 +163,7 @@ OSL_MAIN_VIEW_FRAME = nil;
         var additionalRect = CGRectMake(rect.origin.x + rect.size.width - additionalWidth, rect.origin.y, additionalWidth, rect.size.height);
         return additionalRect;
     }
-
+    
     return CGRectMakeZero();
 }
 
