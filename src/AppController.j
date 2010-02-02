@@ -28,7 +28,7 @@
 @import "Utilities/OLUserSessionManager.j"
 @import "Utilities/CPUserDefaults.j"
 
-// User Default Keys. These are global so other places can access them by key
+// User Default Keys. These are global so other places can access them, too
 OLUserDefaultsShouldShowWelcomeWindowOnStartupKey = @"OLUserDefaultsShouldShowWelcomeWindowOnStartupKey";
 OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifierKey";
 
@@ -50,7 +50,7 @@ OSL_MAIN_VIEW_FRAME = nil;
 
 + (void)initialize
 {
-    // Setup the user defaults, these are overridden by the user's actual defaults stored in the cookie
+    // Setup the user defaults, these are overridden by the user's actual defaults stored in the cookie, if any
     var appDefaults = [CPDictionary dictionary];
     
     [appDefaults setObject:YES forKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey];
@@ -129,7 +129,7 @@ OSL_MAIN_VIEW_FRAME = nil;
 
 - (void)handleException:(OLException)anException
 {
-    CPLog.error(@"Error: %s threw the error: %s. In method: %s. Additional info: %s.", [anException classWithError], [anException reason], [anException methodWithError], [anException userInfo]);
+    CPLog.debug(@"Error: %s threw the error: %s. In method: %s. Additional info: %s.", [anException classWithError], [anException reason], [anException methodWithError], [anException userInfo]);
     
     alert = [[CPAlert alloc] init];
     [alert setTitle:@"Application Error"];
