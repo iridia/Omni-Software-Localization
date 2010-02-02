@@ -24,6 +24,8 @@
 @import "Views/OLProjectSearchView.j"
 @import "Views/OLProjectResultView.j"
 
+@import "Utilities/CPUserDefaults.j"
+
 @implementation AppController : CPObject
 {
     @outlet						CPWindow                theWindow;
