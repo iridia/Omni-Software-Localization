@@ -70,18 +70,6 @@ OSL_MAIN_VIEW_FRAME = nil;
         name:OLUserSessionManagerUserDidChangeNotification
         object:nil];
 	
-	if ([[CPUserDefaults standardUserDefaults] objectForKey:OLUserDefaultsLoggedInUserIdentifierKey])
-	{
-	    var callback = function(user) {
-	        if (user)
-	        {
-                [[OLUserSessionManager defaultSessionManager] setUser:user];
-            }
-        };
-        
-	    [OLUser findByRecordID:[[CPUserDefaults standardUserDefaults] objectForKey:OLUserDefaultsLoggedInUserIdentifierKey] withCallback:callback];
-	}
-	
 	var projectController = [[OLMyProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
@@ -109,6 +97,18 @@ OSL_MAIN_VIEW_FRAME = nil;
     {
         [[OLWelcomeController alloc] init];
     }
+    
+    if ([[CPUserDefaults standardUserDefaults] objectForKey:OLUserDefaultsLoggedInUserIdentifierKey])
+	{
+	    var callback = function(user) {
+	        if (user)
+	        {
+                [[OLUserSessionManager defaultSessionManager] setUser:user];
+            }
+        };
+        
+	    [OLUser findByRecordID:[[CPUserDefaults standardUserDefaults] objectForKey:OLUserDefaultsLoggedInUserIdentifierKey] withCallback:callback];
+	}
     
     // Access the DB as late as possible
     [glossaryController loadGlossaries];
