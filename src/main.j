@@ -13,6 +13,7 @@
 
 function main(args, namedArgs)
 {
-    CPLogRegister(CPLogConsole);
+    (DEBUG) ? CPLogRegister(CPLogConsole) : CPLogRegisterSingle(CPLogAlert, "error");
+    
     CPApplicationMain(args, namedArgs);
 }

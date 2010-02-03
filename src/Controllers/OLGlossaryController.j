@@ -20,7 +20,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 {
     if(self = [super init])
     {
-    	glossariesView = [[OLGlossariesView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
+    	glossariesView = [[OLGlossariesView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
     	[glossariesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     	[glossariesView setGlossaryController:self];
     	

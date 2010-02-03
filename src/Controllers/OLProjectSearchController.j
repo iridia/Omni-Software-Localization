@@ -16,10 +16,11 @@
     self = [super init];
     if(self)
     {
-        searchView = [[OLProjectSearchView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
+        searchView = [[OLProjectSearchView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
         [searchView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
-        projectView = [[OLProjectResultView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
+        projectView = [[OLProjectResultView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
+        [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
    		
         [projectView setResourcesTableViewDataSource:self];
         [projectView setLineItemsTableViewDataSource:self];

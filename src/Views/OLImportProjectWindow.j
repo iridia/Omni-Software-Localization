@@ -164,7 +164,6 @@ var uploadURL = @"Upload/upload.php";
 
 - (void)uploadButton:(id)sender didFinishUploadWithData:(CPString)response
 {
-    console.log(_cmd, response);
 	[delegate handleServerResponse:response];
 }
 

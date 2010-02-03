@@ -19,6 +19,7 @@
         tableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];
 		[tableView setUsesAlternatingRowBackgroundColors:YES];
 		[tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+		[tableView setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
 
 		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
 		

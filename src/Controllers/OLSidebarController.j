@@ -24,7 +24,7 @@
     [sidebarOutlineView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [sidebarOutlineView addTableColumn:onlyColumn];
     [sidebarOutlineView setOutlineTableColumn:onlyColumn];
-    [sidebarOutlineView setHeaderView:nil];
+    // [sidebarOutlineView setHeaderView:nil];
     [sidebarOutlineView setCornerView:nil];
     [sidebarOutlineView setDataSource:self];
     [sidebarOutlineView setDelegate:self];
