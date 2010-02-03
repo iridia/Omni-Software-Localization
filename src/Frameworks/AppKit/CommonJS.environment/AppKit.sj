@@ -14248,7 +14248,7 @@ CGContextStrokePath(_239);
 }
 }
 })]);
-p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;5692;
+p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;5855;
 CPTopTabsBezelBorder=0;
 CPLeftTabsBezelBorder=1;
 CPBottomTabsBezelBorder=2;
@@ -14403,6 +14403,8 @@ objj_msgSend(_35,"selectFirstTabViewItem:",_35);
 }),new objj_method(sel_getUid("_setupDefaultStyles"),function(_37,_38){
 with(_37){
 objj_msgSend(box,"setBorderType:",CPBezelBorder);
+objj_msgSend(box,"setAutoresizingMask:",CPViewWidthSizable|CPViewHeightSizable);
+objj_msgSend(tabs,"setAutoresizingMask:",CPViewWidthSizable|CPViewHeightSizable);
 }
 }),new objj_method(sel_getUid("_repositionTabs"),function(_39,_3a){
 with(_39){

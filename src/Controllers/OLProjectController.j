@@ -378,9 +378,9 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldEnableItemsNotification" 
 	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport, OLMenuItemBroadcast]];
     	    [self setSelectedProject:item];
-    	    [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
-            [projectView setTitle:[[self selectedProject] name]];
-            [projectView reloadAllData];
+            // [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
+            //             [projectView setTitle:[[self selectedProject] name]];
+            //             [projectView reloadAllData];
         }
 	}
 	else

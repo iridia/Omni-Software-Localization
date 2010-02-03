@@ -16579,7 +16579,7 @@ currentRow = newValue;
 },["void","CGRect"])]);
 }
 
-p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;8024;
+p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;8198;
 CPTopTabsBezelBorder = 0;
 CPLeftTabsBezelBorder = 1;
 CPBottomTabsBezelBorder = 2;
@@ -16750,6 +16750,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 { with(self)
 {
     objj_msgSend(box, "setBorderType:", CPBezelBorder);
+    objj_msgSend(box, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+    objj_msgSend(tabs, "setAutoresizingMask:", CPViewMinXMargin | CPViewMaxXMargin);
 }
 },["void"]), new objj_method(sel_getUid("_repositionTabs"), function $CPTabView___repositionTabs(self, _cmd)
 { with(self)
