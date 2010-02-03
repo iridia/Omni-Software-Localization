@@ -1,0 +1,16 @@
+{
+    "views" : {
+        "all" : {
+           "map": "function(doc) { emit(doc._id, doc); }"
+        },
+        "name": {
+           "map": "function(doc) { emit(doc.OLProjectNameKey, doc); }"
+        },
+        "userIdentifier": {
+           "map": "function(doc) { emit(doc.OLProjectUserKey, doc); }"
+        },
+        "all_by_project_name": {
+           "map": "function(doc) { emit(doc._id, {'recordID':doc._id, 'name':doc.OLProjectNameKey, 'votes':doc.OLProjectVotesKey}); }"
+        }
+    }
+}
