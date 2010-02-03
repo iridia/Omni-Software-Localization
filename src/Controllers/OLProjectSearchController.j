@@ -80,7 +80,6 @@
 
 - (void)didReceiveProjectControllerFinished:(CPNotification)notification
 {
-    console.log(_cmd, [self className]);
     [self loadProjects];
 }
 
@@ -125,7 +124,6 @@
         {
             return [[projects objectAtIndex:row] totalOfAllVotes];
         }
-
     }
     
     return [super tableView:tableView objectValueForTableColumn:tableColumn row:row];

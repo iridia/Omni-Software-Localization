@@ -16,6 +16,7 @@
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLMenuController.j"
 @import "Controllers/OLCommunityController.j"
+@import "Controllers/OLProfileController.j"
 
 @import "Views/OLMenu.j"
 @import "Views/OLGlossariesView.j"
@@ -23,6 +24,7 @@
 @import "Views/OLProjectView.j"
 @import "Views/OLProjectSearchView.j"
 @import "Views/OLProjectResultView.j"
+@import "Views/OLProfileView.j"
 
 @implementation AppController : CPObject
 {
@@ -71,6 +73,10 @@
     [communityController setSearchView:searchView];
     [communityController setProjectView:[[OLProjectResultView alloc] initWithFrame:[mainContentView bounds]]];
     [communityController setContentViewController:contentViewController];
+    
+    var profileView = [[OLProfileView alloc] initWithFrame:[mainContentView bounds]];
+    [profileView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    [communityController setProfileView:profileView];
  
 	var menuController = [[OLMenuController alloc] init];
     [CPMenu setMenuBarVisible:YES];
@@ -87,6 +93,7 @@
 {
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
+    [theWindow setAcceptsMouseMovedEvents:YES];
 }
 
 - (void)handleException:(OLException)anException

@@ -2,10 +2,12 @@
 @import <AppKit/CPOutlineView.j>
 
 @import "OLMessageController.j"
+@import "OLProfileController.j"
 @import "OLProjectSearchController.j"
 
 var OLCommunityInboxItem = @"Inbox";
 var OLCommunitySearchItem = @"Search";
+var OLCommunityProfileItem = @"Profile";
 
 // Manages the community items in the sidebar and their respective controllers
 @implementation OLCommunityController : CPObject
@@ -14,6 +16,7 @@ var OLCommunitySearchItem = @"Search";
 	
 	OLProjectSearchController   searchController;
 	OLMessageController         messageController;
+    OLProfileController         profileController;
 }
 
 - (id)init
@@ -24,6 +27,7 @@ var OLCommunitySearchItem = @"Search";
         	[searchController loadProjects];
         	
         	messageController = [[OLMessageController alloc] init];
+            profileController = [[OLProfileController alloc] init];
         	
         	[[CPNotificationCenter defaultCenter]
     			addObserver:self
@@ -42,6 +46,11 @@ var OLCommunitySearchItem = @"Search";
 - (void)setSearchView:(CPView)aSearchView
 {
     [searchController setSearchView:aSearchView];
+}
+
+- (void)setProfileView:(CPView)aProfileView
+{
+    [profileController setProfileView:aProfileView];
 }
 
 - (void)setProjectView:(CPView)aProjectView
@@ -65,7 +74,7 @@ var OLCommunitySearchItem = @"Search";
 
 - (CPArray)sidebarItems
 {
-    return [OLCommunityInboxItem, OLCommunitySearchItem];
+    return [OLCommunityInboxItem, OLCommunitySearchItem, OLCommunityProfileItem];
 }
 
 - (BOOL)shouldExpandSidebarItemOnReload
@@ -84,6 +93,11 @@ var OLCommunitySearchItem = @"Search";
         case OLCommunitySearchItem:
             view = [searchController contentView];
             [searchController loadProjects];
+            break;
+        case OLCommunityProfileItem:
+            view = [profileController contentView];
+            [profileController loadProjects];
+            [profileController loadLanguages];
             break;
         default:
             CPLog.warn(@"Unhandled case in %s, %s", [self className], _cmd);

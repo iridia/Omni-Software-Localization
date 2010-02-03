@@ -1,5 +1,7 @@
 @import <AppKit/CPView.j>
 
+loadProfileViewNotification = @"loadProfileViewNotification";
+
 @implementation OLNavigationBarView : CPView
 {
     CPView      backView        @accessors(readonly);
@@ -81,6 +83,18 @@
 {
     [backView removeFromSuperview];
     [self addSubview:backView positioned:CPViewLeftAligned | CPViewHeightCentered relativeTo:self withPadding:5.0];
+}
+
+- (void)mouseDown:(CPEvent)anEvent
+{
+    if ([anEvent clickCount] === 2)
+    {
+        [[CPNotificationCenter defaultCenter] postNotificationName:loadProfileViewNotification object:[titleView getStringValue]];
+    }
+    else
+    {
+        [super mouseDown:anEvent];
+    }
 }
 
 @end
