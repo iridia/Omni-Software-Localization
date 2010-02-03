@@ -9,7 +9,7 @@
 {
     if(self = [super init])
     {
-        projectView = [[OLProjectView alloc] initWithFrame:OSL_MAIN_VIEW_FRAME];
+        projectView = [[OLProjectView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
         [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
         importProjectController = [[OLImportProjectController alloc] init];

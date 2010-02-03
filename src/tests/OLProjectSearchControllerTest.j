@@ -4,7 +4,6 @@
 
 - (void)setUp
 {
-    OSL_MAIN_VIEW_FRAME = CGRectMakeZero();
     urlConnection = moq();
     [OLURLConnectionFactory setConnectionFactoryMethod:function(request, delegate)
     {
@@ -14,7 +13,6 @@
 
 - (void)tearDown
 {
-    OSL_MAIN_VIEW_FRAME = nil;
     [OLURLConnectionFactory setConnectionFactoryMethod:nil];
 }
 

@@ -32,10 +32,6 @@
 OLUserDefaultsShouldShowWelcomeWindowOnStartupKey = @"OLUserDefaultsShouldShowWelcomeWindowOnStartupKey";
 OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifierKey";
 
-// This is a hack to get table views to show at a reasonable default size. When table
-// views can resize properly, this can go away.
-OSL_MAIN_VIEW_FRAME = nil;
-
 @implementation AppController : CPObject
 {
     @outlet						CPWindow                theWindow;
@@ -60,10 +56,6 @@ OSL_MAIN_VIEW_FRAME = nil;
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-    // This MUST come first!!
-    OSL_MAIN_VIEW_FRAME = [mainContentView bounds];
-    // DO NOT MOVE
-    
     [[CPNotificationCenter defaultCenter]
         addObserver:self
         selector:@selector(userDidChange:)

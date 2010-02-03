@@ -6,7 +6,6 @@
 
 - (void)setUp
 {
-    OSL_MAIN_VIEW_FRAME = CGRectMakeZero();
     [CPNotificationCenter setIsMocked:NO];
     [CPNotificationCenter reset];
     urlConnection = moq();
@@ -18,7 +17,6 @@
 
 - (void)tearDown
 {
-    OSL_MAIN_VIEW_FRAME = nil;
     [OLURLConnectionFactory setConnectionFactoryMethod:nil];
 }
 
