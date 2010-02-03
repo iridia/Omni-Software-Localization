@@ -60,6 +60,8 @@ var StandardUserDefaults;
     
     CPDictionary            _searchList;
     BOOL                    _searchListNeedsReload;
+    
+    id                      delegate            @accessors;
 }
 
 /*!
@@ -83,6 +85,11 @@ var StandardUserDefaults;
         [StandardUserDefaults synchronize];
     
     StandardUserDefaults = nil;
+    
+    if ([[self delegate] respondsToSelector:@selector(userDefaultsDidReset)])
+    {
+        [[self delegate] userDefaultsDidReset];
+    }    
 }
 
 /*
@@ -318,6 +325,11 @@ var StandardUserDefaults;
     if (!_needsFlush)
         return;
     
+    if ([[self delegate] respondsToSelector:@selector(userDefaultsShouldSynchronizeData)])
+    {
+        [[self delegate] userDefaultsShouldSynchronizeData];
+    }
+    
     _flushTimer = window.setTimeout(function(){[self synchronize];}, 2000);
 }
 
@@ -332,15 +344,39 @@ var StandardUserDefaults;
     var globalDomain = [_domains objectForKey:CPGlobalDomain];
     if (globalDomain)
     {
+        var expires = [CPDate dateWithTimeIntervalSinceNow:(30*24*60*60)]; // 30 days is the default
+        if ([[self delegate] respondsToSelector:@selector(userDefaultsExpirationDateForDomain:)])
+        {
+            expires = [[self delegate] userDefaultsExpirationDateForDomain:CPGlobalDomain]
+        }
+        
         var data = [CPKeyedArchiver archivedDataWithRootObject:globalDomain];
-        [_globalCookie setValue:encodeURIComponent([data string]) expires:[CPDate distantFuture] domain:@"http://cappuccino.org"];
+        [_globalCookie setValue:encodeURIComponent([data string]) expires:expires domain:@"http://cappuccino.org"];
+        
+        // notifiy our delegate that we synchronized
+        if ([[self delegate] respondsToSelector:@selector(userDefaultsDidSynchronizeDataForDomain:)])
+        {
+            [[self delegate] userDefaultsDidSynchronizeDataForDomain:CPGlobalDomain]
+        }
     }
     
     var appDomain = [_domains objectForKey:CPApplicationDomain];
     if (appDomain)
     {
+        var expires = [CPDate dateWithTimeIntervalSinceNow:(30*24*60*60)]; // 30 days is the default
+        if ([[self delegate] respondsToSelector:@selector(userDefaultsExpirationDateForDomain:)])
+        {
+            expires = [[self delegate] userDefaultsExpirationDateForDomain:CPApplicationDomain]
+        }
+        
         var data = [CPKeyedArchiver archivedDataWithRootObject:appDomain];
-        [_applicationCookie setValue:encodeURIComponent([data string]) expires:[CPDate distantFuture] domain:nil];
+        [_applicationCookie setValue:encodeURIComponent([data string]) expires:expires domain:nil];
+        
+        // notifiy our delegate that we synchronized
+        if ([[self delegate] respondsToSelector:@selector(userDefaultsDidSynchronizeDataForDomain:)])
+        {
+            [[self delegate] userDefaultsDidSynchronizeDataForDomain:CPApplicationDomain]
+        }
     }
     
     _needsFlush = NO;
