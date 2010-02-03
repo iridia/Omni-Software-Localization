@@ -1,0 +1,15 @@
+{
+    "views" : {
+        "all" : {
+           "map": "function(doc) { emit(doc._id, doc); }"
+        },
+        "toUsers": {
+           "map": "function(doc) {
+                for (var i = 0; i < doc.OLMessageToUsersKey.length; i++)
+                {
+                    emit(doc.OLMessageToUsersKey[i], doc);
+                }
+            }"
+        }
+    }
+}
