@@ -1254,7 +1254,7 @@ by=3*(p2y-p1y)-cy;
 ay=1-cy-by;
 return solve(t,solveEpsilon(_2e));
 };
-p;15;CPApplication.jI;21;Foundation/CPBundle.ji;17;CPCompatibility.ji;9;CPEvent.ji;8;CPMenu.ji;13;CPResponder.ji;22;CPDocumentController.ji;14;CPThemeBlend.ji;14;CPCibLoading.ji;12;CPPlatform.jc;25148;
+p;15;CPApplication.jI;21;Foundation/CPBundle.ji;17;CPCompatibility.ji;9;CPEvent.ji;8;CPMenu.ji;13;CPResponder.ji;22;CPDocumentController.ji;14;CPThemeBlend.ji;14;CPCibLoading.ji;12;CPPlatform.jc;25085;
 var _1="CPMainCibFile",_2="Main cib file base name";
 CPApp=nil;
 CPApplicationWillFinishLaunchingNotification="CPApplicationWillFinishLaunchingNotification";
@@ -1662,9 +1662,6 @@ return nil;
 }),new objj_method(sel_getUid("setCallback:forNextEventMatchingMask:untilDate:inMode:dequeue:"),function(_a2,_a3,_a4,_a5,_a6,_a7,_a8){
 with(_a2){
 _eventListeners.push(_a9(_a5,_a4));
-if(_eventListeners.length==3){
-objj_debug_print_backtrace();
-}
 }
 }),new objj_method(sel_getUid("setTarget:selector:forNextEventMatchingMask:untilDate:inMode:dequeue:"),function(_aa,_ab,_ac,_ad,_ae,_af,_b0,_b1){
 with(_aa){
@@ -3398,8 +3395,13 @@ case 4:
 return objj_msgSend(CPColor,"colorWithCalibratedRed:green:blue:alpha:",t,p,b,_6e);
 case 5:
 return objj_msgSend(CPColor,"colorWithCalibratedRed:green:blue:alpha:",b,p,q,_6e);
+<<<<<<< HEAD
 }
 }
+=======
+}
+}
+>>>>>>> d8c03c778dd6cecca8c8bc3744c8554c70edd7e2
 }),new objj_method(sel_getUid("colorWithHexString:"),function(_6f,_70,hex){
 with(_6f){
 return objj_msgSend(objj_msgSend(CPColor,"alloc"),"_initWithRGBA:",_71(hex));
@@ -6589,11 +6591,20 @@ _19.name=key;
 _19.value=objj_msgSend(_params,"objectForKey:",key);
 _DOMObjectElement.appendChild(_19);
 objj_msgSend(_paramElements,"setObject:forKey:",_19,key);
+<<<<<<< HEAD
+=======
+}
+}else{
+objj_msgSend(_13,"_rebuildIEObjects");
+>>>>>>> d8c03c778dd6cecca8c8bc3744c8554c70edd7e2
 }
 }else{
 objj_msgSend(_13,"_rebuildIEObjects");
 }
+<<<<<<< HEAD
 }
+=======
+>>>>>>> d8c03c778dd6cecca8c8bc3744c8554c70edd7e2
 }),new objj_method(sel_getUid("parameters"),function(_1a,_1b){
 with(_1a){
 return _params;
@@ -6603,11 +6614,19 @@ with(_1c){
 _DOMElement.innerHTML="";
 if(!objj_msgSend(_flashMovie,"filename")){
 return;
+<<<<<<< HEAD
 }
 var _1e=objj_msgSend(CPString,"stringWithFormat:","<param name='movie' value='%@' />",objj_msgSend(_flashMovie,"filename")),_1f=objj_msgSend(_params,"keyEnumerator"),key;
 while(key=objj_msgSend(_1f,"nextObject")){
 _1e=objj_msgSend(_1e,"stringByAppendingFormat:","<param name='%@' value='%@' />",key,objj_msgSend(_params,"objectForKey:",key));
 }
+=======
+}
+var _1e=objj_msgSend(CPString,"stringWithFormat:","<param name='movie' value='%@' />",objj_msgSend(_flashMovie,"filename")),_1f=objj_msgSend(_params,"keyEnumerator"),key;
+while(key=objj_msgSend(_1f,"nextObject")){
+_1e=objj_msgSend(_1e,"stringByAppendingFormat:","<param name='%@' value='%@' />",key,objj_msgSend(_params,"objectForKey:",key));
+}
+>>>>>>> d8c03c778dd6cecca8c8bc3744c8554c70edd7e2
 _DOMObjectElement=document.createElement("object");
 _DOMElement.appendChild(_DOMObjectElement);
 _DOMObjectElement.outerHTML=objj_msgSend(CPString,"stringWithFormat:","<object classid=%@ width=%@ height=%@>%@</object>",_1,CGRectGetWidth(objj_msgSend(_1c,"bounds")),CGRectGetHeight(objj_msgSend(_1c,"bounds")),_1e);

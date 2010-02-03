@@ -13,11 +13,7 @@
 
 function main(args, namedArgs)
 {
-    CPLogRegister(CPLogConsole);
+    (DEBUG) ? CPLogRegister(CPLogConsole) : CPLogRegisterSingle(CPLogAlert, "error");
+    
     CPApplicationMain(args, namedArgs);
 }
-
-// This overrides CPLog.debug to only print to the console if you are in index-debug.html
-// so that we don't have to worry about removing debug statements from shipping code
-var debug = CPLog.error;
-CPLog.debug = function() { if (DEBUG) {debug.apply(this, arguments)} };
