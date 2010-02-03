@@ -351,7 +351,7 @@ var StandardUserDefaults;
         }
         
         var data = [CPKeyedArchiver archivedDataWithRootObject:globalDomain];
-        [_globalCookie setValue:encodeURIComponent([data string]) expires:[CPDate distantFuture] domain:@"http://cappuccino.org"];
+        [_globalCookie setValue:encodeURIComponent([data string]) expires:expires domain:@"http://cappuccino.org"];
         
         // notifiy our delegate that we synchronized
         if ([[self delegate] respondsToSelector:@selector(userDefaultsDidSynchronizeDataForDomain:)])
