@@ -133,7 +133,7 @@
         [result addObject:[[[resourceBundles objectAtIndex:i] language] name]];
     }
     
-    return result;
+     return result;
 }
 
 - (void)startCreateNewBundle:(id)sender
@@ -181,7 +181,11 @@
         [result addObject:[[[self availableLanguages] objectAtIndex:i] name]];
     }
     
-    return result;
+    return [result sortedArrayUsingFunction:
+            function(lhs,rhs,context)
+            {
+                return [lhs compare: rhs];
+            }];
 }
 
 - (CPArray)titlesOfLocalizedLanguages
