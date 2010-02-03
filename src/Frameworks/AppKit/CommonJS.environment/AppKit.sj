@@ -10319,7 +10319,7 @@ with(_3){
 return YES;
 }
 })]);
-p;20;CPSegmentedControl.jI;20;Foundation/CPArray.ji;11;CPControl.jc;20550;
+p;20;CPSegmentedControl.jI;20;Foundation/CPArray.ji;11;CPControl.jc;20652;
 CPSegmentSwitchTrackingSelectOne=0;
 CPSegmentSwitchTrackingSelectAny=1;
 CPSegmentSwitchTrackingMomentary=2;
@@ -10648,166 +10648,166 @@ var _8d=_89-CGRectGetWidth(_88.frame);
 if(!_8d){
 return;
 }
-var _8e=objj_msgSend(_85,"frame");
-objj_msgSend(_85,"setFrameSize:",CGSizeMake(CGRectGetWidth(_8e)+_8d,CGRectGetHeight(_8e)));
+var _8e=objj_msgSend(_85,"frame"),_8f=objj_msgSend(_85,"currentValueForThemeAttribute:","divider-thickness");
+objj_msgSend(_85,"setFrameSize:",CGSizeMake(CGRectGetWidth(_8e)+_8d+(_8f*(_segments.length-1)),CGRectGetHeight(_8e)));
 _88.width=_89;
 _88.frame=objj_msgSend(_85,"frameForSegment:",_87);
-var _8f=_87+1;
-for(;_8f<_segments.length;++_8f){
-_segments[_8f].frame.origin.x+=_8d;
-objj_msgSend(_85,"drawSegmentBezel:highlight:",_8f,NO);
-objj_msgSend(_85,"drawSegment:highlight:",_8f,NO);
+var _90=_87+1;
+for(;_90<_segments.length;++_90){
+_segments[_90].frame.origin.x+=_8d;
+objj_msgSend(_85,"drawSegmentBezel:highlight:",_90,NO);
+objj_msgSend(_85,"drawSegment:highlight:",_90,NO);
 }
 objj_msgSend(_85,"drawSegmentBezel:highlight:",_87,NO);
 objj_msgSend(_85,"drawSegment:highlight:",_87,NO);
 objj_msgSend(_85,"setNeedsLayout");
 objj_msgSend(_85,"setNeedsDisplay:",YES);
 }
-}),new objj_method(sel_getUid("frameForSegment:"),function(_90,_91,_92){
-with(_90){
-return objj_msgSend(_90,"bezelFrameForSegment:",_92);
+}),new objj_method(sel_getUid("frameForSegment:"),function(_91,_92,_93){
+with(_91){
+return objj_msgSend(_91,"bezelFrameForSegment:",_93);
 }
-}),new objj_method(sel_getUid("bezelFrameForSegment:"),function(_93,_94,_95){
-with(_93){
-var _96=objj_msgSend(_93,"currentValueForThemeAttribute:","default-height"),_97=objj_msgSend(_93,"currentValueForThemeAttribute:","bezel-inset"),_98=objj_msgSend(_93,"widthForSegment:",_95),_99=objj_msgSend(_93,"_leftOffsetForSegment:",_95);
-return CGRectMake(_99,_97.top,_98,_96);
+}),new objj_method(sel_getUid("bezelFrameForSegment:"),function(_94,_95,_96){
+with(_94){
+var _97=objj_msgSend(_94,"currentValueForThemeAttribute:","default-height"),_98=objj_msgSend(_94,"currentValueForThemeAttribute:","bezel-inset"),_99=objj_msgSend(_94,"widthForSegment:",_96),_9a=objj_msgSend(_94,"_leftOffsetForSegment:",_96);
+return CGRectMake(_9a,_98.top,_99,_97);
 }
-}),new objj_method(sel_getUid("contentFrameForSegment:"),function(_9a,_9b,_9c){
-with(_9a){
-var _9d=objj_msgSend(_9a,"currentValueForThemeAttribute:","default-height"),_9e=objj_msgSend(_9a,"currentValueForThemeAttribute:","content-inset"),_9f=objj_msgSend(_9a,"widthForSegment:",_9c),_a0=objj_msgSend(_9a,"_leftOffsetForSegment:",_9c);
-return CGRectMake(_a0+_9e.left,_9e.top,_9f-_9e.left-_9e.right,_9d-_9e.top-_9e.bottom);
+}),new objj_method(sel_getUid("contentFrameForSegment:"),function(_9b,_9c,_9d){
+with(_9b){
+var _9e=objj_msgSend(_9b,"currentValueForThemeAttribute:","default-height"),_9f=objj_msgSend(_9b,"currentValueForThemeAttribute:","content-inset"),_a0=objj_msgSend(_9b,"widthForSegment:",_9d),_a1=objj_msgSend(_9b,"_leftOffsetForSegment:",_9d);
+return CGRectMake(_a1+_9f.left,_9f.top,_a0-_9f.left-_9f.right,_9e-_9f.top-_9f.bottom);
 }
-}),new objj_method(sel_getUid("testSegment:"),function(_a1,_a2,_a3){
-with(_a1){
-var _a4=objj_msgSend(_a1,"convertPoint:fromView:",_a3,nil),_a5=_segments.length;
-while(_a5--){
-if(CGRectContainsPoint(_segments[_a5].frame,_a3)){
-return _a5;
+}),new objj_method(sel_getUid("testSegment:"),function(_a2,_a3,_a4){
+with(_a2){
+var _a5=objj_msgSend(_a2,"convertPoint:fromView:",_a4,nil),_a6=_segments.length;
+while(_a6--){
+if(CGRectContainsPoint(_segments[_a6].frame,_a4)){
+return _a6;
 }
 }
 return -1;
 }
-}),new objj_method(sel_getUid("mouseDown:"),function(_a6,_a7,_a8){
-with(_a6){
-if(!objj_msgSend(_a6,"isEnabled")){
+}),new objj_method(sel_getUid("mouseDown:"),function(_a7,_a8,_a9){
+with(_a7){
+if(!objj_msgSend(_a7,"isEnabled")){
 return;
 }
-objj_msgSend(_a6,"trackSegment:",_a8);
+objj_msgSend(_a7,"trackSegment:",_a9);
 }
-}),new objj_method(sel_getUid("mouseUp:"),function(_a9,_aa,_ab){
-with(_a9){
+}),new objj_method(sel_getUid("mouseUp:"),function(_aa,_ab,_ac){
+with(_aa){
 }
-}),new objj_method(sel_getUid("trackSegment:"),function(_ac,_ad,_ae){
-with(_ac){
-var _af=objj_msgSend(_ae,"type"),_b0=objj_msgSend(_ac,"convertPoint:fromView:",objj_msgSend(_ae,"locationInWindow"),nil);
-if(_af==CPLeftMouseUp){
+}),new objj_method(sel_getUid("trackSegment:"),function(_ad,_ae,_af){
+with(_ad){
+var _b0=objj_msgSend(_af,"type"),_b1=objj_msgSend(_ad,"convertPoint:fromView:",objj_msgSend(_af,"locationInWindow"),nil);
+if(_b0==CPLeftMouseUp){
 if(_trackingSegment==-1){
 return;
 }
-if(CGRectContainsPoint(_segments[_trackingSegment].frame,_b0)){
+if(CGRectContainsPoint(_segments[_trackingSegment].frame,_b1)){
 if(_trackingMode==CPSegmentSwitchTrackingSelectAny){
-objj_msgSend(_ac,"setSelected:forSegment:",!objj_msgSend(_ac,"isSelectedForSegment:",_trackingSegment),_trackingSegment);
+objj_msgSend(_ad,"setSelected:forSegment:",!objj_msgSend(_ad,"isSelectedForSegment:",_trackingSegment),_trackingSegment);
 _selectedSegment=_trackingSegment;
 }else{
-objj_msgSend(_ac,"setSelected:forSegment:",YES,_trackingSegment);
+objj_msgSend(_ad,"setSelected:forSegment:",YES,_trackingSegment);
 }
-objj_msgSend(_ac,"sendAction:to:",objj_msgSend(_ac,"action"),objj_msgSend(_ac,"target"));
+objj_msgSend(_ad,"sendAction:to:",objj_msgSend(_ad,"action"),objj_msgSend(_ad,"target"));
 if(_trackingMode==CPSegmentSwitchTrackingMomentary){
-objj_msgSend(_ac,"setSelected:forSegment:",NO,_trackingSegment);
+objj_msgSend(_ad,"setSelected:forSegment:",NO,_trackingSegment);
 _selectedSegment=-1;
 }
 }
-objj_msgSend(_ac,"drawSegmentBezel:highlight:",_trackingSegment,NO);
+objj_msgSend(_ad,"drawSegmentBezel:highlight:",_trackingSegment,NO);
 _trackingSegment=-1;
 return;
 }
-if(_af==CPLeftMouseDown){
+if(_b0==CPLeftMouseDown){
 _trackingHighlighted=YES;
-_trackingSegment=objj_msgSend(_ac,"testSegment:",_b0);
-objj_msgSend(_ac,"drawSegmentBezel:highlight:",_trackingSegment,YES);
+_trackingSegment=objj_msgSend(_ad,"testSegment:",_b1);
+objj_msgSend(_ad,"drawSegmentBezel:highlight:",_trackingSegment,YES);
 }else{
-if(_af==CPLeftMouseDragged){
+if(_b0==CPLeftMouseDragged){
 if(_trackingSegment==-1){
 return;
 }
-var _b1=CGRectContainsPoint(_segments[_trackingSegment].frame,_b0);
-if(_b1!=_trackingHighlighted){
-_trackingHighlighted=_b1;
-objj_msgSend(_ac,"drawSegmentBezel:highlight:",_trackingSegment,_trackingHighlighted);
+var _b2=CGRectContainsPoint(_segments[_trackingSegment].frame,_b1);
+if(_b2!=_trackingHighlighted){
+_trackingHighlighted=_b2;
+objj_msgSend(_ad,"drawSegmentBezel:highlight:",_trackingSegment,_trackingHighlighted);
 }
 }
 }
-objj_msgSend(CPApp,"setTarget:selector:forNextEventMatchingMask:untilDate:inMode:dequeue:",_ac,sel_getUid("trackSegment:"),CPLeftMouseDraggedMask|CPLeftMouseUpMask,nil,nil,YES);
+objj_msgSend(CPApp,"setTarget:selector:forNextEventMatchingMask:untilDate:inMode:dequeue:",_ad,sel_getUid("trackSegment:"),CPLeftMouseDraggedMask|CPLeftMouseUpMask,nil,nil,YES);
 }
-}),new objj_method(sel_getUid("setFont:"),function(_b2,_b3,_b4){
-with(_b2){
-objj_msgSendSuper({receiver:_b2,super_class:objj_getClass("CPControl")},"setFont:",_b4);
-objj_msgSend(_b2,"tileWithChangedSegment:",0);
+}),new objj_method(sel_getUid("setFont:"),function(_b3,_b4,_b5){
+with(_b3){
+objj_msgSendSuper({receiver:_b3,super_class:objj_getClass("CPControl")},"setFont:",_b5);
+objj_msgSend(_b3,"tileWithChangedSegment:",0);
 }
 })]);
-class_addMethods(_2,[new objj_method(sel_getUid("themeClass"),function(_b5,_b6){
-with(_b5){
+class_addMethods(_2,[new objj_method(sel_getUid("themeClass"),function(_b6,_b7){
+with(_b6){
 return "segmented-control";
 }
-}),new objj_method(sel_getUid("themeAttributes"),function(_b7,_b8){
-with(_b7){
+}),new objj_method(sel_getUid("themeAttributes"),function(_b8,_b9){
+with(_b8){
 return objj_msgSend(CPDictionary,"dictionaryWithObjects:forKeys:",[CPCenterTextAlignment,CPCenterVerticalTextAlignment,CPImageLeft,CPScaleNone,{top:(0),right:(0),bottom:(0),left:(0)},{top:(0),right:(0),bottom:(0),left:(0)},nil,nil,nil,nil,1,24],["alignment","vertical-alignment","image-position","image-scaling","bezel-inset","content-inset","left-segment-bezel-color","right-segment-bezel-color","center-segment-bezel-color","divider-bezel-color","divider-thickness","default-height"]);
 }
 })]);
-var _b9="CPSegmentedControlSegmentsKey",_ba="CPSegmentedControlSelectedKey",_bb="CPSegmentedControlSegmentStyleKey",_bc="CPSegmentedControlTrackingModeKey";
+var _ba="CPSegmentedControlSegmentsKey",_bb="CPSegmentedControlSelectedKey",_bc="CPSegmentedControlSegmentStyleKey",_bd="CPSegmentedControlTrackingModeKey";
 var _1=objj_getClass("CPSegmentedControl");
 if(!_1){
 objj_exception_throw(new objj_exception(OBJJClassNotFoundException,"*** Could not find definition for class \"CPSegmentedControl\""));
 }
 var _2=_1.isa;
-class_addMethods(_1,[new objj_method(sel_getUid("initWithCoder:"),function(_bd,_be,_bf){
-with(_bd){
-_bd=objj_msgSendSuper({receiver:_bd,super_class:objj_getClass("CPControl")},"initWithCoder:",_bf);
-if(_bd){
-var _c0=objj_msgSend(_bd,"frame"),_c1=_c0.size.width;
-_c0.size.width=0;
-objj_msgSend(_bd,"setFrame:",_c0);
-_segments=objj_msgSend(_bf,"decodeObjectForKey:",_b9);
-_segmentStyle=objj_msgSend(_bf,"decodeIntForKey:",_bb);
+class_addMethods(_1,[new objj_method(sel_getUid("initWithCoder:"),function(_be,_bf,_c0){
+with(_be){
+_be=objj_msgSendSuper({receiver:_be,super_class:objj_getClass("CPControl")},"initWithCoder:",_c0);
+if(_be){
+var _c1=objj_msgSend(_be,"frame"),_c2=_c1.size.width;
+_c1.size.width=0;
+objj_msgSend(_be,"setFrame:",_c1);
+_segments=objj_msgSend(_c0,"decodeObjectForKey:",_ba);
+_segmentStyle=objj_msgSend(_c0,"decodeIntForKey:",_bc);
 _themeStates=[];
-if(objj_msgSend(_bf,"containsValueForKey:",_ba)){
-_selectedSegment=objj_msgSend(_bf,"decodeIntForKey:",_ba);
+if(objj_msgSend(_c0,"containsValueForKey:",_bb)){
+_selectedSegment=objj_msgSend(_c0,"decodeIntForKey:",_bb);
 }else{
 _selectedSegment=-1;
 }
-if(objj_msgSend(_bf,"containsValueForKey:",_bc)){
-_trackingMode=objj_msgSend(_bf,"decodeIntForKey:",_bc);
+if(objj_msgSend(_c0,"containsValueForKey:",_bd)){
+_trackingMode=objj_msgSend(_c0,"decodeIntForKey:",_bd);
 }else{
 _trackingMode=CPSegmentSwitchTrackingSelectOne;
 }
 for(var i=0;i<_segments.length;i++){
 _themeStates[i]=_segments[i].selected?CPThemeStateSelected:CPThemeStateNormal;
-objj_msgSend(_bd,"tileWithChangedSegment:",i);
+objj_msgSend(_be,"tileWithChangedSegment:",i);
 }
-var _c2=MAX(_c1-objj_msgSend(_bd,"frame").size.width,0),_c3=FLOOR(_c2/_segments.length);
+var _c3=MAX(_c2-objj_msgSend(_be,"frame").size.width,0),_c4=FLOOR(_c3/_segments.length);
 for(var i=0;i<_segments.length;i++){
-objj_msgSend(_bd,"setWidth:forSegment:",_segments[i].width+_c3,i);
+objj_msgSend(_be,"setWidth:forSegment:",_segments[i].width+_c4,i);
 }
-objj_msgSend(_bd,"tileWithChangedSegment:",0);
+objj_msgSend(_be,"tileWithChangedSegment:",0);
 }
-return _bd;
+return _be;
 }
-}),new objj_method(sel_getUid("encodeWithCoder:"),function(_c4,_c5,_c6){
-with(_c4){
-objj_msgSendSuper({receiver:_c4,super_class:objj_getClass("CPControl")},"encodeWithCoder:",_c6);
-objj_msgSend(_c6,"encodeObject:forKey:",_segments,_b9);
-objj_msgSend(_c6,"encodeInt:forKey:",_selectedSegment,_ba);
-objj_msgSend(_c6,"encodeInt:forKey:",_segmentStyle,_bb);
-objj_msgSend(_c6,"encodeInt:forKey:",_trackingMode,_bc);
+}),new objj_method(sel_getUid("encodeWithCoder:"),function(_c5,_c6,_c7){
+with(_c5){
+objj_msgSendSuper({receiver:_c5,super_class:objj_getClass("CPControl")},"encodeWithCoder:",_c7);
+objj_msgSend(_c7,"encodeObject:forKey:",_segments,_ba);
+objj_msgSend(_c7,"encodeInt:forKey:",_selectedSegment,_bb);
+objj_msgSend(_c7,"encodeInt:forKey:",_segmentStyle,_bc);
+objj_msgSend(_c7,"encodeInt:forKey:",_trackingMode,_bd);
 }
 })]);
 var _1=objj_allocateClassPair(CPObject,"_CPSegmentItem"),_2=_1.isa;
 class_addIvars(_1,[new objj_ivar("image"),new objj_ivar("label"),new objj_ivar("menu"),new objj_ivar("selected"),new objj_ivar("enabled"),new objj_ivar("tag"),new objj_ivar("width"),new objj_ivar("frame")]);
 objj_registerClassPair(_1);
 objj_addClassForBundle(_1,objj_getBundleWithPath(OBJJ_CURRENT_BUNDLE.path));
-class_addMethods(_1,[new objj_method(sel_getUid("init"),function(_c7,_c8){
-with(_c7){
-if(_c7=objj_msgSendSuper({receiver:_c7,super_class:objj_getClass("CPObject")},"init")){
+class_addMethods(_1,[new objj_method(sel_getUid("init"),function(_c8,_c9){
+with(_c8){
+if(_c8=objj_msgSendSuper({receiver:_c8,super_class:objj_getClass("CPObject")},"init")){
 image=nil;
 label="";
 menu=nil;
@@ -10817,39 +10817,39 @@ tag=0;
 width=0;
 frame=CGRectMakeZero();
 }
-return _c7;
+return _c8;
 }
 })]);
-var _c9="CPSegmentItemImageKey",_ca="CPSegmentItemLabelKey",_cb="CPSegmentItemMenuKey",_cc="CPSegmentItemSelectedKey",_cd="CPSegmentItemEnabledKey",_ce="CPSegmentItemTagKey",_cf="CPSegmentItemWidthKey";
+var _ca="CPSegmentItemImageKey",_cb="CPSegmentItemLabelKey",_cc="CPSegmentItemMenuKey",_cd="CPSegmentItemSelectedKey",_ce="CPSegmentItemEnabledKey",_cf="CPSegmentItemTagKey",_d0="CPSegmentItemWidthKey";
 var _1=objj_getClass("_CPSegmentItem");
 if(!_1){
 objj_exception_throw(new objj_exception(OBJJClassNotFoundException,"*** Could not find definition for class \"_CPSegmentItem\""));
 }
 var _2=_1.isa;
-class_addMethods(_1,[new objj_method(sel_getUid("initWithCoder:"),function(_d0,_d1,_d2){
-with(_d0){
-_d0=objj_msgSendSuper({receiver:_d0,super_class:objj_getClass("CPObject")},"init");
-if(_d0){
-image=objj_msgSend(_d2,"decodeObjectForKey:",_c9);
-label=objj_msgSend(_d2,"decodeObjectForKey:",_ca);
-menu=objj_msgSend(_d2,"decodeObjectForKey:",_cb);
-selected=objj_msgSend(_d2,"decodeBoolForKey:",_cc);
-enabled=objj_msgSend(_d2,"decodeBoolForKey:",_cd);
-tag=objj_msgSend(_d2,"decodeIntForKey:",_ce);
-width=objj_msgSend(_d2,"decodeFloatForKey:",_cf);
+class_addMethods(_1,[new objj_method(sel_getUid("initWithCoder:"),function(_d1,_d2,_d3){
+with(_d1){
+_d1=objj_msgSendSuper({receiver:_d1,super_class:objj_getClass("CPObject")},"init");
+if(_d1){
+image=objj_msgSend(_d3,"decodeObjectForKey:",_ca);
+label=objj_msgSend(_d3,"decodeObjectForKey:",_cb);
+menu=objj_msgSend(_d3,"decodeObjectForKey:",_cc);
+selected=objj_msgSend(_d3,"decodeBoolForKey:",_cd);
+enabled=objj_msgSend(_d3,"decodeBoolForKey:",_ce);
+tag=objj_msgSend(_d3,"decodeIntForKey:",_cf);
+width=objj_msgSend(_d3,"decodeFloatForKey:",_d0);
 frame=CGRectMakeZero();
 }
-return _d0;
+return _d1;
 }
-}),new objj_method(sel_getUid("encodeWithCoder:"),function(_d3,_d4,_d5){
-with(_d3){
-objj_msgSend(_d5,"encodeObject:forKey:",image,_c9);
-objj_msgSend(_d5,"encodeObject:forKey:",label,_ca);
-objj_msgSend(_d5,"encodeObject:forKey:",menu,_cb);
-objj_msgSend(_d5,"encodeBool:forKey:",selected,_cc);
-objj_msgSend(_d5,"encodeBool:forKey:",enabled,_cd);
-objj_msgSend(_d5,"encodeInt:forKey:",tag,_ce);
-objj_msgSend(_d5,"encodeFloat:forKey:",width,_cf);
+}),new objj_method(sel_getUid("encodeWithCoder:"),function(_d4,_d5,_d6){
+with(_d4){
+objj_msgSend(_d6,"encodeObject:forKey:",image,_ca);
+objj_msgSend(_d6,"encodeObject:forKey:",label,_cb);
+objj_msgSend(_d6,"encodeObject:forKey:",menu,_cc);
+objj_msgSend(_d6,"encodeBool:forKey:",selected,_cd);
+objj_msgSend(_d6,"encodeBool:forKey:",enabled,_ce);
+objj_msgSend(_d6,"encodeInt:forKey:",tag,_cf);
+objj_msgSend(_d6,"encodeFloat:forKey:",width,_d0);
 }
 })]);
 p;10;CPShadow.jI;21;Foundation/CPObject.jc;1307;
@@ -14248,7 +14248,7 @@ CGContextStrokePath(_239);
 }
 }
 })]);
-p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;5855;
+p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;5850;
 CPTopTabsBezelBorder=0;
 CPLeftTabsBezelBorder=1;
 CPBottomTabsBezelBorder=2;
@@ -14267,7 +14267,7 @@ _4=objj_msgSendSuper({receiver:_4,super_class:objj_getClass("CPView")},"initWith
 if(_4){
 items=objj_msgSend(CPArray,"array");
 type=CPTopTabsBezelBorder;
-tabs=objj_msgSend(objj_msgSend(CPSegmentedControl,"alloc"),"initWithFrame:",CGRectMake(0,0,1,_1));
+tabs=objj_msgSend(objj_msgSend(CPSegmentedControl,"alloc"),"initWithFrame:",CGRectMake(0,0,0,_1));
 objj_msgSend(tabs,"setTarget:",_4);
 objj_msgSend(tabs,"setAction:",sel_getUid("segmentSelectionDidChange:"));
 boxFrame=CGRectMake(0,_1/2,CGRectGetWidth(_6),CGRectGetHeight(_6)-_1/2);
@@ -14404,7 +14404,7 @@ objj_msgSend(_35,"selectFirstTabViewItem:",_35);
 with(_37){
 objj_msgSend(box,"setBorderType:",CPBezelBorder);
 objj_msgSend(box,"setAutoresizingMask:",CPViewWidthSizable|CPViewHeightSizable);
-objj_msgSend(tabs,"setAutoresizingMask:",CPViewWidthSizable|CPViewHeightSizable);
+objj_msgSend(tabs,"setAutoresizingMask:",CPViewMinXMargin|CPViewMaxXMargin);
 }
 }),new objj_method(sel_getUid("_repositionTabs"),function(_39,_3a){
 with(_39){
@@ -26726,7 +26726,7 @@ with(_14){
 return _windows;
 }
 })]);
-p;22;CPPlatformWindow+DOM.jI;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.ji;26;CPPlatformWindow+DOMKeys.jc;27504;
+p;22;CPPlatformWindow+DOM.jI;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.ji;26;CPPlatformWindow+DOMKeys.jc;27524;
 var _1=objj_msgSend(CPSet,"set");
 var _2,_3,_4;
 var _5={},_6={},_7={61:187,59:186};
@@ -26739,7 +26739,7 @@ objj_exception_throw(new objj_exception(OBJJClassNotFoundException,"*** Could no
 var _a=_9.isa;
 class_addMethods(_9,[new objj_method(sel_getUid("_init"),function(_b,_c){
 with(_b){
-_b=objj_msgSendSuper({receiver:_b,super_class:objj_getClass("CPObject")},"init");
+_b=objj_msgSendSuper({receiver:_b,super_class:objj_getClass("CPPlatformWindow").super_class},"init");
 if(_b){
 _DOMWindow=window;
 _contentRect={origin:{x:0,y:0},size:{width:0,height:0}};

@@ -85,40 +85,42 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 
 - (int)numberOfRowsInTableView:(CPTableView)tableView
 {
-    if (tableView === [projectView resourcesTableView])
-    {
-        return [resourceBundleController numberOfResources];
-    }
-    
-    if (tableView === [projectView lineItemsTableView])
-    {
-        return [resourceBundleController numberOfLineItems];
-    }
-    
-    return 0;
+    // if (tableView === [projectView resourcesTableView])
+    // {
+    //     return [resourceBundleController numberOfResources];
+    // }
+    // 
+    // if (tableView === [projectView lineItemsTableView])
+    // {
+    //     return [resourceBundleController numberOfLineItems];
+    // }
+    // 
+    return 30;
 }
 
 - (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
-    if (tableView === [projectView resourcesTableView])
-    {
-        return [resourceBundleController resourceNameAtIndex:row];
-    }
+    // if (tableView === [projectView resourcesTableView])
+    // {
+    //     return [resourceBundleController resourceNameAtIndex:row];
+    // }
+    // 
+    // if (tableView === [projectView lineItemsTableView])
+    // {
+    //     var lineItem = [resourceBundleController lineItemAtIndex:row];
+    //     
+    //     if ([[tableColumn identifier] isEqualToString:OLLineItemTableColumnIdentifierIdentifier])
+    //     {
+    //         return [lineItem identifier];
+    //     }
+    //     
+    //     if ([[tableColumn identifier] isEqualToString:OLLineItemTableColumnValueIdentifier])
+    //     {
+    //         return [lineItem value];
+    //     }
+    // }
     
-    if (tableView === [projectView lineItemsTableView])
-    {
-        var lineItem = [resourceBundleController lineItemAtIndex:row];
-        
-        if ([[tableColumn identifier] isEqualToString:OLLineItemTableColumnIdentifierIdentifier])
-        {
-            return [lineItem identifier];
-        }
-        
-        if ([[tableColumn identifier] isEqualToString:OLLineItemTableColumnValueIdentifier])
-        {
-            return [lineItem value];
-        }
-    }
+    return "Testing";
 }
 
 - (CPArray)titlesOfResourceBundlesForProjectView:(OLProjectView)projectView
@@ -381,6 +383,7 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
             // [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
             //             [projectView setTitle:[[self selectedProject] name]];
             //             [projectView reloadAllData];
+            [projectView reloadData:self];
         }
 	}
 	else

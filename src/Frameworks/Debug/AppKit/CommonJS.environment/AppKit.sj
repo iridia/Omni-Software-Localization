@@ -11767,7 +11767,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("isSecure"), function $C
 },["BOOL"])]);
 }
 
-p;20;CPSegmentedControl.jI;20;Foundation/CPArray.ji;11;CPControl.jc;30438;
+p;20;CPSegmentedControl.jI;20;Foundation/CPArray.ji;11;CPControl.jc;30568;
 CPSegmentSwitchTrackingSelectOne = 0;
 CPSegmentSwitchTrackingSelectAny = 1;
 CPSegmentSwitchTrackingMomentary = 2;
@@ -12126,8 +12126,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
     var delta = segmentWidth - CGRectGetWidth(segment.frame);
     if (!delta)
         return;
-    var frame = objj_msgSend(self, "frame");
-    objj_msgSend(self, "setFrameSize:", CGSizeMake(CGRectGetWidth(frame) + delta, CGRectGetHeight(frame)));
+    var frame = objj_msgSend(self, "frame"),
+        thickness = objj_msgSend(self, "currentValueForThemeAttribute:", "divider-thickness");
+    objj_msgSend(self, "setFrameSize:", CGSizeMake(CGRectGetWidth(frame) + delta + (thickness*(_segments.length-1)), CGRectGetHeight(frame)));
     segment.width = segmentWidth;
     segment.frame = objj_msgSend(self, "frameForSegment:", aSegment);;
     var index = aSegment + 1;
@@ -16245,7 +16246,7 @@ currentRow = newValue;
 },["void","CGRect"])]);
 }
 
-p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;8198;
+p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;8489;
 CPTopTabsBezelBorder = 0;
 CPLeftTabsBezelBorder = 1;
 CPBottomTabsBezelBorder = 2;
@@ -16266,15 +16267,16 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
     {
         items = objj_msgSend(CPArray, "array");
         type = CPTopTabsBezelBorder;
-        tabs = objj_msgSend(objj_msgSend(CPSegmentedControl, "alloc"), "initWithFrame:", CGRectMake(0, 0, 1, HEIGHT_OF_SEGMENTED_CONTROL));
+        tabs = objj_msgSend(objj_msgSend(CPSegmentedControl, "alloc"), "initWithFrame:", CGRectMake(0, 0, 0, HEIGHT_OF_SEGMENTED_CONTROL));
         objj_msgSend(tabs, "setTarget:", self);
         objj_msgSend(tabs, "setAction:", sel_getUid("segmentSelectionDidChange:"));
         boxFrame = CGRectMake(0, HEIGHT_OF_SEGMENTED_CONTROL/2, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame)-HEIGHT_OF_SEGMENTED_CONTROL/2);
         box = objj_msgSend(objj_msgSend(CPBox, "alloc"), "initWithFrame:", boxFrame);
-        boxBackgroundView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMakeZero());
+        boxBackgroundView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", boxFrame);
         objj_msgSend(boxBackgroundView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
         objj_msgSend(boxBackgroundView, "setBackgroundColor:", objj_msgSend(CPColor, "colorWithCalibratedWhite:alpha:", 0.95, 1.0));
         objj_msgSend(box, "setContentView:", boxBackgroundView);
+        console.log(objj_msgSend(boxBackgroundView, "frame"), objj_msgSend(box, "frame"), _cmd);
         selectedIndex = CPNotFound;
         objj_msgSend(self, "_setupDefaultStyles");
         objj_msgSend(self, "addSubview:", box);
@@ -16395,8 +16397,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 { with(self)
 {
     selectedIndex = index;
+    var theView = objj_msgSend(objj_msgSend(items, "objectAtIndex:", selectedIndex), "view");
     objj_msgSend(boxBackgroundView, "setSubviews:", objj_msgSend(CPArray, "array"));
-    objj_msgSend(boxBackgroundView, "addSubview:", objj_msgSend(objj_msgSend(items, "objectAtIndex:", selectedIndex), "view"));
+    objj_msgSend(boxBackgroundView, "addSubview:", theView);
+    objj_msgSend(theView, "setFrame:", objj_msgSend(boxBackgroundView, "frame"));
+    objj_msgSend(theView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
 }
 },["void","CPNumber"]), new objj_method(sel_getUid("_updateItems"), function $CPTabView___updateItems(self, _cmd)
 { with(self)
@@ -30831,7 +30836,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithLevel:"), funct
 },["CPArray"])]);
 }
 
-p;22;CPPlatformWindow+DOM.jI;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.ji;26;CPPlatformWindow+DOMKeys.jc;46289;
+p;22;CPPlatformWindow+DOM.jI;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.ji;26;CPPlatformWindow+DOMKeys.jc;46309;
 var PlatformWindows = objj_msgSend(CPSet, "set");
 var CPDOMEventGetClickCount,
     CPDOMEventStop,
@@ -30850,7 +30855,7 @@ if(!the_class) objj_exception_throw(new objj_exception(OBJJClassNotFoundExceptio
 var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("_init"), function $CPPlatformWindow___init(self, _cmd)
 { with(self)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPObject") }, "init");
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPPlatformWindow").super_class }, "init");
     if (self)
     {
         _DOMWindow = window;

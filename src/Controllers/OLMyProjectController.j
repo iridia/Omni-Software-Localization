@@ -13,6 +13,7 @@
         //projectView = [[OLProjectView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
         projectView = [[OLProjectDashboardView alloc] initWithFrame:CGRectMake(0, 0, 500, 500)];
         [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [projectView setDelegate:self];
         
         importProjectController = [[OLImportProjectController alloc] init];
    		
@@ -177,6 +178,22 @@
 - (void)didReceiveUserDidChangeNotification:(CPNotification)notification
 {
     [self loadProjects];
+}
+
+- (CPString)projectName
+{
+    return "A Test";
+}
+
+- (CPString)subscribers
+{
+    return "Bob\nNick\nTom";
+}
+
+- (CPArray)comments
+{
+    var theUser = [[OLUserSessionManager defaultSessionManager] user];
+    return [[[OLComment alloc] initFromUser:theUser withContent:@"Test1"], [[OLComment alloc] initFromUser:theUser withContent:@"Test2"], [[OLComment alloc] initFromUser:theUser withContent:@"Test3"]];
 }
 
 @end

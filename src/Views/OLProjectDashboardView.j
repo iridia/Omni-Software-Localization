@@ -6,10 +6,14 @@
     CPTextField         name;
     CPTextField         subscribers;
     
-    OLTableView         branchesTableView;
+    OLTableView         branchesTableView   @accessors(readonly);
     
     CPView              commentsView;
     CPCollectionView    collectionView;
+    
+    id                  delegate;
+    
+    id                  tabs;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -17,14 +21,13 @@
     self = [super initWithFrame:aFrame];
     if(self)
     {
-        var tabs = [[CPTabView alloc] initWithFrame:CGRectInset(aFrame, 50, 50)];
+        tabs = [[CPTabView alloc] initWithFrame:CGRectInset(aFrame, 50, 50)];
         [tabs setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
         var summaryTab = [[CPTabViewItem alloc] initWithIdentifier:@"summary"];
         [summaryTab setLabel:@"Summary"];
         
         var summaryView = [[CPView alloc] initWithFrame:CGRectMakeZero()];
-        [summaryView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 
         var nameLabel = [CPTextField labelWithTitle:@"Name:"];
         var subscribersLabel = [CPTextField labelWithTitle:@"Subscribers:"];
@@ -43,10 +46,27 @@
         var branchesTab = [[CPTabViewItem alloc] initWithIdentifier:@"branches"];
         [branchesTab setLabel:@"Branches"];
         
-        branchesTableView = [[OLTableView alloc] initWithFrame:CGRectInset([tabs bounds], 100, 100)];
-		[branchesTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        var ownerColumn = [[CPTableColumn alloc] initWithIdentifier:@"owner"];
+        [ownerColumn setWidth:0];
+        [[ownerColumn headerView] setStringValue:@"Owner"];
+        [ownerColumn setResizingMask:CPTableColumnAutoresizingMask];
+        var nameColumn = [[CPTableColumn alloc] initWithIdentifier:@"name"];
+        [nameColumn setWidth:0];
+        [[nameColumn headerView] setStringValue:@"Project Name"];
+        [nameColumn setResizingMask:CPTableColumnAutoresizingMask];
+        var votesColumn = [[CPTableColumn alloc] initWithIdentifier:@"votes"];
+        [votesColumn setWidth:0];
+        [[votesColumn headerView] setStringValue:@"Votes"];
+        [votesColumn setResizingMask:CPTableColumnAutoresizingMask];
         
-        [branchesTab setView:branchesTableView];
+        var containerView = [[CPView alloc] initWithFrame:CGRectMake(0,0,100,100)];
+        branchesTableView = [[OLTableView alloc] initWithFrame:CGRectInset([containerView frame], 10, 10) columns:[ownerColumn, nameColumn, votesColumn]];
+        [branchesTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+		[branchesTableView setColumnAutoresizingStyle:CPTableViewUniformColumnAutoresizingStyle];
+        
+        [containerView addSubview:branchesTableView];
+        
+        [branchesTab setView:containerView];
         
         var commentsTab = [[CPTabViewItem alloc] initWithIdentifier:@"comments"];
         [commentsTab setLabel:@"Comments"];
@@ -56,7 +76,6 @@
 
         var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([tabs bounds]), CGRectGetWidth([tabs bounds]) - 170.0)];
         [scrollView setAutohidesScrollers:YES];
-        [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 
         var prototype = [[CPCollectionViewItem alloc] init];
         [prototype setView:[[OLCommentView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([scrollView bounds]), 70.0)]];
@@ -81,6 +100,23 @@
         [self addSubview:tabs];
     }
     return self;
+}
+
+- (void)setDelegate:(id)aDelegate
+{
+    [branchesTableView setDataSource:aDelegate];
+    delegate = aDelegate;
+}
+
+- (void)reloadData:(id)sender
+{
+    [branchesTableView reloadData];
+    [name setStringValue:[delegate projectName]];
+    [name sizeToFit];
+    [subscribers setStringValue:[delegate subscribers]];
+    [subscribers sizeToFit];
+	[collectionView setContent:[delegate comments]];
+	[collectionView reloadContent];
 }
 
 @end
