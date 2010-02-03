@@ -344,7 +344,7 @@ var StandardUserDefaults;
     var globalDomain = [_domains objectForKey:CPGlobalDomain];
     if (globalDomain)
     {
-        var expires = [CPDate timeIntervalSinceNow:(30*24*60*60)]; // 30 days is the default
+        var expires = [CPDate dateWithTimeIntervalSinceNow:(30*24*60*60)]; // 30 days is the default
         if ([[self delegate] respondsToSelector:@selector(userDefaultsExpirationDateForDomain:)])
         {
             expires = [[self delegate] userDefaultsExpirationDateForDomain:CPGlobalDomain]
@@ -363,7 +363,7 @@ var StandardUserDefaults;
     var appDomain = [_domains objectForKey:CPApplicationDomain];
     if (appDomain)
     {
-        var expires = [CPDate timeIntervalSinceNow:(30*24*60*60)]; // 30 days is the default
+        var expires = [CPDate dateWithTimeIntervalSinceNow:(30*24*60*60)]; // 30 days is the default
         if ([[self delegate] respondsToSelector:@selector(userDefaultsExpirationDateForDomain:)])
         {
             expires = [[self delegate] userDefaultsExpirationDateForDomain:CPApplicationDomain]
