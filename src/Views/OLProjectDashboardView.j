@@ -1,10 +1,15 @@
 @import <AppKit/CPView.j>
-@import <AppKit/CPAccordionView.j>
+@import "OLTableView.j"
 
 @implementation OLProjectDashboardView : CPView
 {
-    CPTextField     name;
-    CPTextField     subscribers;
+    CPTextField         name;
+    CPTextField         subscribers;
+    
+    OLTableView         branchesTableView;
+    
+    CPView              commentsView;
+    CPCollectionView    collectionView;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -24,8 +29,8 @@
         var nameLabel = [CPTextField labelWithTitle:@"Name:"];
         var subscribersLabel = [CPTextField labelWithTitle:@"Subscribers:"];
         
-        name = [CPTextField labelWithTitle:@"asdf"];
-        subscribers = [CPTextField labelWithTitle:@"fdsa"];
+        name = [CPTextField labelWithTitle:@""];
+        subscribers = [CPTextField labelWithTitle:@""];
         
         [summaryView addSubview:nameLabel positioned:CPViewLeftAligned | CPViewTopAligned relativeTo:summaryView withPadding:50.0];
         [summaryView addSubview:subscribersLabel positioned:CPViewBelow | CPViewLeftSame relativeTo:nameLabel withPadding:10.0];
@@ -37,11 +42,37 @@
         
         var branchesTab = [[CPTabViewItem alloc] initWithIdentifier:@"branches"];
         [branchesTab setLabel:@"Branches"];
-        [branchesTab setView:[[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([tabs bounds]), 300)]];
+        
+        branchesTableView = [[OLTableView alloc] initWithFrame:CGRectInset([tabs bounds], 100, 100)];
+		[branchesTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        
+        [branchesTab setView:branchesTableView];
         
         var commentsTab = [[CPTabViewItem alloc] initWithIdentifier:@"comments"];
         [commentsTab setLabel:@"Comments"];
-        [commentsTab setView:[[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([tabs bounds]), 300)]];
+        
+        commentsView = [[CPView alloc] initWithFrame:[tabs bounds]];
+        [commentsView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+        var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([tabs bounds]), CGRectGetWidth([tabs bounds]) - 170.0)];
+        [scrollView setAutohidesScrollers:YES];
+        [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+        var prototype = [[CPCollectionViewItem alloc] init];
+        [prototype setView:[[OLCommentView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([scrollView bounds]), 70.0)]];
+        
+        collectionView = [[CPCollectionView alloc] initWithFrame:[scrollView bounds]];
+        [collectionView setItemPrototype:prototype];
+        [collectionView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [collectionView setMaxNumberOfColumns:1];
+        [collectionView setVerticalMargin:10.0];
+        [collectionView setMinItemSize:CPMakeSize(100.0, 50.0)];
+        [collectionView setMaxItemSize:CPMakeSize(10000.0, 50.0)];
+        
+        [scrollView setDocumentView:collectionView];
+        [commentsView addSubview:scrollView];
+        
+        [commentsTab setView:scrollView];
         
         [tabs addTabViewItem:summaryTab];
         [tabs addTabViewItem:branchesTab];
