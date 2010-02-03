@@ -127,7 +127,6 @@ OLMenuItemDisabled = NO;
 
 - (void)sendMessage:(id)sender
 {
-    console.log("Here");
     [[CPNotificationCenter defaultCenter]
         postNotificationName:OLMessageControllerShouldCreateMessageNotification
         object:self];

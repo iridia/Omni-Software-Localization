@@ -4,5 +4,5 @@
 SCRIPT_LIST = [
 //	"Script3.script",
 //	"Script1.script",
-//	"Script2.script"
+    // "Script2.script"
 ];

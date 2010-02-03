@@ -70,7 +70,7 @@ loadProfileViewNotification = @"loadProfileViewNotification";
     
     backView = aBackView;
     
-    [backView setAutoresizingMask:CPViewMinXMargin];
+    [backView setAutoresizingMask:CPViewMaxXMargin];
     [self addSubview:backView positioned:CPViewLeftAligned | CPViewHeightCentered relativeTo:self withPadding:5.0];
 }
 

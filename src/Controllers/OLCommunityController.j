@@ -22,7 +22,7 @@ var OLCommunityProfileItem = @"Profile";
 - (id)init
     {
         if(self = [super init])
-        {        		
+        {   
         	searchController = [[OLProjectSearchController alloc] init];
         	[searchController loadProjects];
         	
@@ -36,26 +36,6 @@ var OLCommunityProfileItem = @"Profile";
     			object:nil];
         }
         return self;
-}
-
-- (void)setMailView:(CPView)aMailView
-{
-    [messageController setMailView:aMailView];
-}
-
-- (void)setSearchView:(CPView)aSearchView
-{
-    [searchController setSearchView:aSearchView];
-}
-
-- (void)setProfileView:(CPView)aProfileView
-{
-    [profileController setProfileView:aProfileView];
-}
-
-- (void)setProjectView:(CPView)aProjectView
-{
-    [searchController setProjectView:aProjectView];
 }
 
 - (void)setContentViewController:(id)contentViewController
@@ -88,7 +68,7 @@ var OLCommunityProfileItem = @"Profile";
     switch(selectedItem)
     {
         case OLCommunityInboxItem:
-            view = [messageController contentView];
+            view = [messageController mailView];
             break;
         case OLCommunitySearchItem:
             view = [searchController contentView];

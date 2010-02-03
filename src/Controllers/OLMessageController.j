@@ -13,7 +13,7 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
 @implementation OLMessageController : CPObject
 {
     CPArray         messages;
-    OLMailView      mailView;
+    OLMailView      mailView        @accessors;
     OLMessageWindow messageWindow;
 }
 
@@ -22,7 +22,12 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
     self = [super init];
     
     if (self)
-    {
+    {            
+        mailView = [[OLMailView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
+        [mailView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [mailView setDelegate:self];
+        [mailView setDataSource:self];
+        
         messages = [CPArray array];
         
         messageWindow = [[OLMessageWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 300) styleMask:CPTitledWindowMask];
@@ -61,17 +66,6 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
 {
     [messageWindow setIsBroadcastMessage:NO forProject:nil];
     [self showMessageWindow:self];
-}
-
-- (void)setMailView:(OLMailView)aMailView
-{
-    if (mailView === aMailView)
-        return;
-    
-    mailView = aMailView;
-    
-    [mailView setDelegate:self];
-    [mailView setDataSource:self];
 }
 
 - (void)loadMessages

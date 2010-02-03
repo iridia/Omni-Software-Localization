@@ -19,7 +19,11 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 - (id)init
 {
     if(self = [super init])
-    {        
+    {
+    	glossariesView = [[OLGlossariesView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
+    	[glossariesView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    	[glossariesView setGlossaryController:self];
+    	
 		glossaries = [CPArray array];
 
 		[[CPNotificationCenter defaultCenter]

@@ -13,7 +13,9 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
  */
 @implementation OLWelcomeView : CPView
 {
-	id _delegate @accessors(property=delegate);
+    CPCheckBox      showWindowOnLaunch;
+    
+	id              delegate            @accessors;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -88,10 +90,14 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
         [closeButton setCenter:CPMakePoint(CGRectGetWidth(frame) - (CGRectGetWidth([closeButton bounds]) / 2.0) - 10.0, CGRectGetHeight([closeButton bounds]))]
 		
 		// Uncomment these lines to add a checkbox that allows the user to select if this window should show on startup
-        // var showWindowOnLaunch = [CPCheckBox checkBoxWithTitle:@"Show this window when OSL launches"];
-        // [showWindowOnLaunch setFrameOrigin:CPMakePoint(10.0, CGRectGetHeight([showWindowOnLaunch bounds]))];
-        // 
-        // [fakeBottomBar addSubview:showWindowOnLaunch];
+        showWindowOnLaunch = [CPCheckBox checkBoxWithTitle:@"Show this window when OSL launches"];
+        [showWindowOnLaunch setFrameOrigin:CPMakePoint(10.0, CGRectGetHeight([showWindowOnLaunch bounds]))];
+        [showWindowOnLaunch setTarget:self];
+        [showWindowOnLaunch setAction:@selector(shouldShowWindowOnLaunch:)];
+        
+        var state = ([[CPUserDefaults standardUserDefaults] objectForKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey]) ? CPOnState : CPOffState;
+        [showWindowOnLaunch setState:state];
+        [fakeBottomBar addSubview:showWindowOnLaunch];
 		[fakeBottomBar addSubview:closeButton];
 		
 		[self addSubview:welcomeTextView];
@@ -104,9 +110,9 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
 
 - (void)close:(id)sender
 {
-    if ([_delegate respondsToSelector:@selector(closeWelcomeWindow:)])
+    if ([[self delegate] respondsToSelector:@selector(closeWelcomeWindow:)])
     {
-        [_delegate closeWelcomeWindow:self];
+        [[self delegate] closeWelcomeWindow:self];
     }
 }
 
@@ -117,17 +123,25 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
 
 - (void)uploadButtonDidBeginUpload:(id)sender
 {
-	[_delegate showUploading];
+	[[self delegate] showUploading];
 }
 
 - (void)uploadButton:(id)sender didFinishUploadWithData:(CPString)response
 {
-	[_delegate finishedUploadingWithResponse:response];
+	[[self delegate] finishedUploadingWithResponse:response];
 }
 
 - (void)transitionToResourceList:(id)sender
 {
-	[_delegate transitionToResourceList:sender];
+	[[self delegate] transitionToResourceList:sender];
+}
+
+- (void)shouldShowWindowOnLaunch:(id)sender
+{
+    if ([[self delegate] respondsToSelector:@selector(showWindowOnLaunchDidChange:)])
+    {
+        [[self delegate] showWindowOnLaunchDidChange:([showWindowOnLaunch state] === CPOnState)];
+    }
 }
 
 @end

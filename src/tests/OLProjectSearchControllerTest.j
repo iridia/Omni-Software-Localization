@@ -2,6 +2,20 @@
 
 @implementation OLProjectSearchControllerTest : OJTestCase
 
+- (void)setUp
+{
+    urlConnection = moq();
+    [OLURLConnectionFactory setConnectionFactoryMethod:function(request, delegate)
+    {
+        return [urlConnection createConnectionWithRequest:request delegate:delegate];
+    }];
+}
+
+- (void)tearDown
+{
+    [OLURLConnectionFactory setConnectionFactoryMethod:nil];
+}
+
 - (void)testThatOLProjectSearchControllerDoesInitialize
 {
     [self assertNotNull:[[OLProjectSearchController alloc] init]];

@@ -1,4 +1,6 @@
 @import "OLProjectController.j"
+@import "../Views/OLProjectSearchView.j"
+@import "../Views/OLProjectResultView.j"
 
 @implementation OLProjectSearchController : OLProjectController
 {
@@ -7,6 +9,37 @@
     CPString                ownerName;
     
     OLContentViewController contentViewController   @accessors;
+}
+
+- (void)init
+{
+    self = [super init];
+    if(self)
+    {
+        searchView = [[OLProjectSearchView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
+        [searchView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        
+        projectView = [[OLProjectResultView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
+        [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+   		
+        [projectView setResourcesTableViewDataSource:self];
+        [projectView setLineItemsTableViewDataSource:self];
+        [projectView setResourcesTableViewDelegate:self];
+        [projectView setLineItemsTableViewDelegate:self];
+        [projectView setLineItemsTarget:self doubleAction:@selector(lineItemsTableViewDoubleClick:)];
+        [projectView setResourceBundleDelegate:self];
+        [projectView setVotingDataSource:self];
+        [projectView setVotingDelegate:self];
+        [projectView setOwnerDataSource:self];
+        [projectView setTitleDataSource:self];
+        
+        [searchView setDataSource:self];
+        [searchView setDelegate:self];
+        contentView = searchView;
+   		
+   		[self registerForNotifications];
+    }
+    return self;
 }
 
 - (void)registerForNotifications
@@ -50,17 +83,6 @@
    projects = [projects sortedArrayUsingFunction:function(lhs, rhs, context){  
            return [[rhs totalOfAllVotes] compare:[lhs totalOfAllVotes]];
        }];
-}
-
-- (void)setSearchView:(CPView)aSearchView
-{
-    if(searchView === aSearchView)
-        return;
-    
-    searchView = aSearchView;
-    [searchView setDataSource:self];
-    [searchView setDelegate:self];
-    contentView = searchView;
 }
 
 - (void)reloadData
@@ -176,7 +198,6 @@
     {
         [selectedProject addSubscriber:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
         [selectedProject save];
-        console.log(selectedProject);
         
         var clonedProject = [selectedProject clone];
         [clonedProject setUserIdentifier:[[OLUserSessionManager defaultSessionManager] userIdentifier]];
