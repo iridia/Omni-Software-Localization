@@ -3,6 +3,8 @@
 
 @implementation OLProjectDashboardView : CPView
 {
+    CPTextField     name;
+    CPTextField     subscribers;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -15,7 +17,23 @@
         
         var summaryTab = [[CPTabViewItem alloc] initWithIdentifier:@"summary"];
         [summaryTab setLabel:@"Summary"];
-        [summaryTab setView:[[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([tabs bounds]), 300)]];
+        
+        var summaryView = [[CPView alloc] initWithFrame:CGRectMakeZero()];
+        [summaryView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+        var nameLabel = [CPTextField labelWithTitle:@"Name:"];
+        var subscribersLabel = [CPTextField labelWithTitle:@"Subscribers:"];
+        
+        name = [CPTextField labelWithTitle:@"asdf"];
+        subscribers = [CPTextField labelWithTitle:@"fdsa"];
+        
+        [summaryView addSubview:nameLabel positioned:CPViewLeftAligned | CPViewTopAligned relativeTo:summaryView withPadding:50.0];
+        [summaryView addSubview:subscribersLabel positioned:CPViewBelow | CPViewLeftSame relativeTo:nameLabel withPadding:10.0];
+        
+        [summaryView addSubview:subscribers positioned:CPViewOnTheRight | CPViewHeightSame relativeTo:subscribersLabel withPadding:5.0];
+        [summaryView addSubview:name positioned:CPViewAbove | CPViewLeftSame relativeTo:subscribers withPadding:10.0];
+        
+        [summaryTab setView:summaryView];
         
         var branchesTab = [[CPTabViewItem alloc] initWithIdentifier:@"branches"];
         [branchesTab setLabel:@"Branches"];

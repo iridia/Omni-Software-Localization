@@ -8,6 +8,8 @@ CPViewOnTheLeft         = 64;
 CPViewLeftAligned       = 128;
 CPViewTopAligned        = 256;
 CPViewOnTheRight        = 512;
+CPViewLeftSame          = 1024;
+CPViewAbove             = 2048;
 
 @implementation CPView (Positioning)
 
@@ -22,6 +24,11 @@ CPViewOnTheRight        = 512;
     if (positioning & CPViewBelow)
     {
         yPos = CGRectGetHeight([anotherView bounds]) + [anotherView frame].origin.y + padding;
+    }
+    
+    if (positioning & CPViewAbove)
+    {
+        yPos = [anotherView frame].origin.y - CGRectGetHeight([aView bounds]) - padding;
     }
     
     if (positioning & CPViewHeightCentered)
@@ -68,6 +75,11 @@ CPViewOnTheRight        = 512;
     if (positioning & CPViewOnTheRight)
     {
         xPos = [anotherView frame].origin.x + [anotherView frame].size.width + padding;
+    }
+    
+    if (positioning & CPViewLeftSame)
+    {
+        xPos = [anotherView frame].origin.x;
     }
     
     [aView setFrameOrigin:CPMakePoint(xPos, yPos)];
