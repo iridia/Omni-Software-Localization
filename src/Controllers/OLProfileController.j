@@ -81,12 +81,16 @@
 - (void)didReceiveUserDidChangeNotification:(CPNotification)aNotification
 {
     [self loadProjects];
+    [self loadLanguages];
+    userEmail =[[[OLUserSessionManager defaultSessionManager] user] email];
+    //Needs to be the user that is clicked on, not the one logged in.
+    [profileView setTitle:[[[OLUserSessionManager defaultSessionManager] user] email]];
+    
     if(userEmail === [[[OLUserSessionManager defaultSessionManager] user] email])
     {
         [profileView setTextFieldsEditable];
     }
-    //Needs to be the user that is clicked on, not the one logged in.
-    // [profileView setTitle:[[[OLUserSessionManager defaultSessionManager] user] email]];
+    
 }
 
 - (void)didReceiveUserNeedsToSaveNotification:(CPNotifcation)aNotifcation
