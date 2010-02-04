@@ -113,6 +113,16 @@ OLMenuItemDisabled = NO;
     [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectShouldImportNotification" object:self];
 }
 
+- (void)undo:(id)sender
+{
+    
+}
+
+- (void)redo:(id)sender
+{
+    
+}
+
 - (void)feedback:(id)sender
 {
     [feedbackController showFeedbackWindow:sender];
