@@ -1,0 +1,10 @@
+{
+    "views" : {
+        "all" : {
+           "map": "function(doc) { emit(doc._id, doc); }"
+        },
+        "email": {
+           "map": "function(doc) { emit(doc.OLUserEmailKey, doc); }"
+        }
+    }
+}
