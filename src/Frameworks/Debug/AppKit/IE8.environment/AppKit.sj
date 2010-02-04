@@ -14260,7 +14260,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["id","int"])]);
 }
 
-p;19;CPTableHeaderView.ji;15;CPTableColumn.ji;13;CPTableView.ji;8;CPView.jc;12074;
+p;19;CPTableHeaderView.ji;15;CPTableColumn.ji;13;CPTableView.ji;8;CPView.jc;12986;
 var CPThemeStatePressed = CPThemeState("pressed");
 {var the_class = objj_allocateClassPair(CPView, "_CPTableColumnHeaderView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_textField")]);
@@ -14274,6 +14274,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
     {
         _textField = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", objj_msgSend(self, "bounds"));
         objj_msgSend(_textField, "setAutoresizingMask:", CPViewWidthSizable|CPViewHeightSizable);
+        objj_msgSend(_textField, "setTextColor:",  objj_msgSend(CPColor, "colorWithHexString:",  "333333"));
+        objj_msgSend(_textField, "setValue:forThemeAttribute:", objj_msgSend(CPFont, "boldSystemFontOfSize:", 12.0), "font");
+        objj_msgSend(_textField, "setValue:forThemeAttribute:", CPLeftTextAlignment, "alignment");
+        objj_msgSend(_textField, "setVerticalAlignment:", CPCenterVerticalTextAlignment);
+        objj_msgSend(_textField, "setValue:forThemeAttribute:", CGSizeMake(0,1), "text-shadow-offset");
+     objj_msgSend(_textField, "setValue:forThemeAttribute:", objj_msgSend(CPColor, "whiteColor"), "text-shadow-color");
         objj_msgSend(self, "addSubview:", _textField);
     }
     return self;
@@ -14311,7 +14317,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 {
     objj_msgSend(_textField, "sizeToFit");
 }
-},["void"])]);
+},["void"]), new objj_method(sel_getUid("setValue:forThemeAttribute:"), function $_CPTableColumnHeaderView__setValue_forThemeAttribute_(self, _cmd, aValue, aKey)
+{ with(self)
+{
+    objj_msgSend(_textField, "setValue:forThemeAttribute:", aValue, aKey);
+}
+},["void","id","id"])]);
 }
 {var the_class = objj_allocateClassPair(CPView, "CPTableHeaderView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_resizedColumn"), new objj_ivar("_draggedColumn"), new objj_ivar("_pressedColumn"), new objj_ivar("_draggedDistance"), new objj_ivar("_tableView")]);
@@ -14514,7 +14525,7 @@ _tableView = newValue;
 },["void","CGRect"])]);
 }
 
-p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;108499;
+p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;108592;
 CPTableViewColumnDidMoveNotification = "CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification = "CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification = "CPTableViewSelectionDidChangeNotification";
@@ -15899,8 +15910,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
                 CGContextAddLineToPoint(context, colX, maxY);
             }
         }
-         CGContextMoveToPoint(context, minX, maxY);
-         CGContextAddLineToPoint(context, maxX, maxY);
+        if(objj_msgSend(indexes, "containsObject:", indexes[i]+1))
+        {
+            CGContextMoveToPoint(context, minX, maxY);
+            CGContextAddLineToPoint(context, maxX, maxY);
+        }
     }
     CGContextClosePath(context);
     CGContextSetStrokeColor(context, objj_msgSend(CPColor, "whiteColor"));
@@ -16580,7 +16594,7 @@ currentRow = newValue;
 },["void","CGRect"])]);
 }
 
-p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;8489;
+p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;8590;
 CPTopTabsBezelBorder = 0;
 CPLeftTabsBezelBorder = 1;
 CPBottomTabsBezelBorder = 2;
@@ -16734,7 +16748,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
     var theView = objj_msgSend(objj_msgSend(items, "objectAtIndex:", selectedIndex), "view");
     objj_msgSend(boxBackgroundView, "setSubviews:", objj_msgSend(CPArray, "array"));
     objj_msgSend(boxBackgroundView, "addSubview:", theView);
-    objj_msgSend(theView, "setFrame:", objj_msgSend(boxBackgroundView, "frame"));
+    objj_msgSend(theView, "setFrame:", CGRectMake(0, 0, CGRectGetWidth(objj_msgSend(boxBackgroundView, "frame")),
+        CGRectGetHeight(objj_msgSend(boxBackgroundView, "frame"))));
     objj_msgSend(theView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
 }
 },["void","CPNumber"]), new objj_method(sel_getUid("_updateItems"), function $CPTabView___updateItems(self, _cmd)

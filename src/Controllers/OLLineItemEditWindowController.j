@@ -208,6 +208,7 @@
     {
         padding = [[CPView alloc] initWithFrame:CGRectInset([self bounds], 5.0, 0.0)];
         [padding setBackgroundColor:[CPColor whiteColor]];
+        [padding setAutoresizingMask:CPViewWidthSizable];
         [self addSubview:padding];
     }
     if (!user)
