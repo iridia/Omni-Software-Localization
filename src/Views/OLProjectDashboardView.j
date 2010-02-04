@@ -18,6 +18,7 @@
     
     CPView              focusRing;
     CPView              subscribersFocusRing;
+    CPView              navigationBarView;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -36,7 +37,21 @@
             name:@"OLTableViewResignedFirstResponder"
             object:nil];
         
-        tabs = [[CPTabView alloc] initWithFrame:CGRectInset(aFrame, 50, 50)];
+        navigationBarView = [[OLNavigationBarView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), 40.0)];
+        [navigationBarView setAutoresizingMask:CPViewWidthSizable];
+        [self addSubview:navigationBarView];
+        
+        var navBarBorder = [[CPView alloc] initWithFrame:CGRectMake(0.0, 40.0, CGRectGetWidth(aFrame), 1.0)];
+        [navBarBorder setBackgroundColor:[CPColor colorWithHexString:@"7F7F7F"]];
+        [navBarBorder setAutoresizingMask:CPViewWidthSizable];
+        [self addSubview:navBarBorder];
+        
+        var toResourcesButton = [CPButton buttonWithTitle:@"To Resources"];
+        [navigationBarView setAccessoryView:toResourcesButton];
+        
+        var tabsPreFrame = CGRectMake(0.0, 40.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) - 40.0);
+                
+        tabs = [[CPTabView alloc] initWithFrame:CGRectInset(tabsPreFrame, 50, 50)];
         [tabs setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
         var summaryTab = [[CPTabViewItem alloc] initWithIdentifier:@"summary"];
@@ -56,21 +71,24 @@
         name = [CPTextField labelWithTitle:@""];
         description = [CPTextField labelWithTitle:@""];
         
+        [name setFont:[CPFont boldSystemFontOfSize:32.0]];
+        
         var subscriberColumn = [[CPTableColumn alloc] initWithIdentifier:@"subscriber"];
         [subscriberColumn setWidth:0];
         [[subscriberColumn headerView] setStringValue:@"Subscriber"];
         [subscriberColumn setResizingMask:CPTableColumnAutoresizingMask];
         
-        subscribers = [[OLTableView alloc] initWithFrame:CGRectMake(0, 0, 300, 300) columns:[subscriberColumn]];
+        subscribers = [[OLTableView alloc] initWithFrame:CGRectMake(0, 0, 300, 260) columns:[subscriberColumn]];
         [subscribers setAutoresizingMask:CPViewMinXMargin | CPViewHeightSizable];
         [subscribers setColumnAutoresizingStyle:CPTableViewUniformColumnAutoresizingStyle];
         
         [summaryView addSubview:nameLabel positioned:CPViewLeftAligned | CPViewTopAligned relativeTo:summaryView withPadding:50.0];
         [summaryView addSubview:descriptionLabel positioned:CPViewLeftSame | CPViewBelow relativeTo:nameLabel withPadding:100.0];
         [summaryView addSubview:description positioned:CPViewHeightSame | CPViewOnTheRight relativeTo:descriptionLabel withPadding:10.0];
-        [summaryView addSubview:name positioned:CPViewAbove | CPViewLeftSame relativeTo:description withPadding:100.0];
+        [summaryView addSubview:name positioned:CPViewLeftSame | CPViewBelow relativeTo:nameLabel withPadding:30.0];
+        [name setFrameOrigin:CGPointMake([name frame].origin.x + 20.0, [name frame].origin.y)];
         
-        var subscribersBorderView = [[CPView alloc] initWithFrame:CGRectMake(49, 49, 302.0, 302.0)];
+        var subscribersBorderView = [[CPView alloc] initWithFrame:CGRectMake(49, 49, 302.0, 262.0)];
         [subscribersBorderView setBackgroundColor:[CPColor colorWithHexString:@"7F7F7F"]];
         [subscribersBorderView setAutoresizingMask:CPViewMinXMargin | CPViewHeightSizable];
         
@@ -81,6 +99,14 @@
         [summaryView addSubview:subscribersBorderView];
         [summaryView addSubview:subscribers positioned:CPViewRightAligned | CPViewTopAligned relativeTo:summaryView withPadding:50.0];
         
+        var downloadButton = [CPButton buttonWithTitle:@"Download"];
+        var importButton   = [CPButton buttonWithTitle:@"Import"];
+        
+        [downloadButton setAutoresizingMask:CPViewMaxXMargin | CPViewMinYMargin];
+        [importButton setAutoresizingMask:CPViewMaxXMargin | CPViewMinYMargin];
+        
+        [summaryView addSubview:downloadButton positioned:CPViewLeftAligned | CPViewBottomAligned relativeTo:summaryView withPadding:50.0];
+        [summaryView addSubview:importButton positioned:CPViewHeightSame | CPViewOnTheRight relativeTo:downloadButton withPadding:12.0];
         
         [summaryTab setView:summaryView];
         
@@ -197,10 +223,11 @@
 {
     [branchesTableView reloadData];
     [subscribers reloadData];
-    [name setStringValue:@"Test"];//[delegate projectName]];
+    [name setStringValue:[delegate projectName]];
     [name sizeToFit];
 	[collectionView setContent:[delegate comments]];
 	[collectionView reloadContent];
+	[navigationBarView setTitle:@"Test.app"];
 }
 
 - (CPView)focusRingAroundFrame:(CGRect)frame
