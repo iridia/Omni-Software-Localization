@@ -78,6 +78,12 @@
     [commentButton setTarget:self];
     [commentButton setAction:@selector(saveComment:)];
     [commentsView addSubview:commentButton positioned:CPViewRightAligned | CPViewBottomAligned relativeTo:commentsView withPadding:10.0];
+	
+	[[CPNotificationCenter defaultCenter]
+	   addObserver:self
+	   selector:@selector(controlTextDidEndEditing:)
+	   name:CPControlTextDidEndEditingNotification
+	   object:value];
 }
 
 - (void)showWindow:(id)sender
@@ -154,14 +160,16 @@
 	[[self window] makeFirstResponder:value];
 }
 
-- (void)controlTextDidChange:(CPNotification)aNotification
+- (void)setLineItemValue:(CPString)aValue
 {
-    [lineItem setValue:[value stringValue]];
+    [[[CPApp mainWindow] undoManager] registerUndoWithTarget:self selector:@selector(setLineItemValue:) object:[lineItem value]];
+    [lineItem setValue:aValue];
+    [self saveResource];
 }
 
 - (void)controlTextDidEndEditing:(CPNotification)aNotification
 {
-	[self saveResource];
+    [self setLineItemValue:[value stringValue]];
 }
 
 - (void)controlTextDidBlur:(CPNotification)aNotification
