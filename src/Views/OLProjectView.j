@@ -109,11 +109,9 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 
 - (CPView)backView
 {
-    backView = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, 0.0)];
-    [backView setFont:[CPFont boldSystemFontOfSize:14.0]];
-    [backView setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
-    [backView setTextShadowOffset:CGSizeMake(0.0, 1)];
-    [backView setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
+    backView = [CPButton buttonWithTitle:@"Dashboard"];
+    
+    [backView setAction:@selector(dashboardWasClicked:)];
     
     return backView;
 }
@@ -132,6 +130,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 {
     [voteUpButton setTarget:aDelegate];
     [voteDownButton setTarget:aDelegate];
+    [backView setTarget:aDelegate];
 }
 
 - (void)setVotingDataSource:(id)aDataSource

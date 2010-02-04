@@ -48,6 +48,8 @@
         
         var toResourcesButton = [CPButton buttonWithTitle:@"To Resources"];
         [navigationBarView setAccessoryView:toResourcesButton];
+        [toResourcesButton setTarget:self];
+        [toResourcesButton setAction:@selector(toResourcesClicked:)]
         
         var tabsPreFrame = CGRectMake(0.0, 40.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) - 40.0);
                 
@@ -78,7 +80,7 @@
         [[subscriberColumn headerView] setStringValue:@"Subscriber"];
         [subscriberColumn setResizingMask:CPTableColumnAutoresizingMask];
         
-        subscribers = [[OLTableView alloc] initWithFrame:CGRectMake(0, 0, 300, 260) columns:[subscriberColumn]];
+        subscribers = [[OLTableView alloc] initWithFrame:CGRectMake(0, 0, 300, [summaryView bounds].size.height-100) columns:[subscriberColumn]];
         [subscribers setAutoresizingMask:CPViewMinXMargin | CPViewHeightSizable];
         [subscribers setColumnAutoresizingStyle:CPTableViewUniformColumnAutoresizingStyle];
         
@@ -88,7 +90,7 @@
         [summaryView addSubview:name positioned:CPViewLeftSame | CPViewBelow relativeTo:nameLabel withPadding:30.0];
         [name setFrameOrigin:CGPointMake([name frame].origin.x + 20.0, [name frame].origin.y)];
         
-        var subscribersBorderView = [[CPView alloc] initWithFrame:CGRectMake(49, 49, 302.0, 262.0)];
+        var subscribersBorderView = [[CPView alloc] initWithFrame:CGRectMake(-451, 49, 302.0, -238.0)];
         [subscribersBorderView setBackgroundColor:[CPColor colorWithHexString:@"7F7F7F"]];
         [subscribersBorderView setAutoresizingMask:CPViewMinXMargin | CPViewHeightSizable];
         
@@ -98,6 +100,7 @@
         [summaryView addSubview:subscribersFocusRing];
         [summaryView addSubview:subscribersBorderView];
         [summaryView addSubview:subscribers positioned:CPViewRightAligned | CPViewTopAligned relativeTo:summaryView withPadding:50.0];
+        console.log([subscribers frame]);
         
         var downloadButton = [CPButton buttonWithTitle:@"Download"];
         var importButton   = [CPButton buttonWithTitle:@"Import"];
@@ -227,7 +230,7 @@
     [name sizeToFit];
 	[collectionView setContent:[delegate comments]];
 	[collectionView reloadContent];
-	[navigationBarView setTitle:@"Test.app"];
+	[navigationBarView setTitle:[delegate projectName]];
 }
 
 - (CPView)focusRingAroundFrame:(CGRect)frame
@@ -251,6 +254,11 @@
     [result setBackgroundColor:patternColor];
     
     return result;
+}
+
+- (void)toResourcesClicked:(id)sender
+{
+    [delegate showProjectView];
 }
 
 @end

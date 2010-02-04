@@ -81,47 +81,70 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 
 @end
 
-@implementation OLProjectController (ProjectViewDataSource)
+@implementation OLProjectController (ProjectViewDelegate)
 
-- (int)numberOfRowsInTableView:(CPTableView)tableView
-{
-    // if (tableView === [projectView resourcesTableView])
-    // {
-    //     return [resourceBundleController numberOfResources];
-    // }
-    // 
-    // if (tableView === [projectView lineItemsTableView])
-    // {
-    //     return [resourceBundleController numberOfLineItems];
-    // }
-    // 
-    return 30;
-}
 
-- (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
+- (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
-    // if (tableView === [projectView resourcesTableView])
-    // {
-    //     return [resourceBundleController resourceNameAtIndex:row];
-    // }
-    // 
-    // if (tableView === [projectView lineItemsTableView])
-    // {
-    //     var lineItem = [resourceBundleController lineItemAtIndex:row];
-    //     
-    //     if ([[tableColumn identifier] isEqualToString:OLLineItemTableColumnIdentifierIdentifier])
-    //     {
-    //         return [lineItem identifier];
-    //     }
-    //     
-    //     if ([[tableColumn identifier] isEqualToString:OLLineItemTableColumnValueIdentifier])
-    //     {
-    //         return [lineItem value];
-    //     }
-    // }
+    var tableView = [aNotification object];
     
-    return "Testing";
+    var selectedRow = [[tableView selectedRowIndexes] firstIndex];
+    
+    if (tableView === [projectView resourcesTableView])
+    {
+        [resourceBundleController selectResourceAtIndex:selectedRow];
+        [projectView reloadLineItemsTableView];
+        [projectView reloadVoting];
+        [projectView selectLineItemsTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
+        [projectView setIsEditing:(selectedRow !== CPNotFound)];
+    }
+    
+    if (tableView === [projectView lineItemsTableView])
+    {
+        [resourceBundleController selectLineItemAtIndex:selectedRow];
+    }
+    
+    if (tableView === [dashboardView subscribers])
+    {
+        
+    }
 }
+
+- (void)lineItemsTableViewDoubleClick:(CPTableView)tableView
+{
+    var userSessionManager = [OLUserSessionManager defaultSessionManager];
+    if(![userSessionManager isUserLoggedIn])
+    {
+        var userInfo = [CPDictionary dictionary];
+        [userInfo setObject:@"You must log in to edit this item!" forKey:@"StatusMessageText"];
+        [userInfo setObject:@selector(lineItemsTableViewDoubleClick:) forKey:@"SuccessfulLoginAction"];
+        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
+        
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:OLLoginControllerShouldLoginNotification
+            object:nil
+            userInfo:userInfo];
+        return;
+    }
+    else if(![userSessionManager isUserTheLoggedInUser:[selectedProject userIdentifier]])
+    {
+        [self branchSelectedProject];
+          
+        return;
+    }
+    
+    [resourceBundleController editSelectedLineItem];
+}
+
+// HACK FOR CPTableView BUG (_doubleAction is a global var)
+- (SEL)doubleAction
+{
+    return CPSelectorFromString(@"lineItemsTableViewDoubleClick:");
+}
+
+@end
+
+@implementation OLProjectController (ProjectViewDataSource)
 
 - (CPArray)titlesOfResourceBundlesForProjectView:(OLProjectView)projectView
 {
@@ -188,63 +211,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
     }
     
     [resourceBundleController startDeleteBundle:sender];
-}
-
-@end
-
-@implementation OLProjectController (ProjectViewDelegate)
-
-- (void)tableViewSelectionDidChange:(CPNotification)aNotification
-{
-    var tableView = [aNotification object];
-    
-    var selectedRow = [[tableView selectedRowIndexes] firstIndex];
-    
-    if (tableView === [projectView resourcesTableView])
-    {
-        [resourceBundleController selectResourceAtIndex:selectedRow];
-        [projectView reloadLineItemsTableView];
-        [projectView reloadVoting];
-        [projectView selectLineItemsTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
-        [projectView setIsEditing:(selectedRow !== CPNotFound)];
-    }
-    
-    if (tableView === [projectView lineItemsTableView])
-    {
-        [resourceBundleController selectLineItemAtIndex:selectedRow];
-    }
-}
-
-- (void)lineItemsTableViewDoubleClick:(CPTableView)tableView
-{
-    var userSessionManager = [OLUserSessionManager defaultSessionManager];
-    if(![userSessionManager isUserLoggedIn])
-    {
-        var userInfo = [CPDictionary dictionary];
-        [userInfo setObject:@"You must log in to edit this item!" forKey:@"StatusMessageText"];
-        [userInfo setObject:@selector(lineItemsTableViewDoubleClick:) forKey:@"SuccessfulLoginAction"];
-        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
-        
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:OLLoginControllerShouldLoginNotification
-            object:nil
-            userInfo:userInfo];
-        return;
-    }
-    else if(![userSessionManager isUserTheLoggedInUser:[selectedProject userIdentifier]])
-    {
-        [self branchSelectedProject];
-          
-        return;
-    }
-    
-    [resourceBundleController editSelectedLineItem];
-}
-
-// HACK FOR CPTableView BUG (_doubleAction is a global var)
-- (SEL)doubleAction
-{
-    return CPSelectorFromString(@"lineItemsTableViewDoubleClick:");
 }
 
 @end
@@ -380,10 +346,10 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldEnableItemsNotification" 
 	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport, OLMenuItemBroadcast]];
     	    [self setSelectedProject:item];
-            // [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
-            //             [projectView setTitle:[[self selectedProject] name]];
-            //             [projectView reloadAllData];
-            [projectView reloadData:self];
+            [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
+            [projectView setTitle:[[self selectedProject] name]];
+            [projectView reloadAllData];
+            [dashboardView reloadData:self];
         }
 	}
 	else

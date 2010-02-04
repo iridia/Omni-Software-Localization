@@ -130,7 +130,7 @@
         return [projects count];
     }
     
-    return [super numberOfRowsInTableView:tableView];
+    return 0;
 }
  
 - (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
@@ -148,8 +148,6 @@
         }
 
     }
-    
-    return [super tableView:tableView objectValueForTableColumn:tableColumn row:row];
 }
 
 - (void)tableViewDidDoubleClickItem:(CPTableView)aTableView
