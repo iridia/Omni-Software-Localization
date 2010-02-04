@@ -301,7 +301,7 @@
  
 - (id)initWithNewView:(CPView)aProjectView oldView:(CPView)aDashboardView
 {
-    self = [super initWithDuration:1.5 animationCurve:CPAnimationEaseInOut];
+    self = [super initWithDuration:1.0 animationCurve:CPAnimationEaseInOut];
     
     if (self)
     {
