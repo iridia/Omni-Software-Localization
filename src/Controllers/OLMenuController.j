@@ -115,12 +115,12 @@ OLMenuItemDisabled = NO;
 
 - (void)undo:(id)sender
 {
-    
+    [OLUndoManager undo];
 }
 
 - (void)redo:(id)sender
 {
-    
+    [OLUndoManager redo];
 }
 
 - (void)feedback:(id)sender

@@ -160,16 +160,22 @@
 	[[self window] makeFirstResponder:value];
 }
 
-- (void)setLineItemValue:(CPString)aValue
+- (void)setLineItemValue:(CPDictionary)info
 {
-    [[[CPApp mainWindow] undoManager] registerUndoWithTarget:self selector:@selector(setLineItemValue:) object:[lineItem value]];
-    [lineItem setValue:aValue];
+    var oldValues = [CPDictionary dictionary];
+    [oldValues setObject:[info objectForKey:@"lineItem"] forKey:@"lineItem"];
+    [oldValues setObject:[lineItem value] forKey:@"value"];
+    [OLUndoManager registerUndoWithTarget:self selector:@selector(setLineItemValue:) object:oldValues];
+    [[info objectForKey:@"lineItem"] setValue:[info objectForKey:@"value"]];
     [self saveResource];
 }
 
 - (void)controlTextDidEndEditing:(CPNotification)aNotification
 {
-    [self setLineItemValue:[value stringValue]];
+    var info = [CPDictionary dictionary];
+    [info setObject:lineItem forKey:@"lineItem"];
+    [info setObject:[value stringValue] forKey:@"value"];
+    [self setLineItemValue:info];
 }
 
 - (void)controlTextDidBlur:(CPNotification)aNotification
