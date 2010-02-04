@@ -25,7 +25,7 @@
         
         [containerView addSubview:projectView];
         [containerView addSubview:dashboardView];
-        [projectView setHidden:YES];
+        [dashboardView setHidden:YES];
         
         importProjectController = [[OLImportProjectController alloc] init];
    		

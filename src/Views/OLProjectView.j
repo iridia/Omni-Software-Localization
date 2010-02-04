@@ -46,11 +46,16 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 
         [navigationBarView setBackView:[self backView]];
         
-        splitView = [[CPSplitView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) - CGRectGetHeight([navigationBarView bounds]))];
+        var navBarBorder = [[CPView alloc] initWithFrame:CGRectMake(0.0, 40.0, CGRectGetWidth(aFrame), 1.0)];
+        [navBarBorder setBackgroundColor:[CPColor colorWithHexString:@"7F7F7F"]];
+        [navBarBorder setAutoresizingMask:CPViewWidthSizable];
+        [self addSubview:navBarBorder];
+        
+        splitView = [[CPSplitView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) - CGRectGetHeight([navigationBarView bounds]) - 1)];
         [splitView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         [splitView setVertical:NO];
         [splitView setDelegate:self];
-        [self addSubview:splitView positioned:CPViewBelow relativeTo:navigationBarView withPadding:0.0];
+        [self addSubview:splitView positioned:CPViewBelow relativeTo:navigationBarView withPadding:1.0];
         
         var resourceColumn = [[CPTableColumn alloc] initWithIdentifier:@"ResourceFileName"];
         [[resourceColumn headerView] setStringValue:@"Filename"];
