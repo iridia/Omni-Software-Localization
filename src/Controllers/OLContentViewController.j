@@ -14,6 +14,12 @@
 		selector:@selector(outlineViewSelectionDidChangeNotification:)
 		name:CPOutlineViewSelectionDidChangeNotification
 		object:nil];
+		
+   [[CPNotificationCenter defaultCenter]
+		addObserver:self
+		selector:@selector(outlineSelectionDidChangeThroughProfile:)
+		name:CPOutlineViewSelectionDidChangeThroughProfileNotification
+		object:nil];
 }
 
 - (void)setCurrentView:(CPView)aView
@@ -38,6 +44,11 @@
 @end
 
 @implementation OLContentViewController (OutlineViewNotification)
+
+- (void)outlineSelectionDidChangeThroughProfile:(CPNotificaiton)aNotification
+{   
+    [self setCurrentView:[aNotification object]];
+}
 
 - (void)outlineViewSelectionDidChangeNotification:(CPNotification)notification
 {

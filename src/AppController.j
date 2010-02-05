@@ -16,6 +16,7 @@
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLMenuController.j"
 @import "Controllers/OLCommunityController.j"
+@import "Controllers/OLProfileController.j"
 @import "Controllers/OLWelcomeController.j"
 
 @import "Views/OLMenu.j"
@@ -24,6 +25,7 @@
 @import "Views/OLProjectView.j"
 @import "Views/OLProjectSearchView.j"
 @import "Views/OLProjectResultView.j"
+@import "Views/OLProfileView.j"
 
 @import "Utilities/OLUserSessionManager.j"
 @import "Utilities/CPUserDefaults.j"
@@ -111,6 +113,7 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 {
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
+    [theWindow setAcceptsMouseMovedEvents:YES];
 }
 
 - (void)userDidChange:(CPNotification)notification

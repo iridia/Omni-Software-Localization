@@ -156,7 +156,6 @@
         {
             return [[projects objectAtIndex:row] totalOfAllVotes];
         }
-
     }
     
     if (tableView === [projectView resourcesTableView])

@@ -1,5 +1,9 @@
 @import <AppKit/CPView.j>
 
+@import "OLLinkTextField.j"
+
+loadProfileViewNotification = @"loadProfileViewNotification";
+
 @implementation OLNavigationBarView : CPView
 {
     CPView      backView        @accessors(readonly);
@@ -14,7 +18,7 @@
     {
         [self setBackgroundColor:[CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/_CPToolbarViewBackground.png"]]]];
         
-        titleView = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, 200.0, 40.0)];
+        titleView = [[OLLinkTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, 200.0, 40.0)];
         [titleView setFont:[CPFont boldSystemFontOfSize:20.0]];
         [titleView setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
         [titleView setTextShadowOffset:CGSizeMake(0.0, 1.5)];
