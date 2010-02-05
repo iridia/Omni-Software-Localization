@@ -30,6 +30,7 @@
 @import "Utilities/OLUserSessionManager.j"
 @import "Utilities/CPUserDefaults.j"
 @import "Utilities/OLUndoManager.j"
+@import "Utilities/OLHelpManager.j"
 
 // User Default Keys. These are global so other places can access them, too
 OLUserDefaultsShouldShowWelcomeWindowOnStartupKey = @"OLUserDefaultsShouldShowWelcomeWindowOnStartupKey";
@@ -104,6 +105,8 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
         
 	    [OLUser findByRecordID:[[CPUserDefaults standardUserDefaults] objectForKey:OLUserDefaultsLoggedInUserIdentifierKey] withCallback:callback];
 	}
+	
+	[[OLHelpManager alloc] init];
     
     // Access the DB as late as possible
     [glossaryController loadGlossaries];

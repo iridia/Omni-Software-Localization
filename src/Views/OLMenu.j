@@ -41,8 +41,14 @@ OLMenuItemRedo = @"OLMenuItemRedo";
 
 - (void)reloadState:(OLMenuController)controller
 {
+    var helpItem;
+    
     for(var i = [self numberOfItems]-1; i >= 0; i--)
     {
+        if ([[self itemAtIndex:i] title] === @"Help")
+        {
+            helpItem = [self itemAtIndex:i];
+        }
         [self removeItemAtIndex:i];
     }
     
@@ -131,7 +137,11 @@ OLMenuItemRedo = @"OLMenuItemRedo";
     [self addItem:editMenu];
     [self addItem:projectMenu];
     [self addItem:communityMenu];
-    [self addItem:[CPMenuItem separatorItem]];
+    
+    if (helpItem)
+    {
+        [self addItem:helpItem];
+    }
 }
 
 @end
