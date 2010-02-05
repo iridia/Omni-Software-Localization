@@ -78,6 +78,12 @@
     [commentButton setTarget:self];
     [commentButton setAction:@selector(saveComment:)];
     [commentsView addSubview:commentButton positioned:CPViewRightAligned | CPViewBottomAligned relativeTo:commentsView withPadding:10.0];
+	
+	[[CPNotificationCenter defaultCenter]
+	   addObserver:self
+	   selector:@selector(controlTextDidEndEditing:)
+	   name:CPControlTextDidEndEditingNotification
+	   object:value];
 }
 
 - (void)showWindow:(id)sender
@@ -154,14 +160,22 @@
 	[[self window] makeFirstResponder:value];
 }
 
-- (void)controlTextDidChange:(CPNotification)aNotification
+- (void)setLineItemValue:(CPDictionary)info
 {
-    [lineItem setValue:[value stringValue]];
+    var oldValues = [CPDictionary dictionary];
+    [oldValues setObject:[info objectForKey:@"lineItem"] forKey:@"lineItem"];
+    [oldValues setObject:[lineItem value] forKey:@"value"];
+    [OLUndoManager registerUndoWithTarget:self selector:@selector(setLineItemValue:) object:oldValues];
+    [[info objectForKey:@"lineItem"] setValue:[info objectForKey:@"value"]];
+    [self saveResource];
 }
 
 - (void)controlTextDidEndEditing:(CPNotification)aNotification
 {
-	[self saveResource];
+    var info = [CPDictionary dictionary];
+    [info setObject:lineItem forKey:@"lineItem"];
+    [info setObject:[value stringValue] forKey:@"value"];
+    [self setLineItemValue:info];
 }
 
 - (void)controlTextDidBlur:(CPNotification)aNotification

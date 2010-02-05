@@ -11,6 +11,8 @@ OLMenuItemDeleteLanguage = @"OLMenuItemDeleteLanguage";
 OLMenuItemImport = @"OLMenuItemImport";
 OLMenuItemDownload = @"OLMenuItemDownload";
 OLMenuItemBroadcast = @"OLMenuItemBroadcast";
+OLMenuItemUndo = @"OLMenuItemUndo";
+OLMenuItemRedo = @"OLMenuItemRedo";
 
 @implementation OLMenu : CPMenu
 {
@@ -54,6 +56,11 @@ OLMenuItemBroadcast = @"OLMenuItemBroadcast";
     var newItem = [[CPMenuItem alloc] initWithTitle:@"New..." action:@selector(new:) keyEquivalent:"n"];
     var saveItem = [[CPMenuItem alloc] initWithTitle:@"Save" action:@selector(save:) keyEquivalent:"s"];
     
+    var editMenu = [[CPMenuItem alloc] initWithTitle:@"Edit" action:nil keyEquivalent:nil];
+    var editSubmenu = [[CPMenu alloc] initWithTitle:@"EditMenu"];
+    var undoItem = [[CPMenuItem alloc] initWithTitle:@"Undo" action:@selector(undo:) keyEquivalent:"z"];
+    var redoItem = [[CPMenuItem alloc] initWithTitle:@"Redo" action:@selector(redo:) keyEquivalent:"z"];
+    [redoItem setKeyEquivalentModifierMask:CPCommandKeyMask | CPShiftKeyMask];
     
     var projectMenu = [[CPMenuItem alloc] initWithTitle:@"Project" action:nil keyEquivalent:nil];
     var projectSubmenu = [[CPMenu alloc] initWithTitle:@"ProjectMenu"];
@@ -79,6 +86,8 @@ OLMenuItemBroadcast = @"OLMenuItemBroadcast";
     [loginItem setTarget:controller];
     [sendMessageItem setTarget:controller];
     [broadcastMessage setTarget:controller];
+    [undoItem setTarget:controller];
+    [redoItem setTarget:controller];
     
     var items = [controller items];
 
@@ -89,11 +98,18 @@ OLMenuItemBroadcast = @"OLMenuItemBroadcast";
     [download setEnabled:[items objectForKey:OLMenuItemDownload]];
     [importItem setEnabled:[items objectForKey:OLMenuItemImport]];
     [broadcastMessage setEnabled:[items objectForKey:OLMenuItemBroadcast]];
+    [undoItem setEnabled:[items objectForKey:OLMenuItemUndo]];
+    [redoItem setEnabled:[items objectForKey:OLMenuItemRedo]];
     
     [fileSubmenu addItem:newItem];
     [fileSubmenu addItem:saveItem];
     
     [fileMenu setSubmenu:fileSubmenu];
+    
+    [editSubmenu addItem:undoItem];
+    [editSubmenu addItem:redoItem];
+    
+    [editMenu setSubmenu:editSubmenu];
     
     [appSubmenu addItem:feedbackItem];
     [appSubmenu addItem:aboutItem];
@@ -112,6 +128,7 @@ OLMenuItemBroadcast = @"OLMenuItemBroadcast";
     
     [self addItem:appMenu];
     [self addItem:fileMenu];
+    [self addItem:editMenu];
     [self addItem:projectMenu];
     [self addItem:communityMenu];
     [self addItem:[CPMenuItem separatorItem]];
