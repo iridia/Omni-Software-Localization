@@ -130,7 +130,17 @@
         return [projects count];
     }
     
-    return [super numberOfRowsInTableView:tableView];
+    if (tableView === [projectView resourcesTableView])
+    {
+        return [resourceBundleController numberOfResources];
+    }
+
+    if (tableView === [projectView lineItemsTableView])
+    {
+        return [resourceBundleController numberOfLineItems];
+    }
+    
+    return 0;
 }
  
 - (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
@@ -149,7 +159,26 @@
 
     }
     
-    return [super tableView:tableView objectValueForTableColumn:tableColumn row:row];
+    if (tableView === [projectView resourcesTableView])
+    {
+        return [resourceBundleController resourceNameAtIndex:row];
+    }
+
+    if (tableView === [projectView lineItemsTableView])
+    {
+        var lineItem = [resourceBundleController lineItemAtIndex:row];
+
+        if ([[tableColumn identifier] isEqualToString:OLLineItemTableColumnIdentifierIdentifier])
+        {
+            return [lineItem identifier];
+        }
+
+        if ([[tableColumn identifier] isEqualToString:OLLineItemTableColumnValueIdentifier])
+        {
+            return [lineItem value];
+        }
+    }
+
 }
 
 - (void)tableViewDidDoubleClickItem:(CPTableView)aTableView

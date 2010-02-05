@@ -11,14 +11,14 @@
     self = [super initWithFrame:aFrame];
     if(self)
     {
-        var scrollView = [[CPScrollView alloc] initWithFrame:aFrame];
+        var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame))];
         [scrollView setAutohidesScrollers:YES];
         [scrollView setHasHorizontalScroller:NO];
         [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
-        tableView = [[CPTableView alloc] initWithFrame:[scrollView bounds]];
+        tableView = [[CPTableView alloc] initWithFrame:CGRectMakeZero(0, 0, 500, 500)];
 		[tableView setUsesAlternatingRowBackgroundColors:YES];
-		[tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 		[tableView setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
 
 		var headerColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/button-bezel-center.png"]]];
@@ -105,6 +105,24 @@
 	}
 
 	[super mouseDown:anEvent];
+}
+
+- (BOOL)becomeFirstResponder
+{
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:@"OLTableViewBecameFirstResponder"
+        object:self];
+
+    return YES;
+}
+
+- (BOOL)resignFirstResponder
+{
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:@"OLTableViewResignedFirstResponder"
+        object:self];   
+
+    return YES;
 }
 
 @end
