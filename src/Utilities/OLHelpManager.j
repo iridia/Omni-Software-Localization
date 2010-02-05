@@ -131,8 +131,8 @@ var OLHelpManagerNavigationItemIdentifier = @"OLHelpManagerNavigationItemIdentif
     {
         var navControl = [[CPSegmentedControl alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, 24.0)];
         [navControl setSegmentCount:2];
-        [navControl setLabel:@"Back" forSegment:0];
-        [navControl setLabel:@"Forward" forSegment:1];
+        [navControl setLabel:@" \u25C0 " forSegment:0];
+        [navControl setLabel:@" \u25B6 " forSegment:1];
         [navControl setTarget:self];
         [navControl setAction:@selector(navigate:)];
         [navControl setTrackingMode:CPSegmentSwitchTrackingMomentary];
