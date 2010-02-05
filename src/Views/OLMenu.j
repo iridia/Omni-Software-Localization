@@ -39,8 +39,14 @@ OLMenuItemBroadcast = @"OLMenuItemBroadcast";
 
 - (void)reloadState:(OLMenuController)controller
 {
+    var helpItem;
+    
     for(var i = [self numberOfItems]-1; i >= 0; i--)
     {
+        if ([[self itemAtIndex:i] title] === @"Help")
+        {
+            helpItem = [self itemAtIndex:i];
+        }
         [self removeItemAtIndex:i];
     }
     
@@ -114,7 +120,11 @@ OLMenuItemBroadcast = @"OLMenuItemBroadcast";
     [self addItem:fileMenu];
     [self addItem:projectMenu];
     [self addItem:communityMenu];
-    [self addItem:[CPMenuItem separatorItem]];
+    
+    if (helpItem)
+    {
+        [self addItem:helpItem];
+    }
 }
 
 @end

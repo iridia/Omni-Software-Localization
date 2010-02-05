@@ -8,5 +8,9 @@
 	<string>CPApplication</string>
     <key>Main cib file base name</key>
     <string>MainMenu.cib</string>
+    <key>CFBundleHelpBookFolder</key>
+    <string>OSLHelp</string>
+    <key>CFBundleHelpBookName</key>
+	<string>OSL Help</string>
 </dict>
 </plist>
