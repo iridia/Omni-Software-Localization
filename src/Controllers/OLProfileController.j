@@ -3,12 +3,16 @@
 @import "../Utilities/OLUserSessionManager.j"
 @import "../Views/OLProfileView.j"
 @import "../Views/OLFormEditableTextField.j"
+@import "../Views/OLLinkTextField.j"
+@import "OLProjectController.j"
+
+OLProfileNeedsToBeLoaded = @"OLProfileNeedsToBeLoaded";
 
 @implementation OLProfileController : CPObject
 {
     OLProfileView   profileView     @accessors;
     CPString        userEmail       @accessors;
-    
+     
     CPArray         projects        @accessors;
     CPArray         languages       @accessors;
 }
@@ -20,6 +24,8 @@
     if (self)
     {
         projects = [CPArray array];
+        languages = [CPArray array];
+        [self setProfileView:[[OLProfileView alloc] initWithFrame:CGRectMake(0.0, 0.0, 1222.0, 500.0)]];
         
         [[CPNotificationCenter defaultCenter]
     	    addObserver:self
@@ -38,37 +44,61 @@
     	    selector:@selector(didReceiveAddLanguageToUserNotification:)
     	    name:OLAddLanguageToUserNotification
     	    object:nil];
+
+	    [[CPNotificationCenter defaultCenter]
+    	    addObserver:self
+    	    selector:@selector(didReceiveLoadNewProfile:)
+    	    name:OLProfileNeedsToBeLoaded
+    	    object:nil];
+    	    
+    	[[CPNotificationCenter defaultCenter]
+    	    addObserver:self
+    	    selector:@selector(didReceiveUpdateProjectsNotification:)
+    	    name:OLProjectShouldReloadMyProjectsNotification
+    	    object:nil];
     }
     
     return self;
 }
 
+- (void)didReceiveUpdateProjectsNotification:(CPNotification)aNotification
+{
+    [self loadProjects];
+}
+
+- (void)didReceiveLoadNewProfile:(CPNotification)aNotification
+{
+    userEmail = [aNotification object];
+    [profileView setTitle:userEmail];
+    [self setProfileView:profileView];
+}
+
 - (void)didReceiveAddLanguageToUserNotification:(CPNotification)aNotification
 {
-    [OLUser findByEmail:userEmail withCallback:
-        function(user, isFinalUser)
-        {
-            if([[user languages] containsObject:[aNotification object]] || [aNotification object] === nil)
+    if ([[[OLUserSessionManager defaultSessionManager] user] email] === userEmail)
+    {
+        [OLUser findByEmail:userEmail withCallback:
+            function(user, isFinalUser)
             {
-                return;
-            }
-            else
-            {
-                [[user languages] addObject:[aNotification object]];
-                [user saveWithCallback:function(user, isFinal)
+                if([[user languages] containsObject:[aNotification object]] || [aNotification object] === nil)
                 {
-                    [self loadLanguages];
+                    return;
+                }
+                else
+                {
+                    [[user languages] addObject:[aNotification object]];
+                    [user saveWithCallback:function(user, isFinal)
+                    {
+                        [self loadLanguages];
                 }];
             }
         }];
+    }
 }
+
 - (void)setProfileView:(OLProfileView)aProfileView
 {
-    if (profileView === aProfileView)
-        return;
-    
     profileView = aProfileView;
-    userEmail = @"kyle@kyle.com";
     [profileView setTitle:userEmail];
     [profileView setProjectsTableViewDataSource:self];
     [profileView setLanguagesTableViewDataSource:self];
@@ -76,21 +106,35 @@
     [profileView resetTextFields:userEmail];
     [self loadProjects];
     [self loadLanguages];
+    if (userEmail === [[[OLUserSessionManager defaultSessionManager] user] email])
+    {
+        [profileView setTextFieldsEditable];
+    }
+    else
+    {
+        [profileView setTextFieldsNonEditable];
+    }
 }
 
 - (void)didReceiveUserDidChangeNotification:(CPNotification)aNotification
 {
     [self loadProjects];
     [self loadLanguages];
-    userEmail =[[[OLUserSessionManager defaultSessionManager] user] email];
-    //Needs to be the user that is clicked on, not the one logged in.
-    [profileView setTitle:[[[OLUserSessionManager defaultSessionManager] user] email]];
-    
-    if(userEmail === [[[OLUserSessionManager defaultSessionManager] user] email])
+    var userLoggedIn = [[[OLUserSessionManager defaultSessionManager] user] email];
+    if(userEmail === nil)
+    {
+        userEmail = userLoggedIn;
+        [profileView setTitle:userEmail];
+        [profileView resetTextFields:userEmail];
+    }
+    else if (userEmail === userLoggedIn)
     {
         [profileView setTextFieldsEditable];
     }
-    
+    else
+    {
+        [profileView setTextFieldsNonEditable];
+    };
 }
 
 - (void)didReceiveUserNeedsToSaveNotification:(CPNotifcation)aNotifcation
@@ -100,7 +144,6 @@
     var aLocation = [[profileView locationText] objectValue];
     var aDescription = [[profileView descriptionText] objectValue];
     var emailToFind = [[profileView titleView] objectValue]; 
-    var languages = [profileView languages];
     [OLUser findByEmail:emailToFind withCallback:function(user, isFinal)
     {
         if (user && [[user email] isEqualToString:emailToFind])
@@ -117,6 +160,7 @@
 
 - (void)loadProjects
 {
+    console.log("loading.");
     [self willChangeValueForKey:@"projects"];
     projects = [CPArray array];
     [self didChangeValueForKey:@"projects"];

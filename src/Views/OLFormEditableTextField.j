@@ -19,7 +19,7 @@ editingTextFieldDidChangeNotification = @"editingTextFieldDidChangeNotificaiton"
 
 - (void)mouseEntered:(CPEvent)anEvent
 {
-    [self setBackgroundColor:[CPColor cachedShadowColor]];
+    [self setBackgroundColor:[CPColor shadowColor]];
 }
 
 - (void)mouseExited:(CPEvent)anEvent

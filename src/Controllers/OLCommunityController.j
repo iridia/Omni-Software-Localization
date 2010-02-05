@@ -8,6 +8,7 @@
 var OLCommunityInboxItem = @"Inbox";
 var OLCommunitySearchItem = @"Search";
 var OLCommunityProfileItem = @"Profile";
+CPOutlineViewSelectionDidChangeThroughProfileNotification =@"CPOutlineViewSelectionDidChangeThroughProfileNotification";
 
 // Manages the community items in the sidebar and their respective controllers
 @implementation OLCommunityController : CPObject
@@ -28,14 +29,27 @@ var OLCommunityProfileItem = @"Profile";
         	
         	messageController = [[OLMessageController alloc] init];
             profileController = [[OLProfileController alloc] init];
-        	
+                    	
         	[[CPNotificationCenter defaultCenter]
     			addObserver:self
     			selector:@selector(didReceiveOutlineViewSelectionDidChangeNotification:)
     			name:CPOutlineViewSelectionDidChangeNotification
     			object:nil];
+    			
+		    [[CPNotificationCenter defaultCenter]
+    			addObserver:self
+    			selector:@selector(didReceiveReselectProfileView:)
+    			name:OLProfileNeedsToBeLoaded
+    			object:nil];
+    			
         }
         return self;
+}
+
+- (void)didReceiveReselectProfileView:(CPNotification)aNotification
+{
+    [profileController didReceiveLoadNewProfile:aNotification]
+    [[CPNotificationCenter defaultCenter] postNotificationName:CPOutlineViewSelectionDidChangeThroughProfileNotification object:[profileController profileView]];
 }
 
 - (void)setContentViewController:(id)contentViewController
@@ -75,6 +89,8 @@ var OLCommunityProfileItem = @"Profile";
             [searchController loadProjects];
             break;
         case OLCommunityProfileItem:
+            var userEmail = [[[OLUserSessionManager defaultSessionManager] user] email];
+            [profileController setProfileView:[profileController profileView]];
             view = [profileController contentView];
             [profileController loadProjects];
             [profileController loadLanguages];

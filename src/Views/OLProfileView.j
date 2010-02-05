@@ -42,7 +42,7 @@ OLAddLanguageToUserNotification = @"OLAddLanguageToUserNotification";
 {
     if (self === [super initWithFrame:aFrame])
     {
-        titleView = [[CPTextField alloc] initWithFrame:CGRectMake(-5.0, 0.0, CGRectGetWidth(aFrame)+10, 40.0)];
+        titleView = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), 40.0)];
         [titleView setFont:[CPFont boldSystemFontOfSize:20.0]];
         [titleView setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
         [titleView setTextShadowOffset:CGSizeMake(0.0, 1.5)];
@@ -195,10 +195,21 @@ OLAddLanguageToUserNotification = @"OLAddLanguageToUserNotification";
 
 - (void)setTextFieldsEditable
 {
-    [nicknameText setCurrentlyEditable:YES];
-    [locationText setCurrentlyEditable:YES];
-    [descriptionText setCurrentlyEditable:YES];
-    [commentsText setCurrentlyEditable:YES];
+    if ([[[OLUserSessionManager defaultSessionManager] user] email] ===[titleView objectValue])
+    {
+        [nicknameText setCurrentlyEditable:YES];
+        [locationText setCurrentlyEditable:YES];
+        [descriptionText setCurrentlyEditable:YES];
+        [commentsText setCurrentlyEditable:YES];
+    }
+}
+
+- (void)setTextFieldsNonEditable
+{
+    [nicknameText setCurrentlyEditable:NO];
+    [locationText setCurrentlyEditable:NO];
+    [descriptionText setCurrentlyEditable:NO];
+    [commentsText setCurrentlyEditable:NO];
 }
 
 @end
