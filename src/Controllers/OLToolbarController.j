@@ -56,9 +56,9 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     
     if (itemIdentifier === OLFeedbackToolbarItemIdentifier)
     {
-        var feedbackButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Feedback.png" size:CPSizeMake(32, 32)];
+        var feedbackButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Feedback_Unpressed.png" size:CPSizeMake(32, 32)];
 
-        var feedbackButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Feedback.png" size:CPSizeMake(32, 32)];
+        var feedbackButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Feedback_Pressed.png" size:CPSizeMake(32, 32)];
             
         [menuItem setImage:feedbackButton];
         [menuItem setAlternateImage:feedbackButtonPushed];
@@ -71,11 +71,11 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     }
     else if(itemIdentifier === OLLoginToolbarItemIdentifier)
     {
-        var loginButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/User.png" size:CPSizeMake(32, 32)];
-        var loginButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/User.png" size:CPSizeMake(32, 32)];
+        var loginButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Login_Unpressed.png" size:CPSizeMake(32, 32)];
+        var loginButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Login_Pressed.png" size:CPSizeMake(32, 32)];
             
         [menuItem setImage:loginButton];
-        [menuItem setAlternateImage:loginButton];
+        [menuItem setAlternateImage:loginButtonPushed];
         [menuItem setMinSize:CGSizeMake(32, 32)];
         [menuItem setMaxSize:CGSizeMake(32, 32)];
         [menuItem setLabel:loginValue];
@@ -87,8 +87,8 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     }
     else if(itemIdentifier === OLMessageToolbarItemIdentifier)
     {
-        var messageButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Button_Test.png" size:CPSizeMake(32, 32)];
-        var messageButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Button_Test_Pressed.png" size:CPSizeMake(32, 32)];
+        var messageButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Mail_Unpressed.png" size:CPSizeMake(32, 32)];
+        var messageButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Mail_Pressed.png" size:CPSizeMake(32, 32)];
             
         [menuItem setImage:messageButton];
         [menuItem setAlternateImage:messageButtonPushed];
