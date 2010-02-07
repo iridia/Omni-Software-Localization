@@ -100,7 +100,6 @@
         [summaryView addSubview:subscribersFocusRing];
         [summaryView addSubview:subscribersBorderView];
         [summaryView addSubview:subscribers positioned:CPViewRightAligned | CPViewTopAligned relativeTo:summaryView withPadding:50.0];
-        console.log([subscribers frame]);
         
         var downloadButton = [CPButton buttonWithTitle:@"Download"];
         var importButton   = [CPButton buttonWithTitle:@"Import"];

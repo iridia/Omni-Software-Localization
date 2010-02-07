@@ -25,16 +25,16 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
 	    var welcomeTextView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame))];
         [welcomeTextView setBackgroundColor:[CPColor whiteColor]];
         
-        var oslImageView = [[CPImageView alloc] initWithFrame:CPMakeRect(0, 0, 150.0, 150.0)];
+        var oslImageView = [[CPImageView alloc] initWithFrame:CPMakeRect(0, 0, 150.0, 244.5)];
         [oslImageView setFrameOrigin:CPMakePoint((CGRectGetWidth([welcomeTextView bounds]) - 150.0) / 2.0, 10.0)];
 		
-		var oslImage = [[CPImage alloc] initByReferencingFile:@"Resources/Images/logo.png" size:CGSizeMake(150.0, 150.0)];
+		var oslImage = [[CPImage alloc] initByReferencingFile:@"Resources/Images/logo-new-mirror.png" size:CGSizeMake(300.0, 244.5)];
 		[oslImageView setImage:oslImage];
 		
 		var welcomeText = [CPTextField labelWithTitle:@"Welcome to Omni Software Localization!"];
 		[welcomeText setFont:[CPFont boldSystemFontOfSize:16.0]];
 		[welcomeText sizeToFit];
-		[welcomeText setCenter:CPMakePoint(CGRectGetWidth([welcomeTextView bounds]) / 2.0, CGRectGetHeight([oslImageView bounds]) + 20.0 )];
+		[welcomeText setCenter:CPMakePoint(CGRectGetWidth([welcomeTextView bounds]) / 2.0, CGRectGetHeight([oslImageView bounds]) - 90 + 20.0 )];
 		
 		var betaText = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([welcomeTextView bounds]) - 10.0, 100.0)];
 		[betaText setStringValue:BETA_TEXT];
@@ -45,6 +45,10 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
 		[welcomeTextView addSubview:oslImageView];
 		[welcomeTextView addSubview:welcomeText];
 		[welcomeTextView addSubview:betaText];        
+		
+        var fakeBottomBarBorder = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), 51.0)];
+        [fakeBottomBarBorder setBackgroundColor:[CPColor colorWithHexString:@"7F7F7F"]];
+        [fakeBottomBarBorder setFrameOrigin:CPMakePoint(0.0, CGRectGetHeight(frame) - 51.0)];
         
         var fakeBottomBar = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), 50.0)];
         [fakeBottomBar setBackgroundColor:[CPColor colorWithHexString:@"D8D8D8"]];
@@ -67,6 +71,7 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
 		[fakeBottomBar addSubview:closeButton];
 		
 		[self addSubview:welcomeTextView];
+		[self addSubview:fakeBottomBarBorder];
 		[self addSubview:fakeBottomBar];
 	}
 	

@@ -87,11 +87,11 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     }
     else if(itemIdentifier === OLMessageToolbarItemIdentifier)
     {
-        var messageButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Dialog.png" size:CPSizeMake(32, 32)];
-        var messageButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Dialog.png" size:CPSizeMake(32, 32)];
+        var messageButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Button_Test.png" size:CPSizeMake(32, 32)];
+        var messageButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Button_Test_Pressed.png" size:CPSizeMake(32, 32)];
             
         [menuItem setImage:messageButton];
-        [menuItem setAlternateImage:messageButton];
+        [menuItem setAlternateImage:messageButtonPushed];
         [menuItem setMinSize:CGSizeMake(32, 32)];
         [menuItem setMaxSize:CGSizeMake(32, 32)];
         [menuItem setLabel:"New Message"];
