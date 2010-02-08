@@ -10,6 +10,7 @@ CPViewTopAligned        = 256;
 CPViewOnTheRight        = 512;
 CPViewLeftSame          = 1024;
 CPViewAbove             = 2048;
+CPViewRightSame         = 4096;
 
 @implementation CPView (Positioning)
 
@@ -80,6 +81,11 @@ CPViewAbove             = 2048;
     if (positioning & CPViewLeftSame)
     {
         xPos = [anotherView frame].origin.x;
+    }
+
+    if (positioning & CPViewRightSame)
+    {
+        xPos = [anotherView frame].origin.x + CGRectGetWidth([anotherView bounds]) - CGRectGetWidth([aView bounds]);
     }
     
     [aView setFrameOrigin:CPMakePoint(xPos, yPos)];

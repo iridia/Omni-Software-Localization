@@ -25,7 +25,8 @@ OLProfileNeedsToBeLoaded = @"OLProfileNeedsToBeLoaded";
     {
         projects = [CPArray array];
         languages = [CPArray array];
-        [self setProfileView:[[OLProfileView alloc] initWithFrame:CGRectMake(0.0, 0.0, 1222.0, 500.0)]];
+        [self setProfileView:[[OLProfileView alloc] initWithFrame:CGRectMake(0, 0, 500, 500)]];
+        [profileView setAutoresizingMask:CPViewWidthSizable, CPViewHeightSizable];
         
         [[CPNotificationCenter defaultCenter]
     	    addObserver:self
@@ -143,7 +144,7 @@ OLProfileNeedsToBeLoaded = @"OLProfileNeedsToBeLoaded";
     var someComments = [[profileView commentsText] objectValue];
     var aLocation = [[profileView locationText] objectValue];
     var aDescription = [[profileView descriptionText] objectValue];
-    var emailToFind = [[profileView titleView] objectValue]; 
+    var emailToFind = [[[profileView titleView] titleView] objectValue]; 
     [OLUser findByEmail:emailToFind withCallback:function(user, isFinal)
     {
         if (user && [[user email] isEqualToString:emailToFind])
@@ -160,39 +161,39 @@ OLProfileNeedsToBeLoaded = @"OLProfileNeedsToBeLoaded";
 
 - (void)loadProjects
 {
-    console.log("loading.");
-    [self willChangeValueForKey:@"projects"];
     projects = [CPArray array];
-    [self didChangeValueForKey:@"projects"];
     [OLUser findByEmail:userEmail withCallback:
         function(user,isFinalUser)
         {
-            [OLProject findByUserIdentifier:[user recordID] withCallback:
-                function(project, isFinalProject)
-                {
-                    [self addProject:project];
-                    
-                    if(isFinalProject)
+            if([[user email] isEqualToString:userEmail])
+            {
+                [OLProject findByUserIdentifier:[user recordID] withCallback:
+                    function(project, isFinalProject)
                     {
-                        [profileView reloadData];
-                    }
-                }];
+                        console.log(_cmd, user);
+                        [self addProject:project];
+                    
+                        if(isFinalProject)
+                        {
+                            [profileView reloadData];
+                        }
+                    }];
+            }
         }];
 }
 
 - (void)loadLanguages
 {
-    [self willChangeValueForKey:@"languages"];
     languages = [CPArray array];
-    [self didChangeValueForKey:@"languages"];
     [OLUser findByEmail:userEmail withCallback:
         function(user, isFinalUser)
         {
+            console.log(user, isFinalUser);
             for(var i=0; i<[[user languages] count];i++)
             {
-                    [self addLanguage:[[user languages] objectAtIndex:i]];
+                console.log(_cmd, i);
+                [self addLanguage:[[user languages] objectAtIndex:i]];
             }
-            [profileView reloadData];
         }];
 }
 

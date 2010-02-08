@@ -38,51 +38,48 @@ OLAddLanguageToUserNotification = @"OLAddLanguageToUserNotification";
                }];
 }
 
--(id) initWithFrame:aFrame
+- (id)initWithFrame:aFrame
 {
     if (self === [super initWithFrame:aFrame])
     {
-        titleView = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), 40.0)];
-        [titleView setFont:[CPFont boldSystemFontOfSize:20.0]];
-        [titleView setTextShadowColor:[CPColor colorWithCalibratedWhite:240.0 / 255.0 alpha:1.0]];
-        [titleView setTextShadowOffset:CGSizeMake(0.0, 1.5)];
-        [titleView setTextColor:[CPColor colorWithCalibratedWhite:79.0 / 255.0 alpha:1.0]];
-        [titleView setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin];
-        [titleView setBackgroundColor:[CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"Images/_CPToolbarViewBackground.png"]]]];
+        var titleViewBorder = [[CPView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), 41.0)];
+        [titleViewBorder setBackgroundColor:[CPColor colorWithHexString:@"7F7F7F"]];
+        [titleViewBorder setAutoresizingMask:CPViewWidthSizable];
+        [self addSubview:titleViewBorder];
+        
+        titleView = [[OLNavigationBarView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), 40.0)];
+        [titleView setAutoresizingMask:CPViewWidthSizable];
         [self addSubview:titleView positioned:CPViewTopAligned relativeTo:self withPadding:0.0];
         
         languageButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0.0, 0.0, 150.0, 24.0)];
         [languageButton setTarget:self];
         [languageButton setAction:@selector(addLanguageToUser:)];
         [languageButton addItemsWithTitles:[self titlesOfLanguages]];
-        [self addSubview:languageButton positioned:CPViewRightAligned | CPViewHeightSame relativeTo:titleView withPadding:0.0];
+        [titleView setAccessoryView:languageButton];
         
         var locationLabel = [CPTextField labelWithTitle:@"Location:"];
-        [self addSubview:locationLabel positioned:CPViewBelow relativeTo:titleView withPadding:0.0];
+        [self addSubview:locationLabel];
+        [locationLabel setFrameOrigin:CGPointMake(50.0, 50.0)];
         
         locationText = [[OLFormEditableTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, 200.0, 30.0)];
-        [locationText setStringValue:@"Test!!!"];
         [self addSubview:locationText positioned:CPViewOnTheRight | CPViewHeightSame relativeTo:locationLabel withPadding:5.0];
         
         var commentsLabel = [CPTextField labelWithTitle:@"Comments Made:"];
-        [self addSubview:commentsLabel positioned:CPViewBelow relativeTo:locationText withPadding:0.0];
+        [self addSubview:commentsLabel positioned:CPViewBelow | CPViewRightSame relativeTo:locationLabel withPadding:15.0];
         
         commentsText = [[OLFormEditableTextField alloc] initWithFrame:CGRectMake(0.0,0.0,200.0,30.0)];
-        [commentsText setStringValue:@"some algorithm for comments."];
         [self addSubview:commentsText positioned:CPViewOnTheRight | CPViewHeightSame relativeTo:commentsLabel withPadding:5.0];
         
         var descriptionLabel = [CPTextField labelWithTitle:@"Bio:"];
-        [self addSubview:descriptionLabel positioned:CPViewBelow relativeTo:commentsText withPadding:0.0];
+        [self addSubview:descriptionLabel positioned:CPViewBelow | CPViewRightSame relativeTo:commentsLabel withPadding:15.0];
         
         descriptionText = [[OLFormEditableTextField alloc] initWithFrame:CGRectMake(0.0,0.0,200.0,30.0)];
-        [descriptionText setStringValue:@"My little bio.  I work hard \n  I am observant. \n I use comments."];
         [self addSubview:descriptionText positioned:CPViewHeightSame | CPViewOnTheRight relativeTo:descriptionLabel withPadding:5.0];
         
         var nicknameLabel = [CPTextField labelWithTitle:@"Nickname:"];
-        [self addSubview:nicknameLabel positioned:CPViewBelow relativeTo:descriptionText withPadding:0.0];
+        [self addSubview:nicknameLabel positioned:CPViewBelow | CPViewRightSame relativeTo:descriptionLabel withPadding:15.0];
         
         nicknameText = [[OLFormEditableTextField alloc] initWithFrame:CGRectMake(0.0,0.0,200.0,30.0)];
-        [nicknameText setStringValue:@"somenamehere"];
         [self addSubview:nicknameText positioned:CPViewHeightSame | CPViewOnTheRight relativeTo:nicknameLabel withPadding:5.0];
         
         var projectColumn = [[CPTableColumn alloc] initWithIdentifier:OLProfileViewProjectNameColumnHeader];
@@ -103,6 +100,11 @@ OLAddLanguageToUserNotification = @"OLAddLanguageToUserNotification";
         
         [self addSubview:projectsView positioned:CPViewBelow relativeTo:nicknameText withPadding:0.0];
         [self addSubview:languagesView positioned:CPViewOnTheRight | CPViewHeightSame relativeTo:projectsView withPadding:0.0];
+        
+        var tableBorder = [[CPView alloc] initWithFrame:CGRectMake(0.0, [languagesView frame].origin.y, CGRectGetWidth(aFrame), 1.0)];
+        [tableBorder setBackgroundColor:[CPColor colorWithHexString:@"7F7F7F"]];
+        [tableBorder setAutoresizingMask:CPViewWidthSizable];
+        [self addSubview:tableBorder];
 
     }
     return self;
@@ -184,18 +186,12 @@ OLAddLanguageToUserNotification = @"OLAddLanguageToUserNotification";
 
 - (void)setTitle:(CPString)aTitle
 {
-    [titleView setStringValue:aTitle];
-    [self centerTitleView];
-}
-
-- (void)centerTitleView
-{
-    [titleView setAlignment:CPCenterTextAlignment];
+    [titleView setTitle:aTitle];
 }
 
 - (void)setTextFieldsEditable
 {
-    if ([[[OLUserSessionManager defaultSessionManager] user] email] ===[titleView objectValue])
+    if ([[[OLUserSessionManager defaultSessionManager] user] email] === [[titleView titleView] objectValue])
     {
         [nicknameText setCurrentlyEditable:YES];
         [locationText setCurrentlyEditable:YES];

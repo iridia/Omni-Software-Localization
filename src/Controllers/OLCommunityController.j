@@ -92,8 +92,6 @@ CPOutlineViewSelectionDidChangeThroughProfileNotification =@"CPOutlineViewSelect
             var userEmail = [[[OLUserSessionManager defaultSessionManager] user] email];
             [profileController setProfileView:[profileController profileView]];
             view = [profileController contentView];
-            [profileController loadProjects];
-            [profileController loadLanguages];
             break;
         default:
             CPLog.warn(@"Unhandled case in %s, %s", [self className], _cmd);
