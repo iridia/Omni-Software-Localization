@@ -8271,7 +8271,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("openPanel"), function 
 },["id"])]);
 }
 
-p;15;CPOutlineView.ji;15;CPTableColumn.ji;13;CPTableView.jc;31901;
+p;15;CPOutlineView.ji;15;CPTableColumn.ji;13;CPTableView.jc;33389;
 CPOutlineViewColumnDidMoveNotification = "CPOutlineViewColumnDidMoveNotification";
 CPOutlineViewColumnDidResizeNotification = "CPOutlineViewColumnDidResizeNotification";
 CPOutlineViewItemDidCollapseNotification = "CPOutlineViewItemDidCollapseNotification";
@@ -8554,7 +8554,48 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         return objj_msgSend(self, "frameOfOutlineDataViewAtColumn:row:", aColumn, aRow);
     return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTableView") }, "frameOfDataViewAtColumn:row:", aColumn, aRow);
 }
-},["CGRect","CPInteger","CPInteger"]), new objj_method(sel_getUid("_loadDataViewsInRows:columns:"), function $CPOutlineView___loadDataViewsInRows_columns_(self, _cmd, rows, columns)
+},["CGRect","CPInteger","CPInteger"]), new objj_method(sel_getUid("moveLeft:"), function $CPOutlineView__moveLeft_(self, _cmd, sender)
+{ with(self)
+{
+    var indexes = objj_msgSend(CPIndexSet, "indexSet");
+    for(var i = 0; i < objj_msgSend(_itemsForRows, "count"); i++)
+    {
+        if(objj_msgSend(objj_msgSend(self, "selectedRowIndexes"), "containsIndex:", i))
+        {
+            var item = _itemsForRows[i];
+            if(objj_msgSend(self, "isExpandable:", item))
+            {
+                objj_msgSend(self, "collapseItem:", item);
+                objj_msgSend(indexes, "addIndex:", i);
+            }
+            else
+            {
+                var parent = objj_msgSend(self, "parentForItem:", item);
+                if(parent)
+                {
+                    objj_msgSend(indexes, "addIndex:", objj_msgSend(_itemsForRows, "indexOfObject:", parent));
+                }
+            }
+        }
+    }
+    objj_msgSend(self, "selectRowIndexes:byExtendingSelection:", indexes, NO);
+}
+},["void","id"]), new objj_method(sel_getUid("moveRight:"), function $CPOutlineView__moveRight_(self, _cmd, sender)
+{ with(self)
+{
+    for(var i = 0; i < objj_msgSend(_itemsForRows, "count"); i++)
+    {
+        if(objj_msgSend(objj_msgSend(self, "selectedRowIndexes"), "containsIndex:", i))
+        {
+            var item = _itemsForRows[i];
+            if(objj_msgSend(self, "isExpandable:", item))
+            {
+                objj_msgSend(self, "expandItem:", item);
+            }
+        }
+    }
+}
+},["void","id"]), new objj_method(sel_getUid("_loadDataViewsInRows:columns:"), function $CPOutlineView___loadDataViewsInRows_columns_(self, _cmd, rows, columns)
 { with(self)
 {
     objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTableView") }, "_loadDataViewsInRows:columns:", rows, columns);
