@@ -58,6 +58,18 @@
     return clone;
 }
 
+- (CPArray)comments
+{
+    var result = [CPArray array];
+    
+    for(var i = 0; i < [_resources count]; i++)
+    {
+        [result addObjectsFromArray:[[_resources objectAtIndex:i] comments]];
+    }
+    
+    return result;
+}
+
 @end
 
 @implementation OLResourceBundle (KVC)

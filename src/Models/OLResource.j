@@ -91,6 +91,18 @@
     return clone;
 }
 
+- (CPArray)comments
+{
+    var result = [CPArray array];
+    
+    for(var i = 0; i < [_lineItems count]; i++)
+    {
+        [result addObjectsFromArray:[[_lineItems objectAtIndex:i] comments]];
+    }
+    
+    return result;
+}
+
 @end
 
 

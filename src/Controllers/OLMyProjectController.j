@@ -215,7 +215,7 @@
     
     if (tableView === [[dashboardView branchesTableView] tableView])
     {
-        return 10;
+        return 0;
     }
     
     return 30;
@@ -250,7 +250,7 @@
     
     if (tableView === [[dashboardView branchesTableView] tableView])
     {
-        return "A Branch";
+        return "A Branch";  // how do we find branches?
     }
 }
 
@@ -261,8 +261,7 @@
 
 - (CPArray)comments
 {
-    var theUser = [[OLUserSessionManager defaultSessionManager] user];
-    return [[[OLComment alloc] initFromUser:theUser withContent:@"Test1"], [[OLComment alloc] initFromUser:theUser withContent:@"Test2"], [[OLComment alloc] initFromUser:theUser withContent:@"Test3"]];
+    return [selectedProject comments];
 }
 
 - (CPView)contentView

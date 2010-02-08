@@ -119,6 +119,19 @@
 {
     votes-=1;
 }
+
+- (CPArray)comments
+{
+    var result = [CPArray array];
+    
+    for(var i = 0; i < [resourceBundles count]; i++)
+    {
+        [result addObjectsFromArray:[[resourceBundles objectAtIndex:i] comments]];
+    }
+    
+    return result;
+}
+
 @end
 
 var OLProjectNameKey = @"OLProjectNameKey";
