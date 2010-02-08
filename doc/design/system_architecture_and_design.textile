@@ -1,0 +1,1 @@
+This document describes the design of the entire system at the highest level, such as the interaction between the client and server.

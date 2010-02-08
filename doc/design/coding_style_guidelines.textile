@@ -1,0 +1,13 @@
+The following are a small set of coding style guidelines that we thought were necessary to document as this time in the project. These guidelines are not little things, but more to do with navigation/readability of code than coding preference. *These are not the complete set of coding standards. The team had previously decided on them internally through various means, most notably code dojos and code reviews.*
+
+For classes, the following is the order in which things should appear:
+
+# ivars (without an underscore. *Note: this is different from what we had previously determined. From this point forward, underscores are not preferable.*)
+# class methods
+# initializers (default initializer(s) should come last)
+# paired getters/setters
+# instance methods
+# notifications
+# private methods
+# datasource (on a category)
+# observers (on a category)

@@ -1,0 +1,1 @@
+This document describes the design of the testing suite used during the development of the application.

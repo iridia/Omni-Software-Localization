@@ -1,0 +1,1 @@
+This document describes the high level design of the application and the rationale behind this design.
