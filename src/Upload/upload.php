@@ -158,7 +158,7 @@ function transformStringsToJson($data, $fileName)
 	
 	foreach($characters as $char)
 	{
-	    if($char == "\"")
+	    if($char == "\"" && $previous_character != "\\")
 	    {
 	        if($is_comment)
 	        {
