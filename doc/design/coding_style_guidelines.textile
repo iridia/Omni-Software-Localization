@@ -1,4 +1,8 @@
-The following are a small set of coding style guidelines that we thought were necessary to document as this time in the project. These guidelines are not little things, but more to do with navigation/readability of code than coding preference. *These are not the complete set of coding standards. The team had previously decided on them internally through various means, most notably code dojos and code reviews.*
+h1. Coding Style Guidelines
+
+The following guidelines were decided by the team on how to best represent the code so that it would be readable, navigable, and easy to understand.  These guidelines are not simple preferences such as spacings, etc. but rather larger concepts so that other coders can understand and work with our source code.  Many of these decisions were not made at the inception of the project, but were rather decided during code dojos and code reviews as we encountered new coding decisions.
+
+h2. Navigating A Source File
 
 For classes, the following is the order in which things should appear:
 
