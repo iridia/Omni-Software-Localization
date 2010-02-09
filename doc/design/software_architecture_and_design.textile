@@ -1,1 +1,31 @@
 This document describes the high level design of the application and the rationale behind this design.
+
+h1. Software Architecture and Design
+
+h2. Overarching Architecture
+
+The system is designed as an overall Model-View-Controller (MVC) system.  The OSL team decided that to remove coupling from the system, a MVC architecture would be desirable.  This decision removes application logic from the views and models, and allows the data to simply reside in the model layer, being requested from the proper controller as it is needed.  In addition, the views cannot ever be coupled to the model layer as they must always ask a controller to go get the information to display.
+
+h3. Models
+
+Project OSL runs on a very light model layer.  Because of this, the team is using Couch to run its data storage, and many of the models are essentially just tables with data storage.  Each model contains pertinent information about the object that it represents, but only distributes that data when a controller asks for it through the application.  The models and their design are illustrated in the diagram below.  The most interesting of these is the project model.  The project contains many resource bundles, which are all made from multiple resource files, and each resource is made of "line items."  A line item describes a single string identifier and value, along with its associated data.  The remaining models are fairly self-describing.
+
+h3. Controllers
+
+Project OSL uses many different controllers to issue application logic and manipulate the flow of the application.  The main controller is the "AppController", which sets up and begins the application.  Underneath this, we have the Community, Glossary, and Project controllers as well as many different controllers for views.  A diagram below illustrates the full interaction of the system's controllers.  
+
+h4. Community Controller
+
+Because Project OSL is heavily reliant on communication between users, the team decided to implement a controller to manage all of this work.  The community controller manages the application's logic user interactions.  It contains the mechanisms for searching for other projects, sending messages to other users, and viewing/managing user profiles.  The community controller is currently a fairly manageable size, but we foresee that it could grow very large as the community grows and more user interaction features are requested.
+
+h4. Sidebar Controller
+
+The sidebar controller is where the user gets access to most of the workflow on Project OSL.  The sidebar contains links to projects, users, and glossaries so that users can make a selection and have the desired view displayed.
+
+h4. Menu Controller
+
+The menu controller is another access point to workflow on Project OSL.  Across the top of the application, a user can select an action that they wish to perform.  This controller allows/disallows certain workflows to be allowed based on where the user is in the application and what is selected at the time.
+
+h3. Views
+
+The views in Project OSL are entirely decoupled from the model layer.  Instead, the models talk directly to controllers, asking for information that it can display.  After the controller returns the information, the view simply displays that data on the screen.  By decoupling the model and view layers, the team does not have to worry about inconsistent data or erroneous values being displayed.
