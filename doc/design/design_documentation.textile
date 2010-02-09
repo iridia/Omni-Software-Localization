@@ -1,1 +1,2 @@
 This document describes the multiple designs issues and solutions in the application as well as the rationale behind these designs.
+

@@ -4,7 +4,7 @@ h1. Software Architecture and Design
 
 h2. Overarching Architecture
 
-The system is designed as an overall Model-View-Controller (MVC) system.  The OSL team decided that to remove coupling from the system, a MVC architecture would be desirable.  This decision removes application logic from the views and models, and allows the data to simply reside in the model layer, being requested from the proper controller as it is needed.  In addition, the views cannot ever be coupled to the model layer as they must always ask a controller to go get the information to display.
+The system is designed as an overall Model-View-Controller (MVC) system.  The OSL team decided that to remove coupling from the system, a MVC architecture would be desirable, creating a separation of concerns while designing the model and view layers.  This decision removes application logic from the views and models, and allows the data to simply reside in the model layer, being requested from the proper controller as it is needed.  In addition, the views cannot ever be coupled to the model layer as they must always ask a controller to go get the information to display.
 
 h3. Models
 

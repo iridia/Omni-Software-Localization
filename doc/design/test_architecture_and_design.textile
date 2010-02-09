@@ -1,1 +1,21 @@
 This document describes the design of the testing suite used during the development of the application.
+
+h1. Test Architecture and Design
+
+Project OSL uses four primary ways of testing the code to validate that it performs as expected.  Firstly, unit tests of the source code help ensure that each method that is written performs as the team intended.  In addition, automated testing such as regression tests help to ensure that the code works throughout multiple iterations and releases of the application.  User acceptance tests in combination with user feedback refine and polish our user interface, as if users are not satisfied with the application, they will not utilize the application.  
+
+h2. Development Testing
+
+Development testing includes both unit tests and  test-driven development in addition to less formal testing methods, such as pair programming.  The formal tests help validate the code that we have written, where pair programming is a much more informal method that helps us catch slight errors as we develop each release.  In addition, we utilize informal processes such as code reviews and code dojos to refactor and improve code during each development cycle.
+
+h2. Automated Testing
+
+Automated testing facilitates the team's development process as it saves us valuable time for development.  Automated tests include regression tests between releases, and 
+
+h2. Acceptance Testing
+
+
+
+h2. User Feedback
+
+User feedback is also a critical part of our system.  Although we may not be able to integrate everyone's ideas into the application, we utilize feedback from users to enhance the user experience and the workflow of Project OSL.  Many users will submit feedback such as "The undo mac command doesn't work here," or "I expect this button to be on the other side."  This feedback helps us remain consistent throughout our application and across Mac OSX standards.
