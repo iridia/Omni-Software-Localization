@@ -52,10 +52,10 @@ OLMenuItemRedo = @"OLMenuItemRedo";
         [self removeItemAtIndex:i];
     }
     
-    var appMenu = [[CPMenuItem alloc] initWithTitle:@"Omni Software Localization" action:nil keyEquivalent:nil];
+    var appMenu = [[CPMenuItem alloc] initWithTitle:[[CPBundle mainBundle] objectForInfoDictionaryKey:@"CPBundleName"] action:nil keyEquivalent:nil];
     var appSubmenu = [[CPMenu alloc] initWithTitle:@"AppMenu"];
     var feedbackItem = [[CPMenuItem alloc] initWithTitle:@"Send Feedback" action:@selector(feedback:) keyEquivalent:nil];
-    var aboutItem = [[CPMenuItem alloc] initWithTitle:@"About Omni Software Localization" action:@selector(about:) keyEquivalent:nil];
+    var aboutItem = [[CPMenuItem alloc] initWithTitle:[CPString stringWithFormat:@"About %s", [[CPBundle mainBundle] objectForInfoDictionaryKey:@"CPBundleName"]] action:@selector(about:) keyEquivalent:nil];
     
     var fileMenu = [[CPMenuItem alloc] initWithTitle:@"File" action:nil keyEquivalent:nil];
     var fileSubmenu = [[CPMenu alloc] initWithTitle:@"FileMenu"];

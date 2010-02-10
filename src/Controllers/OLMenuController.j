@@ -38,7 +38,7 @@ OLMenuItemDisabled = NO;
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemImport];
         [items setObject:OLMenuItemDisabled forKey:OLMenuItemDownload];
         
-        menu = [[OLMenu alloc] initWithTitle:@"Omni Software Localization" controller:self];
+        menu = [[OLMenu alloc] initWithTitle:@"OLMainMenu" controller:self];
         [[CPApplication sharedApplication] setMainMenu:menu];
         
         uploadWindowController = [[OLUploadWindowController alloc] init];
@@ -91,7 +91,7 @@ OLMenuItemDisabled = NO;
 - (void)about:(id)sender
 {
     alert = [[CPAlert alloc] init];
-    [alert setTitle:@"About Omni Software Localization"];
+    [alert setTitle:[CPString stringWithFormat:@"About %s", [[CPBundle mainBundle] objectForInfoDictionaryKey:@"CPBundleName"]]];
     [alert setAlertStyle:CPInformationalAlertStyle];
     [alert setMessageText:@"Created by Derek Hammer, Chandler Kent and Kyle Rhodes."];
     [alert addButtonWithTitle:@"Close"];

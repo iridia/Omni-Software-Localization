@@ -20,7 +20,7 @@
 	if (self)
 	{
         _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 700, 325) styleMask:CPTitledWindowMask];
-        [_welcomeWindow setTitle:@"Welcome to Omni Software Localization"];
+        [_welcomeWindow setTitle:[CPString stringWithFormat:@"Welcome to %s", [[CPBundle mainBundle] objectForInfoDictionaryKey:@"CPBundleName"]]];
         var welcomeWindowContentView = [_welcomeWindow contentView];
 		
 		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0, 0, 700, 325)];
