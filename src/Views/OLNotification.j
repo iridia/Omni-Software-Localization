@@ -8,7 +8,7 @@
 
 - (id)init
 {
-    self = [super initWithContentRect:CGRectMake(0, 0, 200, 30) styleMask:CPHUDBackgroundWindowMask | CPClosableWindowMask];
+    self = [super initWithContentRect:CGRectMake(0, 0, 300, 30) styleMask:CPHUDBackgroundWindowMask | CPClosableWindowMask];
     if(self)
     {
         notification = [CPTextField labelWithTitle:@"adssdaf"];

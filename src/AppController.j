@@ -87,7 +87,6 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
     var toolbarController = [[OLToolbarController alloc] init];
     
     var notification = [[OLNotification alloc] init];
-    [notification setNotificationText:@"Logged In"];
  
     [theWindow setToolbar:[toolbarController toolbar]];
     
@@ -103,7 +102,8 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 	        {
                 [[OLUserSessionManager defaultSessionManager] setUser:user];
                 
-                [notification setFrameOrigin:CGPointMake(CGRectGetWidth([[theWindow contentView] bounds])-230, 100)];
+                [notification setNotificationText:@"Logged in an as " + [user email]];
+                [notification setFrameOrigin:CGPointMake(CGRectGetWidth([[theWindow contentView] bounds])-330, 100)];
                 [notification start];
             }
         };
