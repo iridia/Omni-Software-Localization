@@ -28,6 +28,8 @@
         [view addSubview:popUpButton positioned:CPViewWidthCentered relativeTo:view withPadding:0.0];
         [view addSubview:createButton positioned:CPViewBottomAligned | CPViewRightAligned relativeTo:view withPadding:12.0];
         [view addSubview:cancelButton positioned:CPViewOnTheLeft | CPViewHeightSame relativeTo:createButton withPadding:12.0];
+        
+        [cancelButton setDefaultButton:YES];
     }
     return self;
 }
