@@ -19,65 +19,67 @@ var uploadURL = @"Upload/upload.php";
     
 	if (self)
 	{
-        uploadWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 100) styleMask:CPTitledWindowMask | CPClosableWindowMask];
+        uploadWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 384, 174) styleMask:CPTitledWindowMask | CPClosableWindowMask];
         [uploadWindow setTitle:@"New..."];
         [uploadWindow setDelegate:self];
         
         var uploadWindowContentView = [uploadWindow contentView];
         var bounds = [uploadWindowContentView bounds];
 		
-		var uploadView = [[CPView alloc] initWithFrame:[uploadWindowContentView bounds]];
+		var newProjectButton = [[UploadButton alloc] initWithFrame:CGRectMake(0, 0, 360, 70)];
+		var newProjectButtonImage = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/big-button.png"];
+		var newProjectButtonImagePressed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/big-button-pressed.png"];
+		[newProjectButton setImage:newProjectButtonImage];
+		[newProjectButton setBordered:NO];
+		[newProjectButton setAlternateImage:newProjectButtonImagePressed];
+		[newProjectButton setDelegate:self];
+		[newProjectButton setURL:uploadURL];
+		[newProjectButton setFrameOrigin:CGPointMake(12, 12)];
 		
-		var projectView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds) / 2.0, CGRectGetHeight(bounds))];
+		var projectLabel = [CPTextField labelWithTitle:@"New Project..."];
+		[projectLabel setFont:[CPFont boldSystemFontOfSize:14.0]];
+		[projectLabel sizeToFit];
+		[projectLabel setCenter:CGPointMake([newProjectButton center].x, 32)];
 		
-		var projectText = [[CPTextField alloc] initWithFrame:CGRectMake(10.0, 10.0, CGRectGetWidth([projectView bounds]) - 20.0, CGRectGetHeight([projectView bounds]) - 20.0 - 32.0)];
-		[projectText setStringValue:@"Select and Upload an application (.app)"];
-		[projectText setFont:[CPFont boldSystemFontOfSize:12.0]];
-		[projectText setLineBreakMode:CPLineBreakByWordWrapping];
-		[projectText setAlignment:CPCenterTextAlignment];
+		var projectDescriptionLabel = [CPTextField labelWithTitle:@"Create a new project by uploading a Mac OS X .app bundle"];
+		[projectDescriptionLabel setFont:[CPFont boldSystemFontOfSize:12.0]];
+		[projectDescriptionLabel setTextColor:[CPColor grayColor]];
+		[projectDescriptionLabel sizeToFit];
+		[projectDescriptionLabel setCenter:CGPointMake([newProjectButton center].x, 52)];
 		
-		[projectView addSubview:projectText];
+		var newGlossaryButton = [[UploadButton alloc] initWithFrame:CGRectMake(0, 0, 360, 70)];
+		var newGlossaryButtonImage = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/big-button.png"];
+		var newGlossaryButtonImagePressed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/big-button-pressed.png"];
+		[newGlossaryButton setImage:newGlossaryButtonImage];
+		[newGlossaryButton setBordered:NO];
+		[newGlossaryButton setAlternateImage:newGlossaryButtonImagePressed];
+		[newGlossaryButton setDelegate:self];
+		[newGlossaryButton setURL:uploadURL];
+		[newGlossaryButton setFrameOrigin:CGPointMake(12, 94)];
 		
-		var projectButton = [[UploadButton alloc] initWithFrame:CGRectMakeZero()];
-		[projectButton setTitle:@"New Project"];
-		[projectButton sizeToFit];
-		[projectButton setDelegate:self];
-		[projectButton setURL:uploadURL];
-		[projectButton setCenter:CPMakePoint(CGRectGetWidth([projectView bounds]) / 2.0, CGRectGetHeight([projectView bounds]) - 32.0)];
+		var glossaryLabel = [CPTextField labelWithTitle:@"New Glossary..."];
+		[glossaryLabel setFont:[CPFont boldSystemFontOfSize:14.0]];
+		[glossaryLabel sizeToFit];
+		[glossaryLabel setCenter:CGPointMake([newGlossaryButton center].x, 114)];
 		
-		[projectView addSubview:projectButton];
-
-		[uploadView addSubview:projectView];
-
+		var glossaryDescriptionLabel = [CPTextField labelWithTitle:@"Create a glossary by uploading a .strings file"];
+		[glossaryDescriptionLabel setFont:[CPFont boldSystemFontOfSize:12.0]];
+		[glossaryDescriptionLabel setTextColor:[CPColor grayColor]];
+		[glossaryDescriptionLabel sizeToFit];
+		[glossaryDescriptionLabel setCenter:CGPointMake([newGlossaryButton center].x, 134)];
 		
-		var glossaryView = [[CPView alloc] initWithFrame:CGRectMake(CGRectGetWidth(bounds) / 2.0, 0, CGRectGetWidth(bounds) / 2.0, CGRectGetHeight(bounds))];
-		
-		var glossaryText = [[CPTextField alloc] initWithFrame:CGRectMake(10.0, 10.0, CGRectGetWidth([projectView bounds]) - 20.0, CGRectGetHeight([projectView bounds]) - 20.0 - 32.0)];
-		[glossaryText setStringValue:@"Select and Upload a glossary (.strings)"];
-		[glossaryText setFont:[CPFont boldSystemFontOfSize:12.0]];
-		[glossaryText setLineBreakMode:CPLineBreakByWordWrapping];
-		[glossaryText setAlignment:CPCenterTextAlignment];
-		
-		[glossaryView addSubview:glossaryText];
-		
-		var glossaryButton = [[UploadButton alloc] initWithFrame:CGRectMakeZero()];
-		[glossaryButton setTitle:@"New Glossary"];
-		[glossaryButton sizeToFit];
-		[glossaryButton setDelegate:self];
-		[glossaryButton setURL:uploadURL];
-		[glossaryButton setCenter:CPMakePoint(CGRectGetWidth([glossaryView bounds]) / 2.0, CGRectGetHeight([glossaryView bounds]) - 32.0)];
-		
-		[glossaryView addSubview:glossaryButton];
-
-		[uploadView addSubview:glossaryView];
+		[uploadWindowContentView addSubview:newProjectButton];
+        [uploadWindowContentView addSubview:newGlossaryButton];
+        [uploadWindowContentView addSubview:projectLabel];
+        [uploadWindowContentView addSubview:projectDescriptionLabel];
+        [uploadWindowContentView addSubview:glossaryLabel];
+        [uploadWindowContentView addSubview:glossaryDescriptionLabel];
 		
 		[[CPNotificationCenter defaultCenter]
 		  addObserver:self
 		  selector:@selector(startUpload:)
 		  name:@"OLUploadShouldStartNotification"
 		  object:nil];
-        
-		[uploadWindowContentView addSubview:uploadView];
 		
 		uploadController = [[OLUploadController alloc] init];
 	}
