@@ -1,11 +1,5 @@
 @import "CPUploadButton.j"
 
-var BETA_TEXT = @"Localize is currently under construction,"+
-" and as such, the development team and their affiliates (Omni Group and Rose-Hulman"+
-" Institute of Technology) are not liable for the content or functionality of the"+
-" application at this time. We provide no warranty, guarantee, or license, expressed or"+
-" implied, for the accuracy or reliability of the information or services that the tool currently renders.";
-
 /*!
  * OLWelcomeScreen
  *
@@ -36,15 +30,8 @@ var BETA_TEXT = @"Localize is currently under construction,"+
 		[welcomeText sizeToFit];
 		[welcomeText setCenter:CPMakePoint((CGRectGetWidth([welcomeTextView bounds]) + 320.0) / 2.0, 40 )];
 		
-		var betaText = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([welcomeTextView bounds]) - 10.0, 100.0)];
-		[betaText setStringValue:BETA_TEXT];
-        [betaText setCenter:CPPointMake([welcomeTextView center].x, 350.0)];
-        [betaText setLineBreakMode:CPLineBreakByWordWrapping];
-        [betaText setAlignment:CPJustifiedTextAlignment];
-		
 		[welcomeTextView addSubview:oslImageView];
-		[welcomeTextView addSubview:welcomeText];
-		[welcomeTextView addSubview:betaText];        
+		[welcomeTextView addSubview:welcomeText];     
 		
         var fakeBottomBarBorder = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), 51.0)];
         [fakeBottomBarBorder setBackgroundColor:[CPColor colorWithHexString:@"7F7F7F"]];
@@ -80,6 +67,21 @@ var BETA_TEXT = @"Localize is currently under construction,"+
         [newProjectButton setCenter:CPPointMake((CGRectGetWidth([welcomeTextView bounds]) + 320.0) / 2.0, 105.0)];
         [newProjectButton setTarget:self];
         [newProjectButton setAction:@selector(newProject:)];
+        
+        var newProjectButtonTitle = [CPTextField labelWithTitle:@"New Project"];
+        var newProjectButtonDescription = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, 280, 50)];
+            
+        [newProjectButtonTitle setFont:[CPFont boldSystemFontOfSize:14.0]];
+        [newProjectButtonDescription setFont:[CPFont boldSystemFontOfSize:12.0]];
+        [newProjectButtonTitle setTextColor:[CPColor blackColor]];
+        [newProjectButtonDescription setTextColor:[CPColor grayColor]];
+        [newProjectButtonDescription setLineBreakMode:CPLineBreakByWordWrapping];
+        [newProjectButtonDescription setStringValue:[CPString stringWithFormat:@"Get started with %s by creating a new project", 
+            [[CPBundle mainBundle] objectForInfoDictionaryKey:@"CPBundleName"]]];
+        [newProjectButtonTitle sizeToFit];
+        
+        [newProjectButtonTitle setCenter:CGPointMake(450, 90)];
+        [newProjectButtonDescription setCenter:CGPointMake(547, 125)];
 		
 		var helpButton = [[CPButton alloc] initWithFrame:CGRectMake(0, 360.0, 370, 70)];
 		var helpButtonImage = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/help.png"];
@@ -91,6 +93,21 @@ var BETA_TEXT = @"Localize is currently under construction,"+
         [helpButton setCenter:CPPointMake((CGRectGetWidth([welcomeTextView bounds]) + 320.0) / 2.0, 187.0)];
         [helpButton setTarget:self];
         [helpButton setAction:@selector(help:)];
+        
+        var helpButtonTitle = [CPTextField labelWithTitle:@"Help Documentation"];
+        var helpButtonDescription = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, 280, 50)];
+            
+        [helpButtonTitle setFont:[CPFont boldSystemFontOfSize:14.0]];
+        [helpButtonDescription setFont:[CPFont boldSystemFontOfSize:12.0]];
+        [helpButtonTitle setTextColor:[CPColor blackColor]];
+        [helpButtonDescription setTextColor:[CPColor grayColor]];
+        [helpButtonDescription setLineBreakMode:CPLineBreakByWordWrapping];
+        [helpButtonDescription setStringValue:[CPString stringWithFormat:@"Get started with %s by reading the help documentation", 
+            [[CPBundle mainBundle] objectForInfoDictionaryKey:@"CPBundleName"]]];
+        [helpButtonTitle sizeToFit];
+        
+        [helpButtonTitle setCenter:CGPointMake(480, 172)];
+        [helpButtonDescription setCenter:CGPointMake(547, 207)];
 		
 		[self addSubview:welcomeTextView];
 		[self addSubview:fakeBottomBarBorder];
@@ -98,6 +115,12 @@ var BETA_TEXT = @"Localize is currently under construction,"+
 		
 		[self addSubview:helpButton];
 		[self addSubview:newProjectButton];
+		
+		[self addSubview:newProjectButtonTitle];
+		[self addSubview:newProjectButtonDescription];
+		
+		[self addSubview:helpButtonTitle];
+		[self addSubview:helpButtonDescription];
 	}
 	
 	return self;
