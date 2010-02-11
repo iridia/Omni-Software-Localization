@@ -40,20 +40,14 @@
 	[_welcomeWindow orderOut:self];
 }
 
-- (void)transitionToResourceList:(id)sender
-{	
-    [self closeWelcomeWindow:self];
-	[_delegate sidebarSendMessage:@selector(selectResources)];
-}
-
-- (void)showUploading
-{
-    [self closeWelcomeWindow:self];
-}
-
 - (void)showWindowOnLaunchDidChange:(BOOL)shouldShowWindowOnLaunch
 {
     [[CPUserDefaults standardUserDefaults] setObject:shouldShowWindowOnLaunch forKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey];
+}
+
+- (void)showNewProject:(id)sender
+{
+    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLUploadShouldStartNotification" object:self];
 }
 
 @end

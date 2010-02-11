@@ -39,4 +39,19 @@
     [popUpButton addItemsWithTitles:[resourceBundleController titlesOfAvailableLanguage]];
 }
 
+- (void)displaySheet:(id)sender
+{
+    [CPApp beginSheet:sheet modalForWindow:window modalDelegate:self didEndSelector:@selector(didEndSheet:returnCode:contextInfo:) contextInfo:nil];
+}
+
+- (void)closeSheet:(id)sender
+{
+    [CPApp endSheet:sheet returnCode:[sender tag]];
+}
+
+- (void)didEndSheet:(CPWindow)sheet returnCode:(int)returnCode contextInfo:(id)contextInfo
+{
+    [sheet orderOut:self];
+}
+
 @end

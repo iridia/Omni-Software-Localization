@@ -7,7 +7,6 @@ OLMenuItemDisabled = NO;
 @implementation OLMenuController : CPObject
 {
     CPMenu                      menu;
-    CPUploadWindowController    uploadWindowController  @accessors;
     CPDictionary                items;
     CPFeedbackController        feedbackController;
 }
@@ -100,7 +99,7 @@ OLMenuItemDisabled = NO;
 
 - (void)new:(id)sender
 {
-    [uploadWindowController startUpload:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLUploadShouldStartNotification" object:self];
 }
 
 - (void)download:(id)sender

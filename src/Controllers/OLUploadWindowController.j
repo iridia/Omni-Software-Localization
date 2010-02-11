@@ -70,6 +70,12 @@ var uploadURL = @"Upload/upload.php";
 		[glossaryView addSubview:glossaryButton];
 
 		[uploadView addSubview:glossaryView];
+		
+		[[CPNotificationCenter defaultCenter]
+		  addObserver:self
+		  selector:@selector(startUpload:)
+		  name:@"OLUploadShouldStartNotification"
+		  object:nil];
         
 		[uploadWindowContentView addSubview:uploadView];
 		

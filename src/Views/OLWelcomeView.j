@@ -130,7 +130,7 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
 {
     [self close:sender];
     
-    console.log("Need to refactor!");
+    [[self delegate] showNewProject:self];
 }
 
 @end
