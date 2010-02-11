@@ -60,7 +60,7 @@ loadProfileViewNotification = @"loadProfileViewNotification";
     accessoryView = anAccessoryView;
     
     [accessoryView setAutoresizingMask:CPViewMinXMargin];
-    [self addSubview:accessoryView positioned:CPViewRightAligned | CPViewHeightCentered relativeTo:self withPadding:5.0];
+    [self addSubview:accessoryView positioned:CPViewRightAligned | CPViewHeightCentered relativeTo:self withPadding:12.0];
 }
 
 - (void)setBackView:(CPView)aBackView
@@ -73,7 +73,7 @@ loadProfileViewNotification = @"loadProfileViewNotification";
     backView = aBackView;
     
     [backView setAutoresizingMask:CPViewMaxXMargin];
-    [self addSubview:backView positioned:CPViewLeftAligned | CPViewHeightCentered relativeTo:self withPadding:5.0];
+    [self addSubview:backView positioned:CPViewLeftAligned | CPViewHeightCentered relativeTo:self withPadding:12.0];
 }
 
 - (void)_centerTitleView
