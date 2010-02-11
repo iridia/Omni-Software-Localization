@@ -116,7 +116,7 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 - (void)updateLoginInfo:(CPNotification)notification
 {
     var user = [[OLUserSessionManager defaultSessionManager] user];
-    loginValue = "Welcome, " + [user email]; 
+    loginValue = [user email]; 
     [toolbar _reloadToolbarItems];
 }
 
