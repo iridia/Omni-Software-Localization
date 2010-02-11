@@ -26,6 +26,7 @@
 @import "Views/OLProjectSearchView.j"
 @import "Views/OLProjectResultView.j"
 @import "Views/OLProfileView.j"
+@import "Views/OLNotification.j"
 
 @import "Utilities/OLUserSessionManager.j"
 @import "Utilities/CPUserDefaults.j"
@@ -84,6 +85,9 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 	
 	var loginController = [[OLLoginController alloc] init];
     var toolbarController = [[OLToolbarController alloc] init];
+    
+    var notification = [[OLNotification alloc] init];
+    [notification setNotificationText:@"Logged In"];
  
     [theWindow setToolbar:[toolbarController toolbar]];
     
@@ -98,6 +102,9 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 	        if (user)
 	        {
                 [[OLUserSessionManager defaultSessionManager] setUser:user];
+                
+                [notification setFrameOrigin:CGPointMake(CGRectGetWidth([[theWindow contentView] bounds])-230, 100)];
+                [notification start];
             }
         };
         
