@@ -23,7 +23,7 @@
     if(self = [super init])
     {
         createNewBundleWindow = [[OLCreateNewBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPDocModalWindowMask | CPResizableWindowMask];
-        deleteBundleWindow = [[OLDeleteBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
+        deleteBundleWindow = [[OLDeleteBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPDocModalWindowMask | CPResizableWindowMask];
         
         resourceController = [[OLResourceController alloc] init];
         [self addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
@@ -158,8 +158,8 @@
 {
     if([resourceBundles count] > 1)
     {
-        [[CPApplication sharedApplication] runModalForWindow:deleteBundleWindow];
         [deleteBundleWindow setUp:self];
+        [deleteBundleWindow displaySheet:self];
     }
     else
     {
