@@ -22,7 +22,7 @@
 {
     if(self = [super init])
     {
-       createNewBundleWindow = [[OLCreateNewBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
+        createNewBundleWindow = [[OLCreateNewBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPDocModalWindowMask | CPResizableWindowMask];
         deleteBundleWindow = [[OLDeleteBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPTitledWindowMask];
         
         resourceController = [[OLResourceController alloc] init];
@@ -141,6 +141,7 @@
     if([[self availableLanguages] count] > 0)
     {
         [createNewBundleWindow setUp:self];
+        [createNewBundleWindow displaySheet:self];
     }
     else
     {

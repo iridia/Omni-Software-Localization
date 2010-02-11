@@ -23,9 +23,11 @@
         cancelButton = [CPButton buttonWithTitle:@"Cancel"];
         [cancelButton setAction:@selector(cancel:)];
         
-        [view addSubview:popUpButton positioned:CPViewWidthCentered | CPViewHeightCentered relativeTo:view withPadding:0.0];
-        [view addSubview:createButton positioned:CPViewBottomAligned | CPViewRightAligned relativeTo:view withPadding:10.0];
-        [view addSubview:cancelButton positioned:CPViewOnTheLeft | CPViewHeightSame relativeTo:createButton withPadding:10.0];
+        [popUpButton setCenter:CGPointMake(0, 35)];
+        
+        [view addSubview:popUpButton positioned:CPViewWidthCentered relativeTo:view withPadding:0.0];
+        [view addSubview:createButton positioned:CPViewBottomAligned | CPViewRightAligned relativeTo:view withPadding:12.0];
+        [view addSubview:cancelButton positioned:CPViewOnTheLeft | CPViewHeightSame relativeTo:createButton withPadding:12.0];
     }
     return self;
 }
@@ -41,12 +43,12 @@
 
 - (void)displaySheet:(id)sender
 {
-    [CPApp beginSheet:sheet modalForWindow:window modalDelegate:self didEndSelector:@selector(didEndSheet:returnCode:contextInfo:) contextInfo:nil];
+    [CPApp beginSheet:self modalForWindow:[CPApp mainWindow] modalDelegate:self didEndSelector:@selector(didEndSheet:returnCode:contextInfo:) contextInfo:nil];
 }
 
 - (void)closeSheet:(id)sender
 {
-    [CPApp endSheet:sheet returnCode:[sender tag]];
+    [CPApp endSheet:self returnCode:[sender tag]];
 }
 
 - (void)didEndSheet:(CPWindow)sheet returnCode:(int)returnCode contextInfo:(id)contextInfo
