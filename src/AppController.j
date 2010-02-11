@@ -81,8 +81,6 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
  
 	var menuController = [[OLMenuController alloc] init];
     [CPMenu setMenuBarVisible:YES];
-    
-    var uploadWindowController = [[OLUploadWindowController alloc] init];
 	
 	var loginController = [[OLLoginController alloc] init];
     var toolbarController = [[OLToolbarController alloc] init];
