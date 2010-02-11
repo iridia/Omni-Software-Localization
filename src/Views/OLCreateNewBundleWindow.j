@@ -17,7 +17,7 @@
         popUpButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0, 0, 150, 24)];
         [popUpButton setCenter:CGPointMake(CGRectGetWidth([view frame])-90, 20)];
         
-        createButton = [CPButton buttonWithTitle:@"Create"];
+        createButton = [CPButton buttonWithTitle:@"Create Language"];
         [createButton setAction:@selector(create:)];
      
         cancelButton = [CPButton buttonWithTitle:@"Cancel"];
