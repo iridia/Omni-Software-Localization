@@ -126,6 +126,11 @@
 		
 		[myContentView addSubview:helpButtonTitle];
 		[myContentView addSubview:helpButtonDescription];
+		
+        [helpButtonTitle setNextResponder:helpButton];
+        [helpButtonDescription setNextResponder:helpButton];
+        [newProjectButtonTitle setNextResponder:newProjectButton];
+        [newProjectButtonDescription setNextResponder:newProjectButton];
 	}
 	
 	return self;
