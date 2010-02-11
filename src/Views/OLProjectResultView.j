@@ -1,4 +1,5 @@
 @import "OLProjectView.j"
+@import "UIButton.j"
 
 @implementation OLProjectResultView : OLProjectView
 {
@@ -7,7 +8,7 @@
 
 - (CPView)backView
 {
-    var button = [CPButton buttonWithTitle:@"Back"];
+    var button = [UIButton buttonWithTitle:@"Back"];
     [button setTarget:self];
     [button setAction:@selector(back:)];
     return button;
