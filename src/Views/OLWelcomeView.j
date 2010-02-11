@@ -16,6 +16,11 @@
 {	
 	if (self = [super initWithFrame:frame])
 	{
+	    [self setBackgroundColor:[CPColor borderColor]];
+	    
+	    var myContentView = [[CPView alloc] initWithFrame:CGRectMake(1, 0, CGRectGetWidth(frame)-2, CGRectGetHeight(frame)-1)];
+	    [self addSubview:myContentView];
+	    
 	    var welcomeTextView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame))];
         [welcomeTextView setBackgroundColor:[CPColor whiteColor]];
         
@@ -109,18 +114,18 @@
         [helpButtonTitle setCenter:CGPointMake(480, 172)];
         [helpButtonDescription setCenter:CGPointMake(547, 207)];
 		
-		[self addSubview:welcomeTextView];
-		[self addSubview:fakeBottomBarBorder];
-		[self addSubview:fakeBottomBar];
+		[myContentView addSubview:welcomeTextView];
+		[myContentView addSubview:fakeBottomBarBorder];
+		[myContentView addSubview:fakeBottomBar];
 		
-		[self addSubview:helpButton];
-		[self addSubview:newProjectButton];
+		[myContentView addSubview:helpButton];
+		[myContentView addSubview:newProjectButton];
 		
-		[self addSubview:newProjectButtonTitle];
-		[self addSubview:newProjectButtonDescription];
+		[myContentView addSubview:newProjectButtonTitle];
+		[myContentView addSubview:newProjectButtonDescription];
 		
-		[self addSubview:helpButtonTitle];
-		[self addSubview:helpButtonDescription];
+		[myContentView addSubview:helpButtonTitle];
+		[myContentView addSubview:helpButtonDescription];
 	}
 	
 	return self;

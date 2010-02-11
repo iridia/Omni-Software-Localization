@@ -47,7 +47,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
         [navigationBarView setBackView:[self backView]];
         
         var navBarBorder = [[CPView alloc] initWithFrame:CGRectMake(0.0, 40.0, CGRectGetWidth(aFrame), 1.0)];
-        [navBarBorder setBackgroundColor:[CPColor colorWithHexString:@"7F7F7F"]];
+        [navBarBorder setBackgroundColor:[CPColor borderColor]];
         [navBarBorder setAutoresizingMask:CPViewWidthSizable];
         [self addSubview:navBarBorder];
         

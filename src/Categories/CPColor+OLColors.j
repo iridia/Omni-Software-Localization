@@ -15,4 +15,9 @@
     return [CPColor colorWithCalibratedRed:1.000 green:1.000 blue:0.000 alpha:0.350];
 }
 
++ (CPColor)borderColor
+{
+    return [CPColor colorWithHexString:@"7F7F7F"];
+}
+
 @end
