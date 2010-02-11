@@ -3,6 +3,7 @@
 @import "../Categories/CPView+Positioning.j"
 @import "OLTableView.j"
 @import "OLNavigationBarView.j"
+@import "UIButton.j"
 
 OLLineItemTableColumnIdentifierIdentifier = @"OLLineItemTableColumnIdentifierIdentifier";
 OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
@@ -114,7 +115,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 
 - (CPView)backView
 {
-    backView = [CPButton buttonWithTitle:@"Dashboard"];
+    backView = [UIButton buttonWithTitle:@"Dashboard"];
     
     [backView setAction:@selector(dashboardWasClicked:)];
     
@@ -158,7 +159,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     if(ownerDataSource)
     {
         [backView setStringValue:[ownerDataSource owner]];
-        [backView sizeToFit];
+        // [backView sizeToFit];
         [navigationBarView repositionBackView];
     }
 }
