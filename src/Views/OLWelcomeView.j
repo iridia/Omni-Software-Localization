@@ -1,6 +1,6 @@
 @import "CPUploadButton.j"
 
-var BETA_TEXT = @"The Omni Software Localization tool is currently under construction,"+
+var BETA_TEXT = @"Localize is currently under construction,"+
 " and as such, the development team and their affiliates (Omni Group and Rose-Hulman"+
 " Institute of Technology) are not liable for the content or functionality of the"+
 " application at this time. We provide no warranty, guarantee, or license, expressed or"+
@@ -31,7 +31,7 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
 		var oslImage = [[CPImage alloc] initByReferencingFile:@"Resources/Images/logo-new-mirror.png" size:CGSizeMake(300.0, 244.5)];
 		[oslImageView setImage:oslImage];
 		
-		var welcomeText = [CPTextField labelWithTitle:@"Welcome to Omni Software Localization!"];
+		var welcomeText = [CPTextField labelWithTitle:[CPString stringWithFormat:@"Welcome to %s", [[CPBundle mainBundle] objectForInfoDictionaryKey:@"CPBundleName"]]];
 		[welcomeText setFont:[CPFont boldSystemFontOfSize:16.0]];
 		[welcomeText sizeToFit];
 		[welcomeText setCenter:CPMakePoint((CGRectGetWidth([welcomeTextView bounds]) + 320.0) / 2.0, 40 )];
@@ -60,7 +60,7 @@ var BETA_TEXT = @"The Omni Software Localization tool is currently under constru
         [closeButton setAction:@selector(close:)];
         [closeButton setCenter:CPMakePoint(CGRectGetWidth(frame) - (CGRectGetWidth([closeButton bounds]) / 2.0) - 10.0, CGRectGetHeight([closeButton bounds]))]
 
-        showWindowOnLaunch = [CPCheckBox checkBoxWithTitle:@"Show this window when OSL launches"];
+        showWindowOnLaunch = [CPCheckBox checkBoxWithTitle:[CPString stringWithFormat:@"Show this window when %s launches", [[CPBundle mainBundle] objectForInfoDictionaryKey:@"CPBundleName"]]];
         [showWindowOnLaunch setFrameOrigin:CPMakePoint(10.0, CGRectGetHeight([showWindowOnLaunch bounds]))];
         [showWindowOnLaunch setTarget:self];
         [showWindowOnLaunch setAction:@selector(shouldShowWindowOnLaunch:)];
