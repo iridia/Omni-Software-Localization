@@ -14390,7 +14390,7 @@ _tableView = newValue;
 },["void","CGRect"])]);
 }
 
-p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;111877;
+p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;112213;
 CPTableViewColumnDidMoveNotification = "CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification = "CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification = "CPTableViewSelectionDidChangeNotification";
@@ -14631,11 +14631,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
     _intercellSpacing = { width:aSize.width, height:aSize.height };
     objj_msgSend(self, "setNeedsLayout");
 }
-},["void","CGSize"]), new objj_method(sel_getUid("setThemeState:"), function $CPTableView__setThemeState_(self, _cmd, astae)
-{ with(self)
-{
-}
-},["void","int"]), new objj_method(sel_getUid("intercellSpacing"), function $CPTableView__intercellSpacing(self, _cmd)
+},["void","CGSize"]), new objj_method(sel_getUid("intercellSpacing"), function $CPTableView__intercellSpacing(self, _cmd)
 { with(self)
 {
     return { width:_intercellSpacing.width, height:_intercellSpacing.height };
@@ -15767,14 +15763,15 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 },["void","CGRect"]), new objj_method(sel_getUid("highlightSelectionInClipRect:"), function $CPTableView__highlightSelectionInClipRect_(self, _cmd, aRect)
 { with(self)
 {
-    if (objj_msgSend(self, "selectionHighlightStyle") === CPTableViewSelectionHighlightStyleSourceList)
+    if(objj_msgSend(self, "hasThemeState:", CPThemeStateInactive))
+        objj_msgSend(objj_msgSend(CPColor, "grayColor"), "setFill");
+    else if (objj_msgSend(self, "selectionHighlightStyle") === CPTableViewSelectionHighlightStyleSourceList)
         objj_msgSend(objj_msgSend(CPColor, "selectionColorSourceView"), "setFill");
     else
-       objj_msgSend(objj_msgSend(CPColor, "selectionColor"), "setFill");
+        objj_msgSend(objj_msgSend(CPColor, "selectionColor"), "setFill");
     var context = objj_msgSend(objj_msgSend(CPGraphicsContext, "currentContext"), "graphicsPort"),
         indexes = [],
         rectSelector = sel_getUid("rectOfRow:");
-       objj_msgSend(_selectionHightlightColor, "setFill");
     if (objj_msgSend(_selectedRowIndexes, "count") >= 1)
     {
         var exposedRows = objj_msgSend(CPIndexSet, "indexSetWithIndexesInRange:", objj_msgSend(self, "rowsInRect:", aRect)),
@@ -15891,7 +15888,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         _trackingPointMovedOutOfClickSlop = NO;
     if (!(_implementedDataSourceMethods & CPTableViewDataSource_tableView_writeRowsWithIndexes_toPasteboard_))
         objj_msgSend(self, "_updateSelectionWithMouseAtRow:", row);
-    objj_msgSend(objj_msgSend(self, "window"), "makeFirstResponder:", self);
+    console.log(objj_msgSend(self, "window"));
+    console.log(objj_msgSend(objj_msgSend(self, "window"), "makeFirstResponder:", self));
+    objj_msgSend(self, "becomeFirstResponder");
     return YES;
 }
 },["BOOL","CGPoint"]), new objj_method(sel_getUid("trackMouse:"), function $CPTableView__trackMouse_(self, _cmd, anEvent)
@@ -16213,11 +16212,18 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 },["void"]), new objj_method(sel_getUid("becomeFirstResponder"), function $CPTableView__becomeFirstResponder(self, _cmd)
 { with(self)
 {
+    objj_msgSend(self, "unsetThemeState:", CPThemeStateInactive);
     return YES;
 }
 },["BOOL"]), new objj_method(sel_getUid("acceptsFirstResponder"), function $CPTableView__acceptsFirstResponder(self, _cmd)
 { with(self)
 {
+    return YES;
+}
+},["BOOL"]), new objj_method(sel_getUid("resignFirstResponder"), function $CPTableView__resignFirstResponder(self, _cmd)
+{ with(self)
+{
+    objj_msgSend(self, "setThemeState:", CPThemeStateInactive);
     return YES;
 }
 },["BOOL"]), new objj_method(sel_getUid("keyDown:"), function $CPTableView__keyDown_(self, _cmd, anEvent)
@@ -17450,7 +17456,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["void","CPCoder"])]);
 }
 
-p;9;CPTheme.jI;21;Foundation/CPObject.jI;21;Foundation/CPString.jc;17438;
+p;9;CPTheme.jI;21;Foundation/CPObject.jI;21;Foundation/CPString.jc;17487;
 var CPThemesByName = { },
     CPThemeDefaultTheme = nil;
 {var the_class = objj_allocateClassPair(CPObject, "CPTheme"),
@@ -17637,6 +17643,7 @@ CPThemeStateEditing = CPThemeState("editing");
 CPThemeStateVertical = CPThemeState("vertical");
 CPThemeStateDefault = CPThemeState("default");
 CPThemeStateCircular = CPThemeState("circular");
+CPThemeStateInactive = CPThemeState("inactive");
 {var the_class = objj_allocateClassPair(CPObject, "_CPThemeAttribute"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_name"), new objj_ivar("_defaultValue"), new objj_ivar("_values"), new objj_ivar("_cache"), new objj_ivar("_parentAttribute")]);
 objj_registerClassPair(the_class);
@@ -29302,7 +29309,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
 },["CGRect","CGRect"])]);
 }
 
-p;10;CPWindow.jI;25;Foundation/CPCountedSet.jI;33;Foundation/CPNotificationCenter.jI;26;Foundation/CPUndoManager.ji;12;CGGeometry.ji;13;CPAnimation.ji;13;CPResponder.ji;10;CPScreen.ji;18;CPPlatformWindow.jc;75856;
+p;10;CPWindow.jI;25;Foundation/CPCountedSet.jI;33;Foundation/CPNotificationCenter.jI;26;Foundation/CPUndoManager.ji;12;CGGeometry.ji;13;CPAnimation.ji;13;CPResponder.ji;10;CPScreen.ji;18;CPPlatformWindow.jc;75927;
 CPBorderlessWindowMask = 0;
 CPTitledWindowMask = 1 << 0;
 CPClosableWindowMask = 1 << 1;
@@ -29826,10 +29833,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $CPWin
 },["BOOL"]), new objj_method(sel_getUid("makeFirstResponder:"), function $CPWindow__makeFirstResponder_(self, _cmd, aResponder)
 { with(self)
 {
-    if (_firstResponder == aResponder)
-        return YES;
     if(!objj_msgSend(_firstResponder, "resignFirstResponder"))
         return NO;
+    console.log(aResponder, objj_msgSend(aResponder, "acceptsFirstResponder"), objj_msgSend(aResponder, "becomeFirstResponder"));
     if(!aResponder || !objj_msgSend(aResponder, "acceptsFirstResponder") || !objj_msgSend(aResponder, "becomeFirstResponder"))
     {
         _firstResponder = self;

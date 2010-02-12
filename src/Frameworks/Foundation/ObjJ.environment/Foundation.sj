@@ -1689,7 +1689,7 @@ return objj_msgSend(objj_msgSend(_1e,"alloc"),"initWithPlistObject:",_20);
 }
 })]);
 objj_data.prototype.isa=CPData;
-p;8;CPDate.ji;10;CPObject.ji;10;CPString.jc;4743;
+p;8;CPDate.ji;10;CPObject.ji;10;CPString.jc;4845;
 var _1=new Date(Date.UTC(2001,1,1,0,0,0,0));
 var _2=objj_allocateClassPair(CPObject,"CPDate"),_3=_2.isa;
 objj_registerClassPair(_2);
@@ -1768,56 +1768,60 @@ with(_2f){
 var _31=Math.floor(_2f.getTimezoneOffset()/60),_32=_2f.getTimezoneOffset()-_31*60;
 return objj_msgSend(CPString,"stringWithFormat:","%04d-%02d-%02d %02d:%02d:%02d +%02d%02d",_2f.getFullYear(),_2f.getMonth()+1,_2f.getDate(),_2f.getHours(),_2f.getMinutes(),_2f.getSeconds(),_31,_32);
 }
-})]);
-class_addMethods(_3,[new objj_method(sel_getUid("alloc"),function(_33,_34){
+}),new objj_method(sel_getUid("copy"),function(_33,_34){
 with(_33){
+return new Date(_33.getTime());
+}
+})]);
+class_addMethods(_3,[new objj_method(sel_getUid("alloc"),function(_35,_36){
+with(_35){
 return new Date;
 }
-}),new objj_method(sel_getUid("date"),function(_35,_36){
-with(_35){
-return objj_msgSend(objj_msgSend(_35,"alloc"),"init");
-}
-}),new objj_method(sel_getUid("dateWithTimeIntervalSinceNow:"),function(_37,_38,_39){
+}),new objj_method(sel_getUid("date"),function(_37,_38){
 with(_37){
-return objj_msgSend(objj_msgSend(CPDate,"alloc"),"initWithTimeIntervalSinceNow:",_39);
+return objj_msgSend(objj_msgSend(_37,"alloc"),"init");
 }
-}),new objj_method(sel_getUid("dateWithTimeIntervalSince1970:"),function(_3a,_3b,_3c){
-with(_3a){
-return objj_msgSend(objj_msgSend(CPDate,"alloc"),"initWithTimeIntervalSince1970:",_3c);
+}),new objj_method(sel_getUid("dateWithTimeIntervalSinceNow:"),function(_39,_3a,_3b){
+with(_39){
+return objj_msgSend(objj_msgSend(CPDate,"alloc"),"initWithTimeIntervalSinceNow:",_3b);
 }
-}),new objj_method(sel_getUid("dateWithTimeIntervalSinceReferenceDate:"),function(_3d,_3e,_3f){
-with(_3d){
-return objj_msgSend(objj_msgSend(CPDate,"alloc"),"initWithTimeIntervalSinceReferenceDate:",_3f);
+}),new objj_method(sel_getUid("dateWithTimeIntervalSince1970:"),function(_3c,_3d,_3e){
+with(_3c){
+return objj_msgSend(objj_msgSend(CPDate,"alloc"),"initWithTimeIntervalSince1970:",_3e);
 }
-}),new objj_method(sel_getUid("distantPast"),function(_40,_41){
-with(_40){
+}),new objj_method(sel_getUid("dateWithTimeIntervalSinceReferenceDate:"),function(_3f,_40,_41){
+with(_3f){
+return objj_msgSend(objj_msgSend(CPDate,"alloc"),"initWithTimeIntervalSinceReferenceDate:",_41);
+}
+}),new objj_method(sel_getUid("distantPast"),function(_42,_43){
+with(_42){
 return new Date(-10000,1,1,0,0,0,0);
 }
-}),new objj_method(sel_getUid("distantFuture"),function(_42,_43){
-with(_42){
+}),new objj_method(sel_getUid("distantFuture"),function(_44,_45){
+with(_44){
 return new Date(10000,1,1,0,0,0,0);
 }
-}),new objj_method(sel_getUid("timeIntervalSinceReferenceDate"),function(_44,_45){
-with(_44){
+}),new objj_method(sel_getUid("timeIntervalSinceReferenceDate"),function(_46,_47){
+with(_46){
 return objj_msgSend(objj_msgSend(CPDate,"date"),"timeIntervalSinceReferenceDate");
 }
 })]);
-var _46="CPDateTimeKey";
+var _48="CPDateTimeKey";
 var _2=objj_getClass("CPDate");
 if(!_2){
 objj_exception_throw(new objj_exception(OBJJClassNotFoundException,"*** Could not find definition for class \"CPDate\""));
 }
 var _3=_2.isa;
-class_addMethods(_2,[new objj_method(sel_getUid("initWithCoder:"),function(_47,_48,_49){
-with(_47){
-if(_47){
-_47.setTime(objj_msgSend(_49,"decodeIntForKey:",_46));
+class_addMethods(_2,[new objj_method(sel_getUid("initWithCoder:"),function(_49,_4a,_4b){
+with(_49){
+if(_49){
+_49.setTime(objj_msgSend(_4b,"decodeIntForKey:",_48));
 }
-return _47;
+return _49;
 }
-}),new objj_method(sel_getUid("encodeWithCoder:"),function(_4a,_4b,_4c){
-with(_4a){
-objj_msgSend(_4c,"encodeInt:forKey:",_4a.getTime(),_46);
+}),new objj_method(sel_getUid("encodeWithCoder:"),function(_4c,_4d,_4e){
+with(_4c){
+objj_msgSend(_4e,"encodeInt:forKey:",_4c.getTime(),_48);
 }
 })]);
 Date.prototype.isa=CPDate;

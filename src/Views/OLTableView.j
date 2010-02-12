@@ -113,6 +113,8 @@
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLTableViewBecameFirstResponder"
         object:self];
+        
+    [self unsetThemeState:CPThemeStateInactive];
 
     return YES;
 }
@@ -122,7 +124,9 @@
     [[CPNotificationCenter defaultCenter]
         postNotificationName:@"OLTableViewResignedFirstResponder"
         object:self];   
-
+        
+    [self setThemeState:CPThemeStateInactive];
+    
     return YES;
 }
 
