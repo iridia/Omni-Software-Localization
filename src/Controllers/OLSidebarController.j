@@ -8,8 +8,6 @@
     
     @outlet                 CPScrollView                sidebarScrollView;
     @outlet                 CPButtonBar                 sidebarButtonBar;
-    
-    CGFloat                 maxYPositionOfSidebarItem;
 }
 
 - (void)awakeFromCib
@@ -20,6 +18,7 @@
     // select the scrollView in Atlas again otherwise.
     [sidebarScrollView setAutohidesScrollers:YES];
     [sidebarScrollView setHasHorizontalScroller:NO];
+    
     var onlyColumn = [[CPTableColumn alloc] initWithIdentifier:@"OnlyColumn"];
     [onlyColumn setWidth:CGRectGetWidth([sidebarScrollView bounds])];
     [onlyColumn setDataView:[[OLSidebarViewItem alloc] initWithFrame:CGRectMakeZero()]];
@@ -32,11 +31,9 @@
     [sidebarOutlineView setCornerView:nil];
     [sidebarOutlineView setDataSource:self];
     [sidebarOutlineView setDelegate:self];
-    // [sidebarOutlineView setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
+    [sidebarOutlineView setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
 
     [sidebarScrollView setDocumentView:sidebarOutlineView];
-    
-    maxYPositionOfSidebarItem = 100.0;
 }
 
 - (void)outlineView:(CPOutlineView)anOutlineView shouldSelectRow:(CPNumber)row
@@ -125,16 +122,6 @@
         objectValue = [item sidebarName];
     }
     
-    // Calculate and cache the max width
-    var fontWidth = [objectValue sizeWithFont:[[[outlineView outlineTableColumn] dataView] valueForThemeAttribute:@"font" inState:CPThemeStateHighlighted]].width
-    fontWidth += 2 * [outlineView indentationPerLevel]; // Add the indentation level (this is assumed to always be 2)
-    fontWidth += 5; // Add some padding
-    
-    if (fontWidth > maxYPositionOfSidebarItem)
-    {
-        maxYPositionOfSidebarItem = fontWidth;
-    }
-    
     return objectValue;
 }
 
@@ -145,12 +132,12 @@
 
 - (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
 {    
-    return proposedMin + maxYPositionOfSidebarItem;
+    return proposedMin + 150.0;
 }
 
 - (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
 {
-    return maxYPositionOfSidebarItem + 200.0;
+    return 350.0;
 }
 
 // Additional rect for CPButtonBar's handles

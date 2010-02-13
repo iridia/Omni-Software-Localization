@@ -14428,7 +14428,7 @@ _tableView = newValue;
 },["void","CGRect"])]);
 }
 
-p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;113570;
+p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;113363;
 CPTableViewColumnDidMoveNotification = "CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification = "CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification = "CPTableViewSelectionDidChangeNotification";
@@ -15657,7 +15657,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         columnArray = [];
     objj_msgSend(rows, "getIndexes:maxCount:inIndexRange:", rowArray, -1, nil);
     objj_msgSend(columns, "getIndexes:maxCount:inIndexRange:", columnArray, -1, nil);
-    if (_dirtyTableColumnRangeIndex !== CPNotFound) objj_msgSend(self, "_recalculateTableColumnRanges");;
     var columnIndex = 0,
         columnsCount = columnArray.length;
     for (; columnIndex < columnsCount; ++columnIndex)
@@ -15672,11 +15671,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         for (; rowIndex < rowsCount; ++rowIndex)
         {
             var row = rowArray[rowIndex],
-                dataView = dataViewsForTableColumn[row],
-                frame = objj_msgSend(dataView, "frame");
-            frame.origin.x = columnRange.location;
-            frame.size.width = columnRange.length;
-            objj_msgSend(dataView, "setFrame:", frame);
+                dataView = dataViewsForTableColumn[row];
+            objj_msgSend(dataView, "setFrame:", objj_msgSend(self, "frameOfDataViewAtColumn:row:", column, row));
         }
     }
 }
