@@ -173,8 +173,8 @@
     [self setValue:[CPColor colorWithHexString:@"555555"] forThemeAttribute:@"text-color" inState:CPThemeStateInactive];
     [self setValue:[CPFont boldSystemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateHighlighted];
     [self setValue:[CPFont systemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateInactive];
-    // [self setValue:[CPColor clearColor] forThemeAttribute:@"text-shadow-color"];
-    // [self setValue:CGSizeMake(0, 0) forThemeAttribute:@"text-shadow-offset"];
+    [self setValue:[CPColor clearColor] forThemeAttribute:@"text-shadow-color"];
+    [self setValue:CGSizeMake(0, 0) forThemeAttribute:@"text-shadow-offset"];
     [self setVerticalAlignment:CPCenterVerticalTextAlignment];
 }
 
@@ -185,8 +185,8 @@
         [self setTextTransformationStyle:CPTextTransformationStyleUppercase];
         [self setFont:[CPFont boldSystemFontOfSize:11.0]];
         [self setTextColor:[CPColor colorWithHexString:@"606060"]];
-        // [self setValue:[CPColor whiteColor] forThemeAttribute:@"text-shadow-color"];
-        // [self setValue:CGSizeMake(-1, 1) forThemeAttribute:@"text-shadow-offset"];
+        [self setValue:[CPColor whiteColor] forThemeAttribute:@"text-shadow-color"];
+        [self setValue:CGSizeMake(-1, 1) forThemeAttribute:@"text-shadow-offset"];
     }
     else
     {
