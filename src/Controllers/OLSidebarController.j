@@ -8,6 +8,8 @@
     
     @outlet                 CPScrollView                sidebarScrollView;
     @outlet                 CPButtonBar                 sidebarButtonBar;
+    
+    CGFloat                 maxYPositionOfSidebarItem;
 }
 
 - (void)awakeFromCib
@@ -33,6 +35,8 @@
     // [sidebarOutlineView setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
 
     [sidebarScrollView setDocumentView:sidebarOutlineView];
+    
+    maxYPositionOfSidebarItem = 100.0;
 }
 
 - (void)outlineView:(CPOutlineView)anOutlineView shouldSelectRow:(CPNumber)row
@@ -114,17 +118,52 @@
 
 - (id)outlineView:(CPOutlineView)outlineView objectValueForTableColumn:(CPTableColumn)tableColumn byItem:(id)item
 {
+    var objectValue = item;
+    
     if ([item respondsToSelector:@selector(sidebarName)])
     {
-        return [item sidebarName];
+        objectValue = [item sidebarName];
     }
-    else
+    
+    // Calculate and cache the max width
+    var fontWidth = [objectValue sizeWithFont:[[[outlineView outlineTableColumn] dataView] valueForThemeAttribute:@"font" inState:CPThemeStateHighlighted]].width
+    fontWidth += 2 * [outlineView indentationPerLevel]; // Add the indentation level (this is assumed to always be 2)
+    fontWidth += 5; // Add some padding
+    
+    if (fontWidth > maxYPositionOfSidebarItem)
     {
-        return item;  
+        maxYPositionOfSidebarItem = fontWidth;
     }
+    
+    return objectValue;
 }
 
 @end
+
+
+@implementation OLSidebarController (CPSplitViewDelegate)
+
+- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
+{    
+    return proposedMin + maxYPositionOfSidebarItem;
+}
+
+- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
+{
+    return maxYPositionOfSidebarItem + 200.0;
+}
+
+// Additional rect for CPButtonBar's handles
+- (CGRect)splitView:(CPSplitView)splitView additionalEffectiveRectOfDividerAtIndex:(int)dividerIndex
+{
+    var rect = [sidebarButtonBar frame];
+    var additionalWidth = 20.0;
+    var additionalRect = CGRectMake(rect.origin.x + rect.size.width - additionalWidth, rect.origin.y, additionalWidth, rect.size.height);
+    return additionalRect;
+}
+
+@end
+
 
 @implementation OLSidebarViewItem : CPTextField
 
@@ -170,29 +209,6 @@
     [self setValue:CPLineBreakByTruncatingTail forThemeAttribute:@"line-break-mode"];
     
     [super setObjectValue:anObjectValue];
-}
-
-@end
-
-@implementation OLSidebarController (CPSplitViewDelegate)
-
-- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
-{    
-    return proposedMin + 100.0;
-}
-
-- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
-{
-    return 300.0;
-}
-
-// Additional rect for CPButtonBar's handles
-- (CGRect)splitView:(CPSplitView)splitView additionalEffectiveRectOfDividerAtIndex:(int)dividerIndex
-{
-    var rect = [sidebarButtonBar frame];
-    var additionalWidth = 20.0;
-    var additionalRect = CGRectMake(rect.origin.x + rect.size.width - additionalWidth, rect.origin.y, additionalWidth, rect.size.height);
-    return additionalRect;
 }
 
 @end
