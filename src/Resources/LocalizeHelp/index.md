@@ -4,3 +4,4 @@ Welcome to the Localize help system. Below are some links to help you get starte
 
 * [Release Notes](release-notes.html)
 * [About Localize](about.html)
+* [Using Localize](using.html)
