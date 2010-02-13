@@ -11,7 +11,7 @@
             [
                 [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/ui-button-bezel-left.png" size:CGSizeMake(15, 24)],
                 [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/ui-button-bezel-center.png" size:CGSizeMake(1, 24)],
-                [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/ui-button-bezel-highlighted-right.png" size:CGSizeMake(4, 24)]
+                [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/ui-button-bezel-right.png" size:CGSizeMake(4, 24)]
             ]
         isVertical:NO]];
         
@@ -19,7 +19,7 @@
             [
                 [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/ui-button-bezel-highlighted-left.png" size:CGSizeMake(15, 24)],
                 [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/ui-button-bezel-highlighted-center.png" size:CGSizeMake(1, 24)],
-                [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/ui-button-bezel-right.png" size:CGSizeMake(4, 24)]
+                [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/ui-button-bezel-highlighted-right.png" size:CGSizeMake(4, 24)]
             ]
         isVertical:NO]];
         
