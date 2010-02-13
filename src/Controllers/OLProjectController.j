@@ -55,6 +55,11 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:[selectedProject recordID]];
     [OLURLConnectionFactory createConnectionWithRequest:request delegate:self];
+    
+    var notification = [[OLNotification alloc] init];
+    [notification setNotificationText:@"Download of " + [selectedProject name] + " started."];
+    [notification setFrameOrigin:CGPointMake(CGRectGetWidth([[[CPApp mainWindow] contentView] bounds])-330, 100)];
+    [notification start];
 }
 
 - (void)connection:(CPURLConnection)connection didReceiveData:(CPString)data
