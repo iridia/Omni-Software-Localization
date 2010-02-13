@@ -2,7 +2,7 @@
 
 @implementation OLUser : OLActiveRecord
 {
-	CPString _email         @accessors(property=email, readonly);
+	CPString email          @accessors(readonly);
     CPString nickname       @accessors;
     CPString userLocation   @accessors;
     CPArray  languages      @accessors;
@@ -11,36 +11,22 @@
 
 - (id)initWithEmail:(CPString)emailAddress
 {
-	self = [super init];
-
-	if (self)
-	{
-		if ( isValidEmail(emailAddress) )
-		{
-			_email = emailAddress;
-			nickname=@"";
-			userLocation=@"";
-			languages=[CPArray array];
-			bio=@"";
-		}
-	}
-
-	return self;
+	return [self initWithEmail:email nickname:@"" location:@"" languages:[CPArray array] bio:@""];
 }
 
-- (id)initWithEmail:(CPString)email Nickname:(CPString)aNickname Location:(CPString)aUserLocation Languages:(OLLanguage)someLanguages Bio:(CPString)aBio
+- (id)initWithEmail:(CPString)anEmail nickname:(CPString)aNickname location:(CPString)aUserLocation languages:(OLLanguage)someLanguages bio:(CPString)aBio
 {
     self = [super init];
     
     if(self)
     {
-        if( isValidEmail(email))
+        if (isValidEmail(email))
         {
-            _email = email;
+            email = anEmail;
             nickname = aNickname;
             userLocation = aUserLocation;
-            languages=someLanguages;
-            bio=aBio;
+            languages = someLanguages;
+            bio = aBio;
         }
     }
     return self;
@@ -62,7 +48,7 @@ var OLUserBioKey = @"OLUserBioKey";
 
 	if (self)
 	{
-		_email = [aCoder decodeObjectForKey:OLUserEmailKey];
+		email = [aCoder decodeObjectForKey:OLUserEmailKey];
         userLocation = [aCoder decodeObjectForKey:OLUserLocationKey];
         nickname = [aCoder decodeObjectForKey:OLUserNicknameKey];
         languages = [aCoder decodeObjectForKey:OLUserLanguagesKey];
@@ -74,7 +60,7 @@ var OLUserBioKey = @"OLUserBioKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-	[aCoder encodeObject:_email forKey:OLUserEmailKey];
+	[aCoder encodeObject:email forKey:OLUserEmailKey];
     [aCoder encodeObject:userLocation forKey:OLUserLocationKey];
     [aCoder encodeObject:nickname forKey:OLUserNicknameKey];
     [aCoder encodeObject:languages forKey:OLUserLanguagesKey];

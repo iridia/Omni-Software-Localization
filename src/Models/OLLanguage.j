@@ -1,8 +1,8 @@
-@import "OLActiveRecord.j"
+@import <Foundation/CPObject.j>
 
-@implementation OLLanguage : OLActiveRecord
+@implementation OLLanguage : CPObject
 {
-	CPString _name @accessors(property=name, readonly);
+	CPString    name        @accessors(readonly);
 	CPString    shortName   @accessors(readonly);
 }
 
@@ -36,7 +36,7 @@
 {
     if(self = [super init])
     {
-        _name = aName;
+        name = aName;
         shortName = aShortName;
     }
     return self;
@@ -44,12 +44,12 @@
 
 - (BOOL)equals:(OLLanguage)otherLanguage
 {
-	return [_name isEqualToString:[otherLanguage name]];
+	return [name isEqualToString:[otherLanguage name]];
 }
 
 - (OLLanguage)clone
 {
-    return [[OLLanguage alloc] initWithName:_name];
+    return [[OLLanguage alloc] initWithName:name];
 }
 
 @end
@@ -65,7 +65,7 @@ var OLLanguageShortNameKey = @"OLLanguageShortNameKey";
     
     if (self)
     {
-        _name = [aCoder decodeObjectForKey:OLLanguageNameKey];
+        name = [aCoder decodeObjectForKey:OLLanguageNameKey];
         shortName = [aCoder decodeObjectForKey:OLLanguageShortNameKey];
     }
     
@@ -74,7 +74,7 @@ var OLLanguageShortNameKey = @"OLLanguageShortNameKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    [aCoder encodeObject:_name forKey:OLLanguageNameKey];
+    [aCoder encodeObject:name forKey:OLLanguageNameKey];
     [aCoder encodeObject:shortName forKey:OLLanguageShortNameKey];
 }
 

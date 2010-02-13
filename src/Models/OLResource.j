@@ -1,4 +1,4 @@
-@import "OLActiveRecord.j"
+@import <Foundation/CPObject.j>
 
 @import "OLLineItem.j"
 
@@ -6,11 +6,11 @@
  * OLResource is a representation of a single resource. It is a member of a
  * set that could possibly belong to an OLBundle.
  */
-@implementation OLResource : OLActiveRecord
+@implementation OLResource : CPObject
 {
-	CPString		_fileName	@accessors(property=fileName);
-	CPString		_fileType	@accessors(readonly, property=fileType);
-	CPArray			_lineItems  @accessors(readonly, property=lineItems);
+	CPString		fileName	@accessors;
+	CPString		fileType	@accessors(readonly);
+	CPArray			lineItems   @accessors(readonly);
 	CPDictionary   	votes		@accessors(readonly);
 }
 
@@ -27,13 +27,13 @@
 	return [self initWithFileName:@"" fileType:@"" lineItems:[CPArray array]];
 }
 
-- (id)initWithFileName:(CPString)fileName fileType:(CPString)fileType lineItems:(CPArray)someLineItems
+- (id)initWithFileName:(CPString)aFileName fileType:(CPString)aFileType lineItems:(CPArray)someLineItems
 {
 	if(self = [super init])
 	{
-		_fileName = fileName;
-		_fileType = fileType;
-		_lineItems = someLineItems;
+		fileName = aFileName;
+		fileType = aFileType;
+		lineItems = someLineItems;
 		votes = [CPDictionary dictionary];
 	}
 	return self;
@@ -41,7 +41,7 @@
 
 - (CPString)shortFileName
 {
-    return (/.*\/(.*)/).exec(_fileName)[1];
+    return (/.*\/(.*)/).exec([self fileName])[1];
 }
 
 - (void)voteUp:(OLUser)user
@@ -76,16 +76,16 @@
 
 - (void)addLineItem:(OLLineItem)aLineItem
 {
-    [_lineItems addObject:aLineItem];
+    [lineItems addObject:aLineItem];
 }
 
 - (OLResource)clone
 {
-    var clone = [[OLResource alloc] initWithFileName:_fileName fileType:_fileType lineItems:[CPArray array]];
+    var clone = [[OLResource alloc] initWithFileName:[self fileName] fileType:[self fileType] lineItems:[CPArray array]];
     
-    for(var i = 0; i < [_lineItems count]; i++)
+    for(var i = 0; i < [lineItems count]; i++)
     {
-        [clone addLineItem:[[_lineItems objectAtIndex:i] clone]];
+        [clone addLineItem:[[lineItems objectAtIndex:i] clone]];
     }
     
     return clone;
@@ -95,9 +95,9 @@
 {
     var result = [CPArray array];
     
-    for(var i = 0; i < [_lineItems count]; i++)
+    for(var i = 0; i < [lineItems count]; i++)
     {
-        [result addObjectsFromArray:[[_lineItems objectAtIndex:i] comments]];
+        [result addObjectsFromArray:[[lineItems objectAtIndex:i] comments]];
     }
     
     return result;
@@ -119,9 +119,9 @@ var OLResourceVotesKey = @"OLResourceVotesKey";
     
     if (self)
     {
-        _fileName = [aCoder decodeObjectForKey:OLResourceFileNameKey];
-        _fileType = [aCoder decodeObjectForKey:OLResourceFileTypeKey];
-        _lineItems = [aCoder decodeObjectForKey:OLResourceLineItemsKey];
+        fileName = [aCoder decodeObjectForKey:OLResourceFileNameKey];
+        fileType = [aCoder decodeObjectForKey:OLResourceFileTypeKey];
+        lineItems = [aCoder decodeObjectForKey:OLResourceLineItemsKey];
 		votes = [aCoder decodeObjectForKey:OLResourceVotesKey];
     }
     
@@ -130,9 +130,9 @@ var OLResourceVotesKey = @"OLResourceVotesKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    [aCoder encodeObject:_fileName forKey:OLResourceFileNameKey];
-    [aCoder encodeObject:_fileType forKey:OLResourceFileTypeKey];
-    [aCoder encodeObject:_lineItems forKey:OLResourceLineItemsKey];
+    [aCoder encodeObject:fileName forKey:OLResourceFileNameKey];
+    [aCoder encodeObject:fileType forKey:OLResourceFileTypeKey];
+    [aCoder encodeObject:lineItems forKey:OLResourceLineItemsKey];
 	[aCoder encodeObject:votes forKey:OLResourceVotesKey];
 }
 
