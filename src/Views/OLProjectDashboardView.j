@@ -1,4 +1,5 @@
 @import <AppKit/CPView.j>
+
 @import "OLTableView.j"
 
 @implementation OLProjectDashboardView : CPView
@@ -29,12 +30,12 @@
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(tableViewBecameFirstResponder:)
-            name:@"OLTableViewBecameFirstResponder"
+            name:OLTableViewBecameFirstResponder
             object:nil];
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(tableViewResignedFirstResponder:)
-            name:@"OLTableViewResignedFirstResponder"
+            name:OLTableViewResignedFirstResponder
             object:nil];
         
         navigationBarView = [[OLNavigationBarView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), 40.0)];

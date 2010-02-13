@@ -1,9 +1,12 @@
 @import <AppKit/CPView.j>
 
+// Notifications
+OLTableViewBecameFirstResponder = @"OLTableViewBecameFirstResponder";
+OLTableViewResignedFirstResponder = @"OLTableViewResignedFirstResponder";
+
 @implementation OLTableView : CPView
 {
     CPTableView     tableView       @accessors(readonly);
-    SEL             doubleAction    @accessors;
 }
 
 - (id)initWithFrame:(CGRect)aFrame columns:(CPArray)columns
@@ -81,41 +84,16 @@
 
 @end
 
-@implementation CPTableView (DoubleClick)
-
-- (SEL)doubleAction
-{
-    if ([_delegate respondsToSelector:@selector(doubleAction)])
-    {
-        return [_delegate doubleAction];
-    }
-    
-    return nil;
-}
-
-- (void)mouseDown:(CPEvent)anEvent
-{
-    if ([self target] && [self doubleAction] && [anEvent clickCount] == 2)
-	{
-		var index = [[self selectedRowIndexes] firstIndex];
-		
-		if(index >= 0)
-		{
-			[[self target] performSelector:[self doubleAction] withObject:self];	
-		}
-	}
-
-	[super mouseDown:anEvent];
-}
+@implementation CPTableView (Resonder)
 
 - (BOOL)becomeFirstResponder
 {
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLTableViewBecameFirstResponder"
+        postNotificationName:OLTableViewBecameFirstResponder
         object:self];
         
     [self unsetThemeState:CPThemeStateInactive];
-        [self _updateRowsAsActive];
+    [self _updateRowsAsActive];
 
     return YES;
 }
@@ -123,7 +101,7 @@
 - (BOOL)resignFirstResponder
 {
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLTableViewResignedFirstResponder"
+        postNotificationName:OLTableViewResignedFirstResponder
         object:self];   
         
     [self setThemeState:CPThemeStateInactive];
