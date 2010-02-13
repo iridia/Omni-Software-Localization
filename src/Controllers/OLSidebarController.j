@@ -7,6 +7,7 @@
     OLSidebarOutlineView    sidebarOutlineView;
     
     @outlet                 CPScrollView                sidebarScrollView;
+    @outlet                 CPButtonBar                 sidebarButtonBar;
 }
 
 - (void)awakeFromCib
@@ -173,3 +174,25 @@
 
 @end
 
+@implementation OLSidebarController (CPSplitViewDelegate)
+
+- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
+{    
+    return proposedMin + 100.0;
+}
+
+- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
+{
+    return 300.0;
+}
+
+// Additional rect for CPButtonBar's handles
+- (CGRect)splitView:(CPSplitView)splitView additionalEffectiveRectOfDividerAtIndex:(int)dividerIndex
+{
+    var rect = [sidebarButtonBar frame];
+    var additionalWidth = 20.0;
+    var additionalRect = CGRectMake(rect.origin.x + rect.size.width - additionalWidth, rect.origin.y, additionalWidth, rect.size.height);
+    return additionalRect;
+}
+
+@end

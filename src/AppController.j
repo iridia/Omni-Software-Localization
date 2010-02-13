@@ -41,9 +41,6 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 {
     @outlet						CPWindow                theWindow;
     @outlet						CPSplitView             mainSplitView;
-    @outlet						CPView                  mainContentView;
-    @outlet						CPScrollView            sidebarScrollView;
-    @outlet						CPButtonBar             sidebarButtonBar;
 
     @outlet						OLSidebarController     sidebarController;
     @outlet						OLContentViewController contentViewController;
@@ -141,34 +138,6 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
     [alert setMessageText:message];
     [alert addButtonWithTitle:@"Close"];
     [alert runModal];
-}
-
-@end
-
-@implementation AppController (CPSplitViewDelegate)
-
-- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
-{    
-    return proposedMin + 100.0;
-}
-
-- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
-{
-    return 300.0;
-}
-
-// Additional rect for CPButtonBar's handles
-- (CGRect)splitView:(CPSplitView)splitView additionalEffectiveRectOfDividerAtIndex:(int)dividerIndex
-{
-    if (splitView === mainSplitView)
-    {
-        var rect = [sidebarButtonBar frame];
-        var additionalWidth = 20.0;
-        var additionalRect = CGRectMake(rect.origin.x + rect.size.width - additionalWidth, rect.origin.y, additionalWidth, rect.size.height);
-        return additionalRect;
-    }
-    
-    return CGRectMakeZero();
 }
 
 @end
