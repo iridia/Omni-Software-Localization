@@ -29,6 +29,7 @@
     [sidebarOutlineView setCornerView:nil];
     [sidebarOutlineView setDataSource:self];
     [sidebarOutlineView setDelegate:self];
+    // [sidebarOutlineView setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
 
     [sidebarScrollView setDocumentView:sidebarOutlineView];
 }
@@ -126,15 +127,15 @@
 
 @implementation OLSidebarViewItem : CPTextField
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if(self)
-    {
-        [self defaultSetup];
-    }
-    return self;
-}
+// - (id)initWithFrame:(CGRect)frame
+// {
+//     self = [super initWithFrame:frame];
+//     if(self)
+//     {
+//         [self defaultSetup];
+//     }
+//     return self;
+// }
 
 - (void)defaultSetup
 {    
@@ -143,10 +144,10 @@
     [self setValue:[CPColor colorWithHexString:@"333333"] forThemeAttribute:@"text-color"];
     [self setValue:[CPColor whiteColor] forThemeAttribute:@"text-color" inState:CPThemeStateHighlighted];
     [self setValue:[CPColor colorWithHexString:@"555555"] forThemeAttribute:@"text-color" inState:CPThemeStateInactive];
-    [self setValue:[CPFont boldSystemFontOfSize:12] forThemeAttribute:@"font" inState:CPThemeStateHighlighted];
+    [self setValue:[CPFont boldSystemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateHighlighted];
     [self setValue:[CPFont systemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateInactive];
-    [self setValue:[CPColor clearColor] forThemeAttribute:@"text-shadow-color"];
-    [self setValue:CGSizeMake(0, 0) forThemeAttribute:@"text-shadow-offset"];
+    // [self setValue:[CPColor clearColor] forThemeAttribute:@"text-shadow-color"];
+    // [self setValue:CGSizeMake(0, 0) forThemeAttribute:@"text-shadow-offset"];
     [self setVerticalAlignment:CPCenterVerticalTextAlignment];
 }
 
@@ -164,6 +165,8 @@
     {
         [self defaultSetup];
     }
+    
+    [self setValue:CPLineBreakByTruncatingTail forThemeAttribute:@"line-break-mode"];
     
     [super setObjectValue:anObjectValue];
 }
