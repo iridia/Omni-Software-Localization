@@ -8271,7 +8271,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("openPanel"), function 
 },["id"])]);
 }
 
-p;15;CPOutlineView.ji;15;CPTableColumn.ji;13;CPTableView.jc;33389;
+p;15;CPOutlineView.ji;15;CPTableColumn.ji;13;CPTableView.jc;32588;
 CPOutlineViewColumnDidMoveNotification = "CPOutlineViewColumnDidMoveNotification";
 CPOutlineViewColumnDidResizeNotification = "CPOutlineViewColumnDidResizeNotification";
 CPOutlineViewItemDidCollapseNotification = "CPOutlineViewItemDidCollapseNotification";
@@ -8687,27 +8687,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 {
     objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "postNotificationName:object:userInfo:", CPOutlineViewSelectionDidChangeNotification, self, nil);
 }
-},["void"]), new objj_method(sel_getUid("_updateHighlightWithOldRows:newRows:"), function $CPOutlineView___updateHighlightWithOldRows_newRows_(self, _cmd, oldRows, newRows)
-{ with(self)
-{
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTableView") }, "_updateHighlightWithOldRows:newRows:", oldRows, newRows);
-    for(var i = 0; i < objj_msgSend(_disclosureControlsForRows, "count"); i++)
-    {
-        if(objj_msgSend(oldRows, "containsIndex:", i))
-        {
-            objj_msgSend(_disclosureControlsForRows[i], "setSelected:", NO);
-        }
-    }
-    for(var i = 0; i < objj_msgSend(_disclosureControlsForRows, "count"); i++)
-    {
-        if(objj_msgSend(newRows, "containsIndex:", i))
-        {
-            objj_msgSend(_disclosureControlsForRows[i], "setSelected:", YES);
-        }
-    }
-    objj_msgSend(self, "reloadData");
-}
-},["void","CPIndexSet","CPIndexSet"])]);
+},["void"])]);
 }
 var _reloadItem = function( anOutlineView, anItem)
 {
@@ -8857,7 +8837,10 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPButton") }, "initWithFrame:", aFrame);
     if (self)
+    {
         objj_msgSend(self, "setBordered:", NO);
+        objj_msgSend(self, "setSelected:", NO);
+    }
     return self;
 }
 },["id","CGRect"]), new objj_method(sel_getUid("setState:"), function $CPDisclosureButton__setState_(self, _cmd, aState)
@@ -8895,10 +8878,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 },["void","CGRect"]), new objj_method(sel_getUid("fillColor"), function $CPDisclosureButton__fillColor(self, _cmd)
 { with(self)
 {
-    if(selected)
+    if(objj_msgSend(self, "hasThemeState:", CPThemeStateHighlighted))
+        return objj_msgSend(CPColor, "blackColor");
+    else if(selected)
         return objj_msgSend(CPColor, "whiteColor");
     else
-        return (objj_msgSend(self, "themeState") & CPThemeState("highlighted")) ? objj_msgSend(CPColor, "blackColor") : objj_msgSend(CPColor, "grayColor");
+        return objj_msgSend(CPColor, "grayColor");
 }
 },["CPColor"])]);
 }
@@ -13707,7 +13692,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["CGSize","CPFont","float"])]);
 }
 
-p;15;CPTableColumn.jI;25;Foundation/CPDictionary.jI;21;Foundation/CPObject.jI;29;Foundation/CPSortDescriptor.jI;21;Foundation/CPString.ji;19;CPTableHeaderView.jc;14539;
+p;15;CPTableColumn.jI;25;Foundation/CPDictionary.jI;21;Foundation/CPObject.jI;29;Foundation/CPSortDescriptor.jI;21;Foundation/CPString.ji;19;CPTableHeaderView.jc;14860;
 CPTableColumnNoResizing = 0;
 CPTableColumnAutoresizingMask = 1 << 0;
 CPTableColumnUserResizingMask = 1 << 1;
@@ -13749,7 +13734,9 @@ _disableResizingPosting = newValue;
         var textDataView = objj_msgSend(CPTextField, "new");
         objj_msgSend(textDataView, "setValue:forThemeAttribute:", objj_msgSend(CPColor, "colorWithHexString:", "333333"), "text-color");
         objj_msgSend(textDataView, "setValue:forThemeAttribute:inState:", objj_msgSend(CPColor, "whiteColor"), "text-color", CPThemeStateHighlighted);
+        objj_msgSend(textDataView, "setValue:forThemeAttribute:inState:", objj_msgSend(CPColor, "colorWithHexString:", "555555"), "text-color", CPThemeStateInactive);
         objj_msgSend(textDataView, "setValue:forThemeAttribute:inState:", objj_msgSend(CPFont, "boldSystemFontOfSize:", 12), "font", CPThemeStateHighlighted);
+        objj_msgSend(textDataView, "setValue:forThemeAttribute:inState:", objj_msgSend(CPFont, "systemFontOfSize:", 12.0), "font", CPThemeStateInactive);
         objj_msgSend(textDataView, "setVerticalAlignment:", CPCenterVerticalTextAlignment);
         objj_msgSend(self, "setDataView:", textDataView);
     }
@@ -14390,7 +14377,7 @@ _tableView = newValue;
 },["void","CGRect"])]);
 }
 
-p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;112213;
+p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;113217;
 CPTableViewColumnDidMoveNotification = "CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification = "CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification = "CPTableViewSelectionDidChangeNotification";
@@ -14873,7 +14860,35 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         }
     }
 }
-},["void","CPIndexSet","CPIndexSet"]), new objj_method(sel_getUid("_updateHighlightWithOldColumns:newColumns:"), function $CPTableView___updateHighlightWithOldColumns_newColumns_(self, _cmd, oldColumns, newColumns)
+},["void","CPIndexSet","CPIndexSet"]), new objj_method(sel_getUid("_updateRowsAsInactive"), function $CPTableView___updateRowsAsInactive(self, _cmd)
+{ with(self)
+{
+    for (var identifier in _dataViewsForTableColumns)
+    {
+        var dataViewsInTableColumn = _dataViewsForTableColumns[identifier];
+        count = dataViewsInTableColumn.length;
+        while (count--)
+        {
+            var view = dataViewsInTableColumn[count];
+            objj_msgSend(view, "setThemeState:", CPThemeStateInactive);
+        }
+    }
+}
+},["void"]), new objj_method(sel_getUid("_updateRowsAsActive"), function $CPTableView___updateRowsAsActive(self, _cmd)
+{ with(self)
+{
+    for (var identifier in _dataViewsForTableColumns)
+    {
+        var dataViewsInTableColumn = _dataViewsForTableColumns[identifier];
+        count = dataViewsInTableColumn.length;
+        while (count--)
+        {
+            var view = dataViewsInTableColumn[count];
+            objj_msgSend(view, "unsetThemeState:", CPThemeStateInactive);
+        }
+    }
+}
+},["void"]), new objj_method(sel_getUid("_updateHighlightWithOldColumns:newColumns:"), function $CPTableView___updateHighlightWithOldColumns_newColumns_(self, _cmd, oldColumns, newColumns)
 { with(self)
 {
     var firstExposedColumn = objj_msgSend(_exposedColumns, "firstIndex"),
@@ -15764,7 +15779,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 { with(self)
 {
     if(objj_msgSend(self, "hasThemeState:", CPThemeStateInactive))
-        objj_msgSend(objj_msgSend(CPColor, "grayColor"), "setFill");
+        objj_msgSend(objj_msgSend(CPColor, "secondarySelectedControlColor"), "setFill");
     else if (objj_msgSend(self, "selectionHighlightStyle") === CPTableViewSelectionHighlightStyleSourceList)
         objj_msgSend(objj_msgSend(CPColor, "selectionColorSourceView"), "setFill");
     else
@@ -15888,9 +15903,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         _trackingPointMovedOutOfClickSlop = NO;
     if (!(_implementedDataSourceMethods & CPTableViewDataSource_tableView_writeRowsWithIndexes_toPasteboard_))
         objj_msgSend(self, "_updateSelectionWithMouseAtRow:", row);
-    console.log(objj_msgSend(self, "window"));
-    console.log(objj_msgSend(objj_msgSend(self, "window"), "makeFirstResponder:", self));
-    objj_msgSend(self, "becomeFirstResponder");
+    objj_msgSend(objj_msgSend(self, "window"), "makeFirstResponder:", self);
     return YES;
 }
 },["BOOL","CGPoint"]), new objj_method(sel_getUid("trackMouse:"), function $CPTableView__trackMouse_(self, _cmd, anEvent)
@@ -16213,6 +16226,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 { with(self)
 {
     objj_msgSend(self, "unsetThemeState:", CPThemeStateInactive);
+    objj_msgSend(self, "_updateRowsAsActive");
     return YES;
 }
 },["BOOL"]), new objj_method(sel_getUid("acceptsFirstResponder"), function $CPTableView__acceptsFirstResponder(self, _cmd)
@@ -16224,6 +16238,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 { with(self)
 {
     objj_msgSend(self, "setThemeState:", CPThemeStateInactive);
+    objj_msgSend(self, "_updateRowsAsInactive");
     return YES;
 }
 },["BOOL"]), new objj_method(sel_getUid("keyDown:"), function $CPTableView__keyDown_(self, _cmd, anEvent)
@@ -29309,7 +29324,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
 },["CGRect","CGRect"])]);
 }
 
-p;10;CPWindow.jI;25;Foundation/CPCountedSet.jI;33;Foundation/CPNotificationCenter.jI;26;Foundation/CPUndoManager.ji;12;CGGeometry.ji;13;CPAnimation.ji;13;CPResponder.ji;10;CPScreen.ji;18;CPPlatformWindow.jc;75927;
+p;10;CPWindow.jI;25;Foundation/CPCountedSet.jI;33;Foundation/CPNotificationCenter.jI;26;Foundation/CPUndoManager.ji;12;CGGeometry.ji;13;CPAnimation.ji;13;CPResponder.ji;10;CPScreen.ji;18;CPPlatformWindow.jc;75856;
 CPBorderlessWindowMask = 0;
 CPTitledWindowMask = 1 << 0;
 CPClosableWindowMask = 1 << 1;
@@ -29833,9 +29848,10 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $CPWin
 },["BOOL"]), new objj_method(sel_getUid("makeFirstResponder:"), function $CPWindow__makeFirstResponder_(self, _cmd, aResponder)
 { with(self)
 {
+    if (_firstResponder == aResponder)
+        return YES;
     if(!objj_msgSend(_firstResponder, "resignFirstResponder"))
         return NO;
-    console.log(aResponder, objj_msgSend(aResponder, "acceptsFirstResponder"), objj_msgSend(aResponder, "becomeFirstResponder"));
     if(!aResponder || !objj_msgSend(aResponder, "acceptsFirstResponder") || !objj_msgSend(aResponder, "becomeFirstResponder"))
     {
         _firstResponder = self;

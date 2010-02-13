@@ -115,6 +115,7 @@
         object:self];
         
     [self unsetThemeState:CPThemeStateInactive];
+        [self _updateRowsAsActive];
 
     return YES;
 }
@@ -126,6 +127,7 @@
         object:self];   
         
     [self setThemeState:CPThemeStateInactive];
+    [self _updateRowsAsInactive];
     
     return YES;
 }
