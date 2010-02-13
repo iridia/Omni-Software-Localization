@@ -157,6 +157,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport]];
     		[self setSelectedGlossary:item];
     		[[[self glossariesView] tableView] reloadData];
+    		[[self glossariesView] setTitle:[item name]];
     	}
 	}
 	else
