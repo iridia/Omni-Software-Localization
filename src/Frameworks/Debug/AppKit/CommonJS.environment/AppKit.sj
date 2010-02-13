@@ -10433,7 +10433,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("visibleFrame"), functio
 },["CGRect"])]);
 }
 
-p;12;CPScroller.ji;11;CPControl.jc;23148;
+p;12;CPScroller.ji;11;CPControl.jc;23196;
 CPScrollerNoPart = 0;
 CPScrollerDecrementPage = 1;
 CPScrollerKnob = 2;
@@ -10766,6 +10766,7 @@ return _isVertical;
 { with(self)
 {
     objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPControl") }, "setFrameSize:", aSize);
+    objj_msgSend(self, "_calculateIsVertical");
     objj_msgSend(self, "checkSpaceForParts");
     objj_msgSend(self, "setNeedsLayout");
 }

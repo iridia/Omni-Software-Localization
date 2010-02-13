@@ -16,8 +16,7 @@ OLTableViewResignedFirstResponder = @"OLTableViewResignedFirstResponder";
     {
         var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame))];
         [scrollView setAutohidesScrollers:YES];
-        [scrollView setHasHorizontalScroller:NO];
-        [scrollView setHasVerticalScroller:NO]; // HACK : just getting rid of this ugliness until scrollview is fixed
+
         [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         
         tableView = [[CPTableView alloc] initWithFrame:CGRectMakeZero(0, 0, 500, 500)];
