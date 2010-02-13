@@ -8,22 +8,22 @@
  */
 @implementation OLResourceBundle : OLActiveRecord
 {
-	OLLanguage          _language   @accessors(property=language);
-	CPArray             _resources  @accessors(property=resources);
+	OLLanguage  language   @accessors;
+	CPArray     resources  @accessors;
 }
 
 
 + (id)resourceBundleFromJSON:(JSON)json
 {
-    var resources = [CPArray array];
+    var someResources = [CPArray array];
     
     for (var j = 0; j < json.resources.length; j++)
     {
         var resource = [OLResource resourceFromJSON:json.resources[j]];
-        [resources addObject:resource];
+        [someResources addObject:resource];
     }
     
-    return [[OLResourceBundle alloc] initWithResources:resources language:[OLLanguage languageFromLProj:json.name]]
+    return [[OLResourceBundle alloc] initWithResources:someResources language:[OLLanguage languageFromLProj:json.name]]
 }
 
 - (id)init
@@ -40,19 +40,19 @@
 {
 	if(self = [super init])
 	{
-		_language = aLanguage;
-		_resources = someResources;
+		language = aLanguage;
+		resources = someResources;
 	}
 	return self;
 }
 
 - (OLResourceBundle)clone
 {
-    var clone = [[OLResourceBundle alloc] initWithLanguage:[_language clone]];
+    var clone = [[OLResourceBundle alloc] initWithLanguage:[language clone]];
     
-    for(var i = 0; i < [_resources count]; i++)
+    for(var i = 0; i < [resources count]; i++)
     {
-        [clone insertObject:[[_resources objectAtIndex:i] clone] inResourcesAtIndex:i];
+        [clone insertObject:[[resources objectAtIndex:i] clone] inResourcesAtIndex:i];
     }
     
     return clone;
@@ -62,9 +62,9 @@
 {
     var result = [CPArray array];
     
-    for(var i = 0; i < [_resources count]; i++)
+    for(var i = 0; i < [resources count]; i++)
     {
-        [result addObjectsFromArray:[[_resources objectAtIndex:i] comments]];
+        [result addObjectsFromArray:[[resources objectAtIndex:i] comments]];
     }
     
     return result;
@@ -76,12 +76,12 @@
 
 - (void)insertObject:(OLResource)resource inResourcesAtIndex:(CPInteger)index
 {
-    [_resources insertObject:resource atIndex:index];
+    [resources insertObject:resource atIndex:index];
 }
 
 - (void)replaceObjectInResourcesAtIndex:(CPInteger)index withObject:(OLResource)resource
 {
-    [_resources replaceObjectAtIndex:index withObject:resource];
+    [resources replaceObjectAtIndex:index withObject:resource];
 }
 
 @end
@@ -97,8 +97,8 @@ var OLResourceBundleResourcesKey = @"OLResourceBundleResourcesKey";
     
     if (self)
     {
-        _language = [aCoder decodeObjectForKey:OLResourceBundleLanguageKey];
-        _resources = [aCoder decodeObjectForKey:OLResourceBundleResourcesKey];
+        language = [aCoder decodeObjectForKey:OLResourceBundleLanguageKey];
+        resources = [aCoder decodeObjectForKey:OLResourceBundleResourcesKey];
     }
     
     return self;
@@ -106,8 +106,8 @@ var OLResourceBundleResourcesKey = @"OLResourceBundleResourcesKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    [aCoder encodeObject:_language forKey:OLResourceBundleLanguageKey];
-    [aCoder encodeObject:_resources forKey:OLResourceBundleResourcesKey];
+    [aCoder encodeObject:language forKey:OLResourceBundleLanguageKey];
+    [aCoder encodeObject:resources forKey:OLResourceBundleResourcesKey];
 }
 
 @end

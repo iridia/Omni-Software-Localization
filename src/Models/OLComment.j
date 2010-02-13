@@ -1,7 +1,8 @@
-@import "OLActiveRecord.j"
+@import <Foundation/CPObject.j>
+
 @import "OLUser.j"
 
-@implementation OLComment : OLActiveRecord
+@implementation OLComment : CPObject
 {
 	CPString    content         @accessors;
 	CPDate      date            @accessors;

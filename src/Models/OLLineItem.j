@@ -1,7 +1,8 @@
-@import "OLActiveRecord.j"
+@import <Foundation/CPObject.j>
+
 @import "OLComment.j"
 
-@implementation OLLineItem : OLActiveRecord
+@implementation OLLineItem : CPObject
 {
 	CPString    comment		@accessors(readonly);
 	CPString    identifier 	@accessors(readonly);

@@ -7,6 +7,9 @@
     OLSidebarOutlineView    sidebarOutlineView;
     
     @outlet                 CPScrollView                sidebarScrollView;
+    @outlet                 CPButtonBar                 sidebarButtonBar;
+    
+    CGFloat                 maxYPositionOfSidebarItem;
 }
 
 - (void)awakeFromCib
@@ -29,8 +32,11 @@
     [sidebarOutlineView setCornerView:nil];
     [sidebarOutlineView setDataSource:self];
     [sidebarOutlineView setDelegate:self];
+    // [sidebarOutlineView setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
 
     [sidebarScrollView setDocumentView:sidebarOutlineView];
+    
+    maxYPositionOfSidebarItem = 100.0;
 }
 
 - (void)outlineView:(CPOutlineView)anOutlineView shouldSelectRow:(CPNumber)row
@@ -112,29 +118,64 @@
 
 - (id)outlineView:(CPOutlineView)outlineView objectValueForTableColumn:(CPTableColumn)tableColumn byItem:(id)item
 {
+    var objectValue = item;
+    
     if ([item respondsToSelector:@selector(sidebarName)])
     {
-        return [item sidebarName];
+        objectValue = [item sidebarName];
     }
-    else
+    
+    // Calculate and cache the max width
+    var fontWidth = [objectValue sizeWithFont:[[[outlineView outlineTableColumn] dataView] valueForThemeAttribute:@"font" inState:CPThemeStateHighlighted]].width
+    fontWidth += 2 * [outlineView indentationPerLevel]; // Add the indentation level (this is assumed to always be 2)
+    fontWidth += 5; // Add some padding
+    
+    if (fontWidth > maxYPositionOfSidebarItem)
     {
-        return item;  
+        maxYPositionOfSidebarItem = fontWidth;
     }
+    
+    return objectValue;
 }
 
 @end
 
+
+@implementation OLSidebarController (CPSplitViewDelegate)
+
+- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
+{    
+    return proposedMin + maxYPositionOfSidebarItem;
+}
+
+- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
+{
+    return maxYPositionOfSidebarItem + 200.0;
+}
+
+// Additional rect for CPButtonBar's handles
+- (CGRect)splitView:(CPSplitView)splitView additionalEffectiveRectOfDividerAtIndex:(int)dividerIndex
+{
+    var rect = [sidebarButtonBar frame];
+    var additionalWidth = 20.0;
+    var additionalRect = CGRectMake(rect.origin.x + rect.size.width - additionalWidth, rect.origin.y, additionalWidth, rect.size.height);
+    return additionalRect;
+}
+
+@end
+
+
 @implementation OLSidebarViewItem : CPTextField
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if(self)
-    {
-        [self defaultSetup];
-    }
-    return self;
-}
+// - (id)initWithFrame:(CGRect)frame
+// {
+//     self = [super initWithFrame:frame];
+//     if(self)
+//     {
+//         [self defaultSetup];
+//     }
+//     return self;
+// }
 
 - (void)defaultSetup
 {    
@@ -143,8 +184,10 @@
     [self setValue:[CPColor colorWithHexString:@"333333"] forThemeAttribute:@"text-color"];
     [self setValue:[CPColor whiteColor] forThemeAttribute:@"text-color" inState:CPThemeStateHighlighted];
     [self setValue:[CPColor colorWithHexString:@"555555"] forThemeAttribute:@"text-color" inState:CPThemeStateInactive];
-    [self setValue:[CPFont boldSystemFontOfSize:12] forThemeAttribute:@"font" inState:CPThemeStateHighlighted];
+    [self setValue:[CPFont boldSystemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateHighlighted];
     [self setValue:[CPFont systemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateInactive];
+    // [self setValue:[CPColor clearColor] forThemeAttribute:@"text-shadow-color"];
+    // [self setValue:CGSizeMake(0, 0) forThemeAttribute:@"text-shadow-offset"];
     [self setVerticalAlignment:CPCenterVerticalTextAlignment];
 }
 
@@ -153,16 +196,19 @@
     if(anObjectValue === "Projects" || anObjectValue === "Glossaries" || anObjectValue === "Community")
     {
         [self setTextTransformationStyle:CPTextTransformationStyleUppercase];
-        [self setFont:[CPFont boldSystemFontOfSize:10.0]];
-        [self setTextColor:[CPColor colorWithHexString:@"555555"]];
+        [self setFont:[CPFont boldSystemFontOfSize:11.0]];
+        [self setTextColor:[CPColor colorWithHexString:@"606060"]];
+        // [self setValue:[CPColor whiteColor] forThemeAttribute:@"text-shadow-color"];
+        // [self setValue:CGSizeMake(-1, 1) forThemeAttribute:@"text-shadow-offset"];
     }
     else
     {
         [self defaultSetup];
     }
     
+    [self setValue:CPLineBreakByTruncatingTail forThemeAttribute:@"line-break-mode"];
+    
     [super setObjectValue:anObjectValue];
 }
 
 @end
-
