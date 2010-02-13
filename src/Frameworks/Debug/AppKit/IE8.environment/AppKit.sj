@@ -80,7 +80,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("run"), function $_CPDi
 }
 objj_msgSend(_CPDisplayServer, "run");
 
-p;21;_CPImageAndTextView.jI;21;Foundation/CPString.ji;9;CPColor.ji;8;CPFont.ji;9;CPImage.ji;13;CPTextField.ji;8;CPView.jc;24484;
+p;21;_CPImageAndTextView.jI;21;Foundation/CPString.ji;9;CPColor.ji;8;CPFont.ji;9;CPImage.ji;13;CPTextField.ji;8;CPView.jc;24504;
 CPTopVerticalTextAlignment = 1,
 CPCenterVerticalTextAlignment = 2,
 CPBottomVerticalTextAlignment = 3;
@@ -394,6 +394,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:control:"
     if (hasDOMTextElement)
     {
         textStyle.textTransform = objj_msgSend(self, "stringForTransformationStyle");
+        if(shadowStyle)
+            shadowStyle.textTransform = objj_msgSend(self, "stringForTransformationStyle");
         if (_flags & _CPImageAndTextViewTextChangedFlag)
             if (CPFeatureIsCompatible(CPJavascriptInnerTextFeature))
             {
@@ -463,7 +465,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:control:"
                 }
                 shadowStyle.whiteSpace = textStyle.whiteSpace;
                 shadowStyle.textOverflow = textStyle.textOverflow;
-                shadowStyle.textTransform = objj_msgSend(self, "stringForTransformationStyle");
             }
         }
     }
