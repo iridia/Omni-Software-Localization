@@ -19,6 +19,7 @@
     [sidebarScrollView setHasHorizontalScroller:NO];
     var onlyColumn = [[CPTableColumn alloc] initWithIdentifier:@"OnlyColumn"];
     [onlyColumn setWidth:CGRectGetWidth([sidebarScrollView bounds])];
+    [onlyColumn setDataView:[[OLSidebarViewItem alloc] initWithFrame:CGRectMakeZero()]];
     
     sidebarOutlineView = [[CPOutlineView alloc] initWithFrame:[sidebarScrollView bounds]];
     [sidebarOutlineView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
@@ -30,6 +31,11 @@
     [sidebarOutlineView setDelegate:self];
 
     [sidebarScrollView setDocumentView:sidebarOutlineView];
+}
+
+- (void)outlineView:(CPOutlineView)anOutlineView shouldSelectRow:(CPNumber)row
+{
+    return [anOutlineView levelForRow:row] > 0;
 }
 
 - (void)addSidebarItem:(id)anItem
@@ -117,3 +123,46 @@
 }
 
 @end
+
+@implementation OLSidebarViewItem : CPTextField
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if(self)
+    {
+        [self defaultSetup];
+    }
+    return self;
+}
+
+- (void)defaultSetup
+{    
+    [self setValue:CPTextTransformationStyleNormal forThemeAttribute:@"text-transformation-style"];
+    [self setValue:[CPFont systemFontOfSize:12.0] forThemeAttribute:@"font"];
+    [self setValue:[CPColor colorWithHexString:@"333333"] forThemeAttribute:@"text-color"];
+    [self setValue:[CPColor whiteColor] forThemeAttribute:@"text-color" inState:CPThemeStateHighlighted];
+    [self setValue:[CPColor colorWithHexString:@"555555"] forThemeAttribute:@"text-color" inState:CPThemeStateInactive];
+    [self setValue:[CPFont boldSystemFontOfSize:12] forThemeAttribute:@"font" inState:CPThemeStateHighlighted];
+    [self setValue:[CPFont systemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateInactive];
+    [self setVerticalAlignment:CPCenterVerticalTextAlignment];
+}
+
+- (void)setObjectValue:(id)anObjectValue
+{
+    if(anObjectValue === "Projects" || anObjectValue === "Glossaries" || anObjectValue === "Community")
+    {
+        [self setTextTransformationStyle:CPTextTransformationStyleUppercase];
+        [self setFont:[CPFont boldSystemFontOfSize:10.0]];
+        [self setTextColor:[CPColor colorWithHexString:@"555555"]];
+    }
+    else
+    {
+        [self defaultSetup];
+    }
+    
+    [super setObjectValue:anObjectValue];
+}
+
+@end
+

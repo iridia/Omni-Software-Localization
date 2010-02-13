@@ -80,10 +80,12 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("run"), function $_CPDi
 }
 objj_msgSend(_CPDisplayServer, "run");
 
-p;21;_CPImageAndTextView.jI;21;Foundation/CPString.ji;9;CPColor.ji;8;CPFont.ji;9;CPImage.ji;13;CPTextField.ji;8;CPView.jc;23355;
+p;21;_CPImageAndTextView.jI;21;Foundation/CPString.ji;9;CPColor.ji;8;CPFont.ji;9;CPImage.ji;13;CPTextField.ji;8;CPView.jc;24484;
 CPTopVerticalTextAlignment = 1,
 CPCenterVerticalTextAlignment = 2,
 CPBottomVerticalTextAlignment = 3;
+CPTextTransformationStyleNormal = 0;
+CPTextTransformationStyleUppercase = 1;
 var _CPimageAndTextViewFrameSizeChangedFlag = 1 << 0,
     _CPImageAndTextViewImageChangedFlag = 1 << 1,
     _CPImageAndTextViewTextChangedFlag = 1 << 2,
@@ -98,7 +100,7 @@ var _CPimageAndTextViewFrameSizeChangedFlag = 1 << 0,
 var HORIZONTAL_MARGIN = 3.0,
     VERTICAL_MARGIN = 5.0;
 {var the_class = objj_allocateClassPair(CPView, "_CPImageAndTextView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_alignment"), new objj_ivar("_verticalAlignment"), new objj_ivar("_lineBreakMode"), new objj_ivar("_textColor"), new objj_ivar("_font"), new objj_ivar("_textShadowColor"), new objj_ivar("_textShadowOffset"), new objj_ivar("_imagePosition"), new objj_ivar("_imageScaling"), new objj_ivar("_image"), new objj_ivar("_text"), new objj_ivar("_textSize"), new objj_ivar("_flags"), new objj_ivar("_DOMImageElement"), new objj_ivar("_DOMTextElement"), new objj_ivar("_DOMTextShadowElement")]);
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_alignment"), new objj_ivar("_verticalAlignment"), new objj_ivar("_lineBreakMode"), new objj_ivar("_textColor"), new objj_ivar("_font"), new objj_ivar("_textShadowColor"), new objj_ivar("_textShadowOffset"), new objj_ivar("_textTransformationStyle"), new objj_ivar("_imagePosition"), new objj_ivar("_imageScaling"), new objj_ivar("_image"), new objj_ivar("_text"), new objj_ivar("_textSize"), new objj_ivar("_flags"), new objj_ivar("_DOMImageElement"), new objj_ivar("_DOMTextElement"), new objj_ivar("_DOMTextShadowElement")]);
 objj_registerClassPair(the_class);
 objj_addClassForBundle(the_class, objj_getBundleWithPath(OBJJ_CURRENT_BUNDLE.path));
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:control:"), function $_CPImageAndTextView__initWithFrame_control_(self, _cmd, aFrame, aControl)
@@ -314,6 +316,22 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:control:"
 {
     return _text;
 }
+},["CPString"]), new objj_method(sel_getUid("setTextTransformationStyle:"), function $_CPImageAndTextView__setTextTransformationStyle_(self, _cmd, transformationStyle)
+{ with(self)
+{
+    _textTransformationStyle = transformationStyle;
+    _DOMElement.style.textTransform = objj_msgSend(self, "stringForTransformationStyle");
+}
+},["void","CPTextTransformationStyle"]), new objj_method(sel_getUid("textTransformationStyle"), function $_CPImageAndTextView__textTransformationStyle(self, _cmd)
+{ with(self)
+{
+    return _textTransformationStyle;
+}
+},["CPTextTransformationStyle"]), new objj_method(sel_getUid("stringForTransformationStyle"), function $_CPImageAndTextView__stringForTransformationStyle(self, _cmd)
+{ with(self)
+{
+    return _textTransformationStyle === CPTextTransformationStyleUppercase ? "uppercase" : "none";s
+}
 },["CPString"]), new objj_method(sel_getUid("layoutSubviews"), function $_CPImageAndTextView__layoutSubviews(self, _cmd)
 { with(self)
 {
@@ -375,6 +393,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:control:"
     var shadowStyle = hasDOMTextShadowElement ? _DOMTextShadowElement.style : nil;
     if (hasDOMTextElement)
     {
+        textStyle.textTransform = objj_msgSend(self, "stringForTransformationStyle");
         if (_flags & _CPImageAndTextViewTextChangedFlag)
             if (CPFeatureIsCompatible(CPJavascriptInnerTextFeature))
             {
@@ -444,6 +463,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:control:"
                 }
                 shadowStyle.whiteSpace = textStyle.whiteSpace;
                 shadowStyle.textOverflow = textStyle.textOverflow;
+                shadowStyle.textTransform = objj_msgSend(self, "stringForTransformationStyle");
             }
         }
     }
@@ -5002,7 +5022,7 @@ else
     CPRedoKeyEquivalentModifierMask = CPControlKeyMask;
 }
 
-p;11;CPControl.ji;8;CPFont.ji;10;CPShadow.ji;8;CPView.jc;24816;
+p;11;CPControl.ji;8;CPFont.ji;10;CPShadow.ji;8;CPView.jc;25444;
 CPLeftTextAlignment = 0;
 CPRightTextAlignment = 1;
 CPCenterTextAlignment = 2;
@@ -5359,6 +5379,12 @@ _sendsActionOnEndEditing = newValue;
 },["void","id"]), new objj_method(sel_getUid("imageScaling"), function $CPControl__imageScaling(self, _cmd)
 { with(self)
 {return objj_msgSend(self, "valueForThemeAttribute:", "image-scaling");}
+},["id"]), new objj_method(sel_getUid("setTextTransformationStyle:"), function $CPControl__setTextTransformationStyle_(self, _cmd, aValue)
+{ with(self)
+{objj_msgSend(self, "setValue:forThemeAttribute:", aValue, "text-transformation-style");}
+},["void","id"]), new objj_method(sel_getUid("textTransformationStyle"), function $CPControl__textTransformationStyle(self, _cmd)
+{ with(self)
+{return objj_msgSend(self, "valueForThemeAttribute:", "text-transformation-style");}
 },["id"]), new objj_method(sel_getUid("setEnabled:"), function $CPControl__setEnabled_(self, _cmd, isEnabled)
 { with(self)
 {
@@ -5404,7 +5430,8 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("themeAttributes"), fun
                                                 CPImageLeft,
                                                 CPScaleToFit,
                                                 { width:0.0, height:0.0 },
-                                                { width:-1.0, height:-1.0 }], ["alignment",
+                                                { width:-1.0, height:-1.0 },
+                                                CPTextTransformationStyleNormal], ["alignment",
                                                 "vertical-alignment",
                                                 "line-break-mode",
                                                 "text-color",
@@ -5414,7 +5441,8 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("themeAttributes"), fun
                                                 "image-position",
                                                 "image-scaling",
                                                 "min-size",
-                                                "max-size"]);
+                                                "max-size",
+                                                "text-transformation-style"]);
 }
 },["CPDictionary"])]);
 }
@@ -8537,7 +8565,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("openPanel"), function 
 },["id"])]);
 }
 
-p;15;CPOutlineView.ji;15;CPTableColumn.ji;13;CPTableView.jc;32588;
+p;15;CPOutlineView.ji;15;CPTableColumn.ji;13;CPTableView.jc;34141;
 CPOutlineViewColumnDidMoveNotification = "CPOutlineViewColumnDidMoveNotification";
 CPOutlineViewColumnDidResizeNotification = "CPOutlineViewColumnDidResizeNotification";
 CPOutlineViewItemDidCollapseNotification = "CPOutlineViewItemDidCollapseNotification";
@@ -8846,7 +8874,23 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
     }
     objj_msgSend(self, "selectRowIndexes:byExtendingSelection:", indexes, NO);
 }
-},["void","id"]), new objj_method(sel_getUid("moveRight:"), function $CPOutlineView__moveRight_(self, _cmd, sender)
+},["void","id"]), new objj_method(sel_getUid("selectRowIndexes:byExtendingSelection:"), function $CPOutlineView__selectRowIndexes_byExtendingSelection_(self, _cmd, rows, shouldExtendSelection)
+{ with(self)
+{
+    if(_outlineViewDelegate && objj_msgSend(_outlineViewDelegate, "respondsToSelector:", sel_getUid("outlineView:shouldSelectRow:")))
+    {
+        var rowsToCheck = objj_msgSend(rows, "copy");
+        while(objj_msgSend(rowsToCheck, "firstIndex") !== CPNotFound)
+        {
+            var firstIndex = objj_msgSend(rowsToCheck, "firstIndex");
+            if(!objj_msgSend(_outlineViewDelegate, "outlineView:shouldSelectRow:", self, firstIndex))
+                objj_msgSend(rows, "removeIndex:", firstIndex);
+            objj_msgSend(rowsToCheck, "removeIndex:", firstIndex);
+        }
+    }
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTableView") }, "selectRowIndexes:byExtendingSelection:", rows, shouldExtendSelection);
+}
+},["void","CPIndexSet","BOOL"]), new objj_method(sel_getUid("moveRight:"), function $CPOutlineView__moveRight_(self, _cmd, sender)
 { with(self)
 {
     for(var i = 0; i < objj_msgSend(_itemsForRows, "count"); i++)
@@ -8861,7 +8905,17 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         }
     }
 }
-},["void","id"]), new objj_method(sel_getUid("_loadDataViewsInRows:columns:"), function $CPOutlineView___loadDataViewsInRows_columns_(self, _cmd, rows, columns)
+},["void","id"]), new objj_method(sel_getUid("delegateHasShouldSelectRow"), function $CPOutlineView__delegateHasShouldSelectRow(self, _cmd)
+{ with(self)
+{
+    return _outlineViewDelegate && objj_msgSend(_outlineViewDelegate, "respondsToSelector:", sel_getUid("outlineView:shouldSelectRow:"));
+}
+},["BOOL"]), new objj_method(sel_getUid("shouldSelectRow:"), function $CPOutlineView__shouldSelectRow_(self, _cmd, row)
+{ with(self)
+{
+    return objj_msgSend(self, "delegateHasShouldSelectRow") && objj_msgSend(_outlineViewDelegate, "outlineView:shouldSelectRow:", self, row);
+}
+},["BOOL","CPNumber"]), new objj_method(sel_getUid("_loadDataViewsInRows:columns:"), function $CPOutlineView___loadDataViewsInRows_columns_(self, _cmd, rows, columns)
 { with(self)
 {
     objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTableView") }, "_loadDataViewsInRows:columns:", rows, columns);
@@ -14711,7 +14765,7 @@ _tableView = newValue;
 },["void","CGRect"])]);
 }
 
-p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;113217;
+p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;113570;
 CPTableViewColumnDidMoveNotification = "CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification = "CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification = "CPTableViewSelectionDidChangeNotification";
@@ -16536,7 +16590,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         while (indexCount--)
         {
             var index = indexArray[indexCount];
-            if (!objj_msgSend(_delegate, "tableView:shouldSelectRow:", self, index))
+            if (!objj_msgSend(self, "shouldSelectRow:", index))
                 objj_msgSend(newSelection, "removeIndex:", index);
         }
     }
@@ -16602,13 +16656,13 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         if(objj_msgSend(self, "numberOfRows") > 0)
             var i = 0;
     }
-    if(_implementedDelegateMethods & CPTableViewDelegate_tableView_shouldSelectRow_)
+    if(objj_msgSend(self, "delegateHasShouldSelectRow"))
     {
-        while((!objj_msgSend(_delegate, "tableView:shouldSelectRow:", self, i)) && i<objj_msgSend(self, "numberOfRows"))
+        while((!objj_msgSend(self, "shouldSelectRow:", i)) && i<objj_msgSend(self, "numberOfRows"))
         {
             i++;
         }
-         if(!objj_msgSend(_delegate, "tableView:shouldSelectRow:", self, i))
+         if(!objj_msgSend(self, "shouldSelectRow:", i))
              return;
     }
     objj_msgSend(self, "selectRowIndexes:byExtendingSelection:", objj_msgSend(CPIndexSet, "indexSetWithIndex:", i), extend);
@@ -16637,20 +16691,30 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         if(objj_msgSend(self, "numberOfRows") > 0)
             var i = objj_msgSend(self, "numberOfRows") - 1;
      }
-     if(_implementedDelegateMethods & CPTableViewDelegate_tableView_shouldSelectRow_)
+     if(objj_msgSend(self, "delegateHasShouldSelectRow"))
      {
-          while((!objj_msgSend(_delegate, "tableView:shouldSelectRow:", self, i)) && i > 0)
+          while((!objj_msgSend(self, "shouldSelectRow:", i)) && i > 0)
           {
               i--;
           }
-           if(!objj_msgSend(_delegate, "tableView:shouldSelectRow:", self, i))
+           if(!objj_msgSend(self, "shouldSelectRow:", i))
                return;
      }
      objj_msgSend(self, "selectRowIndexes:byExtendingSelection:", objj_msgSend(CPIndexSet, "indexSetWithIndex:", i), extend);
      if(i >= 0)
         objj_msgSend(self, "scrollRowToVisible:", i);
 }
-},["void","id"]), new objj_method(sel_getUid("deleteBackward:"), function $CPTableView__deleteBackward_(self, _cmd, sender)
+},["void","id"]), new objj_method(sel_getUid("delegateHasShouldSelectRow"), function $CPTableView__delegateHasShouldSelectRow(self, _cmd)
+{ with(self)
+{
+    return _implementedDelegateMethods & CPTableViewDelegate_tableView_shouldSelectRow_;
+}
+},["BOOL"]), new objj_method(sel_getUid("shouldSelectRow:"), function $CPTableView__shouldSelectRow_(self, _cmd, row)
+{ with(self)
+{
+    return objj_msgSend(self, "delegateHasShouldSelectRow") && objj_msgSend(_delegate, "tableView:shouldSelectRow:", self, row);
+}
+},["BOOL","CPNumber"]), new objj_method(sel_getUid("deleteBackward:"), function $CPTableView__deleteBackward_(self, _cmd, sender)
 { with(self)
 {
     if(objj_msgSend(_delegate, "respondsToSelector:",  sel_getUid("tableViewDeleteKeyPressed:")))
@@ -17157,7 +17221,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["void","CPCoder"])]);
 }
 
-p;13;CPTextField.ji;11;CPControl.ji;17;CPStringDrawing.ji;17;CPCompatibility.jc;39863;
+p;13;CPTextField.ji;11;CPControl.ji;17;CPStringDrawing.ji;17;CPCompatibility.jc;40012;
 CPLineBreakByWordWrapping = 0;
 CPLineBreakByCharWrapping = 1;
 CPLineBreakByClipping = 2;
@@ -17840,6 +17904,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("_inputElement"), functi
         objj_msgSend(contentView, "setLineBreakMode:", objj_msgSend(self, "currentValueForThemeAttribute:", "line-break-mode"));
         objj_msgSend(contentView, "setTextShadowColor:", objj_msgSend(self, "currentValueForThemeAttribute:", "text-shadow-color"));
         objj_msgSend(contentView, "setTextShadowOffset:", objj_msgSend(self, "currentValueForThemeAttribute:", "text-shadow-offset"));
+        objj_msgSend(contentView, "setTextTransformationStyle:", objj_msgSend(self, "currentValueForThemeAttribute:", "text-transformation-style"));
     }
 }
 },["void"])]);
