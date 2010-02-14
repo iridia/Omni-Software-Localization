@@ -157,17 +157,22 @@
 - (void)defaultSetup
 {    
     [self setValue:CPTextTransformationStyleNormal forThemeAttribute:@"text-transformation-style"];
+    
     [self setValue:[CPFont systemFontOfSize:12.0] forThemeAttribute:@"font"];
+    [self setValue:[CPFont boldSystemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateHighlighted];
+    [self setValue:[CPFont systemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateInactive];
+    
     [self setValue:[CPColor colorWithHexString:@"333333"] forThemeAttribute:@"text-color"];
     [self setValue:[CPColor whiteColor] forThemeAttribute:@"text-color" inState:CPThemeStateHighlighted];
     [self setValue:[CPColor colorWithHexString:@"555555"] forThemeAttribute:@"text-color" inState:CPThemeStateInactive];
-    [self setValue:[CPFont boldSystemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateHighlighted];
-    [self setValue:[CPFont systemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateInactive];
+    
     [self setValue:[CPColor clearColor] forThemeAttribute:@"text-shadow-color"];
     [self setValue:[CPColor blackColor] forThemeAttribute:@"text-shadow-color" inState:CPThemeStateHighlighted];
     [self setValue:[CPColor clearColor] forThemeAttribute:@"text-shadow-color" inState:CPThemeStateInactive];
+    
     [self setValue:CGSizeMake(0, 0) forThemeAttribute:@"text-shadow-offset"];
     [self setValue:CGSizeMake(0, 1) forThemeAttribute:@"text-shadow-offset" inState:CPThemeStateHighlighted];
+    
     [self setVerticalAlignment:CPCenterVerticalTextAlignment];
 }
 
@@ -175,9 +180,9 @@
 {
     if(anObjectValue === "Projects" || anObjectValue === "Glossaries" || anObjectValue === "Community")
     {
-        [self setTextTransformationStyle:CPTextTransformationStyleUppercase];
-        [self setFont:[CPFont boldSystemFontOfSize:11.0]];
-        [self setTextColor:[CPColor colorWithHexString:@"606060"]];
+        [self setValue:CPTextTransformationStyleUppercase forThemeAttribute:@"text-transformation-style"];
+        [self setValue:[CPFont boldSystemFontOfSize:11.0] forThemeAttribute:@"font"];
+        [self setValue:[CPColor colorWithHexString:@"7988A2"] forThemeAttribute:@"text-color"];
         [self setValue:[CPColor whiteColor] forThemeAttribute:@"text-shadow-color"];
         [self setValue:CGSizeMake(0, 1) forThemeAttribute:@"text-shadow-offset"];
     }
