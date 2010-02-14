@@ -105,6 +105,20 @@
     [self loadProjects];
 }
 
+- (CPArray)projectsMatchingString:(CPString)aName
+{    
+    var result = [CPArray array];
+    var searchValue = [[searchView searchField] stringValue];
+    for(var i = 0; i < [projects count]; i++)
+    {
+        if(!searchValue || searchValue === "" || [[[projects objectAtIndex:i] name] hasPrefix:searchValue])
+        {
+            [result addObject:[projects objectAtIndex:i]];
+        }
+    }
+    return result;
+}
+
 @end
 
 @implementation OLProjectSearchController (OwnerDataSource)
@@ -127,7 +141,7 @@
 {
     if(tableView === [searchView allProjectsTableView])
     {
-        return [projects count];
+        return [[self projectsMatchingString:[[searchView searchField] stringValue]] count];
     }
     
     if (tableView === [projectView resourcesTableView])
@@ -148,13 +162,14 @@
     var projectTableView = [searchView allProjectsTableView];
     if(tableView === projectTableView)
     {
+        var object = [[self projectsMatchingString:[[searchView searchField] stringValue]] objectAtIndex:row];
         if([tableColumn identifier] === @"ProjectName")
         {
-            return [[projects objectAtIndex:row] name];
+            return [object name];
         }
         else if ([tableColumn identifier] === @"TotalVotes")
         {
-            return [[projects objectAtIndex:row] totalOfAllVotes];
+            return [object totalOfAllVotes];
         }
     }
     

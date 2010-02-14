@@ -108,11 +108,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
     {
         [resourceBundleController selectLineItemAtIndex:selectedRow];
     }
-    
-    if (tableView === [dashboardView subscribers])
-    {
-        
-    }
 }
 
 - (void)lineItemsTableViewDoubleClick:(CPTableView)tableView
@@ -354,7 +349,7 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
             [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
             [projectView setTitle:[[self selectedProject] name]];
             [projectView reloadAllData];
-            [dashboardView reloadData:self];
+            if(dashboardView) { [dashboardView reloadData:self]; }
         }
 	}
 	else

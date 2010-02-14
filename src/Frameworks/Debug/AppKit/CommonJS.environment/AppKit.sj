@@ -14429,7 +14429,7 @@ _tableView = newValue;
 },["void","CGRect"])]);
 }
 
-p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;113363;
+p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;113495;
 CPTableViewColumnDidMoveNotification = "CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification = "CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification = "CPTableViewSelectionDidChangeNotification";
@@ -14921,8 +14921,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         count = dataViewsInTableColumn.length;
         while (count--)
         {
-            var view = dataViewsInTableColumn[count];
-            objj_msgSend(view, "setThemeState:", CPThemeStateInactive);
+            if(objj_msgSend(objj_msgSend(self, "selectedRowIndexes"), "containsIndex:", count))
+            {
+                var view = dataViewsInTableColumn[count];
+                objj_msgSend(view, "setThemeState:", CPThemeStateInactive);
+            }
         }
     }
 }
