@@ -1,0 +1,3 @@
+# Upload An Application
+
+To upload an application into Localize, you must first [login](login.html).  If you are already logged in, click on the "File" option on the menu bar at the top of your screen.  Select the option "New".  (Alternatively, you can press "Command+N" to open this window.)  Select the left button by clicking on it, indicating that you wish to upload an application to the system.  When the file browser opens, navigate to the file you wish to upload and double-click it.  The upload may take a few moments, but when it finishes, the project will be shown in the sidebar under the "Projects" disclosure.

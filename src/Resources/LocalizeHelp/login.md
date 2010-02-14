@@ -1,0 +1,3 @@
+# Login
+
+To login to Localize, simply click the blue icon in the upper-right hand corner of the application, which is labeled "Login/Register."  This will bring up a window that will prompt for your username and password, which you would have previously set upon [registering.](register.html)  Upon entering your username and password, click the "Login" button on the newly created window.  If there is an error with the information you provided, you will be notified, and asked to re-enter your login information.  Otherwise, the login window will disappear and you will have access to Localize.

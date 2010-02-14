@@ -1,0 +1,3 @@
+# Register 
+
+To register with Localize, simply click the blue icon in the upper-right hand corner of the application labeled "Login/Register." This will bring up a window for login.  By clicking the button in the bottom-left hand corner of this new window, Localize will prompt for your user information.  Enter your desired registration information in the window, and when finished, click on the "Register" button.  The application will alert you if there was an error with your information, upon which you will need to alter the data and click on "Register" again.  If successful, the window will disappear, and you will be logged in. 
