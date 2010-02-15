@@ -16,6 +16,8 @@
     {
         searchView = [[OLProjectSearchView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
         [searchView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [[searchView allProjectsTableView] setTarget:self];
+        [[searchView allProjectsTableView] setDoubleAction:@selector(didDoubleClickSearchItem:)];
         
         projectView = [[OLProjectResultView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
         [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
@@ -186,7 +188,7 @@
 
 }
 
-- (void)tableViewDidDoubleClickItem:(CPTableView)aTableView
+- (void)didDoubleClickSearchItem:(CPTableView)aTableView
 {
     if(aTableView === [searchView allProjectsTableView])
     {
@@ -200,9 +202,7 @@
                 ownerName = [user email];
             
                 [self setSelectedProject:project];
-    
                 [projectView setBackButtonDelegate:self];
-                
                 [projectView reloadAllData];
                 
                 // tell content view controller to update view
@@ -214,8 +214,6 @@
         }];
         return;
     }
-    
-    [super performSelector:[super doubleAction] withObject:aTableView];
 }
 
 - (SEL)doubleAction

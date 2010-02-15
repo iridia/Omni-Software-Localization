@@ -9,8 +9,6 @@ var OLCommunityInboxItem = @"Inbox";
 var OLCommunitySearchItem = @"Search";
 var OLCommunityProfileItem = @"Profile";
 
-CPOutlineViewSelectionDidChangeThroughProfileNotification = @"CPOutlineViewSelectionDidChangeThroughProfileNotification";
-
 // Manages the community items in the sidebar and their respective controllers
 @implementation OLCommunityController : CPObject
 {
@@ -115,7 +113,7 @@ CPOutlineViewSelectionDidChangeThroughProfileNotification = @"CPOutlineViewSelec
             object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport]];
 
 	    [self setSelectedItem:item];
-	    
+
 	    // tell content view controller to update view
 		[[CPNotificationCenter defaultCenter]
 		  postNotificationName:OLContentViewControllerShouldUpdateContentView
