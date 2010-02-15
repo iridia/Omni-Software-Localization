@@ -108,10 +108,7 @@ var OLCommunityProfileItem = @"Profile";
 	var parent = [outlineView parentForItem:item];
 
 	if (parent === self)
-	{	    
-        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldDisableItemsNotification" 
-            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport]];
-
+	{
 	    [self setSelectedItem:item];
 
 	    // tell content view controller to update view

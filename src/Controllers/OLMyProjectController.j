@@ -1,5 +1,13 @@
 @import "OLProjectController.j"
 @import "../Views/OLProjectDashboardView.j"
+@import "OLUploadController.j"
+
+// Notifications
+OLProjectShouldCreateBundleNotification = @"OLProjectShouldCreateBundleNotification";
+OLProjectShouldDeleteBundleNotification = @"OLProjectShouldDeleteBundleNotification";
+OLProjectShouldDownloadNotification = @"OLProjectShouldDownloadNotification";
+OLProjectShouldBroadcastMessage = @"OLProjectShouldBroadcastMessage";
+OLProjectShouldImportNotification = @"OLProjectShouldImportNotification";
 
 @implementation OLMyProjectController : OLProjectController
 {
@@ -46,11 +54,13 @@
 }
 
 - (void)registerForNotifications
-{   
+{
+    [super registerForNotifications];
+    
 	[[CPNotificationCenter defaultCenter]
 		addObserver:self
 		selector:@selector(didReceiveParseServerResponseNotification:)
-		name:@"OLUploadControllerDidParseServerResponse"
+		name:OLUploadControllerDidParseServerResponse
 		object:nil];
 
 	[[CPNotificationCenter defaultCenter]
@@ -58,12 +68,6 @@
 		selector:@selector(didReceiveOutlineViewSelectionDidChangeNotification:)
 		name:CPOutlineViewSelectionDidChangeNotification
 		object:nil];
-
-	[[CPNotificationCenter defaultCenter]
-	    addObserver:self
-	    selector:@selector(didReceiveProjectDidChangeNotification:)
-	    name:@"OLProjectDidChangeNotification"
-	    object:nil];
 
 	[[CPNotificationCenter defaultCenter]
 	    addObserver:self
@@ -86,31 +90,31 @@
    [[CPNotificationCenter defaultCenter]
        addObserver:self
        selector:@selector(startCreateNewBundle:)
-       name:@"CPLanguageShouldAddLanguageNotification"
+       name:OLProjectShouldCreateBundleNotification
        object:nil];
 
    [[CPNotificationCenter defaultCenter]
        addObserver:self
        selector:@selector(startDeleteBundle:)
-       name:@"CPLanguageShouldDeleteLanguageNotification"
+       name:OLProjectShouldDeleteBundleNotification
        object:nil];
 
    [[CPNotificationCenter defaultCenter]
        addObserver:self
        selector:@selector(downloadSelectedProject:)
-       name:@"OLProjectShouldDownloadNotification"
+       name:OLProjectShouldDownloadNotification
        object:nil];
 
     [[CPNotificationCenter defaultCenter]
         addObserver:self
         selector:@selector(createBroadcastMessage:)
-        name:@"CPMessageShouldBroadcastNotification"
+        name:OLProjectShouldBroadcastMessage
         object:nil];
 
     [[CPNotificationCenter defaultCenter]
         addObserver:self
         selector:@selector(startImport:)
-        name:@"OLProjectShouldImportNotification"
+        name:OLProjectShouldImportNotification
         object:nil];
 
     [[CPNotificationCenter defaultCenter]
@@ -190,6 +194,31 @@
 - (void)didReceiveUserDidChangeNotification:(CPNotification)notification
 {
     [self loadProjects];
+}
+
+- (void)startCreateNewBundle:(id)sender
+{
+    if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
+    {
+        var userInfo = [CPDictionary dictionary];
+        [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
+        [userInfo setObject:@selector(startCreateNewBundle:) forKey:@"SuccessfulLoginAction"];
+        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
+        
+        [[CPNotificationCenter defaultCenter]
+            postNotificationName:OLLoginControllerShouldLoginNotification
+            object:nil
+            userInfo:userInfo];
+        
+        return;
+    }
+    else if(![[OLUserSessionManager defaultSessionManager] isUserTheLoggedInUser:[selectedProject userIdentifier]])
+    {
+        [self branchSelectedProject];        
+        return;
+    }
+    
+    [resourceBundleController startCreateNewBundle:sender];
 }
 
 @end
@@ -337,4 +366,63 @@
     }
 }
  
+@end
+
+@implementation OLMyProjectController (SidebarItem)
+
+- (BOOL)shouldExpandSidebarItemOnReload
+{
+    return YES;
+}
+
+- (CPString)sidebarName
+{
+    return @"Projects";
+}
+
+- (CPArray)sidebarItems
+{
+    return projects;
+}
+
+- (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
+{
+	var outlineView = [notification object];
+
+	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
+	var item = [outlineView itemAtRow:selectedRow];
+
+	var parent = [outlineView parentForItem:item];
+	
+	if (parent === self)
+	{
+	    if (selectedProject !== item)
+	    {
+	        [[CPNotificationCenter defaultCenter]
+	            postNotificationName:OLMenuShouldEnableItemsNotification
+	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport, OLMenuItemBroadcast]];
+
+    	    [self setSelectedProject:item];
+            [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
+            [projectView setTitle:[[self selectedProject] name]];
+            [projectView reloadAllData];
+            if(dashboardView) { [dashboardView reloadData:self]; }
+            
+            // tell content view controller to update view
+    		[[CPNotificationCenter defaultCenter]
+    		  postNotificationName:OLContentViewControllerShouldUpdateContentView
+    		  object:self
+    		  userInfo:[CPDictionary dictionaryWithObject:projectView forKey:@"view"]];
+        }
+	}
+	else
+	{
+	    [[CPNotificationCenter defaultCenter]
+            postNotificationName:OLMenuShouldDisableItemsNotification
+            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport, OLMenuItemBroadcast]];
+
+	    [self setSelectedProject:nil];
+	}
+}
+
 @end

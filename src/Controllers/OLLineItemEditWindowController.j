@@ -1,5 +1,6 @@
-
 @import <Foundation/CPObject.j>
+
+@import "OLProjectController.j"
 
 @implementation OLLineItemEditWindowController : CPWindowController
 {
@@ -186,7 +187,7 @@
 - (void)saveResource
 {
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLProjectDidChangeNotification"
+        postNotificationName:OLProjectDidChangeNotification
         object:lineItem];
 }
 

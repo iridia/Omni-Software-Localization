@@ -5,6 +5,7 @@
 @import "../Views/OLDeleteBundleWindow.j"
 
 @import "OLResourceController.j"
+@import "OLProjectController.j"
 
 @implementation OLResourceBundleController : CPObject
 {
@@ -181,11 +182,12 @@
         [result addObject:[[[self availableLanguages] objectAtIndex:i] name]];
     }
     
-    return [result sortedArrayUsingFunction:
-            function(lhs,rhs,context)
-            {
-                return [lhs compare: rhs];
-            }];
+    var sortFunction = function(lhs,rhs,context)
+    {
+        return [lhs compare: rhs];
+    };
+    
+    return [result sortedArrayUsingFunction:sortFunction];
 }
 
 - (CPArray)titlesOfLocalizedLanguages
@@ -249,7 +251,7 @@
     [self setSelectedResourceBundle:clone];
     
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLProjectDidChangeNotification"
+        postNotificationName:OLProjectDidChangeNotification
         object:nil];
         
     [self cancel:self];
@@ -266,7 +268,7 @@
     }
     
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:@"OLProjectDidChangeNotification"
+        postNotificationName:OLProjectDidChangeNotification
         object:nil];
         
     [self cancel:self];

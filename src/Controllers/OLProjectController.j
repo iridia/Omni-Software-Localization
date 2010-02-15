@@ -7,10 +7,11 @@
 @import "OLLoginController.j"
 @import "OLResourceBundleController.j"
 @import "OLImportProjectController.j"
+@import "OLMenuController.j"
 
 OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsNotification";
-
 OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotification";
+OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
 
 // Manages an array of projects
 @implementation OLProjectController : CPObject
@@ -33,6 +34,21 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
         [self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
     }
     return self;
+}
+
+- (void)registerForNotifications
+{
+    [[CPNotificationCenter defaultCenter]
+	    addObserver:self
+	    selector:@selector(didReceiveProjectDidChangeNotification:)
+	    name:OLProjectDidChangeNotification
+	    object:nil];
+	    
+    [[CPNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(didReceiveLineItemSelectedIndexDidChangeNotification:)
+        name:OLLineItemSelectedLineItemIndexDidChangeNotification
+        object:[[resourceBundleController resourceController] lineItemController]];
 }
 
 - (void)loadProjects
@@ -163,31 +179,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
     [projectView reloadAllData];
 }
 
-- (void)startCreateNewBundle:(id)sender
-{
-    if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
-    {
-        var userInfo = [CPDictionary dictionary];
-        [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
-        [userInfo setObject:@selector(startCreateNewBundle:) forKey:@"SuccessfulLoginAction"];
-        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
-        
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:OLLoginControllerShouldLoginNotification
-            object:nil
-            userInfo:userInfo];
-        
-        return;
-    }
-    else if(![[OLUserSessionManager defaultSessionManager] isUserTheLoggedInUser:[selectedProject userIdentifier]])
-    {
-        [self branchSelectedProject];        
-        return;
-    }
-    
-    [resourceBundleController startCreateNewBundle:sender];
-}
-
 - (void)startDeleteBundle:(id)sender
 {
     if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
@@ -304,59 +295,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 - (CPString)title
 {
     return [selectedProject name];
-}
-
-@end
-
-@implementation OLProjectController (SidebarItem)
-
-- (BOOL)shouldExpandSidebarItemOnReload
-{
-    return YES;
-}
-
-- (CPString)sidebarName
-{
-    return @"Projects";
-}
-
-- (CPArray)sidebarItems
-{
-    return projects;
-}
-
-- (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
-{
-	var outlineView = [notification object];
-
-	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
-	var item = [outlineView itemAtRow:selectedRow];
-
-	var parent = [outlineView parentForItem:item];
-	
-	if (parent === self)
-	{
-	    if (selectedProject !== item)
-	    {
-	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldEnableItemsNotification" 
-	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport, OLMenuItemBroadcast]];
-    	    [self setSelectedProject:item];
-            [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
-            [projectView setTitle:[[self selectedProject] name]];
-            [projectView reloadAllData];
-            if(dashboardView) { [dashboardView reloadData:self]; }
-            
-            // tell content view controller to update view
-    		[[CPNotificationCenter defaultCenter]
-    		  postNotificationName:OLContentViewControllerShouldUpdateContentView
-    		  object:self
-    		  userInfo:[CPDictionary dictionaryWithObject:projectView forKey:@"view"]];
-        }
-	}
-	else
-	{
-	    [self setSelectedProject:nil];
-	}
 }
 
 @end

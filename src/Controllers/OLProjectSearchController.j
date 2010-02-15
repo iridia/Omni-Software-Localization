@@ -44,23 +44,13 @@
 
 - (void)registerForNotifications
 {
+    [super registerForNotifications];
+    
     [[CPNotificationCenter defaultCenter]
 		addObserver:self
 		selector:@selector(didReceiveProjectControllerFinished:)
 		name:@"OLProjectControllerDidFinishSavingNotification"
 		object:nil];
-		
-	[[CPNotificationCenter defaultCenter]
-	    addObserver:self
-	    selector:@selector(didReceiveProjectDidChangeNotification:)
-	    name:@"OLProjectDidChangeNotification"
-	    object:nil];
-        
-	[[CPNotificationCenter defaultCenter]
-	   addObserver:self
-	   selector:@selector(didReceiveLineItemSelectedIndexDidChangeNotification:)
-	   name:OLLineItemSelectedLineItemIndexDidChangeNotification
-	   object:[[resourceBundleController resourceController] lineItemController]];
 }
 
 - (void)loadProjects
