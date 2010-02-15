@@ -74,7 +74,6 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
     
     var communityController = [[OLCommunityController alloc] init];
     [communityController addObserver:sidebarController forKeyPath:@"items" options:CPKeyValueObservingOptionNew context:nil];
-    [communityController setContentViewController:contentViewController];
     [sidebarController addSidebarItem:communityController];
  
 	var menuController = [[OLMenuController alloc] init];

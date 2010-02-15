@@ -17,7 +17,7 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 {
     CPArray         projects       	    @accessors;
 	OLProject	    selectedProject		@accessors;
-	OLProjectView   projectView         @accessors;
+	OLProjectView   projectView;
 	
 	OLResourceBundleController  resourceBundleController;
 }
@@ -315,11 +315,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
     return YES;
 }
 
-- (CPView)contentView
-{
-    return projectView;
-}
-
 - (CPString)sidebarName
 {
     return @"Projects";
@@ -350,6 +345,12 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
             [projectView setTitle:[[self selectedProject] name]];
             [projectView reloadAllData];
             if(dashboardView) { [dashboardView reloadData:self]; }
+            
+            // tell content view controller to update view
+    		[[CPNotificationCenter defaultCenter]
+    		  postNotificationName:OLContentViewControllerShouldUpdateContentView
+    		  object:self
+    		  userInfo:[CPDictionary dictionaryWithObject:projectView forKey:@"view"]];
         }
 	}
 	else

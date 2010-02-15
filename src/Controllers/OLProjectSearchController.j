@@ -7,8 +7,6 @@
     OLProjectSearchView     searchView      @accessors;
     CPView                  contentView     @accessors(readonly);
     CPString                ownerName;
-    
-    OLContentViewController contentViewController   @accessors;
 }
 
 - (void)init
@@ -80,24 +78,17 @@
 
 - (void)sortProjects
 {
-   projects = [projects sortedArrayUsingFunction:function(lhs, rhs, context){  
-           return [[rhs totalOfAllVotes] compare:[lhs totalOfAllVotes]];
-       }];
+    var sortFunction = function(lhs, rhs, context)
+    {  
+        return [[rhs totalOfAllVotes] compare:[lhs totalOfAllVotes]];
+    };
+    
+    projects = [projects sortedArrayUsingFunction:sortFunction];
 }
 
 - (void)reloadData
 {
     [searchView reloadData];
-}
-
-- (void)setContentView:(CPView)aView
-{
-    if(aView === contentView)
-        return;
-    
-    contentView = aView;
-    
-    [contentViewController setCurrentView:contentView];
 }
 
 - (void)didReceiveProjectControllerFinished:(CPNotification)notification
@@ -211,9 +202,14 @@
                 [self setSelectedProject:project];
     
                 [projectView setBackButtonDelegate:self];
-                [self setContentView:projectView];
-        
+                
                 [projectView reloadAllData];
+                
+                // tell content view controller to update view
+        		[[CPNotificationCenter defaultCenter]
+        		    postNotificationName:OLContentViewControllerShouldUpdateContentView
+        		    object:self
+        		    userInfo:[CPDictionary dictionaryWithObject:projectView forKey:@"view"]];
             }];
         }];
         return;
@@ -229,7 +225,11 @@
 
 - (void)back:(id)sender
 {
-    [self setContentView:searchView];
+    // tell content view controller to update view
+	[[CPNotificationCenter defaultCenter]
+        postNotificationName:OLContentViewControllerShouldUpdateContentView
+	    object:self
+	    userInfo:[CPDictionary dictionaryWithObject:searchView forKey:@"view"]];
 }
 
 @end
