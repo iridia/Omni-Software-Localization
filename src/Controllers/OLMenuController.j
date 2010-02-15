@@ -1,6 +1,7 @@
 @import <Foundation/CPObject.j>
 @import "../Views/OLMenu.j"
 @import "OLMyProjectController.j"
+@import "OLUploadWindowController.j"
 
 OLMenuItemEnabled = YES;
 OLMenuItemDisabled = NO;
@@ -104,7 +105,7 @@ OLMenuShouldDisableItemsNotification = @"OLMenuShouldDisableItemsNotification";
 
 - (void)new:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLUploadShouldStartNotification" object:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:OLUploadWindowShouldStartUploadNotification object:self];
 }
 
 - (void)download:(id)sender

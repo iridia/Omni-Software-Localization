@@ -36,21 +36,8 @@
         [searchView setDataSource:self];
         [searchView setDelegate:self];
         contentView = searchView;
-   		
-   		[self registerForNotifications];
     }
     return self;
-}
-
-- (void)registerForNotifications
-{
-    [super registerForNotifications];
-    
-    [[CPNotificationCenter defaultCenter]
-		addObserver:self
-		selector:@selector(didReceiveProjectControllerFinished:)
-		name:@"OLProjectControllerDidFinishSavingNotification"
-		object:nil];
 }
 
 - (void)loadProjects

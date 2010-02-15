@@ -38,7 +38,7 @@ var OLCommunityProfileItem = @"Profile";
 		    [[CPNotificationCenter defaultCenter]
     			addObserver:self
     			selector:@selector(didReceiveReselectProfileView:)
-    			name:OLProfileNeedsToBeLoaded
+    			name:OLProfileControllerShouldLoadProfileNotification
     			object:nil];
     			
         }

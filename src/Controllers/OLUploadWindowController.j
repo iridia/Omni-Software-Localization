@@ -7,6 +7,9 @@
 
 var uploadURL = @"Upload/upload.php";
 
+// Notifications
+OLUploadWindowShouldStartUploadNotification = @"OLUploadWindowShouldStartUploadNotification";
+
 @implementation OLUploadWindowController : CPObject
 {
     CPWindow            uploadWindow;
@@ -78,7 +81,7 @@ var uploadURL = @"Upload/upload.php";
 		[[CPNotificationCenter defaultCenter]
 		  addObserver:self
 		  selector:@selector(startUpload:)
-		  name:@"OLUploadShouldStartNotification"
+		  name:OLUploadWindowShouldStartUploadNotification
 		  object:nil];
 		
 		uploadController = [[OLUploadController alloc] init];

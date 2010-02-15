@@ -9,7 +9,7 @@
 @import "OLImportProjectController.j"
 @import "OLMenuController.j"
 
-OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsNotification";
+// Notifications
 OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotification";
 OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
 
@@ -32,6 +32,7 @@ OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
 		
 		resourceBundleController = [[OLResourceBundleController alloc] init];
         [self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+        [self registerForNotifications];
     }
     return self;
 }

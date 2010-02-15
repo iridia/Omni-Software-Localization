@@ -8,6 +8,7 @@ OLProjectShouldDeleteBundleNotification = @"OLProjectShouldDeleteBundleNotificat
 OLProjectShouldDownloadNotification = @"OLProjectShouldDownloadNotification";
 OLProjectShouldBroadcastMessage = @"OLProjectShouldBroadcastMessage";
 OLProjectShouldImportNotification = @"OLProjectShouldImportNotification";
+OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsNotification";
 
 @implementation OLMyProjectController : OLProjectController
 {
@@ -36,8 +37,6 @@ OLProjectShouldImportNotification = @"OLProjectShouldImportNotification";
         [dashboardView setHidden:YES];
         
         importProjectController = [[OLImportProjectController alloc] init];
-   		
-   		[self registerForNotifications];
    		
         [projectView setResourcesTableViewDataSource:self];
         [projectView setLineItemsTableViewDataSource:self];

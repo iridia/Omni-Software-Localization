@@ -4,6 +4,7 @@
 @import "../Models/OLGlossary.j"
 @import "../Views/OLGlossariesView.j"
 @import "OLContentViewController.j"
+@import "OLUploadController.j"
 
 
 var OLGlossaryViewIdentifierColumnHeader = @"OLGlossaryViewIdentifierColumnHeader";
@@ -30,7 +31,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 		[[CPNotificationCenter defaultCenter]
 			addObserver:self
 			selector:@selector(didReceiveParseServerResponseNotification:)
-			name:@"OLUploadControllerDidParseServerResponse"
+			name:OLUploadControllerDidParseServerResponse
 			object:nil];
 		
 		[[CPNotificationCenter defaultCenter]
