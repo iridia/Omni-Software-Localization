@@ -1,10 +1,12 @@
 @import "OLProjectController.j"
 @import "../Views/OLProjectSearchView.j"
 @import "../Views/OLProjectResultView.j"
+@import "../Views/OLProjectView.j"
 
 @implementation OLProjectSearchController : OLProjectController
 {
-    OLProjectSearchView     searchView      @accessors;
+    OLProjectSearchView     searchView;
+    OLProjectView           projectView;
     CPView                  contentView     @accessors(readonly);
     CPString                ownerName;
 }

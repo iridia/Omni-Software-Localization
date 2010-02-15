@@ -1,6 +1,7 @@
 @import "OLProjectController.j"
-@import "../Views/OLProjectDashboardView.j"
 @import "OLUploadController.j"
+@import "../Views/OLProjectDashboardView.j"
+@import "../Views/OLProjectView.j"
 
 // Notifications
 OLProjectShouldCreateBundleNotification = @"OLProjectShouldCreateBundleNotification";
@@ -14,8 +15,9 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 {
 	OLImportProjectController   importProjectController;
 	
-	CPView                      dashboardView;
+	OLProjectDashboardView      dashboardView;
 	CPView                      containerView;
+	OLProjectView               projectView;
 }
 
 - (id)init
@@ -292,11 +294,6 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
     return [selectedProject comments];
 }
 
-- (CPView)contentView
-{
-    return containerView;
-}
-
 - (void)showProjectView
 {
     var animation = [[_OLProjectViewAnimation alloc] initWithNewView:projectView oldView:dashboardView];
@@ -411,7 +408,7 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
     		[[CPNotificationCenter defaultCenter]
     		  postNotificationName:OLContentViewControllerShouldUpdateContentView
     		  object:self
-    		  userInfo:[CPDictionary dictionaryWithObject:projectView forKey:@"view"]];
+    		  userInfo:[CPDictionary dictionaryWithObject:containerView forKey:@"view"]];
         }
 	}
 	else

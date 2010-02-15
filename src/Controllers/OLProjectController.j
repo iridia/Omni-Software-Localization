@@ -2,7 +2,6 @@
 
 @import "../Utilities/OLUserSessionManager.j"
 @import "../Models/OLProject.j"
-@import "../Views/OLProjectView.j"
 
 @import "OLLoginController.j"
 @import "OLResourceBundleController.j"
@@ -105,7 +104,6 @@ OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
 
 @implementation OLProjectController (ProjectViewDelegate)
 
-
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
     var tableView = [aNotification object];
@@ -151,12 +149,6 @@ OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
     }
     
     [resourceBundleController editSelectedLineItem];
-}
-
-// HACK FOR CPTableView BUG (_doubleAction is a global var)
-- (SEL)doubleAction
-{
-    return CPSelectorFromString(@"lineItemsTableViewDoubleClick:");
 }
 
 @end
