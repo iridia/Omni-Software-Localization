@@ -1,31 +1,32 @@
 @import <Foundation/CPObject.j>
 
 @import "../Utilities/OLUserSessionManager.j"
-@import "../Views/OLCreateNewBundleWindow.j"
-@import "../Views/OLDeleteBundleWindow.j"
+@import "../Views/OLCreateBundleWindowController.j"
+@import "../Views/OLDeleteBundleWindowController.j"
 
 @import "OLResourceController.j"
 @import "OLProjectController.j"
 
 @implementation OLResourceBundleController : CPObject
 {
-    CPString            projectName                 @accessors(readonly);
-    CPArray             resourceBundles             @accessors(readonly);
-    CPResourceBundle    selectedResourceBundle      @accessors;
-    CPView              createNewBundleWindow       @accessors;
-    CPView              deleteBundleWindow          @accessors;
+    CPString                        projectName                     @accessors(readonly);
+    CPArray                         resourceBundles                 @accessors(readonly);
+    CPResourceBundle                selectedResourceBundle          @accessors;
+    OLCreateBundleWindowController  createBundleWindowController    @accessors;
+    OLDeleteBundleWindowController  deleteBundleWindowController    @accessors;
     
-    OLResourceController    resourceController      @accessors(readonly);
+    OLResourceController            resourceController              @accessors(readonly);
 }
 
 - (id)init
 {
     if(self = [super init])
     {
-        createNewBundleWindow = [[OLCreateNewBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPDocModalWindowMask];
-        [createNewBundleWindow setDelegate:self];
-        deleteBundleWindow = [[OLDeleteBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPDocModalWindowMask];
-        [deleteBundleWindow setDelegate:self];
+        createBundleWindowController = [[OLCreateBundleWindowController alloc] init];
+        [createBundleWindowController setDelegate:self];
+        
+        deleteBundleWindowController = [[OLDeleteBundleWindowController alloc] init];
+        [deleteBundleWindowController setDelegate:self];
         
         resourceController = [[OLResourceController alloc] init];
         [self addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
@@ -142,8 +143,8 @@
 {
     if([[self availableLanguages] count] > 0)
     {
-        [createNewBundleWindow reloadData];
-        [CPApp beginSheet:createNewBundleWindow modalForWindow:[[CPApp delegate] theWindow] modalDelegate:self didEndSelector:@selector(didEndSheet:returnCode:contextInfo:) contextInfo:nil];
+        [createBundleWindowController reloadData];
+        [createBundleWindowController showWindowAsSheet:self];
     }
     else
     {
@@ -160,8 +161,8 @@
 {
     if([resourceBundles count] > 1)
     {
-        [deleteBundleWindow reloadData];
-        [CPApp beginSheet:deleteBundleWindow modalForWindow:[[CPApp delegate] theWindow] modalDelegate:self didEndSelector:@selector(didEndSheet:returnCode:contextInfo:) contextInfo:nil];
+        [deleteBundleWindowController reloadData];
+        [deleteBundleWindowController showWindowAsSheet:self];
     }
     else
     {
@@ -276,10 +277,10 @@
         object:nil];
 }
 
-- (void)shouldDeleteBundleForLanguage:(CPString)aLanguage
+- (void)shouldDeleteBundleForLanguage:(int)indexOfBundleToDelete
 {
-    var bundleToDelete = [OLLanguage languageFromTitle:aLanguage];
-    [resourceBundles removeObject:bundleToDelete];
+    var bundleToDelete = [resourceBundles objectAtIndex:indexOfBundleToDelete];
+    [resourceBundles removeObjectAtIndex:indexOfBundleToDelete];
     
     if(selectedResourceBundle === bundleToDelete)
     {
@@ -293,7 +294,6 @@
 
 - (void)didEndSheet:(CPWindow)sheet returnCode:(int)returnCode contextInfo:(id)contextInfo
 {
-    console.log([self className], _cmd, sheet);
     [sheet orderOut:self];
 }
 
