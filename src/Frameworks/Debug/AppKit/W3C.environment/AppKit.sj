@@ -14767,7 +14767,7 @@ _tableView = newValue;
 },["void","CGRect"])]);
 }
 
-p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;113495;
+p;13;CPTableView.jI;20;Foundation/CPArray.ji;11;CPControl.ji;15;CPTableColumn.ji;15;_CPCornerView.ji;12;CPScroller.jc;113376;
 CPTableViewColumnDidMoveNotification = "CPTableViewColumnDidMoveNotification";
 CPTableViewColumnDidResizeNotification = "CPTableViewColumnDidResizeNotification";
 CPTableViewSelectionDidChangeNotification = "CPTableViewSelectionDidChangeNotification";
@@ -15200,9 +15200,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 },["void","CPIndexSet","BOOL"]), new objj_method(sel_getUid("selectRowIndexes:byExtendingSelection:"), function $CPTableView__selectRowIndexes_byExtendingSelection_(self, _cmd, rows, shouldExtendSelection)
 { with(self)
 {
-    if (objj_msgSend(rows, "isEqualToIndexSet:", _selectedRowIndexes) || ((objj_msgSend(rows, "firstIndex") != CPNotFound && objj_msgSend(rows, "firstIndex") < 0) || objj_msgSend(rows, "lastIndex") >= objj_msgSend(self, "numberOfRows")))
-        return;
-    if (objj_msgSend(rows, "isEqualToIndexSet:", _selectedRowIndexes))
+    var firstIndex = objj_msgSend(rows, "firstIndex");
+    if (objj_msgSend(rows, "isEqualToIndexSet:", _selectedRowIndexes) ||
+        ((firstIndex != CPNotFound && firstIndex < 0) || objj_msgSend(rows, "lastIndex") >= objj_msgSend(self, "numberOfRows")))
         return;
     if (objj_msgSend(_selectedColumnIndexes, "count") > 0)
     {
@@ -15217,6 +15217,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         _selectedRowIndexes = objj_msgSend(rows, "copy");
     objj_msgSend(self, "_updateHighlightWithOldRows:newRows:", previousSelectedIndexes, _selectedRowIndexes);
     objj_msgSend(_tableDrawView, "display");
+    if (firstIndex >= 0)
+        objj_msgSend(self, "scrollRowToVisible:", firstIndex);
     objj_msgSend(self, "_noteSelectionDidChange");
 }
 },["void","CPIndexSet","BOOL"]), new objj_method(sel_getUid("_updateHighlightWithOldRows:newRows:"), function $CPTableView___updateHighlightWithOldRows_newRows_(self, _cmd, oldRows, newRows)
@@ -16667,8 +16669,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
              return;
     }
     objj_msgSend(self, "selectRowIndexes:byExtendingSelection:", objj_msgSend(CPIndexSet, "indexSetWithIndex:", i), extend);
-    if(i >= 0)
-        objj_msgSend(self, "scrollRowToVisible:", i);
 }
 },["void","id"]), new objj_method(sel_getUid("moveUp:"), function $CPTableView__moveUp_(self, _cmd, sender)
 { with(self)
@@ -16702,8 +16702,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
                return;
      }
      objj_msgSend(self, "selectRowIndexes:byExtendingSelection:", objj_msgSend(CPIndexSet, "indexSetWithIndex:", i), extend);
-     if(i >= 0)
-        objj_msgSend(self, "scrollRowToVisible:", i);
 }
 },["void","id"]), new objj_method(sel_getUid("delegateHasShouldSelectRow"), function $CPTableView__delegateHasShouldSelectRow(self, _cmd)
 { with(self)
@@ -16924,7 +16922,7 @@ currentRow = newValue;
 },["void","CGRect"])]);
 }
 
-p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;8590;
+p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;8493;
 CPTopTabsBezelBorder = 0;
 CPLeftTabsBezelBorder = 1;
 CPBottomTabsBezelBorder = 2;
@@ -16954,7 +16952,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         objj_msgSend(boxBackgroundView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
         objj_msgSend(boxBackgroundView, "setBackgroundColor:", objj_msgSend(CPColor, "colorWithCalibratedWhite:alpha:", 0.95, 1.0));
         objj_msgSend(box, "setContentView:", boxBackgroundView);
-        console.log(objj_msgSend(boxBackgroundView, "frame"), objj_msgSend(box, "frame"), _cmd);
         selectedIndex = CPNotFound;
         objj_msgSend(self, "_setupDefaultStyles");
         objj_msgSend(self, "addSubview:", box);

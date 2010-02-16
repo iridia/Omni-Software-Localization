@@ -1,30 +1,32 @@
 @import <Foundation/CPObject.j>
 
 @import "../Utilities/OLUserSessionManager.j"
-@import "../Views/OLCreateNewBundleWindow.j"
-@import "../Views/OLDeleteBundleWindow.j"
+@import "../Views/OLCreateBundleWindowController.j"
+@import "../Views/OLDeleteBundleWindowController.j"
 
 @import "OLResourceController.j"
 @import "OLProjectController.j"
 
 @implementation OLResourceBundleController : CPObject
 {
-    CPString            projectName                 @accessors(readonly);
-    CPString            ownerId                     @accessors;
-    CPArray             resourceBundles             @accessors(readonly);
-    CPResourceBundle    selectedResourceBundle      @accessors;
-    CPView              createNewBundleWindow       @accessors;
-    CPView              deleteBundleWindow          @accessors;
+    CPString                        projectName                     @accessors(readonly);
+    CPArray                         resourceBundles                 @accessors(readonly);
+    CPResourceBundle                selectedResourceBundle          @accessors;
+    OLCreateBundleWindowController  createBundleWindowController    @accessors;
+    OLDeleteBundleWindowController  deleteBundleWindowController    @accessors;
     
-    OLResourceController    resourceController      @accessors(readonly);
+    OLResourceController            resourceController              @accessors(readonly);
 }
 
 - (id)init
 {
     if(self = [super init])
     {
-        createNewBundleWindow = [[OLCreateNewBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPDocModalWindowMask | CPResizableWindowMask];
-        deleteBundleWindow = [[OLDeleteBundleWindow alloc] initWithContentRect:CGRectMake(0, 0, 200, 100) styleMask:CPDocModalWindowMask | CPResizableWindowMask];
+        createBundleWindowController = [[OLCreateBundleWindowController alloc] init];
+        [createBundleWindowController setDelegate:self];
+        
+        deleteBundleWindowController = [[OLDeleteBundleWindowController alloc] init];
+        [deleteBundleWindowController setDelegate:self];
         
         resourceController = [[OLResourceController alloc] init];
         [self addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
@@ -141,8 +143,8 @@
 {
     if([[self availableLanguages] count] > 0)
     {
-        [createNewBundleWindow setUp:self];
-        [createNewBundleWindow displaySheet:self];
+        [createBundleWindowController reloadData];
+        [createBundleWindowController showWindowAsSheet:self];
     }
     else
     {
@@ -159,8 +161,8 @@
 {
     if([resourceBundles count] > 1)
     {
-        [deleteBundleWindow setUp:self];
-        [deleteBundleWindow displaySheet:self];
+        [deleteBundleWindowController reloadData];
+        [deleteBundleWindowController showWindowAsSheet:self];
     }
     else
     {
@@ -232,48 +234,6 @@
     return false;
 }
 
-- (void)cancel:(id)sender
-{
-    [createNewBundleWindow close];
-    [deleteBundleWindow close];
-    
-    [[CPApplication sharedApplication] stopModal];
-}
-
-- (void)create:(id)sender
-{
-    var clone = [[self defaultBundle] clone];
-    [clone setLanguage:[[self availableLanguages] objectAtIndex:[[createNewBundleWindow popUpButton] indexOfSelectedItem]]];
-    
-    replaceEnglishWithNewResourceBundleName(clone, [[clone language] shortName]);
-    [resourceBundles addObject:clone];
-    
-    [self setSelectedResourceBundle:clone];
-    
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLProjectDidChangeNotification
-        object:nil];
-        
-    [self cancel:self];
-}
-
-- (void)delete:(id)sender
-{
-    var objectToRemove = [resourceBundles objectAtIndex:[[deleteBundleWindow popUpButton] indexOfSelectedItem]];
-    [resourceBundles removeObject:objectToRemove];
-    
-    if(selectedResourceBundle === objectToRemove)
-    {
-        [self resetCurrentBundle];
-    }
-    
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLProjectDidChangeNotification
-        object:nil];
-        
-    [self cancel:self];
-}
-
 - (void)defaultBundle
 {
     for(var i = 0; i < [resourceBundles count]; i++)
@@ -286,6 +246,55 @@
     }
     
     return nil;
+}
+
+@end
+
+@implementation OLResourceBundleController (BundleCreationAndDeletionDelegate)
+
+- (CPArray)availableLanguagesForSelectedProject
+{
+    return [self titlesOfAvailableLanguage];
+}
+
+- (CPArray)languagesForSelectedProject
+{
+    return [self titlesOfLocalizedLanguages];
+}
+
+- (void)shouldCreateBundleForLanguage:(CPString)aLanguage
+{
+    var clone = [[self defaultBundle] clone];
+    [clone setLanguage:[OLLanguage languageFromTitle:aLanguage]];
+    
+    replaceEnglishWithNewResourceBundleName(clone, [[clone language] shortName]);
+    [resourceBundles addObject:clone];
+    
+    [self setSelectedResourceBundle:clone];
+    
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLProjectDidChangeNotification
+        object:nil];
+}
+
+- (void)shouldDeleteBundleForLanguage:(int)indexOfBundleToDelete
+{
+    var bundleToDelete = [resourceBundles objectAtIndex:indexOfBundleToDelete];
+    [resourceBundles removeObjectAtIndex:indexOfBundleToDelete];
+    
+    if(selectedResourceBundle === bundleToDelete)
+    {
+        [self resetCurrentBundle];
+    }
+    
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLProjectDidChangeNotification
+        object:nil];
+}
+
+- (void)didEndSheet:(CPWindow)sheet returnCode:(int)returnCode contextInfo:(id)contextInfo
+{
+    [sheet orderOut:self];
 }
 
 - (void)nextLineItem
@@ -369,7 +378,6 @@ function replaceEnglishWithNewResourceBundleName(bundle, name)
     switch (keyPath)
     {
         case @"selectedProject":
-            ownerId = [[object selectedProject] userIdentifier]
             projectName = [[object selectedProject] name];
             [self setResourceBundles:[[object selectedProject] resourceBundles]];
             [self resetCurrentBundle];

@@ -87,12 +87,6 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 		name:OLUserSessionManagerUserDidChangeNotification
 		object:nil];
 
-	[[CPNotificationCenter defaultCenter]
-	   addObserver:self
-	   selector:@selector(didReceiveLineItemSelectedIndexDidChangeNotification:)
-	   name:OLLineItemSelectedLineItemIndexDidChangeNotification
-	   object:[[resourceBundleController resourceController] lineItemController]];
-
    [[CPNotificationCenter defaultCenter]
        addObserver:self
        selector:@selector(startCreateNewBundle:)

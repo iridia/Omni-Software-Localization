@@ -39,7 +39,7 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 
 @implementation AppController : CPObject
 {
-    @outlet						CPWindow                theWindow;
+    @outlet						CPWindow                theWindow       @accessors(readonly);
     @outlet						CPSplitView             mainSplitView;
 
     @outlet						OLSidebarController     sidebarController;
@@ -111,6 +111,8 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
     
     // Access the DB as late as possible
     [glossaryController loadGlossaries];
+    
+    [theWindow makeKeyAndOrderFront:self];
 }
 
 - (void)awakeFromCib
