@@ -2,6 +2,7 @@
 @import "OLUploadController.j"
 @import "../Views/OLProjectDashboardView.j"
 @import "../Views/OLProjectView.j"
+@import "../Views/OLLineItemEditWindow.j"
 
 // Notifications
 OLProjectShouldCreateBundleNotification = @"OLProjectShouldCreateBundleNotification";
@@ -18,6 +19,7 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 	OLProjectDashboardView      dashboardView;
 	CPView                      containerView;
 	OLProjectView               projectView;
+	OLLineItemEditWindow        editLineItemWindow;
 }
 
 - (id)init
@@ -50,6 +52,9 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
         [projectView setVotingDelegate:self];
         [projectView setOwnerDataSource:self];
         [projectView setTitleDataSource:self];
+        
+	    editLineItemWindow = [[OLLineItemEditWindow alloc] initWithContentRect:CGRectMake(0, 0, 400, 400) styleMask:CPBorderlessBridgeWindowMask];
+	    [editLineItemWindow setDelegate:self];
     }
     return self;
 }
@@ -155,6 +160,50 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
             }
         }];
     }
+}
+
+- (void)editSelectedLineItem
+{
+    [editLineItemWindow makeKeyAndOrderFront:self];
+    [self reloadDataOnEditLineItemWindow];
+}
+
+- (void)nextLineItem
+{
+    [self saveLineItem];
+    [resourceBundleController nextLineItem];
+    [self reloadDataOnEditLineItemWindow];
+}
+
+- (void)previousLineItem
+{
+    [self saveLineItem];
+    [resourceBundleController previousLineItem];
+    [self reloadDataOnEditLineItemWindow];
+}
+
+- (void)saveLineItem
+{
+    var value = [[editLineItemWindow valueTextField] stringValue];
+    [resourceBundleController setValueForSelectedLineItem:value];
+    [selectedProject save];
+}
+
+- (void)saveComment
+{
+    var value = [[editLineItemWindow commentTextField] stringValue];
+    [resourceBundleController addCommentForSelectedLineItem:value];
+    [selectedProject saveWithCallback:function(){[self loadProjects];}];
+    [self reloadDataOnEditLineItemWindow];
+}
+
+- (void)reloadDataOnEditLineItemWindow
+{
+    [editLineItemWindow setTitle:[resourceBundleController titleOfSelectedResource]];
+    [editLineItemWindow setComment:[resourceBundleController commentForSelectedLineItem]];
+    [editLineItemWindow setEnglishValue:[resourceBundleController englishValueForSelectedLineItem]];
+    [editLineItemWindow setValue:[resourceBundleController valueForSelectedLineItem]];
+    [editLineItemWindow setComments:[resourceBundleController commentsForSelectedLineItem]];
 }
 
 - (void)didReceiveProjectsShouldReloadNotification:(CPNotification)notification

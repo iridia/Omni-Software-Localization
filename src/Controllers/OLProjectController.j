@@ -148,7 +148,11 @@ OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
         return;
     }
     
-    [resourceBundleController editSelectedLineItem];
+    [self editSelectedLineItem];
+}
+
+- (void)editSelectedLineItem
+{
 }
 
 @end

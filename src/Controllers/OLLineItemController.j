@@ -33,22 +33,6 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
     }
 }
 
-- (void)saveCommentWithOptions:(CPDictionary)options
-{
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLProjectShouldCreateCommentNotification
-        object:self
-        userInfo:options];
-}
-
-- (void)editSelectedLineItem
-{   
-    var lineItemEditWindowController = [[OLLineItemEditWindowController alloc] initWithWindowCibName:@"LineItemEditor.cib" lineItem:selectedLineItem];
-    [lineItemEditWindowController setDelegate:self];
-    [self addObserver:lineItemEditWindowController forKeyPath:@"selectedLineItem" options:CPKeyValueObservingOptionNew context:nil];
-    [lineItemEditWindowController loadWindow];
-}
-
 - (void)nextLineItem
 {
     var currentIndex = [lineItems indexOfObject:selectedLineItem];
@@ -87,6 +71,37 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
         postNotificationName:OLLineItemSelectedLineItemIndexDidChangeNotification
         object:self
         userInfo:userInfo];
+}
+
+- (CPString)commentForSelectedLineItem
+{
+    return [selectedLineItem comment];
+}
+
+- (CPString)valueForSelectedLineItem
+{
+    return [selectedLineItem value];
+}
+
+- (CPString)identifierForSelectedLineItem
+{
+    return [selectedLineItem identifier];
+}
+
+- (CPArray)commentsForSelectedLineItem
+{
+    return [selectedLineItem comments];
+}
+
+- (void)addCommentForSelectedLineItem:(CPString)value
+{
+    var comment = [[OLComment alloc] initFromUser:[[OLUserSessionManager defaultSessionManager] user] withContent:value];
+    [selectedLineItem addComment:comment];
+}
+
+- (void)setValueForSelectedLineItem:(CPString)value
+{
+    [selectedLineItem setValue:value];
 }
 
 @end

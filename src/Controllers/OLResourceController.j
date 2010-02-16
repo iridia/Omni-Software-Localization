@@ -76,6 +76,51 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     return [selectedResource numberOfVotes];
 }
 
+- (CPString)titleOfSelectedResource
+{
+    return [selectedResource shortFileName];
+}
+
+- (CPString)commentForSelectedLineItem
+{
+    return [lineItemController commentForSelectedLineItem];
+}
+
+- (CPString)valueForSelectedLineItem
+{
+    return [lineItemController valueForSelectedLineItem];
+}
+
+- (CPString)identifierForSelectedLineItem
+{
+    return [lineItemController identifierForSelectedLineItem];
+}
+
+- (CPArray)commentsForSelectedLineItem
+{
+    return [lineItemController commentsForSelectedLineItem];
+}
+
+- (void)nextLineItem
+{
+    [lineItemController nextLineItem];
+}
+
+- (void)previousLineItem
+{
+    [lineItemController previousLineItem];
+}
+
+- (void)addCommentForSelectedLineItem:(CPString)value
+{
+    [lineItemController addCommentForSelectedLineItem:value];
+}
+
+- (void)setValueForSelectedLineItem:(CPString)value
+{
+    [lineItemController setValueForSelectedLineItem:value];
+}
+
 @end
 
 @implementation OLResourceController (OLResourceBundleControllerKVO)

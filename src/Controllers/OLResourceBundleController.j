@@ -288,6 +288,68 @@
     return nil;
 }
 
+- (void)nextLineItem
+{
+    [resourceController nextLineItem];
+}
+
+- (void)previousLineItem
+{
+    [resourceController previousLineItem];
+}
+
+- (void)addCommentForSelectedLineItem:(CPString)value
+{
+    [resourceController addCommentForSelectedLineItem:value];
+}
+
+- (void)setValueForSelectedLineItem:(CPString)value
+{
+    [resourceController setValueForSelectedLineItem:value];
+}
+
+- (CPString)titleOfSelectedResource
+{
+    return [resourceController titleOfSelectedResource];
+}
+
+- (CPString)commentForSelectedLineItem
+{
+    return [resourceController commentForSelectedLineItem];
+}
+
+- (CPArray)commentsForSelectedLineItem
+{
+    return [resourceController commentsForSelectedLineItem];
+}
+
+- (CPString)valueForSelectedLineItem
+{
+    return [resourceController valueForSelectedLineItem];
+}
+
+- (CPString)englishValueForSelectedLineItem
+{
+    var identifier = [resourceController identifierForSelectedLineItem];
+    
+    var englishBundle = [self defaultBundle];
+    
+    for(var i = 0; i < [[englishBundle resources] count]; i++)
+    {
+        var resource = [[englishBundle resources] objectAtIndex:i];
+        for(var j = 0; j < [[resource lineItems] count]; j++)
+        {
+            var lineItem = [[resource lineItems] objectAtIndex:j];
+            if([[lineItem identifier] isEqualToString:identifier])
+            {
+                return [lineItem value];
+            }
+        }
+    }
+    
+    return "ERROR";
+}
+
 @end
 
 function replaceEnglishWithNewResourceBundleName(bundle, name)
