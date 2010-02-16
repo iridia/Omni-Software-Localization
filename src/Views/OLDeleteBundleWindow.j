@@ -1,10 +1,9 @@
-@import <AppKit/CPView.j>
+@import <AppKit/CPWindow.j>
 
 @implementation OLDeleteBundleWindow : CPWindow
 {
-    CPButton            deleteButton    @accessors;
-    CPButton            cancelButton    @accessors;
-    CPPopUpButton       popUpButton     @accessors;
+    CPPopUpButton   popUpButton;
+    id              delegate        @accessors;
 }
 
 - (id)initWithContentRect:(CGRect)aRect styleMask:(unsigned)aStyleMask
@@ -12,17 +11,20 @@
     self = [super initWithContentRect:aRect styleMask:aStyleMask];
     if(self)
     {
-        view = [self contentView];
+        var view = [self contentView];
+        
         [self setTitle:@"Delete a Language..."];
+        
         popUpButton = [[CPPopUpButton alloc] initWithFrame:CGRectMake(0, 0, 150, 24)];
         
-        deleteButton = [CPButton buttonWithTitle:@"Delete Langugage"];
+        var deleteButton = [CPButton buttonWithTitle:@"Delete Langugage"];
+        [deleteButton setTarget:self];
         [deleteButton setAction:@selector(delete:)];
      
-        cancelButton = [CPButton buttonWithTitle:@"Cancel"];
-        [cancelButton setAction:@selector(cancel:)];
-        
-        [popUpButton setCenter:CGPointMake(0, 35)];
+        var cancelButton = [CPButton buttonWithTitle:@"Cancel"];
+        [cancelButton setTarget:self];
+        [cancelButton setAction:@selector(closeSheet:)];
+        [cancelButton setTag:CPCancelButton];
         
         [view addSubview:popUpButton positioned:CPViewWidthCentered relativeTo:view withPadding:0.0];
         [view addSubview:deleteButton positioned:CPViewBottomAligned | CPViewRightAligned relativeTo:view withPadding:12.0];
@@ -33,28 +35,31 @@
     return self;
 }
 
-- (void)setUp:(OLResourceBundleController)resourceBundleController
+- (void)delete:(id)sender
 {
-    [deleteButton setTarget:resourceBundleController];
-    [cancelButton setTarget:resourceBundleController];
+    var sel = CPSelectorFromString(@"shouldDeleteBundleForLanguage:");
+    if ([delegate respondsToSelector:sel])
+    {
+        [delegate performSelector:sel withObject:[popUpButton titleOfSelectedItem]];
+    }
     
-    [popUpButton removeAllItems];
-    [popUpButton addItemsWithTitles:[resourceBundleController titlesOfLocalizedLanguages]];
+    [self closeSheet:sender];
 }
 
-- (void)displaySheet:(id)sender
+- (void)reloadData
 {
-    [CPApp beginSheet:self modalForWindow:[CPApp mainWindow] modalDelegate:self didEndSelector:@selector(didEndSheet:returnCode:contextInfo:) contextInfo:nil];
+    var sel = CPSelectorFromString(@"languagesForSelectedProject");
+    if ([delegate respondsToSelector:sel])
+    {
+        var languages = [delegate performSelector:sel withObject:nil];
+        [popUpButton removeAllItems];
+        [popUpButton addItemsWithTitles:languages];
+    }
 }
 
 - (void)closeSheet:(id)sender
 {
-    [CPApp endSheet:self returnCode:[sender tag]];
-}
-
-- (void)didEndSheet:(CPWindow)sheet returnCode:(int)returnCode contextInfo:(id)contextInfo
-{
-    [sheet orderOut:self];
+    [CPApp endSheet:self];
 }
 
 @end
