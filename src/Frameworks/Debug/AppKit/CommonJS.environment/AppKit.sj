@@ -16586,7 +16586,7 @@ currentRow = newValue;
 },["void","CGRect"])]);
 }
 
-p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;8590;
+p;11;CPTabView.ji;15;CPTabViewItem.ji;8;CPView.jc;8493;
 CPTopTabsBezelBorder = 0;
 CPLeftTabsBezelBorder = 1;
 CPBottomTabsBezelBorder = 2;
@@ -16616,7 +16616,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         objj_msgSend(boxBackgroundView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
         objj_msgSend(boxBackgroundView, "setBackgroundColor:", objj_msgSend(CPColor, "colorWithCalibratedWhite:alpha:", 0.95, 1.0));
         objj_msgSend(box, "setContentView:", boxBackgroundView);
-        console.log(objj_msgSend(boxBackgroundView, "frame"), objj_msgSend(box, "frame"), _cmd);
         selectedIndex = CPNotFound;
         objj_msgSend(self, "_setupDefaultStyles");
         objj_msgSend(self, "addSubview:", box);
