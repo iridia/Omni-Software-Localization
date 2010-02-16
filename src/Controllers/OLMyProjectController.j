@@ -170,14 +170,18 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 
 - (void)nextLineItem
 {
-    [self saveLineItem];
+    if(![[[editLineItemWindow valueTextField] stringValue] isEqualToString:[resourceBundleController valueForSelectedLineItem]])
+        [self saveLineItem];
+        
     [resourceBundleController nextLineItem];
     [self reloadDataOnEditLineItemWindow];
 }
 
 - (void)previousLineItem
 {
-    [self saveLineItem];
+    if(![[[editLineItemWindow valueTextField] stringValue] isEqualToString:[resourceBundleController valueForSelectedLineItem]])
+        [self saveLineItem];
+        
     [resourceBundleController previousLineItem];
     [self reloadDataOnEditLineItemWindow];
 }

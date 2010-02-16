@@ -12,6 +12,10 @@
     CPTextField         valueTextField          @accessors(readonly);
     CPTextField         comment;
     CPTextField         englishValue;
+    
+    CPButton            left;
+    CPButton            right;
+    CPButton            close;
 }
 
 - (id)initWithContentRect:(CGRect)aFrame styleMask:(CPWindowStyleMask)aStyleMask
@@ -23,13 +27,13 @@
         
         [self setBackgroundColor:[CPColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:0.80]];
         
-        var button = [CPButton buttonWithTitle:@"Close"];
-        [button setTarget:self];
-        [button setAction:@selector(close:)];
-        [button setAutoresizingMask:CPViewMinXMargin | CPViewMinYMargin];
-        [button setWidth:150];
+        close = [CPButton buttonWithTitle:@"Close"];
+        [close setTarget:self];
+        [close setAction:@selector(close:)];
+        [close setAutoresizingMask:CPViewMinXMargin | CPViewMinYMargin];
+        [close setWidth:150];
         
-        var right = [CPButton buttonWithTitle:@">"];
+        right = [CPButton buttonWithTitle:@">"];
         [right setTarget:self];
         [right setAction:@selector(right:)];
         [right setAutoresizingMask:CPViewMinXMargin | CPViewMinYMargin | CPViewMaxYMargin];
@@ -39,7 +43,7 @@
         [right setAlternateImage:[[CPImage alloc] initWithContentsOfFile:@"Resources/Images/rightarrow-pressed.png"]];
         [right setFrameSize:CGSizeMake(91, 394)];
         
-        var left = [CPButton buttonWithTitle:@""];
+        left = [CPButton buttonWithTitle:@""];
         [left setTarget:self];
         [left setAction:@selector(left:)];
         [left setAutoresizingMask:CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin];
@@ -137,7 +141,7 @@
         
         [lineItemView addSubview:commentsView positioned:CPViewRightAligned | CPViewTopAligned relativeTo:lineItemView withPadding:12.0];
         
-        [contentView addSubview:button positioned:CPViewRightAligned | CPViewBottomAligned relativeTo:contentView withPadding:24.0];
+        [contentView addSubview:close positioned:CPViewRightAligned | CPViewBottomAligned relativeTo:contentView withPadding:24.0];
         [contentView addSubview:right positioned:CPViewRightAligned | CPViewHeightCentered relativeTo:contentView withPadding:24.0];
         [contentView addSubview:left positioned:CPViewLeftAligned | CPViewHeightCentered relativeTo:contentView withPadding:24.0];
         [contentView addSubview:lineItemView positioned:CPViewHeightCentered | CPViewWidthCentered relativeTo:contentView withPadding:0.0];
@@ -164,18 +168,35 @@
         {
             case 37: // key left
                 [self left:self];
+                [left setThemeState:CPThemeStateHighlighted];
                 break;
             case 39: // key right
                 [self right:self];
+                [right setThemeState:CPThemeStateHighlighted];
                 break;
             default:
                 break;
         }
     
-        if(([anEvent modifierFlags] & CPCommandKeyMask) && anEvent._keyCode == 13)
+        if(([anEvent modifierFlags] & CPCommandKeyMask) && anEvent._keyCode == 13) // key enter
         {
-            [self close:self];
+            [close performClick:self];
         }
+    }
+    
+    if([anEvent type] == CPKeyUp)
+    {      
+        switch(anEvent._keyCode)
+        {
+            case 37: // key left
+                [left unsetThemeState:CPThemeStateHighlighted];
+                break;
+            case 39: // key right
+                [right unsetThemeState:CPThemeStateHighlighted];
+                break;
+            default:
+                break;
+        }  
     }
     
     [super sendEvent:anEvent];
