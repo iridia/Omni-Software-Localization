@@ -93,7 +93,14 @@
 
 - (void)isBeingShown
 {
-    [self makeFirstResponder:_emailTextField];
+    if ([_emailTextField stringValue] === @"")
+    {
+        [self makeFirstResponder:_emailTextField];
+    }
+    else
+    {
+        [self makeFirstResponder:_feedbackTextView];
+    }
 }
 
 - (void)feedbackTypeDidChange:(id)sender
