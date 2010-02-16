@@ -171,7 +171,9 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 - (void)nextLineItem
 {
     if(![[[editLineItemWindow valueTextField] stringValue] isEqualToString:[resourceBundleController valueForSelectedLineItem]])
+    {
         [self saveLineItem];
+    }
         
     [resourceBundleController nextLineItem];
     [self reloadDataOnEditLineItemWindow];
@@ -180,7 +182,9 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 - (void)previousLineItem
 {
     if(![[[editLineItemWindow valueTextField] stringValue] isEqualToString:[resourceBundleController valueForSelectedLineItem]])
+    {
         [self saveLineItem];
+    }
         
     [resourceBundleController previousLineItem];
     [self reloadDataOnEditLineItemWindow];
@@ -190,7 +194,7 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 {
     var value = [[editLineItemWindow valueTextField] stringValue];
     [resourceBundleController setValueForSelectedLineItem:value];
-    [selectedProject save];
+    [selectedProject saveWithCallback:function(){[projectView reloadAllData];}];
 }
 
 - (void)saveComment

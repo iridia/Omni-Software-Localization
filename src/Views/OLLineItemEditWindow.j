@@ -81,6 +81,7 @@
         [commentBox setContentView:comment];
         [commentBox setBackgroundColor:[CPColor colorWithCalibratedWhite:0.9 alpha:1.0]];
         [commentBox setBorderWidth:1.0];
+        [commentBox setAutoresizingMask:CPViewWidthSizable | CPViewMaxXMargin];
         [commentBox setBorderColor:[CPColor blackColor]];
         [commentBox setBorderType:CPLineBorder];
         [comment setBezeled:NO];
@@ -98,6 +99,7 @@
         [englishValueBox setBackgroundColor:[CPColor colorWithCalibratedWhite:0.9 alpha:1.0]];
         [englishValueBox setBorderWidth:1.0];
         [englishValueBox setBorderColor:[CPColor blackColor]];
+        [englishValueBox setAutoresizingMask:CPViewWidthSizable | CPViewMaxXMargin];
         [englishValueBox setBorderType:CPLineBorder];
         [englishValue setBezeled:NO];
         [englishValue setLineBreakMode:CPLineBreakByWordWrapping];
@@ -107,6 +109,7 @@
         [valueBox setContentViewMargins:CGSizeMake(12.0, 12.0)];
         [valueBox setContentView:valueTextField];
         [valueBox setBackgroundColor:[CPColor colorWithCalibratedWhite:0.9 alpha:1.0]];
+        [valueBox setAutoresizingMask:CPViewWidthSizable | CPViewMaxXMargin];
         [valueBox setBorderWidth:1.0];
         [valueBox setBorderColor:[CPColor blackColor]];
         [valueBox setBorderType:CPLineBorder];
@@ -253,7 +256,7 @@
 - (void)_makeCommentsView:(CGRect)frame
 {
     commentsView = [[CPView alloc] initWithFrame:CGRectInset(frame, 12.0, 12.0)];
-    [commentsView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable | CPViewMaxYMargin | CPViewMinYMargin];
+    [commentsView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable | CPViewMinXMargin];
     
     var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([commentsView bounds]), CGRectGetHeight([commentsView bounds]) - 140.0)];
     [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
@@ -276,7 +279,7 @@
     commentTextField = [[CPTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([commentsView bounds]) - 18.0, 80.0)];
     [commentTextField setEditable:YES];
 	[commentTextField setBezeled:YES];
-    [commentTextField setAutoresizingMask:CPViewWidthSizable];
+    [commentTextField setAutoresizingMask:CPViewWidthSizable | CPViewMinYMargin];
 	[commentTextField setLineBreakMode:CPLineBreakByWordWrapping];
 	[commentTextField setTarget:self];
 	[commentTextField setAction:@selector(saveComment:)];
@@ -286,7 +289,7 @@
     [submitButton setWidth:CGRectGetWidth([commentTextField bounds])];
     [submitButton setTarget:self];
     [submitButton setAction:@selector(saveComment:)]
-    [submitButton setAutoresizingMask:CPViewWidthSizable];
+    [submitButton setAutoresizingMask:CPViewWidthSizable | CPViewMinYMargin];
     [commentsView addSubview:submitButton positioned:CPViewBelow | CPViewWidthCentered relativeTo:commentTextField withPadding:12.0];
 }
 
