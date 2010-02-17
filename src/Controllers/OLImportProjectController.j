@@ -1,5 +1,6 @@
 @import <Foundation/CPObject.j>
 @import "../Views/OLImportProjectWindow.j"
+@import "OLMyProjectController.j"
 
 
 @implementation OLImportProjectController : CPObject
@@ -42,7 +43,7 @@
 	    [newProject setRevision:[project revision]];
 	    [newProject saveWithCallback:function(){
             [[CPNotificationCenter defaultCenter]
-                postNotificationName:@"OLMyProjectsShouldReloadNotification"
+                postNotificationName:OLProjectShouldReloadMyProjectsNotification
                 object:self];
 	    }];
 	}

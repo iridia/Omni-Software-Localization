@@ -33,7 +33,7 @@
         var userEmail = [[projectTitle componentsSeparatedByString:@"'"] objectAtIndex:0];
         if (userEmail !== projectTitle)
         {
-            [[CPNotificationCenter defaultCenter] postNotificationName:OLProfileNeedsToBeLoaded object:userEmail];
+            [[CPNotificationCenter defaultCenter] postNotificationName:OLProfileControllerShouldLoadProfileNotification object:userEmail];
         }
     }
     else

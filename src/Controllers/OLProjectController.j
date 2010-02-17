@@ -2,22 +2,22 @@
 
 @import "../Utilities/OLUserSessionManager.j"
 @import "../Models/OLProject.j"
-@import "../Views/OLProjectView.j"
 
 @import "OLLoginController.j"
 @import "OLResourceBundleController.j"
 @import "OLImportProjectController.j"
+@import "OLMenuController.j"
 
-OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsNotification";
-
+// Notifications
 OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotification";
+OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
 
 // Manages an array of projects
 @implementation OLProjectController : CPObject
 {
     CPArray         projects       	    @accessors;
 	OLProject	    selectedProject		@accessors;
-	OLProjectView   projectView         @accessors;
+	OLProjectView   projectView;
 	
 	OLResourceBundleController  resourceBundleController;
 }
@@ -31,8 +31,24 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 		
 		resourceBundleController = [[OLResourceBundleController alloc] init];
         [self addObserver:resourceBundleController forKeyPath:@"selectedProject" options:CPKeyValueObservingOptionNew context:nil];
+        [self registerForNotifications];
     }
     return self;
+}
+
+- (void)registerForNotifications
+{
+    [[CPNotificationCenter defaultCenter]
+	    addObserver:self
+	    selector:@selector(didReceiveProjectDidChangeNotification:)
+	    name:OLProjectDidChangeNotification
+	    object:nil];
+	    
+    [[CPNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(didReceiveLineItemSelectedIndexDidChangeNotification:)
+        name:OLLineItemSelectedLineItemIndexDidChangeNotification
+        object:[[resourceBundleController resourceController] lineItemController]];
 }
 
 - (void)loadProjects
@@ -88,7 +104,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 
 @implementation OLProjectController (ProjectViewDelegate)
 
-
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
     var tableView = [aNotification object];
@@ -107,11 +122,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
     if (tableView === [projectView lineItemsTableView])
     {
         [resourceBundleController selectLineItemAtIndex:selectedRow];
-    }
-    
-    if (tableView === [dashboardView subscribers])
-    {
-        
     }
 }
 
@@ -141,12 +151,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
     [resourceBundleController editSelectedLineItem];
 }
 
-// HACK FOR CPTableView BUG (_doubleAction is a global var)
-- (SEL)doubleAction
-{
-    return CPSelectorFromString(@"lineItemsTableViewDoubleClick:");
-}
-
 @end
 
 @implementation OLProjectController (ProjectViewDataSource)
@@ -166,31 +170,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
     [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
     [resourceBundleController selectResourceBundleAtIndex:selectedIndex];
     [projectView reloadAllData];
-}
-
-- (void)startCreateNewBundle:(id)sender
-{
-    if(![[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
-    {
-        var userInfo = [CPDictionary dictionary];
-        [userInfo setObject:@"You must log in to add a new language!" forKey:@"StatusMessageText"];
-        [userInfo setObject:@selector(startCreateNewBundle:) forKey:@"SuccessfulLoginAction"];
-        [userInfo setObject:self forKey:@"SuccessfulLoginTarget"];
-        
-        [[CPNotificationCenter defaultCenter]
-            postNotificationName:OLLoginControllerShouldLoginNotification
-            object:nil
-            userInfo:userInfo];
-        
-        return;
-    }
-    else if(![[OLUserSessionManager defaultSessionManager] isUserTheLoggedInUser:[selectedProject userIdentifier]])
-    {
-        [self branchSelectedProject];        
-        return;
-    }
-    
-    [resourceBundleController startCreateNewBundle:sender];
 }
 
 - (void)startDeleteBundle:(id)sender
@@ -309,58 +288,6 @@ OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotific
 - (CPString)title
 {
     return [selectedProject name];
-}
-
-@end
-
-@implementation OLProjectController (SidebarItem)
-
-- (BOOL)shouldExpandSidebarItemOnReload
-{
-    return YES;
-}
-
-- (CPView)contentView
-{
-    return projectView;
-}
-
-- (CPString)sidebarName
-{
-    return @"Projects";
-}
-
-- (CPArray)sidebarItems
-{
-    return projects;
-}
-
-- (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
-{
-	var outlineView = [notification object];
-
-	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
-	var item = [outlineView itemAtRow:selectedRow];
-
-	var parent = [outlineView parentForItem:item];
-	
-	if (parent === self)
-	{
-	    if (selectedProject !== item)
-	    {
-	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldEnableItemsNotification" 
-	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport, OLMenuItemBroadcast]];
-    	    [self setSelectedProject:item];
-            [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
-            [projectView setTitle:[[self selectedProject] name]];
-            [projectView reloadAllData];
-            [dashboardView reloadData:self];
-        }
-	}
-	else
-	{
-	    [self setSelectedProject:nil];
-	}
 }
 
 @end

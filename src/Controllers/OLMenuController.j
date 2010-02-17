@@ -1,8 +1,14 @@
 @import <Foundation/CPObject.j>
 @import "../Views/OLMenu.j"
+@import "OLMyProjectController.j"
+@import "OLUploadWindowController.j"
 
 OLMenuItemEnabled = YES;
 OLMenuItemDisabled = NO;
+
+// Notifications
+OLMenuShouldEnableItemsNotification = @"OLMenuShouldEnableItemsNotification";
+OLMenuShouldDisableItemsNotification = @"OLMenuShouldDisableItemsNotification";
 
 @implementation OLMenuController : CPObject
 {
@@ -19,13 +25,13 @@ OLMenuItemDisabled = NO;
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(enableItems:)
-            name:@"OLMenuShouldEnableItemsNotification"
+            name:OLMenuShouldEnableItemsNotification
             object:nil];
             
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(disableItems:)
-            name:@"OLMenuShouldDisableItemsNotification"
+            name:OLMenuShouldDisableItemsNotification
             object:nil];
         
         items = [CPDictionary dictionary];
@@ -79,12 +85,12 @@ OLMenuItemDisabled = NO;
 
 - (void)newLanguage:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"CPLanguageShouldAddLanguageNotification" object:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:OLProjectShouldCreateBundleNotification object:self];
 }
 
 - (void)deleteLanguage:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"CPLanguageShouldDeleteLanguageNotification" object:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:OLProjectShouldDeleteBundleNotification object:self];
 }
 
 - (void)about:(id)sender
@@ -99,17 +105,17 @@ OLMenuItemDisabled = NO;
 
 - (void)new:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLUploadShouldStartNotification" object:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:OLUploadWindowShouldStartUploadNotification object:self];
 }
 
 - (void)download:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectShouldDownloadNotification" object:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:OLProjectShouldDownloadNotification object:self];
 }
 
 - (void)importItem:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLProjectShouldImportNotification" object:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:OLProjectShouldImportNotification object:self];
 }
 
 - (void)undo:(id)sender
@@ -143,7 +149,7 @@ OLMenuItemDisabled = NO;
 
 - (void)broadcastMessage:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"CPMessageShouldBroadcastNotification" object:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:OLProjectShouldBroadcastMessage object:self];
 }
 
 @end

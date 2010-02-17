@@ -1,5 +1,8 @@
 @import <Foundation/CPObject.j>
 
+// Notifications
+OLContentViewControllerShouldUpdateContentView = @"OLContentViewControllerShouldUpdateContentView";
+
 @implementation OLContentViewController : CPObject
 {	
 	CPView			currentView;
@@ -9,16 +12,10 @@
 
 - (void)awakeFromCib
 {
-    [[CPNotificationCenter defaultCenter]
-		addObserver:self
-		selector:@selector(outlineViewSelectionDidChangeNotification:)
-		name:CPOutlineViewSelectionDidChangeNotification
-		object:nil];
-		
    [[CPNotificationCenter defaultCenter]
 		addObserver:self
-		selector:@selector(outlineSelectionDidChangeThroughProfile:)
-		name:CPOutlineViewSelectionDidChangeThroughProfileNotification
+		selector:@selector(updateCurrentView:)
+		name:OLContentViewControllerShouldUpdateContentView
 		object:nil];
 }
 
@@ -43,29 +40,28 @@
 
 @end
 
-@implementation OLContentViewController (OutlineViewNotification)
+@implementation OLContentViewController (Notifications)
 
-- (void)outlineSelectionDidChangeThroughProfile:(CPNotificaiton)aNotification
-{   
-    [self setCurrentView:[aNotification object]];
-}
-
-- (void)outlineViewSelectionDidChangeNotification:(CPNotification)notification
+- (void)updateCurrentView:(CPNotificaiton)aNotification
 {
-    var outlineView = [notification object];
+    var userInfo = [aNotification userInfo];
+    var view = nil;
+    
+    if (userInfo)
+    {
+        view = [userInfo objectForKey:@"view"];
+    }
+    
+    if (!view)
+    {
+        var anObject = [aNotification object];
+        if ([anObject respondsToSelector:@selector(contentView)])
+        {
+            view = [anObject contentView];
+        }
+    }
 
-	var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
-	var item = [outlineView itemAtRow:selectedRow];
-    var parent = [outlineView parentForItem:item];
-
-	if ([parent respondsToSelector:@selector(contentView)])
-	{
-	    [self setCurrentView:[parent contentView]];
-	}
-	else
-	{
-	    [self setCurrentView:nil];
-	}
+    [self setCurrentView:view];
 }
 
 @end

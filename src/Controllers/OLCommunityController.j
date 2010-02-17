@@ -8,7 +8,6 @@
 var OLCommunityInboxItem = @"Inbox";
 var OLCommunitySearchItem = @"Search";
 var OLCommunityProfileItem = @"Profile";
-CPOutlineViewSelectionDidChangeThroughProfileNotification =@"CPOutlineViewSelectionDidChangeThroughProfileNotification";
 
 // Manages the community items in the sidebar and their respective controllers
 @implementation OLCommunityController : CPObject
@@ -39,7 +38,7 @@ CPOutlineViewSelectionDidChangeThroughProfileNotification =@"CPOutlineViewSelect
 		    [[CPNotificationCenter defaultCenter]
     			addObserver:self
     			selector:@selector(didReceiveReselectProfileView:)
-    			name:OLProfileNeedsToBeLoaded
+    			name:OLProfileControllerShouldLoadProfileNotification
     			object:nil];
     			
         }
@@ -49,12 +48,10 @@ CPOutlineViewSelectionDidChangeThroughProfileNotification =@"CPOutlineViewSelect
 - (void)didReceiveReselectProfileView:(CPNotification)aNotification
 {
     [profileController didReceiveLoadNewProfile:aNotification]
-    [[CPNotificationCenter defaultCenter] postNotificationName:CPOutlineViewSelectionDidChangeThroughProfileNotification object:[profileController profileView]];
-}
-
-- (void)setContentViewController:(id)contentViewController
-{
-    [searchController setContentViewController:contentViewController];
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:CPOutlineViewSelectionDidChangeThroughProfileNotification
+        object:self
+        userInfo:[CPDictionary dictionaryWithObject:[profileController profileView] forKey:@"view"]];
 }
 
 @end
@@ -111,10 +108,13 @@ CPOutlineViewSelectionDidChangeThroughProfileNotification =@"CPOutlineViewSelect
 	var parent = [outlineView parentForItem:item];
 
 	if (parent === self)
-	{	    
-        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldDisableItemsNotification" 
-            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport]];
+	{
 	    [self setSelectedItem:item];
+
+	    // tell content view controller to update view
+		[[CPNotificationCenter defaultCenter]
+		  postNotificationName:OLContentViewControllerShouldUpdateContentView
+		  object:self];
 	}
 	else
 	{

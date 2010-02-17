@@ -1,6 +1,6 @@
 @import <Foundation/CPObject.j>
 
-var OLUploadControllerDidParseServerResponse = @"OLUploadControllerDidParseServerResponse";
+OLUploadControllerDidParseServerResponse = @"OLUploadControllerDidParseServerResponse";
 
 @implementation OLUploadController : CPObject
 {

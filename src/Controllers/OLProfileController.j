@@ -6,7 +6,7 @@
 @import "../Views/OLLinkTextField.j"
 @import "OLProjectController.j"
 
-OLProfileNeedsToBeLoaded = @"OLProfileNeedsToBeLoaded";
+OLProfileControllerShouldLoadProfileNotification = @"OLProfileControllerShouldLoadProfileNotification";
 
 @implementation OLProfileController : CPObject
 {
@@ -49,7 +49,7 @@ OLProfileNeedsToBeLoaded = @"OLProfileNeedsToBeLoaded";
 	    [[CPNotificationCenter defaultCenter]
     	    addObserver:self
     	    selector:@selector(didReceiveLoadNewProfile:)
-    	    name:OLProfileNeedsToBeLoaded
+    	    name:OLProfileControllerShouldLoadProfileNotification
     	    object:nil];
     	    
     	[[CPNotificationCenter defaultCenter]

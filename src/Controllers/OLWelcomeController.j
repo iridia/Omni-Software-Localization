@@ -1,6 +1,8 @@
 @import <Foundation/CPObject.j>
 
 @import "../Views/OLWelcomeView.j"
+@import "OLUploadWindowController.j"
+
 
 /*!
  * The OLWelcomeController is a controller for the welcome views that decides
@@ -47,7 +49,7 @@
 
 - (void)showNewProject:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:@"OLUploadShouldStartNotification" object:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:OLUploadWindowShouldStartUploadNotification object:self];
 }
 
 @end

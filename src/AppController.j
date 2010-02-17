@@ -39,7 +39,7 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 
 @implementation AppController : CPObject
 {
-    @outlet						CPWindow                theWindow;
+    @outlet						CPWindow                theWindow       @accessors(readonly);
     @outlet						CPSplitView             mainSplitView;
 
     @outlet						OLSidebarController     sidebarController;
@@ -74,7 +74,6 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
     
     var communityController = [[OLCommunityController alloc] init];
     [communityController addObserver:sidebarController forKeyPath:@"items" options:CPKeyValueObservingOptionNew context:nil];
-    [communityController setContentViewController:contentViewController];
     [sidebarController addSidebarItem:communityController];
  
 	var menuController = [[OLMenuController alloc] init];
@@ -112,6 +111,8 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
     
     // Access the DB as late as possible
     [glossaryController loadGlossaries];
+    
+    [theWindow makeKeyAndOrderFront:self];
 }
 
 - (void)awakeFromCib

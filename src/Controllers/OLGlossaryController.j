@@ -3,6 +3,8 @@
 
 @import "../Models/OLGlossary.j"
 @import "../Views/OLGlossariesView.j"
+@import "OLContentViewController.j"
+@import "OLUploadController.j"
 
 
 var OLGlossaryViewIdentifierColumnHeader = @"OLGlossaryViewIdentifierColumnHeader";
@@ -13,7 +15,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 {
     CPArray             glossaries     	    @accessors;
 	OLGlossary	        selectedGlossary	@accessors;
-	OLGlossariesView    glossariesView      @accessors;
+	OLGlossariesView    glossariesView;
 }
 
 - (id)init
@@ -29,7 +31,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 		[[CPNotificationCenter defaultCenter]
 			addObserver:self
 			selector:@selector(didReceiveParseServerResponseNotification:)
-			name:@"OLUploadControllerDidParseServerResponse"
+			name:OLUploadControllerDidParseServerResponse
 			object:nil];
 		
 		[[CPNotificationCenter defaultCenter]
@@ -135,11 +137,6 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
     return YES;
 }
 
-- (CPView)contentView
-{
-    return glossariesView;
-}
-
 - (void)didReceiveOutlineViewSelectionDidChangeNotification:(CPNotification)notification
 {
 	var outlineView = [notification object];
@@ -153,11 +150,15 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 	{
 	    if (item !== selectedGlossary)
 	    {
-	        [[CPNotificationCenter defaultCenter] postNotificationName:@"OLMenuShouldDisableItemsNotification" 
-	            object:[OLMenuItemNewLanguage, OLMenuItemDeleteLanguage, OLMenuItemDownload, OLMenuItemImport]];
     		[self setSelectedGlossary:item];
-    		[[[self glossariesView] tableView] reloadData];
-    		[[self glossariesView] setTitle:[item name]];
+    		[[glossariesView tableView] reloadData];
+    		[glossariesView setTitle:[item name]];
+    		
+    		// tell content view controller to update view
+    		[[CPNotificationCenter defaultCenter]
+    		  postNotificationName:OLContentViewControllerShouldUpdateContentView
+    		  object:self
+    		  userInfo:[CPDictionary dictionaryWithObject:glossariesView forKey:@"view"]];
     	}
 	}
 	else

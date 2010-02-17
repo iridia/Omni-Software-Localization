@@ -1,14 +1,14 @@
 @import "OLProjectController.j"
 @import "../Views/OLProjectSearchView.j"
 @import "../Views/OLProjectResultView.j"
+@import "../Views/OLProjectView.j"
 
 @implementation OLProjectSearchController : OLProjectController
 {
-    OLProjectSearchView     searchView      @accessors;
+    OLProjectSearchView     searchView;
+    OLProjectView           projectView;
     CPView                  contentView     @accessors(readonly);
     CPString                ownerName;
-    
-    OLContentViewController contentViewController   @accessors;
 }
 
 - (void)init
@@ -18,6 +18,8 @@
     {
         searchView = [[OLProjectSearchView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
         [searchView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [[searchView allProjectsTableView] setTarget:self];
+        [[searchView allProjectsTableView] setDoubleAction:@selector(didDoubleClickSearchItem:)];
         
         projectView = [[OLProjectResultView alloc] initWithFrame:CGRectMake(0.0, 0.0, 500.0, 500.0)];
         [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
@@ -36,31 +38,8 @@
         [searchView setDataSource:self];
         [searchView setDelegate:self];
         contentView = searchView;
-   		
-   		[self registerForNotifications];
     }
     return self;
-}
-
-- (void)registerForNotifications
-{
-    [[CPNotificationCenter defaultCenter]
-		addObserver:self
-		selector:@selector(didReceiveProjectControllerFinished:)
-		name:@"OLProjectControllerDidFinishSavingNotification"
-		object:nil];
-		
-	[[CPNotificationCenter defaultCenter]
-	    addObserver:self
-	    selector:@selector(didReceiveProjectDidChangeNotification:)
-	    name:@"OLProjectDidChangeNotification"
-	    object:nil];
-        
-	[[CPNotificationCenter defaultCenter]
-	   addObserver:self
-	   selector:@selector(didReceiveLineItemSelectedIndexDidChangeNotification:)
-	   name:OLLineItemSelectedLineItemIndexDidChangeNotification
-	   object:[[resourceBundleController resourceController] lineItemController]];
 }
 
 - (void)loadProjects
@@ -80,9 +59,12 @@
 
 - (void)sortProjects
 {
-   projects = [projects sortedArrayUsingFunction:function(lhs, rhs, context){  
-           return [[rhs totalOfAllVotes] compare:[lhs totalOfAllVotes]];
-       }];
+    var sortFunction = function(lhs, rhs, context)
+    {  
+        return [[rhs totalOfAllVotes] compare:[lhs totalOfAllVotes]];
+    };
+    
+    projects = [projects sortedArrayUsingFunction:sortFunction];
 }
 
 - (void)reloadData
@@ -90,19 +72,23 @@
     [searchView reloadData];
 }
 
-- (void)setContentView:(CPView)aView
-{
-    if(aView === contentView)
-        return;
-    
-    contentView = aView;
-    
-    [contentViewController setCurrentView:contentView];
-}
-
 - (void)didReceiveProjectControllerFinished:(CPNotification)notification
 {
     [self loadProjects];
+}
+
+- (CPArray)projectsMatchingString:(CPString)aName
+{    
+    var result = [CPArray array];
+    var searchValue = [[searchView searchField] stringValue];
+    for(var i = 0; i < [projects count]; i++)
+    {
+        if(!searchValue || searchValue === "" || [[[projects objectAtIndex:i] name] hasPrefix:searchValue])
+        {
+            [result addObject:[projects objectAtIndex:i]];
+        }
+    }
+    return result;
 }
 
 @end
@@ -127,7 +113,7 @@
 {
     if(tableView === [searchView allProjectsTableView])
     {
-        return [projects count];
+        return [[self projectsMatchingString:[[searchView searchField] stringValue]] count];
     }
     
     if (tableView === [projectView resourcesTableView])
@@ -148,9 +134,10 @@
     var projectTableView = [searchView allProjectsTableView];
     if(tableView === projectTableView)
     {
+        var object = [[self projectsMatchingString:[[searchView searchField] stringValue]] objectAtIndex:row];
         if([tableColumn identifier] === @"ProjectName")
         {
-            return [[projects objectAtIndex:row] name];
+            return [object name];
         }
         else if ([tableColumn identifier] === @"OwnerName")
         {
@@ -158,7 +145,7 @@
         }
         else if ([tableColumn identifier] === @"TotalVotes")
         {
-            return [[projects objectAtIndex:row] totalOfAllVotes];
+            return [object totalOfAllVotes];
         }
     }
     
@@ -184,7 +171,7 @@
 
 }
 
-- (void)tableViewDidDoubleClickItem:(CPTableView)aTableView
+- (void)didDoubleClickSearchItem:(CPTableView)aTableView
 {
     if(aTableView === [searchView allProjectsTableView])
     {
@@ -198,17 +185,18 @@
                 ownerName = [user email];
             
                 [self setSelectedProject:project];
-    
                 [projectView setBackButtonDelegate:self];
-                [self setContentView:projectView];
-        
                 [projectView reloadAllData];
+                
+                // tell content view controller to update view
+        		[[CPNotificationCenter defaultCenter]
+        		    postNotificationName:OLContentViewControllerShouldUpdateContentView
+        		    object:self
+        		    userInfo:[CPDictionary dictionaryWithObject:projectView forKey:@"view"]];
             }];
         }];
         return;
     }
-    
-    [super performSelector:[super doubleAction] withObject:aTableView];
 }
 
 - (SEL)doubleAction
@@ -218,7 +206,11 @@
 
 - (void)back:(id)sender
 {
-    [self setContentView:searchView];
+    // tell content view controller to update view
+	[[CPNotificationCenter defaultCenter]
+        postNotificationName:OLContentViewControllerShouldUpdateContentView
+	    object:self
+	    userInfo:[CPDictionary dictionaryWithObject:searchView forKey:@"view"]];
 }
 
 @end
