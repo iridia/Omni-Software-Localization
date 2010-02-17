@@ -1,7 +1,6 @@
 @import <Foundation/CPObject.j>
 
 @import "../Utilities/OLUserSessionManager.j"
-@import "OLLineItemEditWindowController.j"
 @import "../Models/OLLineItem.j"
 
 OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineItemIndexDidChangeNotification";

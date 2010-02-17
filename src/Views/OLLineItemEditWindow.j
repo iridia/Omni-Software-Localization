@@ -1,4 +1,5 @@
 @import <AppKit/CPWindow.j>
+@import "OLCommentView.j"
 
 @implementation OLLineItemEditWindow : CPWindow
 {
@@ -76,7 +77,7 @@
         [commentLabel setTextShadowOffset:CGSizeMake(1, 1)];
         [commentLabel sizeToFit];
         comment = [CPTextField labelWithTitle:@""];
-        var commentBox = [[CPBox alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([lineItemView bounds])/2 - 10.0, 100)];
+        var commentBox = [[CPBox alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([lineItemView bounds])/2 - 20.0, 100)];
         [commentBox setContentViewMargins:CGSizeMake(12.0, 12.0)];
         [commentBox setContentView:comment];
         [commentBox setBackgroundColor:[CPColor colorWithCalibratedWhite:0.9 alpha:1.0]];
@@ -93,7 +94,7 @@
         [englishValueLabel setTextShadowOffset:CGSizeMake(1, 1)];
         [englishValueLabel sizeToFit];
         englishValue = [CPTextField labelWithTitle:@""];
-        var englishValueBox = [[CPBox alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([lineItemView bounds])/2 - 10.0, 100)];
+        var englishValueBox = [[CPBox alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([lineItemView bounds])/2 - 20.0, 100)];
         [englishValueBox setContentViewMargins:CGSizeMake(12.0, 12.0)];
         [englishValueBox setContentView:englishValue];
         [englishValueBox setBackgroundColor:[CPColor colorWithCalibratedWhite:0.9 alpha:1.0]];
@@ -105,7 +106,7 @@
         [englishValue setLineBreakMode:CPLineBreakByWordWrapping];
         
         valueTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"" width:CGRectGetWidth([lineItemView bounds]) * 0.5 - 12.0];
-        var valueBox = [[CPBox alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([lineItemView bounds])/2 - 10.0, 100)];
+        var valueBox = [[CPBox alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([lineItemView bounds])/2 - 20.0, 100)];
         [valueBox setContentViewMargins:CGSizeMake(12.0, 12.0)];
         [valueBox setContentView:valueTextField];
         [valueBox setBackgroundColor:[CPColor colorWithCalibratedWhite:0.9 alpha:1.0]];
@@ -307,49 +308,4 @@
     [collectionView reloadContent];
 }
     
-@end
-
-@implementation OLCommentView :CPView
-{
-    CPTextField     user;
-    CPTextField     comment;
-    CPView          padding;
-}
-
-- (void)setRepresentedObject:(OLComment)aComment
-{
-    if (!padding)
-    {
-        padding = [[CPView alloc] initWithFrame:CGRectInset([self bounds], 5.0, 0.0)];
-        var image = [[CPThreePartImage alloc] initWithImageSlices:[
-                                [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/thoughtbubble-0.png" size:CGSizeMake(24.0, 80.0)],
-                                [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/thoughtbubble-1.png" size:CGSizeMake(27.0, 80.0)],
-                                [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/thoughtbubble-2.png" size:CGSizeMake(48.0, 80.0)]
-                             ] isVertical:NO];
-        [padding setBackgroundColor:[CPColor colorWithPatternImage:image]];
-        [padding setAutoresizingMask:CPViewWidthSizable];
-        [self addSubview:padding];
-    }
-    if (!user)
-    {
-        user = [[CPTextField alloc] initWithFrame:CGRectMakeZero()];
-        [user setFont:[CPFont boldSystemFontOfSize:12.0]];
-        [padding addSubview:user];
-    }
-    if (!comment)
-    {
-        comment = [[CPTextField alloc] initWithFrame:CGRectMakeZero()];
-        [comment setFont:[CPFont systemFontOfSize:12.0]];
-        [padding addSubview:comment];
-    }
-    
-    [user setStringValue:[aComment userEmail]];
-    [user sizeToFit];
-    [user setFrameOrigin:CPMakePoint([self bounds].size.width - [user bounds].size.width - 72.0, [self bounds].size.height - [user bounds].size.height)];
-    
-    [comment setStringValue:[aComment content]];
-    [comment sizeToFit];
-    [comment setFrameOrigin:CPMakePoint(12.0, 12.0)];
-}
-
 @end

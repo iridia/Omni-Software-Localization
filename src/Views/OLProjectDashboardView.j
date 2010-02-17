@@ -1,6 +1,7 @@
 @import <AppKit/CPView.j>
 
 @import "OLTableView.j"
+@import "OLCommentView.j"
 
 @implementation OLProjectDashboardView : CPView
 {
@@ -159,7 +160,7 @@
         [scrollView setAutohidesScrollers:YES];
 
         var prototype = [[CPCollectionViewItem alloc] init];
-        var prototypeView = [[OLCommentView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([scrollView bounds]), 50.0)];
+        var prototypeView = [[OLCommentView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([scrollView bounds]), 80.0)];
         [prototype setView:prototypeView];
         
         collectionView = [[CPCollectionView alloc] initWithFrame:[scrollView bounds]];
@@ -167,8 +168,8 @@
         [collectionView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         [collectionView setMaxNumberOfColumns:1];
         [collectionView setVerticalMargin:10.0];
-        [collectionView setMinItemSize:CPMakeSize(100.0, 50.0)];
-        [collectionView setMaxItemSize:CPMakeSize(10000.0, 50.0)];
+        [collectionView setMinItemSize:CPMakeSize(100.0, 80.0)];
+        [collectionView setMaxItemSize:CPMakeSize(10000.0, 80.0)];
         
         [scrollView setDocumentView:collectionView];
         [commentsView addSubview:scrollView];
