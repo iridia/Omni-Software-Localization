@@ -80,10 +80,10 @@
 - (CPArray)projectsMatchingString:(CPString)aName
 {    
     var result = [CPArray array];
-    var searchValue = [[searchView searchField] stringValue];
+    var searchValue = [[searchView searchField] stringValue].toLowerCase();
     for(var i = 0; i < [projects count]; i++)
     {
-        if(!searchValue || searchValue === "" || [[[projects objectAtIndex:i] name] hasPrefix:searchValue])
+        if(!searchValue || searchValue === "" || [[[projects objectAtIndex:i] name].toLowerCase() hasPrefix:searchValue])
         {
             [result addObject:[projects objectAtIndex:i]];
         }
@@ -138,6 +138,10 @@
         if([tableColumn identifier] === @"ProjectName")
         {
             return [object name];
+        }
+        else if ([tableColumn identifier] === @"OwnerName")
+        {
+            return [[projects objectAtIndex:row] userIdentifier];
         }
         else if ([tableColumn identifier] === @"TotalVotes")
         {

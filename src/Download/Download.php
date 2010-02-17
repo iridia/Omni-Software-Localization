@@ -24,7 +24,7 @@ for($i = 0; $i < count($value->OLProjectResourceBundlesKey); $i++)
     for($j = 0; $j < count($value->OLProjectResourceBundlesKey[$i]->OLResourceBundleResourcesKey); $j++)
     {
         $resource = $value->OLProjectResourceBundlesKey[$i]->OLResourceBundleResourcesKey[$j];
-        $resourceName = $resource->OLResourceFileNameKey;
+        $resourceName = $resource->OLResourceShortNameKey;
         
         $fileHandle = fopen($resourceName, 'w') or die("can't open file");
         

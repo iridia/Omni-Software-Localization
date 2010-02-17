@@ -30,11 +30,15 @@
     
     	var column = [[CPTableColumn alloc] initWithIdentifier:@"ProjectName"];
     	[[column headerView] setStringValue:"Project Name"];
-    	[column setWidth:CGRectGetWidth(aFrame)/2];
+    	[column setWidth:CGRectGetWidth(aFrame)/3];
+    	
+        var ownerColumn = [[CPTableColumn alloc] initWithIdentifier:@"OwnerName"];
+        [[ownerColumn headerView] setStringValue:"Owner Name"];
+        [ownerColumn setWidth:CGRectGetWidth(aFrame)/3];
     	
     	var votesColumn = [[CPTableColumn alloc] initWithIdentifier:@"TotalVotes"];
     	[[votesColumn headerView] setStringValue:"Total Votes"];
-    	[votesColumn setWidth:CGRectGetWidth(aFrame)/2];
+    	[votesColumn setWidth:CGRectGetWidth(aFrame)/3];
     	
 		allProjectsTableView = [[OLTableView alloc] initWithFrame:CGRectMake(0.0, 42.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame)-42.0) columns:[column,votesColumn]];
 		[allProjectsTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
