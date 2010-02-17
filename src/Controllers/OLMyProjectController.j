@@ -195,7 +195,7 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 {
     var value = [[editLineItemWindow commentTextField] stringValue];
     [resourceBundleController addCommentForSelectedLineItem:value];
-    [selectedProject saveWithCallback:function(){[self loadProjects];}];
+    // [selectedProject saveWithCallback:function(){[self loadProjects];}];
     [self reloadDataOnEditLineItemWindow];
 }
 

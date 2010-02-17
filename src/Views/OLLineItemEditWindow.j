@@ -251,6 +251,7 @@
 - (void)_positionTitle
 {
     [title removeFromSuperview];
+    [title sizeToFit];
     [[self contentView] addSubview:title positioned:CPViewWidthCentered | CPViewTopAligned relativeTo:[self contentView] withPadding:24.0];
 }
 
