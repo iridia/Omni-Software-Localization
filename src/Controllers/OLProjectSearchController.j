@@ -152,6 +152,10 @@
         {
             return [[projects objectAtIndex:row] name];
         }
+        else if ([tableColumn identifier] === @"OwnerName")
+        {
+            return [[projects objectAtIndex:row] userIdentifier];
+        }
         else if ([tableColumn identifier] === @"TotalVotes")
         {
             return [[projects objectAtIndex:row] totalOfAllVotes];
