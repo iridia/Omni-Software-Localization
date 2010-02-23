@@ -1,1 +1,53 @@
-This document describes the design of the entire system at the highest level, such as the interaction between the client and server.
+Localize is a web application and as such has many components that work together to make it work. This document describes these components at a high level and the different interactions between these components.
+
+h2. (Thick-)Client-Server
+
+Like many web applications, Localize is a client-server application at a high-level. The client is all the Cappuccino (Javascript) code that is downloaded by the user from the server. The server is relatively lightweight and is mostly responsible for serving up the code, acting as the persistent store, and provide other functionality that the client cannot provide (mostly due to browser or security restrictions).
+
+Unlike most web applications, Localize is a thick-client application. This means that most of the business logic resides on the client side. This is a very familiar concept to developers of desktop applications, but those coming from a web development background may be confused. In a thick-client application, the server only provides the bare minimum of functionality. In this way, the server can be fast and efficient and the client can be very rich and interactive.
+
+The rest of this document will go into the detail of the specific components of Localize and how these components interact. For detail about the architecture of the client code, see the Software Architecture and Design document.
+
+h2. Data Storage
+
+The main responsibility of the server is to provide a means of storing data (known as the persistent store). Currently, this is done through CouchDB, a schema-less document-based JSON store. CouchDB is a very convenient choice because by default it provides a RESTful HTTP API, which the client can use to store or retrieve data.
+
+However, CouchDB may not be the right technology for Localize in the future. To decouple the client from the actual data storage technology, a small abstraction layer of PHP sits between the client and CouchDB. It translates URLs from the client into URLs that CouchDB understands. It will also forward the data from the client to CouchDB and the data from CouchDB to the client. Besides just decoupling the client from the server, this PHP layer also could provide a security layer. It could, for example, check the origin of the request and block all requests determined to not be from Localize. Or, similarly, if Localize wished to provide an external API to other application developers, this PHP layer could be used to check the request to be sure it was from a trusted application developer.
+
+The following sections will go into detail the API the PHP layer provides and the translation process between the client and CouchDB.
+
+h3. API
+
+While CouchDB already provides a RESTful HTTP API, this API is pretty specific to CouchDB. Therefore, Localize provides a more generic API through a thin PHP layer between the client and CouchDB.
+
+h4. Client API
+
+The client's API is designed to match the needs of the client. Currently, Localize needs to retrieve data in three ways:
+
+* _All:_ Retrieve all documents of a particular kind (e.g. retrieve all projects)
+* _Search:_ Retrieve all documents of a particular kind which match a certain criteria (e.g. retrieve all projects which are owned by a certain user)
+* _Individual:_ Retrieve a specific document, which is known by the client, of a particular kind (e.g. retrieve the project with ID 1234)
+
+The HTTP API which the client uses is fairly straightforward. In the following URLs, <model> is the model object (e.g. project), <property> is a unique property of that object (e.g. owner), and <unique_identifier> is the unique identifier used by CouchDB.
+
+* _All:_ /api/<model>/find/all
+* _Search:_ /api/<model>/find/<property>[?key=123]
+* _Individual:_ /api/<model>/<unique_identifier>
+    
+These URLs are then converted by the PHP layer to the corresponding URLs used by CouchDB. The specifics of this conversion is outside the scope of this document.
+
+h2. Other Functionality
+
+In addition to providing data storage and a convenient API to access this data, the server is also responsible for a few other distinct functions. These functions are usually only provided by the server because they cannot be provided by the client either for security reasons or due to browser limitations.
+
+h3. Uploading
+
+Due to browser restrictions, the client cannot access the user's filesystem. Therefore, the user must upload their files to a server in order to get them into Localize.
+
+The server parses the files uploaded by the server into a representation that the client can understand and then sends them back to the client. The client can then do whatever it wishes with this data, such as check it for errors or save it to the persistent store.
+
+h3. Downloading
+
+Again, since the client does not have access to the user's filesystem, the client cannot save data to the user's computer. The user then must download the file.
+
+The server provides the download service. The client sends the data which should be downloaded by the user. The server parses this data into a file format the user expects and then tells the client about the physical location of this file on the server. The client then directs the user to this URL and the user is able to download the file and save it to the local filesystem as they see fit.
