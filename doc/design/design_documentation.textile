@@ -23,11 +23,17 @@ Localize is designed as an overall Model-View-Controller (MVC) system. This desi
 
 The rest of this document will document the three layers of MVC. First, the model layer will be presented, followed by the controller layer, and finally the view layer will be discussed.
 
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/MVC.png(MVC)
+
 h3. Model Layer
 
 Localize has a well-defined model layer which closely follows the domain of the problem-space. However, because Localize is a web application, some interesting problems needed to be solved by the model layer.
 
 Cocoa has a very nice persistency layer (Core Data) which can automatically handle much of the saving and loading of the data into memory. Cappuccino is still in its infancy and does not have an equivalent yet. Localize did not aim to port Core Data to Cappuccino, but wanted a few of its features. An abstract class, OLActiveRecord, solves most of these problems.
+
+The following diagram gives an overview of the model layer.
+
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Model.png(Localize's Model Layer)
 
 h4. OLActiveRecord
 
@@ -87,6 +93,10 @@ Localize has many controllers, but they can be separated into logical groups whi
 
 One controller which does not fit into the above groups is the AppController (often called the AppDelegate in Cocoa). Its job is unique because it initializes the entirety of the application. AppController sits above all other controllers because it is its job to start all these controllers and hook them together appropriately.
 
+The following image gives an overview of Localize's controller layer.
+
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Controller.png(Localize's controller layer)
+
 h4. Data Source Controllers
 
 Localize refers to data source controllers as controllers whose job is solely to prepare data for the view layer and possibly respond to some actions from the view layer which affect data. These controllers are usually very simple and do not do anything outside of these responsibilities. These controllers are usually instantiated by other controllers, and not at the AppController level.
@@ -125,6 +135,10 @@ Localize uses very well-defined methods of communicating with the view layer. Da
 h2. System Architecture and Design
 
 Localize is a web application and as such has many components that work together to make it work. This document describes these components at a high level and the different interactions between these components.
+
+The following graphic gives an overview of Localize's system architecture.
+
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/SystemArchitecture.png(System Architecture)
 
 h3. (Thick-)Client-Server
 
