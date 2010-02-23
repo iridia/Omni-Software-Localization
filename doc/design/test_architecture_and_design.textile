@@ -1,21 +1,19 @@
-This document describes the design of the testing suite used during the development of the application.
+The development team has a very precise definition of not only what we want to accomplish, but how we want to accomplish it. Testing is a big part of how we want to accomplish our goals. We work very effectively and efficiently and we think that our rigorous testing solution has been a big part of that. From Day 1 of coding, we have set up a testing solution that works for us.
 
-h1. Test Architecture and Design
-
-Project OSL uses four primary ways of testing the code to validate that it performs as expected.  Firstly, unit tests of the source code help ensure that each method that is written performs as the team intended.  In addition, automated testing such as regression tests help to ensure that the code works throughout multiple iterations and releases of the application.  User acceptance tests in combination with user feedback refine and polish our user interface, as if users are not satisfied with the application, they will not utilize the application.  
+Localize has four primary modes of testing. We do development testing that includes unit testing, pair programming and test driven development. We leverage automated testing in the form of build severs, continuous integration and a regression test suite. We have informal, ad-hoc user acceptance testing that tests user stories against the test server. Finally, we incorporate a user feedback and error system into our application that has been running for several months.
 
 h2. Development Testing
 
-Development testing includes both unit tests and  test-driven development in addition to less formal testing methods, such as pair programming.  The formal tests help validate the code that we have written, where pair programming is a much more informal method that helps us catch slight errors as we develop each release.  In addition, we utilize informal processes such as code reviews and code dojos to refactor and improve code during each development cycle.
+In this mode of testing, our primary concern is to reduce development pain. The bonus of having a more stable system and a regression test suite that pipes into the Automated Testing mode is just that--a bonus. In this mode, our goal is to practice test driven development: we write unit tests, make those tests pass and refactor. We also practice some other extreme programming methods such as pair programming.
 
 h2. Automated Testing
 
-Automated testing facilitates the team's development process as it saves us valuable time for development.  Automated tests include regression tests between releases, and 
+We put a lot of up front time and effort into creating an automated testing solution. We use a build / continuous integration server using Hudson that leverages the rake build system to build our code and run our regression test suite (that is created by the unit testing and TDD practices in the previous mode). The solution gives the team immediate feedback on if our application is in a good state. It is something that we don't have to think about, as well.
 
 h2. Acceptance Testing
 
-
+In the acceptance testing mode, we have performed most of the acceptance tests in an ad-hoc manner. We have a test server that is automated populated by the build server when a successful build of our system occurs (so it is both a staging and test server). We throw tests and user stories at this test server on a pretty random basis. However, before each release, we have run a full gambit of user stories against the test server (along with some difficult input such as very large .apps).
 
 h2. User Feedback
 
-User feedback is also a critical part of our system.  Although we may not be able to integrate everyone's ideas into the application, we utilize feedback from users to enhance the user experience and the workflow of Project OSL.  Many users will submit feedback such as "The undo mac command doesn't work here," or "I expect this button to be on the other side."  This feedback helps us remain consistent throughout our application and across Mac OSX standards.
+From the beginning we have enabled this mode and we feel that this is a key to success in our application. We allowed users to provide feedback (and, later, enabled automatic crash reporting) on our application so that we can tailor the application to the needs of the customer. This system has been so effective that our client has used this (alongside email for discussions) to provide the team feedback about the releases. After gather the data on our system, we fold the issues that the users brought up and triage them.
