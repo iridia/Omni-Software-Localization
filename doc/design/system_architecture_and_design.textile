@@ -2,7 +2,7 @@ Localize is a web application and as such has many components that work together
 
 The following graphic gives an overview of Localize's system architecture.
 
-!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/SystemArchitecture.png(System Architecture)
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/SystemArchitecture.png(System Architecture)!
 
 h2. (Thick-)Client-Server
 

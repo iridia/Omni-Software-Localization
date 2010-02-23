@@ -4,7 +4,7 @@ Localize is designed as an overall Model-View-Controller (MVC) system. This desi
 
 The rest of this document will document the three layers of MVC. First, the model layer will be presented, followed by the controller layer, and finally the view layer will be discussed.
 
-!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/MVC.png(MVC)
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/MVC.png(MVC)!
 
 h2. Model Layer
 
@@ -14,7 +14,7 @@ Cocoa has a very nice persistency layer (Core Data) which can automatically hand
 
 The following diagram gives an overview of the model layer.
 
-!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Model.png(Localize's Model Layer)
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Model.png(Localize's Model Layer)!
 
 h3. OLActiveRecord
 
@@ -76,7 +76,7 @@ One controller which does not fit into the above groups is the AppController (of
 
 The following image gives an overview of Localize's controller layer.
 
-!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Controller.png(Localize's controller layer)
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Controller.png(Localize's controller layer)!
 
 h3. Data Source Controllers
 

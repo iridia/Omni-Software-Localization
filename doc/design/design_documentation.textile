@@ -8,6 +8,8 @@ The system architecture and design document details the various components of Lo
 
 Finally, the test architecture and design document describes the Localize team's approach to testing.
 
+This document is a snapshot of the documents located on Localize's wiki. Please visit http://wiki.github.com/hammerdr/Omni-Software-Localization/design-documentation for the most up-to-date documents.
+
 h2. Table of Contents
 
 * [[Software Architecture and Design]]
@@ -23,7 +25,7 @@ Localize is designed as an overall Model-View-Controller (MVC) system. This desi
 
 The rest of this document will document the three layers of MVC. First, the model layer will be presented, followed by the controller layer, and finally the view layer will be discussed.
 
-!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/MVC.png(MVC)
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/MVC.png(MVC)!
 
 h3. Model Layer
 
@@ -33,7 +35,7 @@ Cocoa has a very nice persistency layer (Core Data) which can automatically hand
 
 The following diagram gives an overview of the model layer.
 
-!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Model.png(Localize's Model Layer)
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Model.png(Localize's Model Layer)!
 
 h4. OLActiveRecord
 
@@ -95,7 +97,7 @@ One controller which does not fit into the above groups is the AppController (of
 
 The following image gives an overview of Localize's controller layer.
 
-!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Controller.png(Localize's controller layer)
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Controller.png(Localize's controller layer)!
 
 h4. Data Source Controllers
 
@@ -138,7 +140,7 @@ Localize is a web application and as such has many components that work together
 
 The following graphic gives an overview of Localize's system architecture.
 
-!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/SystemArchitecture.png(System Architecture)
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/SystemArchitecture.png(System Architecture)!
 
 h3. (Thick-)Client-Server
 
