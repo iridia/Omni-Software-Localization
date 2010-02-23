@@ -1,2 +1,13 @@
-This document describes the multiple designs issues and solutions in the application as well as the rationale behind these designs.
+Many pieces and technologies work together to produce a software application. Localize is no different. This document will describe the high-level design of Localize from three angles:  the software, the system, and testing.
 
+The software architecture and design document covers the pieces that make up the user-facing features of Localize. This includes the design of the main client application and the rationale behind this design.
+
+The system architecture and design document details the various components of Localize from a high-level. The main features of this are the client-server interaction and the technologies used on the server.
+
+Finally, the test architecture and design document describes the Localize team's approach to testing.
+
+h2. Table of Contents
+
+* [[Software Architecture and Design]]
+* [[System Architecture and Design]]
+* [[Test Architecture and Design]]
