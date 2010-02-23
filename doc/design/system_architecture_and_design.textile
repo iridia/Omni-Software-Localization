@@ -1,5 +1,9 @@
 Localize is a web application and as such has many components that work together to make it work. This document describes these components at a high level and the different interactions between these components.
 
+The following graphic gives an overview of Localize's system architecture.
+
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/SystemArchitecture.png(System Architecture)
+
 h2. (Thick-)Client-Server
 
 Like many web applications, Localize is a client-server application at a high-level. The client is all the Cappuccino (Javascript) code that is downloaded by the user from the server. The server is relatively lightweight and is mostly responsible for serving up the code, acting as the persistent store, and provide other functionality that the client cannot provide (mostly due to browser or security restrictions).
