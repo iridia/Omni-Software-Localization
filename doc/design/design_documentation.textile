@@ -12,9 +12,9 @@ This document is a snapshot of the documents located on Localize's wiki. Please 
 
 h2. Table of Contents
 
-* [[Software Architecture and Design]]
-* [[System Architecture and Design]]
-* [[Test Architecture and Design]]
+* **Software Architecture and Design**
+* **System Architecture and Design**
+* **Test Architecture and Design**
 
 
 h2. Software Architecture and Design
@@ -55,9 +55,9 @@ One important thing to know is that the model objects in Localize are mapped to 
 
 h4. Search API
 
-As Localize developed, the need arose for the ability to search the objects stored in the persistent store. So this behavior was baked into OLActiveRecord in such a way that allowed all model objects which inherit from OLActiveRecord to have their own dynamic search API.
+As Localize developed, the need arose for the ability to search the objects stored in the persistent store. This behavior was put into OLActiveRecord in such a way that allowed all model objects which inherit from OLActiveRecord to have their own dynamic search API.
 
-Each model object which inherits from OLActiveRecord has an API specific to that object that is dynamic based on the properties for that object. For example, consider a message object defined as:
+Each model object which inherits from OLActiveRecord has an API specific to that object. This API is created dynamically based on the properties of that object. For example, consider a message object defined as:
 
 <pre>
     @implementation Message : OLActiveRecord
