@@ -1,3 +1,5 @@
+@import <AppKit/AppKit.j>
+@import <AppKit/CPControl.j>
 @import "../Controllers/OLSidebarController.j"
 @import <OJMoq/OJMoq.j>
 
