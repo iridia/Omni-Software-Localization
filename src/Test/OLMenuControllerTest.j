@@ -1,3 +1,4 @@
+@import <AppKit/AppKit.j>
 @import "../Controllers/OLMenuController.j"
 @import "utilities/CPNotificationCenter+MockDefaultCenter.j"
 @import "utilities/Observer.j"
@@ -41,11 +42,11 @@
     
     var target = [[OLMenuController alloc] init];
     
-    [observer startObserving:@"CPLanguageShouldAddLanguageNotification"];
+    [observer startObserving:OLProjectShouldCreateBundleNotification];
     
     [target newLanguage:self];
     
-    [self assertTrue:[observer didObserve:@"CPLanguageShouldAddLanguageNotification"]];
+    [self assertTrue:[observer didObserve:OLProjectShouldCreateBundleNotification]];
 }
 
 - (void)testThatOLMenuControllerDoesPostNotificationWhenDeletingALanguage
@@ -54,25 +55,11 @@
 
     var target = [[OLMenuController alloc] init];
 
-    [observer startObserving:@"CPLanguageShouldDeleteLanguageNotification"];
+    [observer startObserving:OLProjectShouldDeleteBundleNotification];
 
     [target deleteLanguage:self];
 
-    [self assertTrue:[observer didObserve:@"CPLanguageShouldDeleteLanguageNotification"]];
-}
-
-- (void)testThatOLMenuControllerDoesStartUploadOnNew
-{
-    var uploadWindowController = moq();
-    
-    [uploadWindowController selector:@selector(startUpload:) times:1];
-    
-    var target = [[OLMenuController alloc] init];
-    [target setUploadWindowController:uploadWindowController];
-    
-    [target new:self];
-    
-    [uploadWindowController verifyThatAllExpectationsHaveBeenMet];
+    [self assertTrue:[observer didObserve:OLProjectShouldDeleteBundleNotification]];
 }
 
 - (void)testThatOLMenuControllerDoesGetItems
