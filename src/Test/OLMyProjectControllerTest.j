@@ -1,6 +1,11 @@
+@import <AppKit/AppKit.j>
 @import "../Controllers/OLMyProjectController.j"
 @import "utilities/Observer.j"
+@import "utilities/CPNotificationCenter+MockDefaultCenter.j"
 
+[CPApplication sharedApplication];
+_DOMElement = moq();
+_DOMElement.appendChild = function(){return moq();};
 
 @implementation OLMyProjectControllerTest : OJTestCase
 
@@ -80,14 +85,14 @@
 {
     var target = [[OLMyProjectController alloc] init];
     
-    [self assert:target registered:"CPLanguageShouldAddLanguageNotification"];
+    [self assert:target registered:OLProjectShouldCreateBundleNotification];
 }
 
 - (void)testThatOLMyProjectControllerDoesRegisterForCPLanguageShouldDeleteLanguageNotification
 {
     var target = [[OLMyProjectController alloc] init];
 
-    [self assert:target registered:"CPLanguageShouldDeleteLanguageNotification"];
+    [self assert:target registered:OLProjectShouldDeleteBundleNotification];
 }
 
 - (void)testThatOLMyProjectControllerDoesRegisterForOLProjectShouldDownloadNotification
@@ -101,7 +106,7 @@
 {
     var target = [[OLMyProjectController alloc] init];
 
-    [self assert:target registered:"CPMessageShouldBroadcastNotification"];
+    [self assert:target registered:OLProjectShouldBroadcastMessage];
 }
 
 - (void)testThatOLMyProjectControllerDoesRegisterForOLProjectShouldImportNotification
