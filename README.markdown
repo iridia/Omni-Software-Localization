@@ -9,4 +9,3 @@ Project Members
 * Derek Hammer
 * Chandler Kent
 * Kyle Rhodes
-
