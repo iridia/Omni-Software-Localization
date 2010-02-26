@@ -1,6 +1,9 @@
 <?php
 
-require_once 'JSON.php';
+if($HTTP_RAW_POST_DATA == "")
+{
+    $HTTP_RAW_POST_DATA = file_get_contents("php://input");
+}
 
 $ch = curl_init(); 
 curl_setopt($ch, CURLOPT_URL, "http://localhost:5984/project/" . $HTTP_RAW_POST_DATA); 
@@ -8,9 +11,8 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $output = curl_exec($ch);
 curl_close($ch);
 
-$json = new Services_JSON();
-$value = $json->decode($output);
-#print_r($value);
+$value = json_decode($output);
+print_r($value);
 
 mkdir($value->OLProjectNameKey);
 mkdir($value->OLProjectNameKey . "/Contents");
@@ -43,8 +45,6 @@ for($i = 0; $i < count($value->OLProjectResourceBundlesKey); $i++)
         fclose($fileHandle);
     }
 }
-
-
 
 exec("zip -r \"" . $value->OLProjectNameKey . ".zip\" \"" . $value->OLProjectNameKey ."\"");
 
