@@ -1,4 +1,4 @@
-@STATIC;1.0;p;13;CPArray+KVO.jt;12439;@STATIC;1.0;i;9;CPArray.ji;8;CPNull.jt;12394;
+@STATIC;1.0;p;13;CPArray+KVO.jt;12441;@STATIC;1.0;i;9;CPArray.ji;8;CPNull.jt;12396;
 objj_executeFile("CPArray.j",true);
 objj_executeFile("CPNull.j",true);
 var _1=objj_getClass("CPObject");
@@ -113,7 +113,7 @@ return CPNotFound;
 }
 }),new objj_method(sel_getUid("indexOfObject:"),function(_24,_25,_26){
 with(_24){
-return objj_msgSend(_24,"indexOfObject:range:",_26,CPMakeRange(0,objj_msgSend(_24,"count")));
+return objj_msgSend(_24,"indexOfObject:inRange:",_26,CPMakeRange(0,objj_msgSend(_24,"count")));
 }
 }),new objj_method(sel_getUid("indexOfObjectIdenticalTo:inRange:"),function(_27,_28,_29,_2a){
 with(_27){
@@ -3492,7 +3492,7 @@ _60=objj_msgSend(_60,"JSObject");
 }
 return _60;
 };
-p;18;CPKeyValueCoding.jt;6257;@STATIC;1.0;i;9;CPArray.ji;14;CPDictionary.ji;8;CPNull.ji;10;CPObject.ji;13;CPArray+KVO.jt;6161;
+p;18;CPKeyValueCoding.jt;6331;@STATIC;1.0;i;9;CPArray.ji;14;CPDictionary.ji;8;CPNull.ji;10;CPObject.ji;21;CPKeyValueObserving.ji;13;CPArray+KVO.jt;6209;
 objj_executeFile("CPArray.j",true);
 objj_executeFile("CPDictionary.j",true);
 objj_executeFile("CPNull.j",true);
@@ -3668,6 +3668,7 @@ with(_44){
 objj_msgSend(_44,"setObject:forKey:",_46,_47);
 }
 })]);
+objj_executeFile("CPKeyValueObserving.j",true);
 objj_executeFile("CPArray+KVO.j",true);
 p;21;CPKeyValueObserving.jt;16736;@STATIC;1.0;i;9;CPArray.ji;14;CPDictionary.ji;13;CPException.ji;8;CPNull.ji;10;CPObject.ji;7;CPSet.ji;13;CPArray+KVO.jt;16610;
 objj_executeFile("CPArray.j",true);

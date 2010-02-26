@@ -1,4 +1,4 @@
-@STATIC;1.0;p;13;CPArray+KVO.jt;17653;@STATIC;1.0;i;9;CPArray.ji;8;CPNull.jt;17608;objj_executeFile("CPArray.j", true);
+@STATIC;1.0;p;13;CPArray+KVO.jt;17655;@STATIC;1.0;i;9;CPArray.ji;8;CPNull.jt;17610;objj_executeFile("CPArray.j", true);
 objj_executeFile("CPNull.j", true);
 {
 var the_class = objj_getClass("CPObject")
@@ -109,7 +109,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithKey:forProxyObj
 },["int","CPObject","CPRange"]), new objj_method(sel_getUid("indexOfObject:"), function $_CPKVCArray__indexOfObject_(self, _cmd, anObject)
 { with(self)
 {
-    return objj_msgSend(self, "indexOfObject:range:", anObject, CPMakeRange(0, objj_msgSend(self, "count")));
+    return objj_msgSend(self, "indexOfObject:inRange:", anObject, CPMakeRange(0, objj_msgSend(self, "count")));
 }
 },["int","CPObject"]), new objj_method(sel_getUid("indexOfObjectIdenticalTo:inRange:"), function $_CPKVCArray__indexOfObjectIdenticalTo_inRange_(self, _cmd, anObject, aRange)
 { with(self)
@@ -1069,7 +1069,7 @@ meta_class = the_class.isa;objj_registerClassPair(the_class);
 Array.prototype.isa = CPArray;
 objj_msgSend(CPArray, "initialize");
 
-p;20;CPAttributedString.jt;21379;@STATIC;1.0;i;10;CPObject.ji;10;CPString.ji;14;CPDictionary.ji;9;CPRange.jt;21297;objj_executeFile("CPObject.j", true);
+p;20;CPAttributedString.jt;21381;@STATIC;1.0;i;10;CPObject.ji;10;CPString.ji;14;CPDictionary.ji;9;CPRange.jt;21299;objj_executeFile("CPObject.j", true);
 objj_executeFile("CPString.j", true);
 objj_executeFile("CPDictionary.j", true);
 objj_executeFile("CPRange.j", true);
@@ -1461,7 +1461,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithString:"), func
     index++;
     return index;
 }
-},["void","unsigned","BOOL"]), new objj_method(sel_getUid("_coalesceRangeEntriesFromIndex:toIndex:"), function $CPAttributedString___coalesceRangeEntriesFromIndex_toIndex_(self, _cmd, start, end)
+},["Number","unsigned","BOOL"]), new objj_method(sel_getUid("_coalesceRangeEntriesFromIndex:toIndex:"), function $CPAttributedString___coalesceRangeEntriesFromIndex_toIndex_(self, _cmd, start, end)
 { with(self)
 {
     var current = start;
@@ -3940,7 +3940,7 @@ var _CPKeyedUnarchiverDecodeObjectAtIndex = function(self, anIndex)
     return object;
 }
 
-p;18;CPKeyValueCoding.jt;9235;@STATIC;1.0;i;9;CPArray.ji;14;CPDictionary.ji;8;CPNull.ji;10;CPObject.ji;13;CPArray+KVO.jt;9139;objj_executeFile("CPArray.j", true);
+p;18;CPKeyValueCoding.jt;9310;@STATIC;1.0;i;9;CPArray.ji;14;CPDictionary.ji;8;CPNull.ji;10;CPObject.ji;21;CPKeyValueObserving.ji;13;CPArray+KVO.jt;9188;objj_executeFile("CPArray.j", true);
 objj_executeFile("CPDictionary.j", true);
 objj_executeFile("CPNull.j", true);
 objj_executeFile("CPObject.j", true);
@@ -4142,6 +4142,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 }
 },["void","id","CPString"])]);
 }
+objj_executeFile("CPKeyValueObserving.j", true);
 objj_executeFile("CPArray+KVO.j", true);
 
 p;21;CPKeyValueObserving.jt;24783;@STATIC;1.0;i;9;CPArray.ji;14;CPDictionary.ji;13;CPException.ji;8;CPNull.ji;10;CPObject.ji;7;CPSet.ji;13;CPArray+KVO.jt;24657;objj_executeFile("CPArray.j", true);
@@ -7753,7 +7754,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("methodSignatureForSelec
 },["void","CPInvocation"])]);
 }
 
-p;7;CPURL.jt;17547;@STATIC;1.0;I;21;Foundation/CPObject.jt;17501;
+p;7;CPURL.jt;17545;@STATIC;1.0;I;21;Foundation/CPObject.jt;17499;
 
 
 objj_executeFile("Foundation/CPObject.j", false);
@@ -7893,7 +7894,7 @@ return _relative;
     }
     return nil;
 }
-},["CPString"]), new objj_method(sel_getUid("parameterString"), function $CPURL__parameterString(self, _cmd)
+},["Number"]), new objj_method(sel_getUid("parameterString"), function $CPURL__parameterString(self, _cmd)
 { with(self)
 {
     var str = objj_msgSend(self, "absoluteString");

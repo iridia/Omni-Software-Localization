@@ -1671,7 +1671,9 @@ var CFBundleUnloaded = 0,
     CFBundleLoaded = 1 << 4;
 var CFBundlesForPaths = { },
     CFBundlesForClasses = { },
-    CFCacheBuster = new Date().getTime();
+    CFCacheBuster = new Date().getTime(),
+    CFTotalBytesLoaded = 0,
+    CPApplicationSizeInBytes = 0;
 CFBundle = function( aPath)
 {
     aPath = FILE.absolute(aPath);
@@ -1809,6 +1811,8 @@ CFBundle.prototype.load = function( shouldExecute)
                 finishBundleLoadingWithError(self, new Error("Could not load bundle at \"" + path + "\""));
                 return;
             }
+            if (self === CFBundle.mainBundle() && self.valueForInfoDictionary("CPApplicationSize"))
+                CPApplicationSizeInBytes = self.valueForInfoDictionary("CPApplicationSize").valueForKey("executable") || 0;
             loadExecutableAndResources(self, shouldExecute);
         }
         function onfailure()
@@ -1849,6 +1853,11 @@ function loadExecutableAndResources( aBundle, shouldExecute)
     }
     function success()
     {
+        if ((typeof CPApp === "undefined" || !CPApp || !CPApp._finishedLaunching) &&
+             typeof OBJJ_PROGRESS_CALLBACK === "function" && CPApplicationSizeInBytes)
+        {
+            OBJJ_PROGRESS_CALLBACK(MAX(MIN(1.0, CFTotalBytesLoaded / CPApplicationSizeInBytes), 0.0), CPApplicationSizeInBytes, aBundle.path())
+        }
         if (aBundle._loadStatus === CFBundleLoading)
             aBundle._loadStatus = CFBundleLoaded;
         else
@@ -1877,6 +1886,7 @@ function loadExecutableForBundle( aBundle, success, failure)
     {
         try
         {
+            CFTotalBytesLoaded += anEvent.request.responseText().length;
             decompileStaticFile(aBundle, anEvent.request.responseText(), aBundle.executablePath());
             aBundle._loadStatus &= ~CFBundleLoadingExecutable;
             success();
@@ -1907,6 +1917,7 @@ function loadSpritedImagesForBundle( aBundle, success, failure)
     {
         try
         {
+            CFTotalBytesLoaded += anEvent.request.responseText().length;
             decompileStaticFile(aBundle, anEvent.request.responseText(), spritedImagesPath);
             aBundle._loadStatus &= ~CFBundleLoadingSpritedImages;
             success();
@@ -1934,6 +1945,24 @@ function CFBundleTestSpriteSupport( MHTMLPath, aCallback)
     CFBundleSpriteSupportListeners.push(aCallback);
     if (CFBundleSpriteSupportListeners.length > 1)
         return;
+    CFBundleSpriteSupportListeners.push(function()
+    {
+        var size = 0,
+            sizeDictionary = CFBundle.mainBundle().valueForInfoDictionary("CPApplicationSize");
+        if (!sizeDictionary)
+            return;
+        switch (CFBundleSupportedSpriteType)
+        {
+            case CFBundleDataURLSpriteType:
+                size = sizeDictionary.valueForKey("data");
+                break;
+            case CFBundleMHTMLSpriteType:
+            case CFBundleMHTMLUncachedSpriteType:
+                size = sizeDictionary.valueForKey("mhtml");
+                break;
+        }
+        CPApplicationSizeInBytes += size;
+    })
     CFBundleTestSpriteTypes([
         CFBundleDataURLSpriteType,
         "data:image/gif;base64,R0lGODlhAQABAIAAAMc9BQAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
@@ -2245,10 +2274,6 @@ StaticResource.prototype.children = function()
 {
     return this._children;
 }
-StaticResource.prototype.type = function()
-{
-    return this._type;
-}
 StaticResource.prototype.parent = function()
 {
     return this._parent;
@@ -2323,8 +2348,7 @@ StaticResource.prototype.toString = function( includeNotFounds)
 {
     if (this.isNotFound())
         return "<file not found: " + this.name() + ">";
-    var string = this.parent() ? this.name() : "/",
-        type = this.type();
+    var string = this.parent() ? this.name() : "/";
     if (this.isDirectory())
     {
         var children = this._children;
@@ -3236,7 +3260,7 @@ Executable.fileImporterForPath = function( referencePath)
     return cachedImporter;
 }
 var FileExecutablesForPaths = { };
-function FileExecutable( aPath)
+function FileExecutable( aPath, anExecutable)
 {
     var existingFileExecutable = FileExecutablesForPaths[aPath];
     if (existingFileExecutable)
@@ -3245,7 +3269,9 @@ function FileExecutable( aPath)
     var fileContents = rootResource.nodeAtSubPath(aPath).contents(),
         executable = NULL,
         extension = FILE.extension(aPath);
-    if (fileContents.match(/^@STATIC;/))
+    if (anExecutable)
+        executable = anExecutable;
+    else if (fileContents.match(/^@STATIC;/))
         executable = decompile(fileContents, aPath);
     else if (extension === ".j" || extension === "")
         executable = exports.preprocess(fileContents, aPath, Preprocessor.Flags.IncludeDebugSymbols);
@@ -3722,7 +3748,7 @@ objj_backtrace_print = function( aStream)
     for (; index < count; ++index)
     {
         var frame = objj_backtrace[index];
-        stream(objj_debug_message_format(frame.receiver, frame.selector));
+        aStream(objj_debug_message_format(frame.receiver, frame.selector));
     }
 }
 objj_backtrace_decorator = function(msgSend)
@@ -3840,15 +3866,18 @@ objj_debug_typecheck = function(expectedType, object)
 var cwd = FILE.cwd(),
     rootResource = new StaticResource("", NULL, YES, cwd !== "/");
 StaticResource.root = rootResource;
-if (rootResource.isResolved())
+exports.bootstrap = function()
 {
-    rootResource.nodeAtSubPath(FILE.dirname(cwd), YES);
-    resolveCWD();
-}
-else
-{
-    rootResource.resolve();
-    rootResource.addEventListener("resolve", resolveCWD);
+    if (rootResource.isResolved())
+    {
+        rootResource.nodeAtSubPath(FILE.dirname(cwd), YES);
+        resolveCWD();
+    }
+    else
+    {
+        rootResource.resolve();
+        rootResource.addEventListener("resolve", resolveCWD);
+    }
 }
 function resolveCWD()
 {
@@ -3867,6 +3896,7 @@ function resolveCWD()
         });
     });
 }
+var documentLoaded = NO;
 function afterDocumentLoad( aFunction)
 {
     if (documentLoaded)
@@ -3876,9 +3906,10 @@ function afterDocumentLoad( aFunction)
     else if (window.attachEvent)
         window.attachEvent("onload", aFunction);
 }
-var documentLoaded = NO;
 afterDocumentLoad(function()
 {
     documentLoaded = YES;
 });
+if (typeof OBJJ_AUTO_BOOTSTRAP === "undefined" || OBJJ_AUTO_BOOTSTRAP)
+    exports.bootstrap();
 })(window, ObjectiveJ);
