@@ -48,6 +48,9 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {	
+    [mainSplitView setIsPaneSplitter:YES];
+    [theWindow setAcceptsMouseMovedEvents:YES];
+    
     var appDefaults = [CPDictionary dictionary];
     [appDefaults setObject:YES forKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey];
     [[CPUserDefaults standardUserDefaults] registerDefaults:appDefaults];
@@ -97,17 +100,9 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 	
 	[[OLHelpManager alloc] init];
     
-    // Access the DB as late as possible
     [glossaryController loadGlossaries];
     
     [theWindow makeKeyAndOrderFront:self];
-}
-
-- (void)awakeFromCib
-{
-    // Configure main SplitView
-    [mainSplitView setIsPaneSplitter:YES];
-    [theWindow setAcceptsMouseMovedEvents:YES];
 }
 
 - (void)handleException:(OLException)anException
