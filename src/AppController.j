@@ -46,18 +46,12 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
     @outlet						OLContentViewController contentViewController;
 }
 
-+ (void)initialize
-{
-    // Setup the user defaults, these are overridden by the user's actual defaults stored in the cookie, if any
-    var appDefaults = [CPDictionary dictionary];
-    
-    [appDefaults setObject:YES forKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey];
-    
-    [[CPUserDefaults standardUserDefaults] registerDefaults:appDefaults];
-}
-
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {	
+    var appDefaults = [CPDictionary dictionary];
+    [appDefaults setObject:YES forKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey];
+    [[CPUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+    
 	var projectController = [[OLMyProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
