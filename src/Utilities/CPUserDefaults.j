@@ -126,6 +126,12 @@ var StandardUserDefaults;
         }
         
         _searchListNeedsReload = YES;
+        
+        [[CPNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(userDidChange:)
+            name:OLUserSessionManagerUserDidChangeNotification
+            object:nil];
     }
     
     return self;
@@ -430,6 +436,13 @@ var StandardUserDefaults;
         return [value intValue];
     
     return value;
+}
+
+- (void)userDidChange:(CPNotification)notification
+{
+    var user = [[OLUserSessionManager defaultSessionManager] userIdentifier];
+
+    [[CPUserDefaults standardUserDefaults] setObject:user forKey:OLUserDefaultsLoggedInUserIdentifierKey];
 }
 
 @end

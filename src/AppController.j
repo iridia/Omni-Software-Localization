@@ -57,13 +57,7 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
-{
-    [[CPNotificationCenter defaultCenter]
-        addObserver:self
-        selector:@selector(userDidChange:)
-        name:OLUserSessionManagerUserDidChangeNotification
-        object:nil];
-	
+{	
 	var projectController = [[OLMyProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
@@ -120,13 +114,6 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
     // Configure main SplitView
     [mainSplitView setIsPaneSplitter:YES];
     [theWindow setAcceptsMouseMovedEvents:YES];
-}
-
-- (void)userDidChange:(CPNotification)notification
-{
-    var user = [[OLUserSessionManager defaultSessionManager] userIdentifier];
-    
-    [[CPUserDefaults standardUserDefaults] setObject:user forKey:OLUserDefaultsLoggedInUserIdentifierKey];
 }
 
 - (void)handleException:(OLException)anException
