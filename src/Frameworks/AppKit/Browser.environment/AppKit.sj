@@ -24480,7 +24480,7 @@ objj_msgSendSuper({receiver:_96,super_class:objj_getClass("_CPMenuView").super_c
 objj_msgSend(_96,"tile");
 }
 })]);
-p;8;CPMenu.jt;24501;@STATIC;1.0;I;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPString.ji;16;_CPMenuManager.ji;15;CPApplication.ji;12;CPClipView.ji;12;CPMenuItem.ji;9;CPPanel.ji;18;_CPMenuBarWindow.ji;15;_CPMenuWindow.jt;24231;
+p;8;CPMenu.jt;24383;@STATIC;1.0;I;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPString.ji;16;_CPMenuManager.ji;15;CPApplication.ji;12;CPClipView.ji;12;CPMenuItem.ji;9;CPPanel.ji;18;_CPMenuBarWindow.ji;15;_CPMenuWindow.jt;24113;
 objj_executeFile("Foundation/CPArray.j",false);
 objj_executeFile("Foundation/CPDictionary.j",false);
 objj_executeFile("Foundation/CPNotificationCenter.j",false);
@@ -24878,9 +24878,6 @@ if(_highlightedIndex!==CPNotFound){
 objj_msgSend(objj_msgSend(_items[_highlightedIndex],"_menuItemView"),"highlight:",NO);
 }
 _highlightedIndex=_c4;
-if(previousHighlightedIndex!==CPNotFound){
-objj_msgSend(_c2,"_highlight:itemAtIndex:",NO,previousHighlightedIndex);
-}
 if(_highlightedIndex!==CPNotFound){
 objj_msgSend(_c2,"_highlight:itemAtIndex:",YES,_c4);
 }

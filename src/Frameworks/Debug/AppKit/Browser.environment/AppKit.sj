@@ -27965,7 +27965,7 @@ _font = newValue;
 },["void","CPMenu"])]);
 }
 
-p;8;CPMenu.jt;36046;@STATIC;1.0;I;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPString.ji;16;_CPMenuManager.ji;15;CPApplication.ji;12;CPClipView.ji;12;CPMenuItem.ji;9;CPPanel.ji;18;_CPMenuBarWindow.ji;15;_CPMenuWindow.jt;35776;objj_executeFile("Foundation/CPArray.j", false);
+p;8;CPMenu.jt;35912;@STATIC;1.0;I;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPString.ji;16;_CPMenuManager.ji;15;CPApplication.ji;12;CPClipView.ji;12;CPMenuItem.ji;9;CPPanel.ji;18;_CPMenuBarWindow.ji;15;_CPMenuWindow.jt;35642;objj_executeFile("Foundation/CPArray.j", false);
 objj_executeFile("Foundation/CPDictionary.j", false);
 objj_executeFile("Foundation/CPNotificationCenter.j", false);
 objj_executeFile("Foundation/CPString.j", false);
@@ -28411,8 +28411,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("menuBarHeight"), functi
     if (_highlightedIndex !== CPNotFound)
         objj_msgSend(objj_msgSend(_items[_highlightedIndex], "_menuItemView"), "highlight:", NO);
     _highlightedIndex = anIndex;
-    if (previousHighlightedIndex !== CPNotFound)
-        objj_msgSend(self, "_highlight:itemAtIndex:", NO, previousHighlightedIndex);
     if (_highlightedIndex !== CPNotFound)
         objj_msgSend(self, "_highlight:itemAtIndex:", YES, anIndex);
 }
