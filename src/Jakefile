@@ -17,7 +17,43 @@ var ENV = require("system").env,
     
 var COUCH_URL = "http://localhost:5984";
     
-task("build", function(){});
+app ("build-only", function(task)
+{
+    task.setBuildIntermediatesPath(FILE.join("Build", "test.build", configuratio
+n));
+    task.setBuildPath(FILE.join("Build", configuration));
+
+    task.setProductName("Localize");
+    task.setIdentifier("com.Localize.release");
+    task.setVersion("0.9");
+    task.setAuthor("Project OSL");
+    task.setEmail("omnisoftwarelocalization @nospam@ gmail.com");
+    task.setSummary("Localize is an application to localize OS X applications.");
+    task.setSources((new FileList("**/*.j")).exclude(FILE.join("Build", "**")));
+    task.setResources(new FileList("Resources/*"));
+    task.setIndexFilePath("index.html");
+    task.setInfoPlistPath("Info.plist");
+
+    if (configuration === "Debug")
+        task.setCompilerFlags("-DDEBUG -g");
+    else
+        task.setCompilerFlags("-O");
+});
+
+function printResults(configuration)
+{
+    print("----------------------------")
+    print(configuration+" app built at path: "+FILE.join("Build", configuration,
+ "Localize"));
+    print("----------------------------")
+}
+
+task ("default", ["build-only"], function()
+{
+    printResults(configuration);
+});
+
+task ("build", ["default"]);
 
 task("test", function()
 {
@@ -32,9 +68,7 @@ task("test", function()
 
 task("press", ["build", "test"], function()
 {
-    var cmd = "press . ../Pressed";
-    
-    rm_rf("../Pressed");
+    var cmd = "press -f . ../Pressed";
     
     var code = OS.system(cmd);
     
