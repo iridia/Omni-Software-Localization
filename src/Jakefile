@@ -53,7 +53,7 @@ task ("default", ["build-only"], function()
 
 task ("build", ["default"]);
 
-task("test", function()
+task("test", ["build"], function()
 {
     var tests = new FileList('Test/*Test.j');
     var cmd = ["ojtest"].concat(tests.items());
@@ -66,7 +66,7 @@ task("test", function()
 
 task("press", ["build", "test"], function()
 {
-    var cmd = "press -f . ../Pressed";
+    var cmd = "press -f Build/Debug/Localize ../Pressed";
     
     var code = OS.system(cmd);
     
@@ -76,11 +76,9 @@ task("press", ["build", "test"], function()
     }
 });
 
-// task ("deploy", ["build", "test", "press"], function()
-task("deploy", ["build", "test"], function()
+task ("deploy", ["build", "test", "press"], function()
 {
-    //var cmd = "scp -r projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/ ../Pressed";
-    var cmd = "scp -r . projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/";
+    var cmd = "scp -r ../Pressed projectosl@shellder.omnigroup.com:/Library/WebServer/Documents/";
     
     OS.system(cmd);
 });
