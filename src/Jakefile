@@ -19,8 +19,7 @@ var COUCH_URL = "http://localhost:5984";
     
 app ("build-only", function(task)
 {
-    task.setBuildIntermediatesPath(FILE.join("Build", "test.build", configuratio
-n));
+    task.setBuildIntermediatesPath(FILE.join("Build", "test.build", configuration));
     task.setBuildPath(FILE.join("Build", configuration));
 
     task.setProductName("Localize");
@@ -43,8 +42,7 @@ n));
 function printResults(configuration)
 {
     print("----------------------------")
-    print(configuration+" app built at path: "+FILE.join("Build", configuration,
- "Localize"));
+    print(configuration+" app built at path: "+FILE.join("Build", configuration, "Localize"));
     print("----------------------------")
 }
 
