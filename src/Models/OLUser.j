@@ -11,7 +11,7 @@
 
 - (id)initWithEmail:(CPString)emailAddress
 {
-	return [self initWithEmail:email nickname:@"" location:@"" languages:[CPArray array] bio:@""];
+	return [self initWithEmail:emailAddress nickname:@"" location:@"" languages:[CPArray array] bio:@""];
 }
 
 - (id)initWithEmail:(CPString)anEmail nickname:(CPString)aNickname location:(CPString)aUserLocation languages:(OLLanguage)someLanguages bio:(CPString)aBio
@@ -20,7 +20,7 @@
     
     if(self)
     {
-        if (isValidEmail(email))
+        if (isValidEmail(anEmail))
         {
             email = anEmail;
             nickname = aNickname;

@@ -46,24 +46,15 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
     @outlet						OLContentViewController contentViewController;
 }
 
-+ (void)initialize
-{
-    // Setup the user defaults, these are overridden by the user's actual defaults stored in the cookie, if any
-    var appDefaults = [CPDictionary dictionary];
-    
-    [appDefaults setObject:YES forKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey];
-    
-    [[CPUserDefaults standardUserDefaults] registerDefaults:appDefaults];
-}
-
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
-{
-    [[CPNotificationCenter defaultCenter]
-        addObserver:self
-        selector:@selector(userDidChange:)
-        name:OLUserSessionManagerUserDidChangeNotification
-        object:nil];
-	
+{	
+    [mainSplitView setIsPaneSplitter:YES];
+    [theWindow setAcceptsMouseMovedEvents:YES];
+    
+    var appDefaults = [CPDictionary dictionary];
+    [appDefaults setObject:YES forKey:OLUserDefaultsShouldShowWelcomeWindowOnStartupKey];
+    [[CPUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+    
 	var projectController = [[OLMyProjectController alloc] init];
     [projectController addObserver:sidebarController forKeyPath:@"projects" options:CPKeyValueObservingOptionNew context:nil];
     [sidebarController addSidebarItem:projectController];
@@ -109,24 +100,9 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 	
 	[[OLHelpManager alloc] init];
     
-    // Access the DB as late as possible
     [glossaryController loadGlossaries];
     
     [theWindow makeKeyAndOrderFront:self];
-}
-
-- (void)awakeFromCib
-{
-    // Configure main SplitView
-    [mainSplitView setIsPaneSplitter:YES];
-    [theWindow setAcceptsMouseMovedEvents:YES];
-}
-
-- (void)userDidChange:(CPNotification)notification
-{
-    var user = [[OLUserSessionManager defaultSessionManager] userIdentifier];
-    
-    [[CPUserDefaults standardUserDefaults] setObject:user forKey:OLUserDefaultsLoggedInUserIdentifierKey];
 }
 
 - (void)handleException:(OLException)anException

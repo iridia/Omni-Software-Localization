@@ -1,5 +1,6 @@
 @import <AppKit/CPView.j>
 @import "OLTableView.j"
+@import "OLNavigationBarView.j"
 
 var OLGlossaryViewIdentifierColumnHeader = @"OLGlossaryViewIdentifierColumnHeader";
 var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
