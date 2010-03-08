@@ -10,11 +10,11 @@ Finally, the test architecture and design document describes the Localize team's
 
 This document is a snapshot of the documents located on Localize's wiki. Please visit http://wiki.github.com/hammerdr/Omni-Software-Localization/design-documentation for the most up-to-date documents.
 
-h2. Table of Contents
+h2. Organization of This Document
 
-* **Software Architecture and Design**
-* **System Architecture and Design**
-* **Test Architecture and Design**
+* "**Software Architecture and Design**" gives an overview of the software technologies.
+* "**System Architecture and Design**" describes the client-server interaction.
+* "**Test Architecture and Design**" highlights the test architecture and strategies.
 
 
 h2. Software Architecture and Design
@@ -144,7 +144,7 @@ The following graphic gives an overview of Localize's system architecture.
 
 h3. (Thick-)Client-Server
 
-Like many web applications, Localize is a client-server application at a high-level. The client is all the Cappuccino (Javascript) code that is downloaded by the user from the server. The server is relatively lightweight and is mostly responsible for serving up the code, acting as the persistent store, and provide other functionality that the client cannot provide (mostly due to browser or security restrictions).
+Like many web applications, Localize is a client-server application at a high-level. The client is all the Cappuccino (Javascript) code that is downloaded by the user from the server. The server is relatively lightweight and is mostly responsible for serving up the code, acting as the persistent store, and providing other functionality that the client cannot provide (mostly due to browser or security restrictions).
 
 Unlike most web applications, Localize is a thick-client application. This means that most of the business logic resides on the client side. This is a very familiar concept to developers of desktop applications, but those coming from a web development background may be confused. In a thick-client application, the server only provides the bare minimum of functionality. In this way, the server can be fast and efficient and the client can be very rich and interactive.
 
@@ -197,7 +197,7 @@ The server provides the download service. The client sends the data which should
 
 h2. Test Architecture and Design
 
-Testing is a very important part of software development. Early on the Localize team decided that testing would play a large role in development. A basic test architecture has been developed over time which allows the team to work efficiently and produce a high-quality product.
+Testing is a very important part of software development. Early on, the Localize team decided that testing would play a large role in development. A basic test architecture has been developed over time which allows the team to work efficiently and produce a high-quality product.
 
 Localize has four primary modes of testing:  development testing, automated testing, acceptance testing, and user feedback. This document will describe these various parts of testing.
 
