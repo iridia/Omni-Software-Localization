@@ -115,11 +115,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 
 - (CPView)backView
 {
-    backView = [UIButton buttonWithTitle:@"Dashboard"];
-    
-    [backView setAction:@selector(dashboardWasClicked:)];
-    
-    return backView;
+    return [[CPView alloc] initWithFrame:CGRectMakeZero()];
 }
 
 - (CPTableView)resourcesTableView

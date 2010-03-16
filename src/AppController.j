@@ -16,7 +16,6 @@
 @import "Controllers/OLSidebarController.j"
 @import "Controllers/OLMenuController.j"
 @import "Controllers/OLCommunityController.j"
-@import "Controllers/OLProfileController.j"
 @import "Controllers/OLWelcomeController.j"
 
 @import "Views/OLMenu.j"
@@ -25,7 +24,6 @@
 @import "Views/OLProjectView.j"
 @import "Views/OLProjectSearchView.j"
 @import "Views/OLProjectResultView.j"
-@import "Views/OLProfileView.j"
 @import "Views/OLNotification.j"
 
 @import "Utilities/OLUserSessionManager.j"

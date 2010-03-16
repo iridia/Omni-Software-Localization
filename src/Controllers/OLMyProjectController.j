@@ -1,6 +1,5 @@
 @import "OLProjectController.j"
 @import "OLUploadController.j"
-@import "../Views/OLProjectDashboardView.j"
 @import "../Views/OLProjectView.j"
 
 // Notifications
@@ -15,8 +14,6 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 {
 	OLImportProjectController   importProjectController;
 	
-	OLProjectDashboardView      dashboardView;
-	CPView                      containerView;
 	OLProjectView               projectView;
 }
 
@@ -24,20 +21,9 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 {
     if(self = [super init])
     {
-        containerView = [[CPView alloc] initWithFrame:CGRectMakeZero(0, 0, 0, 0)];
-        [containerView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-        
         projectView = [[OLProjectView alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, 0.0)];
         [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-        
-        dashboardView = [[OLProjectDashboardView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-        [dashboardView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-        [dashboardView setDelegate:self];
-        
-        [containerView addSubview:projectView];
-        [containerView addSubview:dashboardView];
-        [dashboardView setHidden:YES];
-        
+     
         importProjectController = [[OLImportProjectController alloc] init];
    		
         [projectView setResourcesTableViewDataSource:self];
@@ -231,16 +217,6 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
     {
         return [resourceBundleController numberOfLineItems];
     }
-
-    if (tableView === [[dashboardView subscribers] tableView])
-    {
-        return [[selectedProject subscribers] count];
-    }
-    
-    if (tableView === [[dashboardView branchesTableView] tableView])
-    {
-        return 0;
-    }
     
     return 30;
 }
@@ -266,16 +242,6 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
             return [lineItem value];
         }
     }
-    
-    if (tableView === [[dashboardView subscribers] tableView])
-    {
-        return [[selectedProject subscribers] objectAtIndex:row];
-    }
-    
-    if (tableView === [[dashboardView branchesTableView] tableView])
-    {
-        return "A Branch";  // how do we find branches?
-    }
 }
 
 - (CPString)projectName
@@ -288,74 +254,6 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
     return [selectedProject comments];
 }
 
-- (void)showProjectView
-{
-    var animation = [[_OLProjectViewAnimation alloc] initWithNewView:projectView oldView:dashboardView];
-    [projectView setHidden:NO];
-    [projectView setFrameOrigin:CGPointMake([dashboardView bounds].size.width, 0)];
-    
-    [animation startAnimation];
-}
-
-- (void)dashboardWasClicked:(id)sender
-{
-    var animation = [[_OLProjectViewAnimation alloc] initWithNewView:dashboardView oldView:projectView];
-    [dashboardView setHidden:NO];
-    [dashboardView setFrameOrigin:CGPointMake(0-[projectView bounds].size.width, 0)];
-    [animation setForward:YES];
-
-    [animation startAnimation];
-}
-
-@end
-
-@implementation _OLProjectViewAnimation : CPAnimation
-{
-    CPView  newView;
-    CPView  oldView;
-    
-    BOOL    forward      @accessors;
-}
- 
-- (id)initWithNewView:(CPView)aProjectView oldView:(CPView)aDashboardView
-{
-    self = [super initWithDuration:1.0 animationCurve:CPAnimationEaseInOut];
-    
-    if (self)
-    {
-        newView = aProjectView;
-        oldView = aDashboardView;
-        forward = false;
-    }
-    
-    return self;
-}
- 
-- (void)setCurrentProgress:(float)aProgress
-{
-    [super setCurrentProgress:aProgress];
-    
-    var value = [self currentValue];
-    
-    var width = [oldView frame].size.width;
-    
-    if(forward)
-    {
-        [newView setFrameOrigin:CGPointMake(0 - (width * (1 - value)), 0)];
-        [oldView setFrameOrigin:CGPointMake((width * value), 0)];
-    }
-    else
-    {
-        [newView setFrameOrigin:CGPointMake(width * (1 - value), 0)];
-        [oldView setFrameOrigin:CGPointMake(0 - (width * value), 0)];
-    }
-    
-    if(value === 1.0)
-    {
-        [oldView setHidden:YES];
-    }
-}
- 
 @end
 
 @implementation OLMyProjectController (SidebarItem)
@@ -396,13 +294,12 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
             [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
             [projectView setTitle:[[self selectedProject] name]];
             [projectView reloadAllData];
-            if(dashboardView) { [dashboardView reloadData:self]; }
             
             // tell content view controller to update view
     		[[CPNotificationCenter defaultCenter]
     		  postNotificationName:OLContentViewControllerShouldUpdateContentView
     		  object:self
-    		  userInfo:[CPDictionary dictionaryWithObject:containerView forKey:@"view"]];
+    		  userInfo:[CPDictionary dictionaryWithObject:projectView forKey:@"view"]];
         }
 	}
 	else

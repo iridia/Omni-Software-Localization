@@ -2,12 +2,10 @@
 @import <AppKit/CPOutlineView.j>
 
 @import "OLMessageController.j"
-@import "OLProfileController.j"
 @import "OLProjectSearchController.j"
 
 var OLCommunityInboxItem = @"Inbox";
 var OLCommunitySearchItem = @"Search";
-var OLCommunityProfileItem = @"Profile";
 
 // Manages the community items in the sidebar and their respective controllers
 @implementation OLCommunityController : CPObject
@@ -16,7 +14,6 @@ var OLCommunityProfileItem = @"Profile";
 	
 	OLProjectSearchController   searchController;
 	OLMessageController         messageController;
-    OLProfileController         profileController;
 }
 
 - (id)init
@@ -27,31 +24,14 @@ var OLCommunityProfileItem = @"Profile";
         	[searchController loadProjects];
         	
         	messageController = [[OLMessageController alloc] init];
-            profileController = [[OLProfileController alloc] init];
                     	
         	[[CPNotificationCenter defaultCenter]
     			addObserver:self
     			selector:@selector(didReceiveOutlineViewSelectionDidChangeNotification:)
     			name:CPOutlineViewSelectionDidChangeNotification
     			object:nil];
-    			
-		    [[CPNotificationCenter defaultCenter]
-    			addObserver:self
-    			selector:@selector(didReceiveReselectProfileView:)
-    			name:OLProfileControllerShouldLoadProfileNotification
-    			object:nil];
-    			
         }
         return self;
-}
-
-- (void)didReceiveReselectProfileView:(CPNotification)aNotification
-{
-    [profileController didReceiveLoadNewProfile:aNotification]
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:CPOutlineViewSelectionDidChangeThroughProfileNotification
-        object:self
-        userInfo:[CPDictionary dictionaryWithObject:[profileController profileView] forKey:@"view"]];
 }
 
 @end
@@ -65,7 +45,7 @@ var OLCommunityProfileItem = @"Profile";
 
 - (CPArray)sidebarItems
 {
-    return [OLCommunityInboxItem, OLCommunitySearchItem, OLCommunityProfileItem];
+    return [OLCommunityInboxItem, OLCommunitySearchItem];
 }
 
 - (BOOL)shouldExpandSidebarItemOnReload
@@ -84,11 +64,6 @@ var OLCommunityProfileItem = @"Profile";
         case OLCommunitySearchItem:
             view = [searchController contentView];
             [searchController loadProjects];
-            break;
-        case OLCommunityProfileItem:
-            var userEmail = [[[OLUserSessionManager defaultSessionManager] user] email];
-            [profileController setProfileView:[profileController profileView]];
-            view = [profileController contentView];
             break;
         default:
             CPLog.warn(@"Unhandled case in %s, %s", [self className], _cmd);
