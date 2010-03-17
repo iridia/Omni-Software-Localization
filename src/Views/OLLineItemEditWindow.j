@@ -160,8 +160,27 @@
         [contentView addSubview:contextHelp positioned:CPViewLeftAligned | CPViewBottomAligned relativeTo:contentView withPadding:24.0];
         
         [lineItemViewBorder setCenter:[lineItemView center]];
+        
+        [[CPNotificationCenter defaultCenter]
+    	   addObserver:self
+    	   selector:@selector(controlTextDidEndEditing:)
+    	   name:CPControlTextDidEndEditingNotification
+    	   object:value];
     }
     return self;
+}
+
+- (void)controlTextDidEndEditing:(CPNotification)aNotification
+{
+    var info = [CPDictionary dictionary];
+    [info setObject:lineItem forKey:@"lineItem"];
+    [info setObject:[value stringValue] forKey:@"value"];
+    [self setLineItemValue:info];
+}
+
+-(void)setLineItemValue:(CPDictionary)info
+{
+    
 }
 
 - (void)sendEvent:(CPEvent)anEvent
