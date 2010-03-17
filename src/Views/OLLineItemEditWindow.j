@@ -54,8 +54,8 @@
         [left setAlternateImage:[[CPImage alloc] initWithContentsOfFile:@"Resources/Images/leftarrow-pressed.png"]];
         [left setFrameSize:CGSizeMake(91, 394)];
         
-        var lineItemView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds])*0.7, CGRectGetHeight([contentView bounds])*0.7)];
-        [lineItemView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        var lineItemView = [[CPView alloc] initWithFrame:CGRectMake(0, 0,650,500)];
+        [lineItemView setAutoresizingMask:CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin | CPViewMinXMargin];
         [lineItemView setBackgroundColor:[CPColor colorWithCalibratedWhite:0.95 alpha:1.0]];
         
         var lineItemViewBorder = [[CPView alloc] initWithFrame:CGRectInset([lineItemView frame], -2, -2)];
