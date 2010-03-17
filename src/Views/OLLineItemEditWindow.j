@@ -1,4 +1,5 @@
 @import <AppKit/CPWindow.j>
+@import "../Controllers/OLLineItemEditWindowController.j"
 @import "OLCommentView.j"
 
 @implementation OLLineItemEditWindow : CPWindow
@@ -161,27 +162,32 @@
         
         [lineItemViewBorder setCenter:[lineItemView center]];
         
-        [[CPNotificationCenter defaultCenter]
-    	   addObserver:self
-    	   selector:@selector(controlTextDidEndEditing:)
-    	   name:CPControlTextDidEndEditingNotification
-    	   object:value];
+        // [[CPNotificationCenter defaultCenter]
+        //         addObserver:self
+        //         selector:@selector(controlTextDidEndEditing:)
+        //         name:CPControlTextDidEndEditingNotification
+        //         object:[valueTextField stringValue]];
     }
     return self;
 }
-
-- (void)controlTextDidEndEditing:(CPNotification)aNotification
-{
-    var info = [CPDictionary dictionary];
-    [info setObject:lineItem forKey:@"lineItem"];
-    [info setObject:[value stringValue] forKey:@"value"];
-    [self setLineItemValue:info];
-}
-
--(void)setLineItemValue:(CPDictionary)info
-{
-    
-}
+// 
+// - (void)controlTextDidEndEditing:(CPNotification)aNotification
+// {
+//     var info = [CPDictionary dictionary];
+//     [info setObject:[[self title] stringValue] forKey:@"lineItem"];//dont think this is right
+//     [info setObject:[valueTextField stringValue] forKey:@"value"];
+//     [self setLineItemValue:info];
+// }
+// 
+// - (void)setLineItemValue:(CPDictionary)info
+// {
+//     var oldValues = [CPDictionary dictionary];
+//     [oldValues setObject:[info objectForKey:@"lineItem"] forKey:@"lineItem"];
+//     [oldValues setObject:[info objectForKey:@"value"] forKey:@"value"];
+//     [OLUndoManager registerUndoWithTarget:self selector:@selector(setLineItemValue:) object:oldValues];
+//     [[info objectForKey:@"lineItem"] setValue:[info objectForKey:@"value"]];
+//     [delegate saveLineItem];
+// }
 
 - (void)sendEvent:(CPEvent)anEvent
 {

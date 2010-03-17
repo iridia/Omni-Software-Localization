@@ -100,6 +100,7 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
 
 - (void)setValueForSelectedLineItem:(CPString)value
 {
+    [OLUndoManager registerUndoWithTarget:self selector:@selector(setValueForSelectedLineItem:) object:[selectedLineItem value]];
     [selectedLineItem setValue:value];
 }
 
