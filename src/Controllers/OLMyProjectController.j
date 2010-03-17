@@ -186,9 +186,13 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 
 - (void)saveLineItem
 {
+
     var value = [[editLineItemWindow valueTextField] stringValue];
-    [resourceBundleController setValueForSelectedLineItem:value];
-    [selectedProject saveWithCallback:function(){[projectView reloadAllData];}];
+    if (value !== [resourceBundleController valueForSelectedLineItem])
+    {
+        [resourceBundleController setValueForSelectedLineItem:value];
+        [selectedProject saveWithCallback:function(){[projectView reloadAllData];}];
+    }
 }
 
 - (void)saveComment
