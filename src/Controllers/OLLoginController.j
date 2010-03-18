@@ -1,6 +1,7 @@
 @import <Foundation/CPObject.j>
 
 @import "OLToolbarController.j"
+@import "OLOpenIDController.j"
 @import "../Utilities/OLUserSessionManager.j"
 @import "../Categories/CPArray+Find.j"
 @import "../Views/OLLoginAndRegisterWindow.j"
@@ -11,18 +12,21 @@ OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotif
 
 @implementation OLLoginController : CPObject
 {
-    CPWindow    loginAndRegisterWindow;
-    id          delegate                @accessors;
-    id          successfulLoginTarget   @accessors;
-    SEL         successfulLoginAction   @accessors;
+    CPWindow            loginAndRegisterWindow;
+    id                  delegate                @accessors;
+    id                  successfulLoginTarget   @accessors;
+    SEL                 successfulLoginAction   @accessors;
+    OLOpenIDController  openIDController;
 }
 
 - (id)init
 {
     if(self = [super init])
     {
-        loginAndRegisterWindow = [[OLLoginAndRegisterWindow alloc] initWithContentRect:CGRectMake(0.0, 0.0, 300.0, 180.0) styleMask:CPTitledWindowMask];
-        [loginAndRegisterWindow setDelegate:self];
+        loginAndRegisterWindow = [[OLLoginAndRegisterWindow alloc] initWithContentRect:CGRectMake(0.0, 0.0, 300.0, 160.0) styleMask:CPTitledWindowMask];
+        openIDController = [[OLOpenIDController alloc] init];
+        [loginAndRegisterWindow setDelegate:openIDController];
+        [openIDController setDelegate:self];
         
         [[CPNotificationCenter defaultCenter]
             addObserver:self
@@ -63,19 +67,7 @@ OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotif
 {
     [self willLogin];
     var email = [userInfo objectForKey:@"username"];
-    [OLUser findByEmail:email withCallback:function(user, isFinal)
-    {
-        if (user && [[user email] isEqualToString:email])
-        {
-            [self hasLoggedIn:user];
-            return;
-        }
-
-        if (isFinal)
-        {
-            [self loginFailed];
-        }
-    }];
+    [openIDController loginTo:email];
 }
 
 -(void)didSubmitLogout
@@ -86,8 +78,8 @@ OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotif
 {   
     successfulLoginTarget = nil;
     successfulLoginAction = nil;
+    [loginAndRegisterWindow reset];
     [[CPApplication sharedApplication] runModalForWindow:loginAndRegisterWindow];
-    [loginAndRegisterWindow transitionToLoginView:nil];
     
     if([[[notification userInfo] allKeys] containsObject:@"StatusMessageText"])
     {
@@ -102,9 +94,9 @@ OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotif
     }
 }
 
-- (void)didSubmitRegistration:(CPDictionary)registrationInfo
+- (void)didSubmitRegistration:(CPString)email
 {
-    var user = [[OLUser alloc] initWithEmail:[registrationInfo objectForKey:@"username"]];
+    var user = [[OLUser alloc] initWithEmail:email];
     if([user email])
     {
         [self hasRegistered:user];
@@ -119,7 +111,7 @@ OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotif
 {
     [aUser saveWithCallback:function(user)
     {
-     [self hasLoggedIn:aUser];
+        [self hasLoggedIn:aUser];
     }];
 }
 
