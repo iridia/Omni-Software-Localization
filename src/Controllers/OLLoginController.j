@@ -7,6 +7,7 @@
 @import "../Models/OLUser.j"
 
 OLLoginControllerShouldLoginNotification = @"OLLoginControllerShouldLoginNotification";
+OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotification"; //need to distribute across app
 
 @implementation OLLoginController : CPObject
 {
@@ -27,6 +28,12 @@ OLLoginControllerShouldLoginNotification = @"OLLoginControllerShouldLoginNotific
             addObserver:self
             selector:@selector(showLoginAndRegisterWindow:)
             name:OLLoginControllerShouldLoginNotification
+            object:nil];
+            
+        [[CPNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(didSubmitLogout)
+            name:OLLoginControllerShouldLogoutNotification
             object:nil];
     }
     return self;
@@ -69,6 +76,11 @@ OLLoginControllerShouldLoginNotification = @"OLLoginControllerShouldLoginNotific
             [self loginFailed];
         }
     }];
+}
+
+-(void)didSubmitLogout
+{
+    [[OLUserSessionManager defaultSessionManager] setStatus:OLUserSessionLoggedOutStatus];
 }
 - (void)showLoginAndRegisterWindow:(CPNotification)notification
 {   

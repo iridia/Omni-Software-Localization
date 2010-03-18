@@ -1,0 +1,17 @@
+{
+    "OLProjectNameKey":"Test.app",
+    "OLProjectResourceBundlesKey":[],
+    "OLProjectUserKey":"atestuser",
+    "OLProjectSubscribersKey":{
+        "OLResourceBundleLanguageKey":"en",
+        "OLResourceBundleResourcesKey":{
+            "OLResourceShortNameKey":"Resource.strings",
+            "OLResourceLineItemsKey":{
+                "OLLineItemCommentKey":"A comment",
+                "OLLineItemIdentifierKey":"ID",
+                "OLLineItemValueKey":"Some value"
+            }
+        }
+    },
+    "OLProjectVotesKey":0
+}

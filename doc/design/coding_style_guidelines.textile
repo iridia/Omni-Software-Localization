@@ -1,0 +1,29 @@
+h1. Coding Style Guidelines
+
+The following guidelines were decided by the team on how to best represent the code so that it would be readable, navigable, and easy to understand.  These guidelines are not simple preferences such as spacings, etc. but rather larger concepts so that other coders can understand and work with our source code.  Many of these decisions were not made at the inception of the project, but were rather decided during code dojos and code reviews as we encountered new coding decisions.
+
+h2. Navigating A Source File
+
+For classes, the following is the order in which things should appear:
+
+# ivars (without an underscore. *Note: this is different from what we had previously determined. From this point forward, underscores are not preferable.*)
+# class methods
+# initializers (default initializer(s) should come last)
+# paired getters/setters
+# instance methods
+# notifications
+# private methods
+# datasource (on a category)
+# observers (on a category)
+
+h3. Benefits of Structure
+
+The above structure should be followed in every class, as it enforces standards that will keep the files easy to read and later easy to maintain.  This process is especially important during project handoff between our team and OmniGroup, and also because the code is open-source, many different developers will be looking at the code to make improvements.  Some of the above headers are described in detail below to clarify the decisions for placing them where they are.
+
+h3. Categories
+
+Categories are used in our classes to help identify specific parts of code.  For example, the DataSource methods that we write for our classes are written under a (DataSource) Category label.  These categories will help other developers to be able to understand and refactor the code where necessary.
+
+h3. Observers
+
+Observers are very important in our application.  Due to the architecture of the software, many different classes listen to other objects to know when to update their information, creating a separation of concerns that allows for data manipulation in only one location in the application.  In addition, these observers  reflect connections between the code, and will easily identify how our application communicates information between classes to new developers.

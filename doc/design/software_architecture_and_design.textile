@@ -1,0 +1,113 @@
+This document describes the high level design of the application and the rationale behind this design.
+
+Localize is designed as an overall Model-View-Controller (MVC) system. This design pattern can be seen in the overall application, as well as in smaller subsystems of the system. Wherever possible, the core principles of MVC have been followed. MVC is such a recognized and respected pattern that it is not necessary to delve into the rationale behind this design.
+
+The rest of this document will document the three layers of MVC. First, the model layer will be presented, followed by the controller layer, and finally the view layer will be discussed.
+
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/MVC.png(MVC)!
+
+h2. Model Layer
+
+Localize has a well-defined model layer which closely follows the domain of the problem-space. However, because Localize is a web application, some interesting problems needed to be solved by the model layer.
+
+Cocoa has a very nice persistency layer (Core Data) which can automatically handle much of the saving and loading of the data into memory. Cappuccino is still in its infancy and does not have an equivalent yet. Localize did not aim to port Core Data to Cappuccino, but wanted a few of its features. An abstract class, OLActiveRecord, solves most of these problems.
+
+The following diagram gives an overview of the model layer.
+
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Model.png(Localize's Model Layer)!
+
+h3. OLActiveRecord
+
+OLActiveRecord is an abstract superclass of all Localize's model objects which need to map directly to a persistent store (more on the persistent store will be discussed in the following sections). OLActiveRecord provides these model objects with some useful behavior:
+
+* Automatic loading and saving to the persistent store
+* Archiving and unarchiving of objects
+* A dynamic search API that allows all objects to be conveniently searched in the persistent store based on its properties
+
+A nice benefit of OLActiveRecord is that no code outside of this class ever needs to communicate with the persistent store. This provides only a single area of coupling with the persistent store. As the persistent store changes throughout development (as it has many times), OLActiveRecord is the only point in the application that is affected.
+
+h3. Persistent Store (CouchDB)
+
+Unlike a desktop application, a web application does not have access to a local filesystem to which it can write its data (HTML5 may solve this issue, but it is not implemented in all major browsers yet). Therefore, a web application needs to talk to a server somewhere to save and load its data. Localize uses CouchDB, a schema-less document-based JSON store, for this purpose. CouchDB has many advantages and interesting features which have enabled Localize to move quickly and offer unique features, but the discussion of those is outside the scope of this document.
+
+One important thing to know is that the model objects in Localize are mapped to *documents* in CouchDB. When objects are saved, they are archived (using a custom JSON keyed archiver) and stored in the database as plain JSON. Similarly, when objects are retrieved they are unarchived into Localize. OLActiveRecord provides all this behavior.
+
+h3. Search API
+
+As Localize developed, the need arose for the ability to search the objects stored in the persistent store. So this behavior was baked into OLActiveRecord in such a way that allowed all model objects which inherit from OLActiveRecord to have their own dynamic search API.
+
+Each model object which inherits from OLActiveRecord has an API specific to that object that is dynamic based on the properties for that object. For example, consider a message object defined as:
+
+<pre>
+    @implementation Message : OLActiveRecord
+    {
+        CPString    subject         @accessors;
+    	CPString    content         @accessors;
+    	CPDate      dateSent        @accessors;
+    	CPString    toUserID        @accessors;
+    	CPString    fromUserID      @accessors;
+    	CPString    fromUserEmail;   
+    }
+    
+    // All initialization methods are left out
+    
+    @end
+</pre>
+
+OLActiveRecord allows all the properties of this object to be searched in the persistent store using the following API:
+
+<pre>
+    + (void)findBySubject:withCallback:
+    + (void)findByContent:withCallback:
+    + (void)findByDateSent:withCallback:
+    + (void)findByToUserID:withCallback:
+    + (void)findByFromUserID:withCallback:
+</pre>
+
+Implementation details and additional information can be found on the "wiki":http://wiki.github.com/hammerdr/Omni-Software-Localization/rest-api.
+
+h2. Controller Layer
+
+The controller layer sits between the view and model layers. Its job is to respond to user input, prepare model data to be displayed in views, and provide the logic that is unique to Localize.
+
+Localize has many controllers, but they can be separated into logical groups which provide similar behavior. The two main kinds of controllers this document will cover are the so-called first-class controllers and the data source controllers.
+
+One controller which does not fit into the above groups is the AppController (often called the AppDelegate in Cocoa). Its job is unique because it initializes the entirety of the application. AppController sits above all other controllers because it is its job to start all these controllers and hook them together appropriately.
+
+The following image gives an overview of Localize's controller layer.
+
+!http://github.com/hammerdr/Omni-Software-Localization/raw/master/doc/design/graphics/Controller.png(Localize's controller layer)!
+
+h3. Data Source Controllers
+
+Localize refers to data source controllers as controllers whose job is solely to prepare data for the view layer and possibly respond to some actions from the view layer which affect data. These controllers are usually very simple and do not do anything outside of these responsibilities. These controllers are usually instantiated by other controllers, and not at the AppController level.
+
+h3. First-Class Controllers
+
+First-class controllers are the main controllers of Localize which implement most of its logic. Often they are instantiated at the highest level (AppController) and may delegate responsibilities to other controllers they instantiate (such as data source controllers). First-class controllers are also called such because they are usually data source controllers for first-class model objects. Because of this, they also usually correspond directly to items in the sidebar.
+
+Examples of first-class controllers include the Sidebar Controller, Menu Controller, Content View Controller, Project Controller, Glossary Controller, and Community Controller.
+
+h4. Sidebar Controller
+
+The Sidebar Controller is the main navigation point for users of Localize. It allows users to navigate between different data items such as projects and glossaries. It is the job of the Sidebar Controller to create the view that displays the navigation items and communicate with other controllers to retrieve the data that should be shown in this view.
+
+h4. Menu Controller
+
+The Menu Controller is navigation point for users of Localize. Its job is to create the items in the menu bar, delegate the enable/disable behavior of the items (Cappuccino does not yet provide automatic validation of items), and delegate the actions of the menu items to the correct controllers.
+
+h4. Content View Controller
+
+The Content View Controller is responsible for controlling the view that is displayed in the main content view of Localize. It responds to a notification that tells it to update its view. It provides all the necessary logic, such as resizing the view, hiding any previous views that were shown, and placing in the new view.
+
+h4. Project Controller, Glossary Controller, and Community Controller
+
+These controllers are the data source controllers for the sidebar. They respond to messages that the Sidebar Controller will ask to get the data to display in the sidebar. Additionally, they are data source controllers for first-class objects such as projects, glossaries, and community items (such as messages).
+
+These controllers provide most of the logic for Localize. Since first-class controllers are more stable than plain data source controllers, most of the application logic is routed through these controllers. They can then delegate this logic to other, more specialized controllers. This decouples other parts of the application (like views and other controllers) from the unstable data source controllers.
+
+h2. View Layer
+
+The view layer in Localize is very uninteresting. Most first-class controllers map directly to a relevant view (such as the Project Controller to the Project View). The controllers are responsible for initializing their own views and telling the Content View Controller when these views should be shown.
+
+Localize uses very well-defined methods of communicating with the view layer. Data is provided to views through a data source mechanism. A view's actions which need to take effect outside of the view are delegated to its controller. If more than one area of the application needs to know about a user action, the view will send a notification. Using these methods decouples the views from the model layer and from a specific controller.

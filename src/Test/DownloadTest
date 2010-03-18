@@ -1,0 +1,32 @@
+#!/usr/bin/env objj
+
+function currentRev() {
+    command = "curl http://localhost:5984/project/thisisatestproject";
+    process = OS.popen(command);
+    view = process.stdout.read();
+    json = eval("(" + view + ")");
+    return json._rev;
+}
+
+OS = require("os");
+
+var command = "curl http://localhost:5984/project/thisisatestproject";
+var process = OS.popen(command);
+var view = process.stdout.read();
+var json = eval("(" + view + ")");
+
+OS.system("curl -T Test/utilities/DownloadTestData -H \"Content-Type: application/json\" http://localhost:5984/project/thisisatestproject?rev="+currentRev());
+
+OS.system("curl -X POST -d \"thisisatestproject\" http://localhost/~hammerdr/osl/src/Download/Download.php");
+
+if(require("file").exists("Download/Test.app") && require("file").exists("Download/Test.app.zip"))
+{
+    print("Test Passed");
+}
+else
+{
+    print("Test Failed");
+}
+
+
+OS.system("curl -X DELETE http://localhost:5984/project/thisisatestproject?rev="+currentRev());

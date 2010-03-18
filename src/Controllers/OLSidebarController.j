@@ -31,6 +31,7 @@
     [sidebarOutlineView setCornerView:nil];
     [sidebarOutlineView setDataSource:self];
     [sidebarOutlineView setDelegate:self];
+    [sidebarOutlineView setBackgroundColor:[CPColor sourceViewColor]];
     [sidebarOutlineView setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
 
     [sidebarScrollView setDocumentView:sidebarOutlineView];

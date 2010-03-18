@@ -7,12 +7,14 @@
 var OLMainToolbarIdentifier = @"OLMainToolbarIdentifier";
 var OLFeedbackToolbarItemIdentifier = @"OLFeedbackToolbarItemIdentifier";
 var OLLoginToolbarItemIdentifier = @"OLLoginToolbarItemIdentifier";
+var OLLogoutToolbarItemIdentifier = @"OLLogoutToolbarItemIdentifier";
 var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 
 
 @implementation OLToolbarController : CPObject
 {
     OLFeedbackController feedbackController;
+    CPMenuItem           logoutMenuItem;
     CPMenuItem           loginMenuItem;
     CPToolbar            toolbar                @accessors;
     CPString             loginValue;
@@ -47,7 +49,7 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 
 - (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)toolbar
 {
-    return [OLMessageToolbarItemIdentifier, CPToolbarFlexibleSpaceItemIdentifier, OLLoginToolbarItemIdentifier, OLFeedbackToolbarItemIdentifier];
+    return [OLMessageToolbarItemIdentifier, CPToolbarFlexibleSpaceItemIdentifier, OLLogoutToolbarItemIdentifier, OLLoginToolbarItemIdentifier, OLFeedbackToolbarItemIdentifier];
 }
 
 - (CPToolbarItem)toolbar:(CPToolbar)toolbar itemForItemIdentifier:(CPString)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
@@ -68,6 +70,22 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
         
         [menuItem setTarget:feedbackController];
         [menuItem setAction:@selector(showFeedbackWindow:)];
+    }
+    else if(itemIdentifier === OLLogoutToolbarItemIdentifier)
+    {
+        var logoutButton = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Login_Unpressed.png" size:CPSizeMake(32, 32)];
+        var logoutButtonPushed = [[CPImage alloc] initWithContentsOfFile:@"Resources/Images/Login_Pressed.png" size:CPSizeMake(32, 32)];
+        
+        [menuItem setImage:logoutButton];
+        [menuItem setAlternateImage:logoutButtonPushed];
+        [menuItem setMinSize:CGSizeMake(32, 32)];
+        [menuItem setMaxSize:CGSizeMake(32, 32)];
+        [menuItem setLabel:@"Logout"];
+
+        [menuItem setTarget:self];
+        [menuItem setAction:@selector(logout:)];
+        
+        logoutMenuItem = menuItem;
     }
     else if(itemIdentifier === OLLoginToolbarItemIdentifier)
     {
@@ -113,11 +131,27 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
         object:self];
 }
 
+- (void)logout:(id)sender
+{
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLLoginControllerShouldLogoutNotification
+        object:self];
+}
+
 - (void)updateLoginInfo:(CPNotification)notification
 {
+
     var user = [[OLUserSessionManager defaultSessionManager] user];
-    loginValue = [user email]; 
-    [toolbar _reloadToolbarItems];
+    if (user !== nil)
+    {
+        loginValue = [user email]; 
+        [toolbar _reloadToolbarItems];
+    }
+    else
+    {
+        loginValue = @"Login / Register";
+        [toolbar _reloadToolbarItems];
+    }
 }
 
 - (void)newMessage:(id)sender

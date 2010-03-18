@@ -137,7 +137,14 @@ OLMenuShouldDisableItemsNotification = @"OLMenuShouldDisableItemsNotification";
 {
     [[CPNotificationCenter defaultCenter]
         postNotificationName:OLLoginControllerShouldLoginNotification
-        object:self];    
+        object:self];
+}
+
+- (void)logout:(id)sender
+{
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLLoginControllerShouldLogoutNotification
+        object:self];
 }
 
 - (void)sendMessage:(id)sender

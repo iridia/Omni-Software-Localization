@@ -1,0 +1,341 @@
+<!DOCTYPE>
+
+<head>
+	<title>Design Documentation</title>
+	<style type="text/css" media="all">
+        html, body, div, p, ul { width:100%; font-family: "Lucida Grande", "Helvetica"; }
+        img { margin: 0 auto; display: block;}
+        #main { width: auto; margin: 5% 5%;}
+	</style>
+</head>
+<body>
+    <div id="main">
+    <div id="content" class="column">
+    <h1>Design Documentation</h1>
+
+    	<p>Many pieces and technologies work together to produce a software application. Localize is no different. This document will describe the high-level design of Localize from three angles:  the software, the system, and testing.</p>
+
+    	<p>The software architecture and design document covers the pieces that make up the user-facing features of Localize. This includes the design of the main client application and the rationale behind this design.</p>
+
+    	<p>The system architecture and design document details the various components of Localize from a high-level. The main features of this are the client-server interaction and the technologies used on the server.</p>
+
+
+    	<p>Finally, the test architecture and design document describes the Localize team&#8217;s approach to testing.</p>
+
+
+    	<p>This document is a snapshot of the documents located on Localize&#8217;s wiki. Please visit http://wiki.github.com/hammerdr/Omni-Software-Localization/design-documentation for the most up-to-date documents.</p>
+
+
+    	<h2>Organization of This Document</h2>
+
+
+    	<ul>
+    	<li>&#8220;<b>Software Architecture and Design</b>&#8221; gives an overview of the software technologies.</li>
+    		<li>&#8220;<b>System Architecture and Design</b>&#8221; describes the client-server interaction.</li>
+    		<li>&#8220;<b>Test Architecture and Design</b>&#8221; highlights the test architecture and strategies.</li>
+    	</ul>
+
+
+    	<h2>Software Architecture and Design</h2>
+
+
+    	<p>This document describes the high level design of the application and the rationale behind this design.</p>
+
+
+    	<p>Localize is designed as an overall Model-View-Controller (MVC) system. This design pattern can be seen in the overall application, as well as in smaller subsystems of the system. Wherever possible, the core principles of <span class="caps">MVC</span> have been followed. <span class="caps">MVC</span> is such a recognized and respected pattern that it is not necessary to delve into the rationale behind this design.</p>
+
+
+    	<p>The rest of this document will document the three layers of <span class="caps">MVC</span>. First, the model layer will be presented, followed by the controller layer, and finally the view layer will be discussed.</p>
+
+    	<p><img src="graphics/MVC.png" title="MVC" alt="MVC" /></p>
+
+
+    	<h3>Model Layer</h3>
+
+
+    	<p>Localize has a well-defined model layer which closely follows the domain of the problem-space. However, because Localize is a web application, some interesting problems needed to be solved by the model layer.</p>
+
+
+    	<p>Cocoa has a very nice persistency layer (Core Data) which can automatically handle much of the saving and loading of the data into memory. Cappuccino is still in its infancy and does not have an equivalent yet. Localize did not aim to port Core Data to Cappuccino, but wanted a few of its features. An abstract class, OLActiveRecord, solves most of these problems.</p>
+
+
+    	<p>The following diagram gives an overview of the model layer.</p>
+
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+    	<p><img src="graphics/Model.png" title="Localize's Model Layer" alt="Localize's Model Layer" /></p>
+
+
+    	<h4>OLActiveRecord</h4>
+
+
+    	<p>OLActiveRecord is an abstract superclass of all Localize&#8217;s model objects which need to map directly to a persistent store (more on the persistent store will be discussed in the following sections). OLActiveRecord provides these model objects with some useful behavior:</p>
+
+
+    	<ul>
+    	<li>Automatic loading and saving to the persistent store</li>
+    		<li>Archiving and unarchiving of objects</li>
+    		<li>A dynamic search <span class="caps">API</span> that allows all objects to be conveniently searched in the persistent store based on its properties</li>
+    	</ul>
+
+
+    	<p>A nice benefit of OLActiveRecord is that no code outside of this class ever needs to communicate with the persistent store. This provides only a single area of coupling with the persistent store. As the persistent store changes throughout development (as it has many times), OLActiveRecord is the only point in the application that is affected.</p>
+
+
+    	<h4>Persistent Store (CouchDB)</h4>
+
+
+    	<p>Unlike a desktop application, a web application does not have access to a local filesystem to which it can write its data (HTML5 may solve this issue, but it is not implemented in all major browsers yet). Therefore, a web application needs to talk to a server somewhere to save and load its data. Localize uses CouchDB, a schema-less document-based <span class="caps">JSON</span> store, for this purpose. CouchDB has many advantages and interesting features which have enabled Localize to move quickly and offer unique features, but the discussion of those is outside the scope of this document.</p>
+
+
+    	<p>One important thing to know is that the model objects in Localize are mapped to <strong>documents</strong> in CouchDB. When objects are saved, they are archived (using a custom <span class="caps">JSON</span> keyed archiver) and stored in the database as plain <span class="caps">JSON</span>. Similarly, when objects are retrieved they are unarchived into Localize. OLActiveRecord provides all this behavior.</p>
+
+
+    	<h4>Search <span class="caps">API</span></h4>
+
+
+    	<p>As Localize developed, the need arose for the ability to search the objects stored in the persistent store. This behavior was put into OLActiveRecord in such a way that allowed all model objects which inherit from OLActiveRecord to have their own dynamic search <span class="caps">API</span>.</p>
+
+
+    	<p>Each model object which inherits from OLActiveRecord has an <span class="caps">API</span> specific to that object. This <span class="caps">API</span> is created dynamically based on the properties of that object. For example, consider a message object defined as:</p>
+
+
+    <pre>
+        @implementation Message : OLActiveRecord
+        {
+            CPString    subject         @accessors;
+            CPString    content         @accessors;
+            CPDate      dateSent        @accessors;
+            CPString    toUserID        @accessors;
+            CPString    fromUserID      @accessors;
+            CPString    fromUserEmail;   
+        }
+
+        // All initialization methods are left out
+
+        @end
+    </pre>
+
+    	<p>OLActiveRecord allows all the properties of this object to be searched in the persistent store using the following <span class="caps">API</span>:</p>
+
+
+    <pre>
+        + (void)findBySubject:withCallback:
+        + (void)findByContent:withCallback:
+        + (void)findByDateSent:withCallback:
+        + (void)findByToUserID:withCallback:
+        + (void)findByFromUserID:withCallback:
+    </pre>
+
+    	<p>Implementation details and additional information can be found on the <a href="http://wiki.github.com/hammerdr/Omni-Software-Localization/rest-api">wiki</a>.</p>
+
+
+    	<h3>Controller Layer</h3>
+
+
+    	<p>The controller layer sits between the view and model layers. Its job is to respond to user input, prepare model data to be displayed in views, and provide the logic that is unique to Localize.</p>
+
+
+    	<p>Localize has many controllers, but they can be separated into logical groups which provide similar behavior. The two main kinds of controllers this document will cover are the so-called first-class controllers and the data source controllers.</p>
+
+
+    	<p>One controller which does not fit into the above groups is the AppController (often called the AppDelegate in Cocoa). Its job is unique because it initializes the entirety of the application. AppController sits above all other controllers because it is its job to start all these controllers and hook them together appropriately.</p>
+
+
+    	<p>The following image gives an overview of Localize&#8217;s controller layer.</p>
+
+
+    	<p><img src="graphics/Controller.png" title="Localize's controller layer" alt="Localize's controller layer" /></p>
+
+
+    	<h4>Data Source Controllers</h4>
+
+
+    	<p>Localize refers to data source controllers as controllers whose job is solely to prepare data for the view layer and possibly respond to some actions from the view layer which affect data. These controllers are usually very simple and do not do anything outside of these responsibilities. These controllers are usually instantiated by other controllers, and not at the AppController level.</p>
+
+
+    	<h4>First-Class Controllers</h4>
+
+
+    	<p>First-class controllers are the main controllers of Localize which implement most of its logic. Often they are instantiated at the highest level (AppController) and may delegate responsibilities to other controllers they instantiate (such as data source controllers). First-class controllers are also called such because they are usually data source controllers for first-class model objects. Because of this, they also usually correspond directly to items in the sidebar.</p>
+
+
+    	<p>Examples of first-class controllers include the Sidebar Controller, Menu Controller, Content View Controller, Project Controller, Glossary Controller, and Community Controller.</p>
+
+
+    	<h5>Sidebar Controller</h5>
+
+
+    	<p>The Sidebar Controller is the main navigation point for users of Localize. It allows users to navigate between different data items such as projects and glossaries. It is the job of the Sidebar Controller to create the view that displays the navigation items and communicate with other controllers to retrieve the data that should be shown in this view.</p>
+
+
+    	<h5>Menu Controller</h5>
+
+
+    	<p>The Menu Controller is navigation point for users of Localize. Its job is to create the items in the menu bar, delegate the enable/disable behavior of the items (Cappuccino does not yet provide automatic validation of items), and delegate the actions of the menu items to the correct controllers.</p>
+
+
+    	<h5>Content View Controller</h5>
+
+
+    	<p>The Content View Controller is responsible for controlling the view that is displayed in the main content view of Localize. It responds to a notification that tells it to update its view. It provides all the necessary logic, such as resizing the view, hiding any previous views that were shown, and placing in the new view.</p>
+
+
+    	<h5>Project Controller, Glossary Controller, and Community Controller</h5>
+
+
+    	<p>These controllers are the data source controllers for the sidebar. They respond to messages that the Sidebar Controller will ask to get the data to display in the sidebar. Additionally, they are data source controllers for first-class objects such as projects, glossaries, and community items (such as messages).</p>
+
+
+    	<p>These controllers provide most of the logic for Localize. Since first-class controllers are more stable than plain data source controllers, most of the application logic is routed through these controllers. They can then delegate this logic to other, more specialized controllers. This decouples other parts of the application (like views and other controllers) from the unstable data source controllers.</p>
+
+
+    	<h3>View Layer</h3>
+
+
+    	<p>The view layer in Localize is very uninteresting. Most first-class controllers map directly to a relevant view (such as the Project Controller to the Project View). The controllers are responsible for initializing their own views and telling the Content View Controller when these views should be shown.</p>
+
+
+    	<p>Localize uses very well-defined methods of communicating with the view layer. Data is provided to views through a data source mechanism. A view&#8217;s actions which need to take effect outside of the view are delegated to its controller. If more than one area of the application needs to know about a user action, the view will send a notification. Using these methods decouples the views from the model layer and from a specific controller.</p>
+
+
+    	<h2>System Architecture and Design</h2>
+
+
+    	<p>Localize is a web application and as such has many components that work together to make it work. This document describes these components at a high level and the different interactions between these components.</p>
+
+
+    	<p>The following graphic gives an overview of Localize&#8217;s system architecture.</p>
+
+    	<p><img src="graphics/SystemArchitecture.png" title="System Architecture" alt="System Architecture" /></p>
+
+
+    	<h3>(Thick-)Client-Server</h3>
+
+
+    	<p>Like many web applications, Localize is a client-server application at a high-level. The client is all the Cappuccino (Javascript) code that is downloaded by the user from the server. The server is relatively lightweight and is mostly responsible for serving up the code, acting as the persistent store, and providing other functionality that the client cannot provide (mostly due to browser or security restrictions).</p>
+
+
+    	<p>Unlike most web applications, Localize is a thick-client application. This means that most of the business logic resides on the client side. This is a very familiar concept to developers of desktop applications, but those coming from a web development background may be confused. In a thick-client application, the server only provides the bare minimum of functionality. In this way, the server can be fast and efficient and the client can be very rich and interactive.</p>
+
+
+    	<p>The rest of this document will go into the detail of the specific components of Localize and how these components interact. For detail about the architecture of the client code, see the Software Architecture and Design document.</p>
+
+
+    	<h3>Data Storage</h3>
+
+
+    	<p>The main responsibility of the server is to provide a means of storing data (known as the persistent store). Currently, this is done through CouchDB, a schema-less document-based <span class="caps">JSON</span> store. CouchDB is a very convenient choice because by default it provides a RESTful <span class="caps">HTTP API</span>, which the client can use to store or retrieve data.</p>
+
+
+    	<p>However, CouchDB may not be the right technology for Localize in the future. To decouple the client from the actual data storage technology, a small abstraction layer of <span class="caps">PHP</span> sits between the client and CouchDB. It translates URLs from the client into URLs that CouchDB understands. It will also forward the data from the client to CouchDB and the data from CouchDB to the client. Besides just decoupling the client from the server, this <span class="caps">PHP</span> layer also could provide a security layer. It could, for example, check the origin of the request and block all requests determined to not be from Localize. Or, similarly, if Localize wished to provide an external <span class="caps">API</span> to other application developers, this <span class="caps">PHP</span> layer could be used to check the request to be sure it was from a trusted application developer.</p>
+
+
+    	<p>The following sections will go into detail the <span class="caps">API</span> the <span class="caps">PHP</span> layer provides and the translation process between the client and CouchDB.</p>
+
+
+    	<h4><span class="caps">API</span></h4>
+
+
+    	<p>While CouchDB already provides a RESTful <span class="caps">HTTP API</span>, this <span class="caps">API</span> is pretty specific to CouchDB. Therefore, Localize provides a more generic <span class="caps">API</span> through a thin <span class="caps">PHP</span> layer between the client and CouchDB.</p>
+
+
+    	<h5>Client <span class="caps">API</span></h5>
+
+
+    	<p>The client&#8217;s <span class="caps">API</span> is designed to match the needs of the client. Currently, Localize needs to retrieve data in three ways:</p>
+
+
+    	<ul>
+    	<li><em>All:</em> Retrieve all documents of a particular kind (e.g. retrieve all projects)</li>
+    		<li><em>Search:</em> Retrieve all documents of a particular kind which match a certain criteria (e.g. retrieve all projects which are owned by a certain user)</li>
+    		<li><em>Individual:</em> Retrieve a specific document, which is known by the client, of a particular kind (e.g. retrieve the project with <span class="caps">ID 1234</span>)</li>
+    	</ul>
+
+
+    	<p>The <span class="caps">HTTP API</span> which the client uses is fairly straightforward. In the following URLs, <model> is the model object (e.g. project), <property> is a unique property of that object (e.g. owner), and <unique_identifier> is the unique identifier used by CouchDB.</p>
+
+
+    	<ul>
+    	<li><em>All:</em> /api/<model>/find/all</li>
+    		<li><em>Search:</em> /api/<model>/find/<property>[?key=123]</li>
+    		<li><em>Individual:</em> /api/<model>/<unique_identifier></li>
+    	</ul>
+
+
+    	<p>These URLs are then converted by the <span class="caps">PHP</span> layer to the corresponding URLs used by CouchDB. The specifics of this conversion is outside the scope of this document.</p>
+
+
+    	<h3>Other Functionality</h3>
+
+
+    	<p>In addition to providing data storage and a convenient <span class="caps">API</span> to access this data, the server is also responsible for a few other distinct functions. These functions are usually only provided by the server because they cannot be provided by the client either for security reasons or due to browser limitations.</p>
+
+
+    	<h4>Uploading</h4>
+
+
+    	<p>Due to browser restrictions, the client cannot access the user&#8217;s filesystem. Therefore, the user must upload their files to a server in order to get them into Localize.</p>
+
+
+    	<p>The server parses the files uploaded by the server into a representation that the client can understand and then sends them back to the client. The client can then do whatever it wishes with this data, such as check it for errors or save it to the persistent store.</p>
+
+
+    	<h4>Downloading</h4>
+
+
+    	<p>Again, since the client does not have access to the user&#8217;s filesystem, the client cannot save data to the user&#8217;s computer. The user then must download the file.</p>
+
+
+    	<p>The server provides the download service. The client sends the data which should be downloaded by the user. The server parses this data into a file format the user expects and then tells the client about the physical location of this file on the server. The client then directs the user to this <span class="caps">URL</span> and the user is able to download the file and save it to the local filesystem as they see fit.</p>
+
+
+    	<h2>Test Architecture and Design</h2>
+
+
+    	<p>Testing is a very important part of software development. Early on, the Localize team decided that testing would play a large role in development. A basic test architecture has been developed over time which allows the team to work efficiently and produce a high-quality product.</p>
+
+
+    	<p>Localize has four primary modes of testing:  development testing, automated testing, acceptance testing, and user feedback. This document will describe these various parts of testing.</p>
+
+
+    	<h3>Development Testing</h3>
+
+
+    	<p>The primary goal of development testing is to have all the benefits of testing, but with as little overhead to the developer as possible. Unit tests are the primary form of testing during development. In addition, the Localize team practices test driven development (TDD). The basics of <span class="caps">TDD</span> are:  write unit tests, make the unit tests pass, and refactor the code to improve it while still passing the tests. Pair programming is also used occasionally to help reduce new bugs that are introduced.</p>
+
+
+    	<p>As a bonus, the unit tests created during the development phase also provide a large regression test suite. The development team is encouraged to be continuously running the test suite (perhaps even using an autotest library) so that with each change, the developer instantly knows if she broke anything.</p>
+
+
+    	<h2>Automated Testing</h2>
+
+
+    	<p>Testing is a pain, but the benefits of testing are so large that it would be unwise not to test. Therefore, the Localize team has made sure that tests are as automated as possible. The parts of automated testing include development testing in the form of unit tests (see above) and an automatic build and continuous integration server. The build server automatically pulls the latest code with every commit to source control. It then runs all the unit tests to make sure they pass on a production-like machine. Finally, if all the tests pass, the build server will build the application and move it to where it can be used by the team. The team can then do manual acceptance tests of the application on an actual production-like machine (see the next section).</p>
+
+
+    	<h3>Acceptance Testing</h3>
+
+
+    	<p>The production-like build and continuous integration server (see above) is also the platform for acceptance testing. During development, the Localize team is encouraged to perform ad-hoc acceptance tests on the server. Also, before each release the team will perform a number of acceptance tests and user stories on the test server. These include common and uncommon user actions, difficult user input (such as very large application bundles), and some basic forms of regression tests. This hopefully will catch any last-minute bugs and is a great way to ensure a high quality release before shipping.</p>
+
+
+    	<h3>User Feedback</h3>
+
+
+    	<p>Gathering user feedback has played a large role in the development and direction of Localize. While user feedback may not be a form of testing, it is a way to ensure a high-quality application that users will enjoy using. For this reason, the Localize team created an easy way for users to provide feedback at an early stage. All data that is gathered through this system is considered highly by the team for future releases.</p>
+
+
+    	<p>This feedback has been so useful that the team wanted to gather even more information from the field. So an automatic error logger was created to catch all our users&#8217; crashes. The development team can see these bug reports and determine what the most likely causes of crash are in Localize. Any crash reports gathered are considered during the planning for future releases.</p>
+    
+</div>
+</div>
+</body>
+</html>
