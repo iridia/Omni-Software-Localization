@@ -176,9 +176,15 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
     var value = [[editLineItemWindow valueTextField] stringValue];
     if (value !== [resourceBundleController valueForSelectedLineItem])
     {
-        [resourceBundleController setValueForSelectedLineItem:value];
-        [selectedProject saveWithCallback:function(){[projectView reloadAllData];}];
+        [self setValueForSelectedLineItem:value];
     }
+}
+
+-(void)setValueForSelectedLineItem:(CPString)stringValue
+{
+    [OLUndoManager registerUndoWithTarget:self selector:@selector(setValueForSelectedLineItem:) object:[resourceBundleController valueForSelectedLineItem]];
+    [resourceBundleController setValueForSelectedLineItem:stringValue];
+    [selectedProject saveWithCallback:function(){[projectView reloadAllData];}];
 }
 
 - (void)saveComment

@@ -161,33 +161,10 @@
         [contentView addSubview:contextHelp positioned:CPViewLeftAligned | CPViewBottomAligned relativeTo:contentView withPadding:24.0];
         
         [lineItemViewBorder setCenter:[lineItemView center]];
-        
-        // [[CPNotificationCenter defaultCenter]
-        //         addObserver:self
-        //         selector:@selector(controlTextDidEndEditing:)
-        //         name:CPControlTextDidEndEditingNotification
-        //         object:[valueTextField stringValue]];
+
     }
     return self;
 }
-// 
-// - (void)controlTextDidEndEditing:(CPNotification)aNotification
-// {
-//     var info = [CPDictionary dictionary];
-//     [info setObject:[[self title] stringValue] forKey:@"lineItem"];//dont think this is right
-//     [info setObject:[valueTextField stringValue] forKey:@"value"];
-//     [self setLineItemValue:info];
-// }
-// 
-// - (void)setLineItemValue:(CPDictionary)info
-// {
-//     var oldValues = [CPDictionary dictionary];
-//     [oldValues setObject:[info objectForKey:@"lineItem"] forKey:@"lineItem"];
-//     [oldValues setObject:[info objectForKey:@"value"] forKey:@"value"];
-//     [OLUndoManager registerUndoWithTarget:self selector:@selector(setLineItemValue:) object:oldValues];
-//     [[info objectForKey:@"lineItem"] setValue:[info objectForKey:@"value"]];
-//     [delegate saveLineItem];
-// }
 
 - (void)sendEvent:(CPEvent)anEvent
 {
