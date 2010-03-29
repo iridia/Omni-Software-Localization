@@ -65,7 +65,7 @@ OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotif
     var email = [userInfo objectForKey:@"username"];
     [OLUser findByEmail:email withCallback:function(user, isFinal)
     {
-        if (user && [[user email] isEqualToString:email])
+        if (user && [user emailIsEqualToString:email])
         {
             [self hasLoggedIn:user];
             return;
@@ -89,13 +89,13 @@ OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotif
     [[CPApplication sharedApplication] runModalForWindow:loginAndRegisterWindow];
     [loginAndRegisterWindow transitionToLoginView:nil];
     
-    if([[[notification userInfo] allKeys] containsObject:@"StatusMessageText"])
+    if([[notification userInfo] hasKey:@"StatusMessageText"])
     {
         [loginAndRegisterWindow setStatus:[[notification userInfo] objectForKey:@"StatusMessageText"]];
     }
     
-    if([[[notification userInfo] allKeys] containsObject:@"SuccessfulLoginAction"] &&
-        [[[notification userInfo] allKeys] containsObject:@"SuccessfulLoginTarget"])
+    if([[notification userInfo] hasKey:@"SuccessfulLoginAction"] &&
+        [[notification userInfo] hasKey:@"SuccessfulLoginTarget"])
     {
         successfulLoginTarget = [[notification userInfo] objectForKey:@"SuccessfulLoginTarget"];
         successfulLoginAction = [[notification userInfo] objectForKey:@"SuccessfulLoginAction"];

@@ -69,6 +69,15 @@ var OLUserBioKey = @"OLUserBioKey";
 
 @end
 
+@implementation OLUser (Equalities)
+
+-(BOOL)emailIsEqualToString:(CPString)emailToCheck
+{
+    return ([self email] === emailToCheck);
+}
+
+@end
+
 @implementation OLUser (OLUserSessionManager)
 
 - (CPString)userIdentifier
