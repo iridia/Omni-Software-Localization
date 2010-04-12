@@ -42,17 +42,17 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     return self;
 }
 
-- (CPArray)toolbarAllowedItemIdentifiers:(CPToolbar)toolbar
+- (CPArray)toolbarAllowedItemIdentifiers:(CPToolbar)aToolbar
 {
-    return [self toolbarDefaultItemIdentifiers:toolbar];
+    return [self toolbarDefaultItemIdentifiers:aToolbar];
 }
 
-- (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)toolbar
+- (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)aToolbar
 {
     return [OLMessageToolbarItemIdentifier, CPToolbarFlexibleSpaceItemIdentifier, OLLogoutToolbarItemIdentifier, OLLoginToolbarItemIdentifier, OLFeedbackToolbarItemIdentifier];
 }
 
-- (CPToolbarItem)toolbar:(CPToolbar)toolbar itemForItemIdentifier:(CPString)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
+- (CPToolbarItem)toolbar:(CPToolbar)aToolbar itemForItemIdentifier:(CPString)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
 {
     var menuItem = [[CPToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
     

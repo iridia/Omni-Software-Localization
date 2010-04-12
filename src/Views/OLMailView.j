@@ -89,22 +89,22 @@ OLMailViewDateSentColumnHeader = @"OLMailViewDateSentColumnHeader";
 
 @implementation OLMailView (CPSplitViewDelegate)
 
-- (BOOL)splitView:(CPSplitView)splitView canCollapseSubview:(CPView)subview
+- (BOOL)splitView:(CPSplitView)aSplitView canCollapseSubview:(CPView)subview
 {
     return (subview !== messagesView);
 }
 
-- (BOOL)splitView:(CPSplitView)splitView shouldCollapseSubview:(CPView)subview forDoubleClickOnDividerAtIndex:(int)index
+- (BOOL)splitView:(CPSplitView)aSplitView shouldCollapseSubview:(CPView)subview forDoubleClickOnDividerAtIndex:(int)index
 {
     return (subview !== messagesView);
 }
 
-- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
+- (CGFloat)splitView:(CPSplitView)aSplitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
 {
     return proposedMin + 150.0;
 }
 
-- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
+- (CGFloat)splitView:(CPSplitView)aSplitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
 {    
     return proposedMax - 150.0;
 }
