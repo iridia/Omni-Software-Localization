@@ -17,6 +17,9 @@
 	CPTextField confirmPasswordText;
 	
 	CPTextField statusTextField;
+	CGRect      originalSize;
+	
+	CPWebView   webView;
 	
 	id          delegate        @accessors;
 }
@@ -26,153 +29,66 @@
     if(self = [super initWithContentRect:aRect styleMask:aStyleMask])
 	{
 	    [self setTitle:@"Login"];
+	    originalSize = aRect;
 	    
         // Some padding for the view
         var paddedView = [[CPView alloc] initWithFrame:CGRectInset(aRect, 10.0, 10.0)];
         [paddedView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         var inputFont = [CPFont systemFontOfSize:16.0];
         
-        statusTextField = [CPTextField labelWithTitle:@"Enter your email to login"];
+        statusTextField = [CPTextField labelWithTitle:@"Enter your credentials to login"];
+        [statusTextField setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin];
         [statusTextField setFont:[CPFont boldSystemFontOfSize:12.0]];
         [statusTextField sizeToFit];
         [paddedView addSubview:statusTextField positioned:CPViewTopAligned | CPViewWidthCentered relativeTo:paddedView withPadding:0];
         
-        var emailText = [CPTextField labelWithTitle:@"Email:"];
-        [paddedView addSubview:emailText positioned:CPViewBelow relativeTo:statusTextField withPadding:0.0];
-
-        emailTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"email@example.com" width:CGRectGetWidth([paddedView bounds])];
-        [emailTextField setFont:inputFont];
-        [emailTextField sizeToFit];
-		[emailTextField setTarget:self];
-		[emailTextField setAction:@selector(login:)];
-        [paddedView addSubview:emailTextField positioned:CPViewBelow relativeTo:emailText withPadding:0];
-        
-        // Uncomment once DB supports passwords.
-        var passwordText = [CPTextField labelWithTitle:@"Password:"];
-        [paddedView addSubview:passwordText positioned:CPViewBelow relativeTo:emailTextField withPadding:5.0];
-        [passwordText setTextColor:[CPColor grayColor]];
-        
-        passwordTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"Not Required" width:CGRectGetWidth([paddedView bounds])];
-        [passwordTextField setSecure:YES];
-        [passwordTextField setFont:inputFont];
-        [passwordTextField sizeToFit];
-        [passwordTextField setEnabled:NO];
-        [paddedView addSubview:passwordTextField positioned:CPViewBelow relativeTo:passwordText withPadding:0];
-        
-        confirmPasswordText = [CPTextField labelWithTitle:@"Confirm Password:"];
-        [confirmPasswordText setHidden:YES];
-        [paddedView addSubview:confirmPasswordText positioned:CPViewBelow relativeTo:passwordTextField withPadding:5.0];
-        [confirmPasswordText setTextColor:[CPColor grayColor]];
-        
-        confirmPasswordTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"Not Required" width:CGRectGetWidth([paddedView bounds])];
-        [confirmPasswordTextField setSecure:YES];
-        [confirmPasswordTextField setFont:inputFont];
-        [confirmPasswordTextField sizeToFit];
-        [confirmPasswordTextField setHidden:YES];
-        [confirmPasswordTextField setEnabled:NO];
-        [paddedView addSubview:confirmPasswordTextField positioned:CPViewBelow relativeTo:confirmPasswordText withPadding:0];
-        
-        var buttonsView = [[CPView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth([paddedView bounds]), 32.0)];
-        [buttonsView setAutoresizingMask:CPViewMinYMargin];
-        [paddedView addSubview:buttonsView positioned:CPViewLeftAligned | CPViewBottomAligned relativeTo:paddedView withPadding:0];
+        var openIdText = [CPTextField labelWithTitle:@"OpenID:"];
+        [openIdText setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin];
+        [paddedView addSubview:openIdText positioned:CPViewBelow relativeTo:statusTextField withPadding:0.0];
         
         var buttonWidth = 60.0;
-        loginButton = [CPButton  buttonWithTitle:@"Login"];
+        loginButton = [CPButton buttonWithTitle:@"Login"];
+        [loginButton setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin];
         [loginButton setTarget:self];
-        [loginButton setAction:@selector(login:)];
-        [loginButton setAutoresizingMask:CPViewMinYMargin];
+        [loginButton setAction:@selector(loginWithGivenURL:)];
         [loginButton setWidth:buttonWidth];
         [self setDefaultButton:loginButton];
-        [buttonsView addSubview:loginButton positioned:CPViewRightAligned | CPViewBottomAligned relativeTo:buttonsView withPadding:0];
 
-        registerButton = [CPButton buttonWithTitle:@"Register"];
-        [registerButton setTarget:self];
-        [registerButton setAction:@selector(transitionToRegisterView:)];
-        [registerButton setWidth:buttonWidth];
-        [buttonsView addSubview:registerButton positioned:CPViewLeftAligned | CPViewBottomAligned relativeTo:buttonsView withPadding:0];
+        openIdTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"user.myopenid.com" 
+            width:CGRectGetWidth([paddedView bounds])-[loginButton frame].size.width-12.0];
+        [openIdTextField setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin];
+        [openIdTextField setFont:inputFont];
+        [openIdTextField sizeToFit];
+		[openIdTextField setTarget:self];
+		[openIdTextField setAction:@selector(loginWithGivenURL:)];
+        [paddedView addSubview:openIdTextField positioned:CPViewBelow relativeTo:openIdText withPadding:0];
+        [paddedView addSubview:loginButton positioned:CPViewOnTheRight relativeTo:openIdTextField withPadding:12.0];
+        [loginButton setCenter:CGPointMake([loginButton center].x, [openIdTextField center].y)];
         
-        var cancelButton = [CPButton buttonWithTitle:@"Cancel"];
-        [cancelButton setTarget:self];
-        [cancelButton setAction:@selector(cancel:)];
-        [cancelButton setWidth:buttonWidth];
-        [buttonsView addSubview:cancelButton positioned:CPViewOnTheLeft | CPViewHeightSame relativeTo:loginButton withPadding:5.0];
+        var googleButton = [[CPButton alloc] initWithFrame:CGRectMake(0, 0, 120, 32)];
+        [googleButton setImage:[[CPImage alloc] initWithContentsOfFile:@"Resources/Images/googleB.png"]];
+        [googleButton setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin];
+        [googleButton setBordered:NO];
+        [googleButton setTarget:delegate];
+        [googleButton setAction:@selector(loginToGoogle:)];
+        [paddedView addSubview:googleButton positioned:CPViewLeftAligned | CPViewBelow relativeTo:openIdTextField withPadding:12.0];
+        
+        var yahooButton = [[CPButton alloc] initWithFrame:CGRectMake(0, 0, 120, 32)];
+        [yahooButton setImage:[[CPImage alloc] initWithContentsOfFile:@"Resources/Images/yahooB.png"]];
+        [yahooButton setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin];
+        [yahooButton setBordered:NO];
+        [yahooButton setTarget:delegate];
+        [yahooButton setAction:@selector(loginToYahoo:)];
+        [paddedView addSubview:yahooButton positioned:CPViewHeightSame | CPViewOnTheRight relativeTo:googleButton withPadding:12.0];
         
         [[self contentView] addSubview:paddedView];
-        [self setDelegate:self];
 	}
 	return self;
 }
 
-- (void)login:(id)sender
+- (void)loginWithGivenURL:(id)sender
 {
-    var values = [CPDictionary dictionary];
-    [values setObject:[emailTextField stringValue] forKey:@"username"];
-    [delegate didSubmitLogin:values];
-}
-
-- (void)register:(id)sender
-{
-    var values = [CPDictionary dictionary];
-	[values setObject:[emailTextField stringValue] forKey:@"username"];
-	[delegate didSubmitRegistration:values];
-}
-
-- (void)transitionToRegisterView:(id)sender
-{
-    if ([confirmPasswordText isHidden])
-    {    
-        var currentFrame = [self frame];
-        currentFrame.size.height += CGRectGetHeight([confirmPasswordTextField bounds]) + CGRectGetHeight([confirmPasswordText bounds]);
-        [self setFrame:currentFrame display:YES animate:YES];
-        
-        var cachedLoginButtonFrameOrigin = [loginButton frame].origin;
-    	[loginButton setFrameOrigin:[registerButton frame].origin];
-    	[registerButton setFrameOrigin:cachedLoginButtonFrameOrigin];
-    }
-    
-	[confirmPasswordTextField setHidden:NO];
-	[confirmPasswordText setHidden:NO];
-	
-	[loginButton setAction:@selector(transitionToLoginView:)];
-	[registerButton setAction:@selector(register:)];
-	[self setDefaultButton:registerButton];
-	
-	[statusTextField setStringValue:@"Enter your email to register"];
-    [statusTextField setTextColor:[CPColor blackColor]];
-	[self centerStatusTextField];
-	
-	[self setTitle:@"Register"];
-    
-    [self makeFirstResponder:emailTextField];
-}
-
-- (void)transitionToLoginView:(id)sender
-{
-    if (![confirmPasswordText isHidden])
-    {    
-        var currentFrame = [self frame];
-        currentFrame.size.height -= CGRectGetHeight([confirmPasswordTextField bounds]) + CGRectGetHeight([confirmPasswordText bounds]);
-        [self setFrame:currentFrame display:YES animate:YES];
-        
-        var cachedLoginButtonFrameOrigin = [loginButton frame].origin;
-    	[loginButton setFrameOrigin:[registerButton frame].origin];
-    	[registerButton setFrameOrigin:cachedLoginButtonFrameOrigin];
-    }
-    
-	[confirmPasswordTextField setHidden:YES];
-	[confirmPasswordText setHidden:YES];
-	
-	[loginButton setAction:@selector(login:)];
-	[self setDefaultButton:loginButton];
-	[registerButton setAction:@selector(transitionToRegisterView:)];
-	
-	[statusTextField setStringValue:@"Enter your email to login"];
-    [statusTextField setTextColor:[CPColor blackColor]];
-	[self centerStatusTextField];
-	
-	[self setTitle:@"Login"];
-    
-    [self makeFirstResponder:emailTextField];
+    [delegate loginTo:[openIdTextField stringValue]];
 }
 
 - (void)cancel:(id)sender
@@ -180,19 +96,17 @@
 	[self close];
 }
 
+- (void)reset
+{
+    [webView setMainFrameURL:"about:blank"];
+    [self setFrame:originalSize];
+}
+
 - (void)close
 {
-    // order us out
     [super close];
     
     [[CPApplication sharedApplication] stopModal];
-	
-    [self transitionToLoginView:self];
-}
-
-- (void)showLoggingIn
-{
-	// nothing
 }
 
 - (void)loginFailed

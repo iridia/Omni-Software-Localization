@@ -20,14 +20,11 @@
     
     if(self)
     {
-        if (isValidEmail(anEmail))
-        {
-            email = anEmail;
-            nickname = aNickname;
-            userLocation = aUserLocation;
-            languages = someLanguages;
-            bio = aBio;
-        }
+        email = anEmail;
+        nickname = aNickname;
+        userLocation = aUserLocation;
+        languages = someLanguages;
+        bio = aBio;
     }
     return self;
 }
@@ -86,18 +83,3 @@ var OLUserBioKey = @"OLUserBioKey";
 }
 
 @end
-
-function isValidEmail(anEmail)
-{
-	try
-	{
-		// check that it has the components of an email address
-		// prefix - @ symbol - .something
-		var regexp = ".+@.+\..+";
-		return anEmail.match(regexp);
-	}
-	catch(ex)
-	{
-		return NO;
-	}
-}

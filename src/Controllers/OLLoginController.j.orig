@@ -67,7 +67,23 @@ OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotif
 {
     [self willLogin];
     var email = [userInfo objectForKey:@"username"];
+<<<<<<< HEAD
+    [OLUser findByEmail:email withCallback:function(user, isFinal)
+    {
+        if (user && [user emailIsEqualToString:email])
+        {
+            [self hasLoggedIn:user];
+            return;
+        }
+
+        if (isFinal)
+        {
+            [self loginFailed];
+        }
+    }];
+=======
     [openIDController loginTo:email];
+>>>>>>> 07e7f3498ffe8bc3885ec4fe56f7a6d073a1ba9b
 }
 
 -(void)didSubmitLogout
