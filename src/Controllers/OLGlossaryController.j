@@ -120,6 +120,29 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 
 @end
 
+@implementation OLGlossaryController (OLGlossaryTableViewDataSource)
+
+- (int)numberOfRowsInTableView:(CPTableView)resourceTableView
+{
+    return [[selectedGlossary lineItems] count];
+}
+
+- (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
+{
+	var lineItem = [[selectedGlossary lineItems] objectAtIndex:row];
+	
+    if ([tableColumn identifier] === OLGlossaryViewIdentifierColumnHeader)
+    {
+        return [lineItem identifier];
+    }
+    else if ([tableColumn identifier] === OLGlossaryViewValueColumnHeader)
+    {
+        return [lineItem value];
+    }
+}
+
+@end
+
 @implementation OLGlossaryController (SidebarItem)
 
 - (CPArray)sidebarItems
@@ -165,29 +188,6 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 	{
 	    [self setSelectedGlossary:nil];
 	}
-}
-
-@end
-
-@implementation OLGlossaryController (OLGlossaryTableViewDataSource)
-
-- (int)numberOfRowsInTableView:(CPTableView)resourceTableView
-{
-    return [[selectedGlossary lineItems] count];
-}
-
-- (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
-{
-	var lineItem = [[selectedGlossary lineItems] objectAtIndex:row];
-	
-    if ([tableColumn identifier] === OLGlossaryViewIdentifierColumnHeader)
-    {
-        return [lineItem identifier];
-    }
-    else if ([tableColumn identifier] === OLGlossaryViewValueColumnHeader)
-    {
-        return [lineItem value];
-    }
 }
 
 @end

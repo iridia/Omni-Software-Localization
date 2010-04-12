@@ -1,8 +1,7 @@
 @import <Foundation/CPObject.j>
 
 // Notifications
-OLContentViewControllerShouldUpdateContentViewByUserInfo = @"OLContentViewControllerShouldUpdateContentViewByUserInfo";
-OLContentViewControllerShouldUpdateContentViewByObject = @"OLContentViewControllerShouldUpdateContentViewByObject";
+OLContentViewControllerShouldUpdateContentView = @"OLContentViewControllerShouldUpdateContentView";
 
 @implementation OLContentViewController : CPObject
 {	
@@ -15,15 +14,9 @@ OLContentViewControllerShouldUpdateContentViewByObject = @"OLContentViewControll
 {
    [[CPNotificationCenter defaultCenter]
 		addObserver:self
-		selector:@selector(updateCurrentViewByUserInfo:)
-		name:OLContentViewControllerShouldUpdateContentViewByUserInfo
+		selector:@selector(updateCurrentView:)
+		name:OLContentViewControllerShouldUpdateContentView
 		object:nil];
-		
-	[[CPNotificationCenter defaultCenter]
-    		addObserver:self
-    		selector:@selector(updateCurrentViewByObject:)
-    		name:OLContentViewControllerShouldUpdateContentViewByObject
-    		object:nil];
 }
 
 - (void)setCurrentView:(CPView)aView
@@ -45,30 +38,13 @@ OLContentViewControllerShouldUpdateContentViewByObject = @"OLContentViewControll
     }
 }
 
-@end
-
-@implementation OLContentViewController (Notifications)
-
-- (void)updateCurrentViewByUserInfo:(CPNotificaiton)aNotification
+- (void)updateCurrentView:(CPNotificaiton)aNotification
 {
     var userInfo = [aNotification userInfo];
     
     if (userInfo)
     {
         view = [userInfo objectForKey:@"view"];
-    }
-
-    [self setCurrentView:view];
-}
-
-- (void)updateCurrentViewByObject:(CPNotificaiton)aNotification
-{
-    var view = nil;
-    
-    var anObject = [aNotification object];
-    if ([anObject respondsToSelector:@selector(contentView)])
-    {
-        view = [anObject contentView];
     }
 
     [self setCurrentView:view];

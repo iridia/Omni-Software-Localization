@@ -364,7 +364,7 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
             
             // tell content view controller to update view
     		[[CPNotificationCenter defaultCenter]
-    		  postNotificationName:OLContentViewControllerShouldUpdateContentViewByUserInfo
+    		  postNotificationName:OLContentViewControllerShouldUpdateContentView
     		  object:self
     		  userInfo:[CPDictionary dictionaryWithObject:projectView forKey:@"view"]];
         }
