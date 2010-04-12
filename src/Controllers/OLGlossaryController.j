@@ -156,7 +156,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
     		
     		// tell content view controller to update view
     		[[CPNotificationCenter defaultCenter]
-    		  postNotificationName:OLContentViewControllerShouldUpdateContentView
+    		  postNotificationName:OLContentViewControllerShouldUpdateContentViewByUserInfo
     		  object:self
     		  userInfo:[CPDictionary dictionaryWithObject:glossariesView forKey:@"view"]];
     	}

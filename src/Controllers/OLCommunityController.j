@@ -88,7 +88,7 @@ var OLCommunitySearchItem = @"Search";
 
 	    // tell content view controller to update view
 		[[CPNotificationCenter defaultCenter]
-		  postNotificationName:OLContentViewControllerShouldUpdateContentView
+		  postNotificationName:OLContentViewControllerShouldUpdateContentViewByObject
 		  object:self];
 	}
 	else

@@ -1,7 +1,8 @@
 @import <Foundation/CPObject.j>
 
 // Notifications
-OLContentViewControllerShouldUpdateContentView = @"OLContentViewControllerShouldUpdateContentView";
+OLContentViewControllerShouldUpdateContentViewByUserInfo = @"OLContentViewControllerShouldUpdateContentViewByUserInfo";
+OLContentViewControllerShouldUpdateContentViewByObject = @"OLContentViewControllerShouldUpdateContentViewByObject";
 
 @implementation OLContentViewController : CPObject
 {	
@@ -14,9 +15,15 @@ OLContentViewControllerShouldUpdateContentView = @"OLContentViewControllerShould
 {
    [[CPNotificationCenter defaultCenter]
 		addObserver:self
-		selector:@selector(updateCurrentView:)
-		name:OLContentViewControllerShouldUpdateContentView
+		selector:@selector(updateCurrentViewByUserInfo:)
+		name:OLContentViewControllerShouldUpdateContentViewByUserInfo
 		object:nil];
+		
+	[[CPNotificationCenter defaultCenter]
+    		addObserver:self
+    		selector:@selector(updateCurrentViewByObject:)
+    		name:OLContentViewControllerShouldUpdateContentViewByObject
+    		object:nil];
 }
 
 - (void)setCurrentView:(CPView)aView
@@ -42,23 +49,26 @@ OLContentViewControllerShouldUpdateContentView = @"OLContentViewControllerShould
 
 @implementation OLContentViewController (Notifications)
 
-- (void)updateCurrentView:(CPNotificaiton)aNotification
+- (void)updateCurrentViewByUserInfo:(CPNotificaiton)aNotification
 {
     var userInfo = [aNotification userInfo];
-    var view = nil;
     
     if (userInfo)
     {
         view = [userInfo objectForKey:@"view"];
     }
+
+    [self setCurrentView:view];
+}
+
+- (void)updateCurrentViewByObject:(CPNotificaiton)aNotification
+{
+    var view = nil;
     
-    if (!view)
+    var anObject = [aNotification object];
+    if ([anObject respondsToSelector:@selector(contentView)])
     {
-        var anObject = [aNotification object];
-        if ([anObject respondsToSelector:@selector(contentView)])
-        {
-            view = [anObject contentView];
-        }
+        view = [anObject contentView];
     }
 
     [self setCurrentView:view];
