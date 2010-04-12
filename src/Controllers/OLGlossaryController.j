@@ -93,31 +93,6 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 	}
 }
 
-- (void)lineItemsFromResponse:(JSObject)jsonResponse
-{
-	var result = [CPArray array];
-	var lineItemKeys = jsonResponse.dict.key;
-	var lineItemStrings = jsonResponse.dict.string;
-	
-	if(jsonResponse.fileType == "strings")
-	{
-		var lineItemComments = jsonResponse.comments_dict.string;
-
-		for (var i = 0; i < [lineItemKeys count]; i++)
-		{
-			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i] comment:lineItemComments[i]]];
-		}	
-	}
-	else
-	{
-		for (var i = 0; i < [lineItemKeys count]; i++)
-		{
-			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
-		}
-	}
-	return result;
-}
-
 @end
 
 @implementation OLGlossaryController (OLGlossaryTableViewDataSource)
