@@ -100,7 +100,7 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
 
 - (void)setValueForSelectedLineItem:(CPString)value
 {
-    [selectedLineItem setValue:value];
+    selectedLineItem = value;
 }
 
 @end

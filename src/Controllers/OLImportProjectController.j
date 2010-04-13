@@ -50,8 +50,8 @@
 	else if(jsonResponse.fileType === @"strings")
 	{
 	    var newResource = [OLResource resourceFromJSON:jsonResponse];
-        var resourceBundle = [[project resourceBundles] objectAtIndex:[[importProjectWindow languageButton] indexOfSelectedItem]];
-        var oldResourceIndex = [[importProjectWindow fileButton] indexOfSelectedItem];
+        var resourceBundle = [[project resourceBundles] objectAtIndex:[importProjectWindow indexOfSelectedLanguage]];
+        var oldResourceIndex = [importProjectWindow indexOfSelectedFile];
 	    [resourceBundle replaceObjectInResourcesAtIndex:oldResourceIndex withObject:newResource];
 	    [project save];
 	}
@@ -74,7 +74,7 @@
 - (CPArray)titlesOfFiles
 {
     var result = [CPArray array];
-    var resourceBundle = [[project resourceBundles] objectAtIndex:[[importProjectWindow languageButton] indexOfSelectedItem]];
+    var resourceBundle = [[project resourceBundles] objectAtIndex:[importProjectWindow indexOfSelectedLanguage]];
     
     for(var i = 0; i < [[resourceBundle resources] count]; i++)
     {

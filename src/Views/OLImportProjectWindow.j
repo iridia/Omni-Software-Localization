@@ -85,6 +85,16 @@ var uploadURL = @"Upload/upload.php";
     return self;
 }
 
+- (int)indexOfSelectedLanguage
+{
+    return [[self languageButton] indexOfSelectedItem];
+}
+
+- (int)indexOfSelectedFile
+{
+    return [[self fileButton] indexOfSelectedItem];
+}
+
 - (void)setDelegate:(id)aDelegate
 {
     delegate = aDelegate;
