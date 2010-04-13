@@ -18,18 +18,26 @@ CPViewRightSame         = 4096;
 {
     padding = padding || 0;
     
-    var yPos = [aView frame].origin.y;
-    var xPos = [aView frame].origin.x;
+    yPos = [self addSubview:aView positioned:positioning relativeTo:anotherView withPaddinginY:padding];
+    xPos = [self addSubview:aView positioned:positioning relativeTo:anotherView withPaddinginX:padding];
+
+    [aView setFrameOrigin:CPMakePoint(xPos, yPos)];
+    [self addSubview:aView];
+}
+
+- (int)addSubview:(CPView)aView positioned:(unsigned)positioning relativeTo:(CPView)anotherView withPaddinginY:(int)padding
+{
+    var yPos = CGRectGetMinX([aView frame]);
     
     // yPositioning
     if (positioning & CPViewBelow)
     {
-        yPos = CGRectGetHeight([anotherView bounds]) + [anotherView frame].origin.y + padding;
+        yPos = CGRectGetMaxY([anotherView frame]) + padding;
     }
     
     if (positioning & CPViewAbove)
     {
-        yPos = [anotherView frame].origin.y - CGRectGetHeight([aView bounds]) - padding;
+        yPos = CGRectGetMinY([anotherView frame]) - CGRectGetHeight([aView bounds]) - padding;
     }
     
     if (positioning & CPViewHeightCentered)
@@ -49,8 +57,14 @@ CPViewRightSame         = 4096;
     
     if (positioning & CPViewHeightSame)
     {
-        yPos = [anotherView frame].origin.y;
+        yPos = CGRectGetMinY([anotherView frame]);
     }
+    return yPos;
+}
+
+- (int)addSubview:(CPView)aView positioned:(unsigned)positioning relativeTo:(CPView)anotherView withPaddinginX:(int)padding
+{
+    var xPos = CGRectGetMinY([aView frame]);
     
     // xPositioning
     if (positioning & CPViewWidthCentered)
@@ -70,26 +84,24 @@ CPViewRightSame         = 4096;
     
     if (positioning & CPViewOnTheLeft)
     {
-        xPos = [anotherView frame].origin.x - CGRectGetWidth([aView bounds]) - padding;
+        xPos = CGRectGetMinX([anotherView frame]) - CGRectGetWidth([aView bounds]) - padding;
     }
     
     if (positioning & CPViewOnTheRight)
     {
-        xPos = [anotherView frame].origin.x + [anotherView frame].size.width + padding;
+        xPos = CGRectGetMaxX([anotherView frame]) + padding;
     }
     
     if (positioning & CPViewLeftSame)
     {
-        xPos = [anotherView frame].origin.x;
+        xPos = CGRectGetMinX([anotherView frame]);
     }
 
     if (positioning & CPViewRightSame)
     {
-        xPos = [anotherView frame].origin.x + CGRectGetWidth([anotherView bounds]) - CGRectGetWidth([aView bounds]);
+        xPos = CGRectGetMaxX([anotherView frame]) - CGRectGetWidth([aView bounds]);
     }
-    
-    [aView setFrameOrigin:CPMakePoint(xPos, yPos)];
-    [self addSubview:aView];
+    return xPos;
 }
 
 - (void)setWidth:(CGFloat)width

@@ -6,7 +6,7 @@
 
 @implementation OLFeedbackController : CPObject
 {
-    OLFeedbackWindow _feedbackWindow;
+    OLFeedbackWindow feedbackWindow;
 }
 
 - (id)init
@@ -15,8 +15,8 @@
     
     if (self)
     {
-        _feedbackWindow = [[OLFeedbackWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 300) styleMask:CPTitledWindowMask];
-        [_feedbackWindow setDelegate:self];
+        feedbackWindow = [[OLFeedbackWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 300) styleMask:CPTitledWindowMask];
+        [feedbackWindow setDelegate:self];
         
         [[CPNotificationCenter defaultCenter]
 			addObserver:self
@@ -28,6 +28,17 @@
     return self;
 }
 
+- (void)setValueOfEmailTextField:(CPString)email
+{
+    [[feedbackWindow emailTextField] setStringValue:email];
+}
+
+- (void)showFeedbackWindow:(id)sender
+{
+    [[CPApplication sharedApplication] runModalForWindow:feedbackWindow];
+    [feedbackWindow isBeingShown];
+}
+
 - (void)userDidChange:(CPNotification)notification
 {
     var email = @"";
@@ -36,13 +47,7 @@
         email = [[[OLUserSessionManager defaultSessionManager] user] email];
     }
     
-    [[_feedbackWindow emailTextField] setStringValue:email];
-}
-
-- (void)showFeedbackWindow:(id)sender
-{
-    [[CPApplication sharedApplication] runModalForWindow:_feedbackWindow];
-    [_feedbackWindow isBeingShown];
+    [[feedbackWindow emailTextField] setStringValue:email];
 }
 
 - (void)didSubmitFeedback:(CPDictionary)feedbackDictionary
@@ -58,12 +63,12 @@
 
 - (void)willCreateRecord:(OLFeedback)feedback
 {
-    [_feedbackWindow showSendingFeedbackView];
+    [feedbackWindow showSendingFeedbackView];
 }
 
 - (void)didCreateRecord:(OLFeedback)feedback
 {
-    [_feedbackWindow showReceivedFeedbackView];
+    [feedbackWindow showReceivedFeedbackView];
 }
 
 @end

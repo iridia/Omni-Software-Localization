@@ -93,29 +93,27 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 	}
 }
 
-- (void)lineItemsFromResponse:(JSObject)jsonResponse
-{
-	var result = [CPArray array];
-	var lineItemKeys = jsonResponse.dict.key;
-	var lineItemStrings = jsonResponse.dict.string;
-	
-	if(jsonResponse.fileType == "strings")
-	{
-		var lineItemComments = jsonResponse.comments_dict.string;
+@end
 
-		for (var i = 0; i < [lineItemKeys count]; i++)
-		{
-			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i] comment:lineItemComments[i]]];
-		}	
-	}
-	else
-	{
-		for (var i = 0; i < [lineItemKeys count]; i++)
-		{
-			[result addObject:[[OLLineItem alloc] initWithIdentifier:lineItemKeys[i] value:lineItemStrings[i]]];
-		}
-	}
-	return result;
+@implementation OLGlossaryController (OLGlossaryTableViewDataSource)
+
+- (int)numberOfRowsInTableView:(CPTableView)resourceTableView
+{
+    return [[selectedGlossary lineItems] count];
+}
+
+- (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
+{
+	var lineItem = [[selectedGlossary lineItems] objectAtIndex:row];
+	
+    if ([tableColumn identifier] === OLGlossaryViewIdentifierColumnHeader)
+    {
+        return [lineItem identifier];
+    }
+    else if ([tableColumn identifier] === OLGlossaryViewValueColumnHeader)
+    {
+        return [lineItem value];
+    }
 }
 
 @end
@@ -156,7 +154,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
     		
     		// tell content view controller to update view
     		[[CPNotificationCenter defaultCenter]
-    		  postNotificationName:OLContentViewControllerShouldUpdateContentView
+    		  postNotificationName:OLContentViewControllerShouldUpdateContentViewByUserInfo
     		  object:self
     		  userInfo:[CPDictionary dictionaryWithObject:glossariesView forKey:@"view"]];
     	}
@@ -165,29 +163,6 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 	{
 	    [self setSelectedGlossary:nil];
 	}
-}
-
-@end
-
-@implementation OLGlossaryController (OLGlossaryTableViewDataSource)
-
-- (int)numberOfRowsInTableView:(CPTableView)resourceTableView
-{
-    return [[selectedGlossary lineItems] count];
-}
-
-- (id)tableView:(CPTableView)resourceTableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
-{
-	var lineItem = [[selectedGlossary lineItems] objectAtIndex:row];
-	
-    if ([tableColumn identifier] === OLGlossaryViewIdentifierColumnHeader)
-    {
-        return [lineItem identifier];
-    }
-    else if ([tableColumn identifier] === OLGlossaryViewValueColumnHeader)
-    {
-        return [lineItem value];
-    }
 }
 
 @end

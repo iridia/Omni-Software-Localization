@@ -38,27 +38,13 @@ OLContentViewControllerShouldUpdateContentView = @"OLContentViewControllerShould
     }
 }
 
-@end
-
-@implementation OLContentViewController (Notifications)
-
 - (void)updateCurrentView:(CPNotificaiton)aNotification
 {
     var userInfo = [aNotification userInfo];
-    var view = nil;
     
     if (userInfo)
     {
         view = [userInfo objectForKey:@"view"];
-    }
-    
-    if (!view)
-    {
-        var anObject = [aNotification object];
-        if ([anObject respondsToSelector:@selector(contentView)])
-        {
-            view = [anObject contentView];
-        }
     }
 
     [self setCurrentView:view];

@@ -81,13 +81,13 @@ OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotif
     [loginAndRegisterWindow reset];
     [[CPApplication sharedApplication] runModalForWindow:loginAndRegisterWindow];
     
-    if([[[notification userInfo] allKeys] containsObject:@"StatusMessageText"])
+    if([[notification userInfo] hasKey:@"StatusMessageText"])
     {
         [loginAndRegisterWindow setStatus:[[notification userInfo] objectForKey:@"StatusMessageText"]];
     }
     
-    if([[[notification userInfo] allKeys] containsObject:@"SuccessfulLoginAction"] &&
-        [[[notification userInfo] allKeys] containsObject:@"SuccessfulLoginTarget"])
+    if([[notification userInfo] hasKey:@"SuccessfulLoginAction"] &&
+        [[notification userInfo] hasKey:@"SuccessfulLoginTarget"])
     {
         successfulLoginTarget = [[notification userInfo] objectForKey:@"SuccessfulLoginTarget"];
         successfulLoginAction = [[notification userInfo] objectForKey:@"SuccessfulLoginAction"];

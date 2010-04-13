@@ -177,6 +177,17 @@ task("genconfig", function()
     FILE.write("api/REST-config.php", phpConfig);
 });
 
+task("coverage", function()
+{
+    var tests = new FileList('Test/*Test.j');
+    var cmd = ["ojtest", "-c"].concat(tests.items());
+    var cmdString = cmd.map(OS.enquote).join(" ");
+
+    var code = OS.system(cmdString);
+    if (code !== 0)
+        OS.exit(code);
+})
+
 function getDatabases() {
     return ["error", "project", "user", "message", "glossary", "feedback"];
 }

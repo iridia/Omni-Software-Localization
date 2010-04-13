@@ -10,7 +10,7 @@ var OLCommunitySearchItem = @"Search";
 // Manages the community items in the sidebar and their respective controllers
 @implementation OLCommunityController : CPObject
 {
-    CPString    selectedItem    @accessors;
+    CPString    selectedItem    @accessors(readonly);
 	
 	OLProjectSearchController   searchController;
 	OLMessageController         messageController;
@@ -84,16 +84,17 @@ var OLCommunitySearchItem = @"Search";
 
 	if (parent === self)
 	{
-	    [self setSelectedItem:item];
+        selectedItem = item;
 
 	    // tell content view controller to update view
 		[[CPNotificationCenter defaultCenter]
 		  postNotificationName:OLContentViewControllerShouldUpdateContentView
-		  object:self];
+		  object:self
+		  userInfo:[CPDictionary dictionaryWithObject:[self contentView] forKey:@"view"]];
 	}
 	else
 	{
-	    [self setSelectedItem:nil];
+	    selectedItem = nil;
 	}
 }
 
