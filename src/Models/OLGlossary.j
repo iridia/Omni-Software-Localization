@@ -2,13 +2,13 @@
 
 @implementation OLGlossary : OLActiveRecord
 {
-	CPArray		lineItems   @accessors(readonly);
+	CPArray		lineItems;
 	CPString	name        @accessors(readonly);
 }
 
 - (id)init
 {
-	return [self initWithName:@"TestingName"];
+	return [self initWithName:@"Default"];
 }
 
 - (id)initWithName:(CPString)aName
@@ -25,6 +25,11 @@
 - (void)addLineItem:(OLLineItem)aLineItem
 {
 	[lineItems addObject:aLineItem];
+}
+
+- (CPArray)lineItems
+{
+    return [lineItems copy];
 }
 
 - (CPString)sidebarName
@@ -54,8 +59,8 @@ var OLGlossaryNameKey = @"OLGlossaryNameKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-	[aCoder encodeObject:lineItems forKey:OLGlossaryLineItemsKey];
-    [aCoder encodeObject:name forKey:OLGlossaryNameKey];
+	[aCoder encodeObject:[self lineItems] forKey:OLGlossaryLineItemsKey];
+    [aCoder encodeObject:[self name] forKey:OLGlossaryNameKey];
 }
 
 @end
