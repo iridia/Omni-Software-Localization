@@ -2,22 +2,49 @@
 @import <OJMoq/OJMoq.j>
 
 @implementation OLLanguageTest : OJTestCase
+{
+    JSObject    testParams;
+}
+
+- (void)setUp
+{
+    testParams = {
+        "name": "Bulgarian",
+        "languageCode": "bg_BG"
+    };
+}
 
 - (void)testThatOLLanguageDoesInitialize
 {
-	var target = [[OLLanguage alloc] init];
+	var target = [[OLLanguage alloc] initWithName:testParams.name];
 	[self assertNotNull:target];
+	[self assert:testParams.name equals:[target name]];
+	[self assert:testParams.languageCode equals:[target languageCode]];
 }
 
 - (void)testThatOLLanguageDoesInitWithCoder
 {
     var coder = moq();
     
-    [coder selector:@selector(decodeObjectForKey:) times:1 arguments:[@"OLLanguageNameKey"]];
-    
-    var target = [[OLLanguage alloc] initWithCoder:coder];
-    
-    [coder verifyThatAllExpectationsHaveBeenMet];
+    [coder selector:@selector(decodeObjectForKey:) returns:testParams.name arguments:[@"OLLanguageNameKey"]];
+    [coder selector:@selector(decodeObjectForKey:) returns:testParams.languageCode arguments:[@"OLLanguageLanguageCodeKey"]];
+	
+	var target = [[OLLanguage alloc] initWithCoder:coder];
+
+	[self assert:testParams.name equals:[target name]];
+	[self assert:testParams.languageCode equals:[target languageCode]];
+}
+
+- (void)testThatOLFeedbackDoesEncodeWithCoder
+{
+	var coder = moq();
+	
+	[coder selector:@selector(encodeObject:forKey:) times:1 arguments:[testParams.name, @"OLLanguageNameKey"]];
+	[coder selector:@selector(encodeObject:forKey:) times:1 arguments:[testParams.languageCode, @"OLLanguageLanguageCodeKey"]];
+	
+	var target = [[OLLanguage alloc] initWithName:testParams.name];
+	[target encodeWithCoder:coder];
+	[coder verifyThatAllExpectationsHaveBeenMet];
 }
 
 - (void)testThatOLLanguageDoesEqualItself
