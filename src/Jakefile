@@ -105,7 +105,7 @@ task("metrics", function()
    for (var release in releases)
    {
        print(release);
-       OS.system(checkout + release);
+       OS.system(checkout + releases[release]);
        OS.system("beancounter");
        print("\n\n");
    }
