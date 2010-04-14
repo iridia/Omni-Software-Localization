@@ -160,19 +160,19 @@
     [self setValue:CPTextTransformationStyleNormal forThemeAttribute:@"text-transformation-style"];
     
     [self setValue:[CPFont systemFontOfSize:12.0] forThemeAttribute:@"font"];
-    [self setValue:[CPFont boldSystemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateHighlighted];
+    [self setValue:[CPFont boldSystemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateSelected];
     [self setValue:[CPFont systemFontOfSize:12.0] forThemeAttribute:@"font" inState:CPThemeStateInactive];
     
     [self setValue:[CPColor colorWithHexString:@"333333"] forThemeAttribute:@"text-color"];
-    [self setValue:[CPColor whiteColor] forThemeAttribute:@"text-color" inState:CPThemeStateHighlighted];
+    [self setValue:[CPColor whiteColor] forThemeAttribute:@"text-color" inState:CPThemeStateSelected];
     [self setValue:[CPColor colorWithHexString:@"555555"] forThemeAttribute:@"text-color" inState:CPThemeStateInactive];
     
     [self setValue:[CPColor clearColor] forThemeAttribute:@"text-shadow-color"];
-    [self setValue:[CPColor blackColor] forThemeAttribute:@"text-shadow-color" inState:CPThemeStateHighlighted];
+    [self setValue:[CPColor blackColor] forThemeAttribute:@"text-shadow-color" inState:CPThemeStateSelected];
     [self setValue:[CPColor clearColor] forThemeAttribute:@"text-shadow-color" inState:CPThemeStateInactive];
     
     [self setValue:CGSizeMake(0, 0) forThemeAttribute:@"text-shadow-offset"];
-    [self setValue:CGSizeMake(0, 1) forThemeAttribute:@"text-shadow-offset" inState:CPThemeStateHighlighted];
+    [self setValue:CGSizeMake(0, 1) forThemeAttribute:@"text-shadow-offset" inState:CPThemeStateSelected];
     
     [self setVerticalAlignment:CPCenterVerticalTextAlignment];
 }

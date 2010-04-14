@@ -1,5 +1,5 @@
 @import <AppKit/CPWindow.j>
-@import "../Controllers/OLLineItemEditWindowController.j"
+// @import "../Controllers/OLLineItemEditWindowController.j"
 @import "OLCommentView.j"
 
 @implementation OLLineItemEditWindow : CPWindow

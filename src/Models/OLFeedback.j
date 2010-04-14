@@ -2,25 +2,25 @@
 
 @implementation OLFeedback : OLActiveRecord
 {
-    CPString _email @accessors(property=email);
-    CPString _type @accessors(property=type);
-    CPString _text @accessors(property=text);
+    CPString    email   @accessors;
+    CPString    type    @accessors;
+    CPString    text    @accessors;
 }
 
 - (id)init
 {
-    [self initWithEmail:nil type:nil text:nil];
+    [self initWithEmail:@"example@email.com" type:@"default" text:@"default"];
 }
 
-- (id)initWithEmail:(CPString)email type:(CPString)type text:(CPString)text
+- (id)initWithEmail:(CPString)anEmail type:(CPString)aType text:(CPString)someText
 {
     self = [super init];
     
     if (self)
     {
-        _email = email;
-        _type = type;
-        _text = text;
+        [self setEmail:anEmail];
+        [self setType:aType];
+        [self setText:someText];
     }
     
     return self;
@@ -40,9 +40,9 @@ var OLFeedbackTextKey = @"OLFeedbackTextKey";
     
     if (self)
     {
-        _email = [aCoder decodeObjectForKey:OLFeedbackEmailKey];
-        _type = [aCoder decodeObjectForKey:OLFeedbackTypeKey];
-        _text = [aCoder decodeObjectForKey:OLFeedbackTextKey];
+        [self setEmail:[aCoder decodeObjectForKey:OLFeedbackEmailKey]];
+        [self setType:[aCoder decodeObjectForKey:OLFeedbackTypeKey]];
+        [self setText:[aCoder decodeObjectForKey:OLFeedbackTextKey]];
     }
     
     return self;
@@ -50,9 +50,9 @@ var OLFeedbackTextKey = @"OLFeedbackTextKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    [aCoder encodeObject:_email forKey:OLFeedbackEmailKey];
-    [aCoder encodeObject:_type forKey:OLFeedbackTypeKey];
-    [aCoder encodeObject:_text forKey:OLFeedbackTextKey];
+    [aCoder encodeObject:[self email] forKey:OLFeedbackEmailKey];
+    [aCoder encodeObject:[self type] forKey:OLFeedbackTypeKey];
+    [aCoder encodeObject:[self text] forKey:OLFeedbackTextKey];
 }
 
 @end

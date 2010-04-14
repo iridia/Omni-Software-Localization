@@ -289,17 +289,17 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 
 @implementation OLProjectView (CPSplitViewDelegate)
 
-- (BOOL)splitView:(CPSplitView)splitView canCollapseSubview:(CPView)subview
+- (BOOL)splitView:(CPSplitView)aSplitView canCollapseSubview:(CPView)subview
 {
     return isEditing;
 }
 
-- (BOOL)splitView:(CPSplitView)splitView shouldCollapseSubview:(CPView)subview forDoubleClickOnDividerAtIndex:(int)index
+- (BOOL)splitView:(CPSplitView)aSplitView shouldCollapseSubview:(CPView)subview forDoubleClickOnDividerAtIndex:(int)index
 {
     return isEditing;
 }
 
-- (CGFloat)splitView:(CPSplitView)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
+- (CGFloat)splitView:(CPSplitView)aSplitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(int)dividerIndex
 {
     if (!isEditing)
     {
@@ -309,7 +309,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     return proposedMin + 150.0;
 }
 
-- (CGFloat)splitView:(CPSplitView)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
+- (CGFloat)splitView:(CPSplitView)aSplitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(int)dividerIndex
 {
     if (!isEditing)
     {

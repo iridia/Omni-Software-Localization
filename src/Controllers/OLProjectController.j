@@ -159,12 +159,12 @@ OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
 
 @implementation OLProjectController (ProjectViewDataSource)
 
-- (CPArray)titlesOfResourceBundlesForProjectView:(OLProjectView)projectView
+- (CPArray)titlesOfResourceBundlesForProjectView:(OLProjectView)aProjectView
 {
     return [resourceBundleController titlesOfResourceBundles];
 }
 
-- (int)indexOfSelectedResourceBundleForProjectView:(OLProjectView)projectView
+- (int)indexOfSelectedResourceBundleForProjectView:(OLProjectView)aProjectView
 {
     return [resourceBundleController indexOfSelectedResourceBundle];
 }
