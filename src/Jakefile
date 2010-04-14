@@ -169,12 +169,15 @@ task("genconfig", function()
     
     var htaccess = "RewriteEngine On\nRewriteBase " + baseURL + "api/\nRewriteRule ^(.*)$ REST.php\n";
     var phpConfig = "<?php\n$urlPrefix = \"" + baseURL + "api/\";\n$couchDbBaseUrl = \"http://localhost:5984/\";\n?>";
+    var openIDConfig = FILE.read("Controllers/OLOpenIDController.j");
+    openIDConfig += "\nvar MY_LOCATION = \"" + baseURL + "\";\n";
     
     FILE.remove("api/.htaccess");
     FILE.remove("api/REST-config.php");
     
     FILE.write("api/.htaccess", htaccess);
     FILE.write("api/REST-config.php", phpConfig);
+    FILE.write("Controllers/OLOpenIDController.j", openIDConfig);
 });
 
 task("coverage", function()
