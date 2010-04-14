@@ -1,0 +1,3 @@
+{
+    "watch": ["Controllers", "Models", "Views", "Test"]
+}
