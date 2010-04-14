@@ -47,10 +47,5 @@ var YAHOO_URL = "yahoo.com";
     window.open(MY_LOCATION + '/OpenID/try_auth.php?openid_identifier='+encodeURIComponent(aURL), 'openid_popup', 'width=790,height=580');
 }
 
-- (void)connection:(CPURLConnection)connection didReceiveData:(CPString)data
-{
-    alert(data);
-}
-
 @end
 var MY_LOCATION = "/~hammerdr/osl/src/";
