@@ -5,9 +5,9 @@
         },
         "toUsers": {
            "map": "function(doc) {
-                for (var i = 0; i < doc.OLMessageToUsersKey.length; i++)
+                for (var i = 0; i < doc.OLMessageReceiversKey.length; i++)
                 {
-                    emit(doc.OLMessageToUsersKey[i], doc);
+                    emit(doc.OLMessageReceiversKey[i], doc);
                 }
             }"
         }
