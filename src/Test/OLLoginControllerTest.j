@@ -13,13 +13,6 @@ CPApp._windows = moq();
 	[self assertNotNull:target];
 }
 
-- (void)testThatOLLoginControllerDoesRespondToWillLogin
-{
-	var target = [[OLLoginController alloc] init];
-	[target willLogin];
-	[self assertTrue:YES];
-}
-
 - (void)testThatOLLoginControllerDoesRespondToHasLoggedIn
 {
 	var target = [[OLLoginController alloc] init];
@@ -45,36 +38,17 @@ CPApp._windows = moq();
 	[self assertTrue:YES];
 }
 
-- (void)testThatOLLoginControllerDoesRespondToShowLoginWindow
-{
-    var notification = moq();
-    
-    [notification selector:@selector(userInfo) returns:[CPDictionary dictionary]];
-    
-	var target = [[OLLoginController alloc] init];
-	[target showLoginAndRegisterWindow:notification];
-	[self assertTrue:YES];
-}
-
-- (void)testThatOLLoginControllerDoesRespondToWillLogin
-{
-    var target = [[OLLoginController alloc] init];
-	[target willLogin];
-	[self assertTrue:YES];
-}
-
-- (void)testThatOLLoginControllerDoesForwardWillLogin
-{
-    var target = [[OLLoginController alloc] init];
-    var loginAndRegisterWindowMoq = moq();
-    target.loginAndRegisterWindow = loginAndRegisterWindowMoq;
-    
-    [loginAndRegisterWindowMoq selector:@selector(showLoggingIn) times:1];
-    
-	[target willLogin];
-	
-	[loginAndRegisterWindowMoq verifyThatAllExpectationsHaveBeenMet];
-}
+// Update native content rect
+// - (void)testThatOLLoginControllerDoesRespondToShowLoginWindow
+// {
+//     var notification = moq();
+//     
+//     [notification selector:@selector(userInfo) returns:[CPDictionary dictionary]];
+//     
+//  var target = [[OLLoginController alloc] init];
+//  [target showLoginAndRegisterWindow:notification];
+//  [self assertTrue:YES];
+// }
 
 - (void)testThatOLLoginControllerDoesRespondToHasLoggedIn
 {
