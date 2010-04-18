@@ -47,4 +47,18 @@
     [view verifyThatAllExpectationsHaveBeenMet];
 }
 
+- (void)testThatOLContentViewControllerDoesUpdateCurrentView
+{
+    var view = moq();
+    var notification = moq();
+    var userInfo = moq();
+    
+    [notification selector:@selector(userInfo) returns:userInfo];
+    [userInfo selector:@selector(objectForKey:) returns:view];
+    
+    [testContentViewController updateCurrentView:notification];
+    
+    [self assert:view equals:testContentViewController.currentView];
+}
+
 @end

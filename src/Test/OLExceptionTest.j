@@ -22,6 +22,32 @@
 {
 	var target = [[OLException alloc] initWithName:@"Test" reason:@"Testing" userInfo:[CPDictionary dictionary]];
 	[self assertNotNull:target];
+	[self assert:[target name] equals:@"Test"];
+	[self assert:[target reason] equals:@"Testing"];
+	[self assert:[target userInfo] equals:[CPDictionary dictionary]];
+}
+
+- (void)testThatOLExceptionDoesAllowSettingInfo
+{
+    var target = [[OLException alloc] initWithName:@"Test" reason:@"Testing" userInfo:[CPDictionary dictionary]];
+    
+    [target setClassWithError:"Another"];
+    [target setMethodWithError:"Another Reason"];
+    [target setUserMessage:"Error"];
+    
+    
+	[self assert:[target classWithError] equals:@"Another"];
+	[self assert:[target methodWithError] equals:@"Another Reason"];
+	[self assert:[target userMessage] equals:"Error"];
+}
+
+- (void)testThatOLExceptionDoesAddInfoForKey
+{
+    var target = [[OLException alloc] initWithName:@"Test" reason:@"Testing" userInfo:[CPDictionary dictionary]];
+    var value = moq();
+    [target addUserInfo:value forKey:@"Test"];
+    
+    [self assert:value equals:[[target userInfo] objectForKey:@"Test"]];
 }
 
 - (void)testThatOLExceptionDoesNotThrowJavascriptException
