@@ -54,6 +54,15 @@
   [emailTextField verifyThatAllExpectationsHaveBeenMet];
 }
 
+- (void)testThatOLFeedbackControllerDoesSetValueOfEmailTextField
+{
+    var target = [[OLFeedbackController alloc] init];
+    
+    [target setValueOfEmailTextField:@"Test"];
+
+    [self assert:"Test" equals:[[target.feedbackWindow emailTextField] stringValue]];
+}
+
 - (void)testThatOLFeedbackControllerDoesRespondToUserDidChangeWhenLoggedIn
 {
     var target = [[OLFeedbackController alloc] init];

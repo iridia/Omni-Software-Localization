@@ -1,4 +1,5 @@
 @import "../Controllers/OLGlossaryController.j"
+@import "../Controllers/OLContentViewController.j"
 
 @implementation OLGlossaryControllerTest : OJTestCase
 
@@ -45,6 +46,23 @@
     [self assert:glossary equals:[[target glossaries] objectAtIndex:0]];
 }
 
-// TODO : Add more tests for the JSON handling stuff
+- (void)testThatOLGlossaryControllerDoesSetSelectedGlossaryWhenReceivingOutlineViewSelection
+{
+    var notification = moq();
+    var outlineView = moq();
+    var item = moq();
+    
+    var target = [[OLGlossaryController alloc] init];
+    
+    [outlineView selector:@selector(itemAtRow:) returns:item];
+    [outlineView selector:@selector(parentForItem:) returns:target];
+    [outlineView selector:@selector(selectedRowIndexes) returns:moq()];
+    [notification selector:@selector(object) returns:outlineView];
+    [item selector:@selector(lineItems) returns:[CPArray array]];
+    
+    [target didReceiveOutlineViewSelectionDidChangeNotification:notification];
+    
+    [self assert:item equals:[target selectedGlossary]];
+}
 
 @end

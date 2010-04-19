@@ -53,6 +53,7 @@ var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.str
 {
     var target = [[OLResource alloc] initWithFileName:@"AFile" fileType:@"zip" lineItems:[CPArray array]];
     var user = moq();
+    [user selector:@selector(recordID) returns:"1"];
 
     [target voteUp:user];
     [target voteUp:user];
@@ -83,6 +84,7 @@ var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.str
 {
     var target = [[OLResource alloc] initWithFileName:@"AFile" fileType:@"zip" lineItems:[CPArray array]];
     var user = moq();
+    [user selector:@selector(recordID) returns:"1"];
 
     [target voteDown:user];
     [target voteDown:user];
@@ -94,6 +96,7 @@ var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.str
 {
     var target = [[OLResource alloc] initWithFileName:@"AFile" fileType:@"zip" lineItems:[CPArray array]];
     var user = moq();
+    [user selector:@selector(recordID) returns:"1"];
 
     [target voteUp:user];
     [target voteDown:user];
@@ -172,11 +175,43 @@ var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.str
     [self assert:clonedLineItem equals:[[clone lineItems] objectAtIndex:0]];
 }
 
+- (void)testThatOLResourceDoesHaveFileName
+{
+    var lineItem = moq();
+    var target = [[OLResource alloc] initWithFileName:@"AFile" fileType:@"zip" lineItems:[lineItem]];
+    
+    [self assertSettersAndGettersFor:"fileName" on:target];
+}
+
 - (void)testThatOLResourceDoesGetShortFileName
 {
     var target = [[OLResource alloc] initWithFileName:@"Resources/en.lproj/Menu.strings" fileType:@"strings" lineItems:[CPArray array]];
     
     [self assert:@"Menu.strings" equals:[target shortFileName]];
+}
+
+- (void)testThatOLResourceDoesHaveCommentsFromLineItems
+{
+    var lineItemOne = [[OLLineItem alloc] initWithIdentifier:@"Test1" value:@"1"];
+    var lineItemTwo = [[OLLineItem alloc] initWithIdentifier:@"Test2" value:@"2"];
+    
+    [lineItemOne addComment:"joe"];
+    [lineItemTwo addComment:"bob"];
+    [lineItemTwo addComment:"test"];
+    
+    var target = [[OLResource alloc] initWithFileName:@"Resources/en.lproj/Menu.strings" fileType:@"strings" lineItems:[lineItemOne, lineItemTwo]];
+    
+    [self assert:3 equals:[[target comments] count]];
+}
+
+- (void)assertSettersAndGettersFor:(CPString)name on:(id)object
+{
+    var setter = "set" + [[name substringToIndex:1] capitalizedString] + [name substringFromIndex:1] + ":";
+    var value = "__test_value";
+
+    [object performSelector:setter withObject:value];
+
+    [self assert:value equals:[object performSelector:name]];
 }
 
 @end
