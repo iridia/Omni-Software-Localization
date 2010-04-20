@@ -143,7 +143,7 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
     var toUser = [messageDictionary objectForKey:@"email"];
     var subject = [messageDictionary objectForKey:@"subject"];
     var text = [messageDictionary objectForKey:@"content"];
-    var fromUser = [[OLUserSessionManager defaultSessionManager] user];
+    var sender = [[OLUserSessionManager defaultSessionManager] user];
     
     var wasFound = NO;
     [OLUser listWithCallback:function(user, isFinal)
@@ -151,7 +151,7 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
         if(toUser === [user email])
         {
             wasFound = YES;
-            var message = [[OLMessage alloc] initFromUser:fromUser toUser:user subject:subject content:text];
+            var message = [[OLMessage alloc] initWithSender:sender receivers:[user] subject:subject content:text];
             [message setDelegate:self];
             [message saveWithCallback:function(){
                 [self loadMessages]; 
@@ -171,10 +171,10 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
     var subject = [messageDictionary objectForKey:@"subject"];
     var content = [messageDictionary objectForKey:@"content"];
     var project = [messageDictionary objectForKey:@"project"];
-    var fromUser = [[OLUserSessionManager defaultSessionManager] user];
+    var sender = [[OLUserSessionManager defaultSessionManager] user];
     
     var toUsers = [project subscribers];
-    var message = [[OLMessage alloc] initFromUser:fromUser toUsers:toUsers subject:subject content:content];
+    var message = [[OLMessage alloc] initWithSender:sender receivers:toUsers subject:subject content:content];
     [message setDelegate:self];
     [message save];
 }
@@ -204,7 +204,7 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
 
     if ([tableColumn identifier] === OLMailViewFromUserIDColumnHeader)
     {
-       return [message fromUserEmail];
+       return [message senderEmail];
     }
     else if ([tableColumn identifier] === OLMailViewSubjectColumnHeader)
     {

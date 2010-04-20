@@ -21,7 +21,6 @@
     return [[self alloc] initWithFileName:json.fileName fileType:json.fileType lineItems:lineItems]
 }
 
-// Overriding default initializer of superclass
 - (id)init
 {
 	return [self initWithFileName:@"" fileType:@"" lineItems:[CPArray array]];
@@ -33,7 +32,7 @@
 	{
 		fileName = aFileName;
 		fileType = aFileType;
-		lineItems = someLineItems;
+		lineItems = [someLineItems copy];
 		votes = [CPDictionary dictionary];
 	}
 	return self;
@@ -130,10 +129,10 @@ var OLResourceVotesKey = @"OLResourceVotesKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    [aCoder encodeObject:fileName forKey:OLResourceFileNameKey];
-    [aCoder encodeObject:fileType forKey:OLResourceFileTypeKey];
-    [aCoder encodeObject:lineItems forKey:OLResourceLineItemsKey];
-	[aCoder encodeObject:votes forKey:OLResourceVotesKey];
+    [aCoder encodeObject:[self fileName] forKey:OLResourceFileNameKey];
+    [aCoder encodeObject:[self fileType] forKey:OLResourceFileTypeKey];
+    [aCoder encodeObject:[self lineItems] forKey:OLResourceLineItemsKey];
+	[aCoder encodeObject:[self votes] forKey:OLResourceVotesKey];
 }
 
 @end

@@ -23,7 +23,7 @@ OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotif
 {
     if(self = [super init])
     {
-        loginAndRegisterWindow = [[OLLoginAndRegisterWindow alloc] initWithContentRect:CGRectMake(0.0, 0.0, 300.0, 160.0) styleMask:CPTitledWindowMask];
+        loginAndRegisterWindow = [[OLLoginAndRegisterWindow alloc] initWithContentRect:CGRectMake(0.0, 0.0, 300.0, 160.0) styleMask:CPTitledWindowMask | CPClosableWindowMask];
         openIDController = [[OLOpenIDController alloc] init];
         [loginAndRegisterWindow setDelegate:openIDController];
         [openIDController setDelegate:self];

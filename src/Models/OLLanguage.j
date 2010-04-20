@@ -2,14 +2,13 @@
 
 @implementation OLLanguage : CPObject
 {
-	CPString    name        @accessors(readonly);
-	CPString    shortName   @accessors(readonly);
+	CPString    name            @accessors(readonly);
+	CPString    languageCode    @accessors(readonly);
 }
 
 + (OLLanguage)languageFromLProj:(CPString)lproj
 {
-    var title = [lproj stringByReplacingOccurrencesOfString:@".lproj" withString:@""];
-    return [self languageFromTitle:title];
+    return [self languageFromTitle:[lproj stringByReplacingOccurrencesOfString:@".lproj" withString:@""]];
 }
 
 + (OLLanguage)languageFromTitle:(CPString)title
@@ -29,15 +28,15 @@
 
 - (id)initWithName:(CPString)aName
 {
-    return [self initWithName:aName shortName:[SHORT_NAME objectForKey:aName]];
+    return [self initWithName:aName languageCode:[SHORT_NAME objectForKey:aName]];
 }
 
-- (id)initWithName:(CPString)aName shortName:(CPString)aShortName
+- (id)initWithName:(CPString)aName languageCode:(CPString)aLanguageCode
 {
-    if(self = [super init])
+    if (self = [super init])
     {
         name = aName;
-        shortName = aShortName;
+        languageCode = aLanguageCode;
     }
     return self;
 }
@@ -47,35 +46,40 @@
 	return [name isEqualToString:[otherLanguage name]];
 }
 
+- (CPString)shortName
+{
+    CPLog.warn(@"[OLLanguage shortName] has been changed to [OLLanguage languageCode]. Please change this call.");
+    
+    return [self languageCode];
+}
+
 - (OLLanguage)clone
 {
-    return [[OLLanguage alloc] initWithName:name];
+    return [[OLLanguage alloc] initWithName:[self name]];
 }
 
 @end
 
+
 var OLLanguageNameKey = @"OLLanguageNameKey";
-var OLLanguageShortNameKey = @"OLLanguageShortNameKey";
+var OLLanguageLanguageCodeKey = @"OLLanguageLanguageCodeKey";
 
 @implementation OLLanguage (CPCoding)
 
 - (id)initWithCoder:(CPCoder)aCoder
 {
-    self = [super init];
-    
-    if (self)
+    if (self = [super init])
     {
         name = [aCoder decodeObjectForKey:OLLanguageNameKey];
-        shortName = [aCoder decodeObjectForKey:OLLanguageShortNameKey];
+        languageCode = [aCoder decodeObjectForKey:OLLanguageLanguageCodeKey];
     }
-    
     return self;
 }
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    [aCoder encodeObject:name forKey:OLLanguageNameKey];
-    [aCoder encodeObject:shortName forKey:OLLanguageShortNameKey];
+    [aCoder encodeObject:[self name] forKey:OLLanguageNameKey];
+    [aCoder encodeObject:[self languageCode] forKey:OLLanguageLanguageCodeKey];
 }
 
 @end

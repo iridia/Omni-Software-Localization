@@ -85,13 +85,27 @@ task ("deploy", ["build", "test"], function()
 
 task("metrics", function()
 {
-   var releases = ["Release-1", "Release-2", "Release-3", "Release-4", "Release-5", "Release-6"];
+   var releases = {
+       "Release 1": "Release-1",
+       "Release 2": "Release-2",
+       "Release 3": "Release-3",
+       "Release 4": "Release-4",
+       "Release 5": "Release-5",
+       "Release 6": "Release-6",
+       "Release 7": "Release-7",
+       "3/10": "ccf67da1f9",
+       "3/17": "5e7e99f019f",
+       "3/24": "07e7f3498ffe",
+       "3/31": "bff1a9fc3f9",
+       "4/7": "bff1a9fc3f9",
+       "4/14": "d33c52314f8",
+   };
    
    var checkout = "git checkout ";
-   for (var i = 0; i < releases.length; i++)
+   for (var release in releases)
    {
-       print(releases[i]);
-       OS.system(checkout + releases[i]);
+       print(release);
+       OS.system(checkout + releases[release]);
        OS.system("beancounter");
        print("\n\n");
    }
@@ -169,12 +183,15 @@ task("genconfig", function()
     
     var htaccess = "RewriteEngine On\nRewriteBase " + baseURL + "api/\nRewriteRule ^(.*)$ REST.php\n";
     var phpConfig = "<?php\n$urlPrefix = \"" + baseURL + "api/\";\n$couchDbBaseUrl = \"http://localhost:5984/\";\n?>";
+    var openIDConfig = FILE.read("Controllers/OLOpenIDController.j");
+    openIDConfig += "\nvar MY_LOCATION = \"" + baseURL + "\";\n";
     
     FILE.remove("api/.htaccess");
     FILE.remove("api/REST-config.php");
     
     FILE.write("api/.htaccess", htaccess);
     FILE.write("api/REST-config.php", phpConfig);
+    FILE.write("Controllers/OLOpenIDController.j", openIDConfig);
 });
 
 task("coverage", function()
