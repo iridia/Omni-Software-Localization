@@ -57,8 +57,9 @@
     var text = [feedbackDictionary objectForKey:@"text"];
     
     var feedback = [[OLFeedback alloc] initWithEmail:email type:type text:text];
-    [feedback setDelegate:self];
-    [feedback save];
+    [feedback saveWithCallback:function(){
+        [feedbackWindow showReceivedFeedbackView];
+    }];
 }
 
 - (void)willCreateRecord:(OLFeedback)feedback
