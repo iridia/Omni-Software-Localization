@@ -26,6 +26,32 @@ CPApp._windows = moq();
     [self assertTrue:[observer didObserve:@"OLMessageControllerShouldSendMessageNotification"]];
 }
 
+- (void)testThatOLToolbarControllerDoesPostNotificationForLogin
+{
+    var observer = [[Observer alloc] init];
+
+    var target = [[OLToolbarController alloc] init];
+
+    [observer startObserving:@"OLLoginControllerShouldLoginNotification"];
+
+    [target login:nil];
+
+    [self assertTrue:[observer didObserve:@"OLLoginControllerShouldLoginNotification"]];
+}
+
+- (void)testThatOLToolbarControllerDoesPostNotificationForLogout
+{
+    var observer = [[Observer alloc] init];
+
+    var target = [[OLToolbarController alloc] init];
+
+    [observer startObserving:@"OLLoginControllerShouldLogoutNotification"];
+
+    [target logout:nil];
+
+    [self assertTrue:[observer didObserve:@"OLLoginControllerShouldLogoutNotification"]];
+}
+
 - (void)testThatOLToolbarControllerDoesHaveToolbar
 {
     var target = [[OLToolbarController alloc] init];

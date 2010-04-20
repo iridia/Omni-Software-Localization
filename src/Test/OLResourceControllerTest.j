@@ -7,29 +7,106 @@
     [self assertNotNull:[[OLResourceController alloc] init]];
 }
 
-// Cant test vote up because we cant test callbacks
-// - (void)testThatOLResourceControllerDoesVoteUp
-// {
-//     var tempUser = OLUser;
-//     
-//     OLUser = moq();
-//     
-//     var selectedResource = moq();
-//     var resourceView = moq();
-//     
-//     [OLUser expectSelector:@selector(findByRecordId:withCallback:) times:1];
-//     [selectedResource expectSelector:@selector(voteUp:) times:1];
-//     [resourceView expectSelector:@selector(setVoteCount:) times:1];
-//     
-//     var target = [[OLResourceController alloc] init];
-//     
-//     [target voteUp:moq()];
-//     
-//     [OLUser verifyThatAllExpectationsHaveBeenMet];
-//     [selectedResources verifyThatAllExpectationsHaveBeenMet];
-//     [resourceView verifyThatAllExpectationsHaveBeenMet];
-// }
+- (void)testThatOLResourceControllerDoesVoteUp
+{
+    var resourceOne = moq([[OLResource alloc] init]);
+    var resourceTwo = moq();
+    var resourceThree = moq();
+    
+    var target = [[OLResourceController alloc] init];
+    
+    target.resources = [resourceOne, resourceTwo, resourceThree];
+    [target setSelectedResource:resourceOne];
+    
+    [resourceOne selector:@selector(voteUp:) times:1];
+    
+    [target voteUp];
+    
+    [resourceOne verifyThatAllExpectationsHaveBeenMet];
+}
+
+- (void)testThatOLResourceControllerDoesVoteDown
+{
+    var resourceOne = moq([[OLResource alloc] init]);
+    var resourceTwo = moq();
+    var resourceThree = moq();
+    
+    var target = [[OLResourceController alloc] init];
+    
+    target.resources = [resourceOne, resourceTwo, resourceThree];
+    [target setSelectedResource:resourceOne];
+    
+    [resourceOne selector:@selector(voteDown:) times:1];
+    
+    [target voteDown];
+    
+    [resourceOne verifyThatAllExpectationsHaveBeenMet];
+}
+
+- (void)testThatOLResourceControllerDoesGetNumberOfVotesFromResource
+{
+    var resourceOne = moq([[OLResource alloc] init]);
+    var resourceTwo = moq();
+    var resourceThree = moq();
+
+    var target = [[OLResourceController alloc] init];
+
+    target.resources = [resourceOne, resourceTwo, resourceThree];
+    [target setSelectedResource:resourceOne];
+    
+    [resourceOne selector:@selector(numberOfVotes) times:1];
+    [resourceOne selector:@selector(numberOfVotes) returns:5];
+    
+    [self assert:5 equals:[target numberOfVotesForSelectedResource]];
+    
+    [resourceOne verifyThatAllExpectationsHaveBeenMet];
+}
 
 // Cant test vote down for the same reason as above
+
+- (void)testThatOLResourceControllerDoesGetValueForSelectedLineItem
+{
+    [self assertGetFromSelectedLineItem:@selector(valueForSelectedLineItem)]
+}
+
+- (void)testThatOLResourceControllerDoesGetIdentifierForSelectedLineItem
+{
+    [self assertGetFromSelectedLineItem:@selector(identifierForSelectedLineItem)]
+}
+
+- (void)testThatOLResourceControllerDoesGetCommentForSelectedLineItem
+{
+    [self assertGetFromSelectedLineItem:@selector(commentForSelectedLineItem)]
+}
+
+- (void)testThatOLResourceControllerDoesGetCommentsForSelectedLineItem
+{
+    [self assertGetFromSelectedLineItem:@selector(commentsForSelectedLineItem)]
+}
+
+- (void)testThatOLResourceControllerDoesGetAddCommentForSelectedLineItem
+{
+    [self assertGetFromSelectedLineItem:@selector(addCommentForSelectedLineItem:)]
+}
+
+- (void)testThatOLResourceControllerDoesGetSetValueForSelectedLineItem
+{
+    [self assertGetFromSelectedLineItem:@selector(setValueForSelectedLineItem:)]
+}
+
+- (void)assertGetFromSelectedLineItem:(SEL)selector
+{
+    var lineItemController = moq([[OLLineItemController alloc] init]);
+
+    var target = [[OLResourceController alloc] init];
+
+    target.lineItemController = lineItemController;
+
+    [lineItemController selector:selector times:1];
+
+    [target performSelector:selector];
+
+    [lineItemController verifyThatAllExpectationsHaveBeenMet];
+}
 
 @end
