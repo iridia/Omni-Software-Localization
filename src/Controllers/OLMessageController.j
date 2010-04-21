@@ -75,7 +75,7 @@ OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerSh
     if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
-        [OLMessage findByToUsers:userLoggedIn withCallback:function(message, isFinal)
+        [OLMessage findByReceivers:userLoggedIn withCallback:function(message, isFinal)
     	{
             [self addMessage:message];
             if(isFinal)

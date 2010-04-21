@@ -65,7 +65,7 @@
     {
         var resourceBundle = [[project resourceBundles] objectAtIndex:i];
         
-        [result addObject:[[resourceBundle language] name]];
+        [result addObject:[resourceBundle nameOfLanguage]];
     }
     
     return result;
@@ -78,7 +78,7 @@
     
     for(var i = 0; i < [[resourceBundle resources] count]; i++)
     {
-        [result addObject:[[[resourceBundle resources] objectAtIndex:i] shortFileName]];
+        [result addObject:[resourceBundle shortFileNameOfObjectAtIndex:i]];
     }
     
     return result;
