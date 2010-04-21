@@ -2,40 +2,22 @@
 
 @implementation OLUser : OLActiveRecord
 {
-	CPString email          @accessors(readonly);
-    CPString nickname       @accessors;
-    CPString userLocation   @accessors;
-    CPArray  languages      @accessors;
-    CPString bio            @accessors;
+	CPString    email   @accessors(readonly);
 }
 
 - (id)initWithEmail:(CPString)emailAddress
 {
-	return [self initWithEmail:emailAddress nickname:@"" location:@"" languages:[CPArray array] bio:@""];
-}
-
-- (id)initWithEmail:(CPString)anEmail nickname:(CPString)aNickname location:(CPString)aUserLocation languages:(OLLanguage)someLanguages bio:(CPString)aBio
-{
-    self = [super init];
-    
-    if(self)
-    {
-        email = anEmail;
-        nickname = aNickname;
-        userLocation = aUserLocation;
-        languages = someLanguages;
-        bio = aBio;
-    }
-    return self;
+	if (self = [super init])
+	{
+	    email = emailAddress;
+	}
+	return self;
 }
 
 @end
 
+
 var OLUserEmailKey = @"OLUserEmailKey";
-var OLUserLocationKey = @"OLUserLocationKey";
-var OLUserNicknameKey = @"OLUserNicknameKey";
-var OLUserLanguagesKey = @"OLUserLangaugesKey";
-var OLUserBioKey = @"OLUserBioKey";
 
 @implementation OLUser (CPCoding)
 
@@ -46,10 +28,6 @@ var OLUserBioKey = @"OLUserBioKey";
 	if (self)
 	{
 		email = [aCoder decodeObjectForKey:OLUserEmailKey];
-        userLocation = [aCoder decodeObjectForKey:OLUserLocationKey];
-        nickname = [aCoder decodeObjectForKey:OLUserNicknameKey];
-        languages = [aCoder decodeObjectForKey:OLUserLanguagesKey];
-        bio = [aCoder decodeObjectForKey:OLUserBioKey];
 	}
 
 	return self;
@@ -57,23 +35,11 @@ var OLUserBioKey = @"OLUserBioKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-	[aCoder encodeObject:email forKey:OLUserEmailKey];
-    [aCoder encodeObject:userLocation forKey:OLUserLocationKey];
-    [aCoder encodeObject:nickname forKey:OLUserNicknameKey];
-    [aCoder encodeObject:languages forKey:OLUserLanguagesKey];
-    [aCoder encodeObject:bio forKey:OLUserBioKey];
+	[aCoder encodeObject:[self email] forKey:OLUserEmailKey];
 }
 
 @end
 
-@implementation OLUser (Equalities)
-
--(BOOL)emailIsEqualToString:(CPString)emailToCheck
-{
-    return ([self email] === emailToCheck);
-}
-
-@end
 
 @implementation OLUser (OLUserSessionManager)
 
