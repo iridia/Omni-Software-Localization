@@ -132,7 +132,7 @@ var OLResourceVotesKey = @"OLResourceVotesKey";
     [aCoder encodeObject:[self fileName] forKey:OLResourceFileNameKey];
     [aCoder encodeObject:[self fileType] forKey:OLResourceFileTypeKey];
     [aCoder encodeObject:[self lineItems] forKey:OLResourceLineItemsKey];
-	[aCoder encodeObject:[self votes] forKey:OLResourceVotesKey];
+	[aCoder encodeObject:votes forKey:OLResourceVotesKey];
 }
 
 @end

@@ -3,6 +3,7 @@
 @import "../Utilities/OLUserSessionManager.j"
 @import "utilities/Observer.j"
 @import "utilities/CPNotificationCenter+MockDefaultCenter.j"
+@import "utilities/OLUserSessionManager+Testing.j"
 
 @implementation OLUserSessionManagerTest : OJTestCase
 {

@@ -1,3 +1,8 @@
+@import "../Controllers/OLMessageController.j"
+@import <OJMoq/OJMoq.j>
+
+[CPApplication sharedApplication];
+
 @implementation OLMessageControllerTest : OJTestCase
 
 - (void)testThatOLMessageControllerDoesInitialize
@@ -32,7 +37,7 @@
     try {
         OLMessage = moq();
         
-        [OLMessage selector:@selector(findByToUsers:withCallback:) times:1];
+        [OLMessage selector:@selector(findByReceivers:withCallback:) times:1];
         [[OLUserSessionManager defaultSessionManager] setStatus:OLUserSessionLoggedInStatus];
         
         var target = [[OLMessageController alloc] init];
@@ -50,9 +55,9 @@
 - (void)testThatOLMessageControllerDoesSortMessagesByDate
 {
     var messageOne = [[OLMessage alloc] init];
-    [messageOne setDateSent:[CPDate dateWithTimeIntervalSinceNow:1]];
+    messageOne.dateSent = [CPDate dateWithTimeIntervalSinceNow:1];
     var messageTwo = [[OLMessage alloc] init];
-    [messageTwo setDateSent:[CPDate dateWithTimeIntervalSinceNow:-1]];
+    messageTwo.dateSent = [CPDate dateWithTimeIntervalSinceNow:-1];
     var messageThree = [[OLMessage alloc] init];
     
     var target = [[OLMessageController alloc] init];
@@ -80,7 +85,7 @@
     try {
         OLMessage = moq();
         
-        [OLMessage selector:@selector(findByToUsers:withCallback:) times:1];
+        [OLMessage selector:@selector(findByReceivers:withCallback:) times:1];
         [[OLUserSessionManager defaultSessionManager] setStatus:OLUserSessionLoggedInStatus];
         
         var target = [[OLMessageController alloc] init];
@@ -185,7 +190,7 @@
     
     [tableView selector:@selector(selectedRowIndexes) returns:[CPIndexSet indexSetWithIndex:0]];
     
-    [target addMessage:[[OLMessage alloc] initFromUser:nil toUser:nil subject:@"No Subject" content:@"Test"]];
+    [target addMessage:[[OLMessage alloc] initWithSender:nil receivers:nil subject:@"" content:@"Test"]];
     
     [target tableViewSelectionDidChange:notification];
     
