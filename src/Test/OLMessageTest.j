@@ -74,20 +74,6 @@
     [self assertSettersAndGettersFor:@"content" on:target];
 }
 
-- (void)testThatOLMessageDoesHaveToUsers
-{
-    var target = [[OLMessage alloc] init];
-    
-    [self assertSettersAndGettersFor:@"toUsers" on:target];
-}
-
-- (void)testThatOLMessageDoesHaveFromUserEmail
-{
-    var target = [[OLMessage alloc] init];
-    
-    [self assertSettersAndGettersFor:@"fromUserEmail" on:target];
-}
-
 - (void)assertSettersAndGettersFor:(CPString)name on:(id)object
 {
     var setter = "set" + [[name substringToIndex:1] capitalizedString] + [name substringFromIndex:1] + ":";
