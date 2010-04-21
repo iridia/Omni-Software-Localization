@@ -45,6 +45,16 @@
 	return self;
 }
 
+- (CPString)nameOfLanguage
+{
+    return [language name];
+}
+
+- (CPString)shortFileNameOfObjectAtIndex:(int)index
+{
+    return [[resources objectAtIndex:index] shortFileName];
+}
+
 - (OLResourceBundle)clone
 {
     var clone = [[OLResourceBundle alloc] initWithLanguage:[language clone]];

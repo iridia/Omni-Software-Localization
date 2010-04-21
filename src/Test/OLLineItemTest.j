@@ -82,4 +82,33 @@ var json = {"fileName":"Chess.app/Contents/Resources/English.lproj/InfoPlist.str
     [self assert:comment equals:[clone comment]];
 }
 
+- (void)testThatLineItemDoesHaveValue
+{
+    var comment = "asdf";
+    var target = [[OLLineItem alloc] initWithIdentifier:@"" value:@"" comment:comment];
+    
+    [self assertSettersAndGettersFor:"value" on:target];
+}
+
+- (void)testThatOLLineItemDoesAddComments
+{
+    var comment = "asdf";
+    var target = [[OLLineItem alloc] initWithIdentifier:@"" value:@"" comment:comment];
+    
+    [target addComment:[[OLComment alloc] initFromUser:moq() withContent:"Test"]];
+    
+    [self assert:1 equals:[[target comments] count]];
+}
+
+- (void)assertSettersAndGettersFor:(CPString)name on:(id)object
+{
+    var setter = "set" + [[name substringToIndex:1] capitalizedString] + [name substringFromIndex:1] + ":";
+    var value = "__test_value";
+
+    [object performSelector:setter withObject:value];
+
+    [self assert:value equals:[object performSelector:name]];
+}
+
+
 @end

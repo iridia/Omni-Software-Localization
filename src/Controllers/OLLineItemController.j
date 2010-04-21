@@ -32,6 +32,16 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
     }
 }
 
+- (OLLineItem)lineItemAtIndex:(int)index
+{
+    if (index === CPNotFound)
+    {
+        return nil;
+    }
+    
+    return [lineItems objectAtIndex:index];
+}
+
 - (void)nextLineItem
 {
     var currentIndex = [lineItems indexOfObject:selectedLineItem];
@@ -100,7 +110,7 @@ OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineI
 
 - (void)setValueForSelectedLineItem:(CPString)value
 {
-    selectedLineItem = value;
+    [selectedLineItem setValue:value];
 }
 
 @end

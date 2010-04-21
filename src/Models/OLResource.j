@@ -11,7 +11,7 @@
 	CPString		fileName	@accessors;
 	CPString		fileType	@accessors(readonly);
 	CPArray			lineItems   @accessors(readonly);
-	CPDictionary   	votes		@accessors(readonly);
+	CPDictionary   	votes;
 }
 
 + (id)resourceFromJSON:(JSON)json

@@ -39,7 +39,7 @@ var uploadedJSON = {"fileType":"zip","fileName":"Chess.app","resourcebundles":[{
     
     [target addResourceBundle:resourceBundle];
     
-    [self assert:[resourceBundle resources] equals:[target resources]];
+    [self assert:1 equals:[[target resourceBundles] count]];
 }
 
 - (void)testThatOLProjectDoesInitWithCoder
@@ -143,9 +143,62 @@ var uploadedJSON = {"fileType":"zip","fileName":"Chess.app","resourcebundles":[{
     [self assertTrue:userId == [[target subscribers] objectAtIndex:0]];
 }
 
+- (void)testThatOLProjectDoesHaveName
+{
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
+    
+    [self assertSettersAndGettersFor:"name" on:target];
+}
+
+- (void)testThatOLProjectDoesHaveUserIdentifier
+{
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
+    
+    [self assertSettersAndGettersFor:"userIdentifier" on:target];
+}
+
+- (void)testThatOLProjectDoesHaveVotes
+{
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
+    
+    [target setVotes:50];
+    
+    [self assert:50 equals:[target totalOfAllVotes]];
+}
+
+- (void)testThatOLProjectDoesVoteUp
+{
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
+
+    [target setVotes:50];
+    [target voteUp];
+
+    [self assert:51 equals:[target totalOfAllVotes]];
+}
+
+- (void)testThatOLProjectDoesVoteDown
+{
+    var target = [[OLProject alloc] initWithName:@"ATestProject" userIdentifier:@"user"];
+
+    [target setVotes:50];
+    [target voteDown];
+
+    [self assert:49 equals:[target totalOfAllVotes]];
+}
+
 - (void)tearDown
 {
     [OLUserSessionManager resetDefaultSessionManager];
+}
+
+- (void)assertSettersAndGettersFor:(CPString)name on:(id)object
+{
+    var setter = "set" + [[name substringToIndex:1] capitalizedString] + [name substringFromIndex:1] + ":";
+    var value = "__test_value";
+
+    [object performSelector:setter withObject:value];
+
+    [self assert:value equals:[object performSelector:name]];
 }
 
 @end

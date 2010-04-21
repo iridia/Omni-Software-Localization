@@ -98,6 +98,34 @@ var json = {"name":"English.lproj","resources":[{"fileName":"Chess.app/Contents/
     [self assert:[[clone resources] objectAtIndex:0] equals:clonedResource];
 }
 
+- (void)testThatOLResourceBundleDoesHaveLanguage
+{
+    var resource = moq();
+    var target = [[OLResourceBundle alloc] initWithResources:[resource] language:moq()];
+    
+    
+    [self assertSettersAndGettersFor:"language" on:target];
+}
+
+- (void)testThatOLResourceBundleDoesHaveResources
+{
+    var resource = moq();
+    var target = [[OLResourceBundle alloc] initWithResources:[resource] language:moq()];
+    
+    
+    [self assertSettersAndGettersFor:"resources" on:target];
+}
+
+- (void)assertSettersAndGettersFor:(CPString)name on:(id)object
+{
+    var setter = "set" + [[name substringToIndex:1] capitalizedString] + [name substringFromIndex:1] + ":";
+    var value = "__test_value";
+
+    [object performSelector:setter withObject:value];
+
+    [self assert:value equals:[object performSelector:name]];
+}
+
 - (void)testThatOLResourceBundleDoesInitializeWithCoder
 {
     var coder = moq();

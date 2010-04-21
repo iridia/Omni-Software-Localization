@@ -34,17 +34,12 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
 
 - (OLLineItem)lineItemAtIndex:(int)index
 {
-    return [[selectedResource lineItems] objectAtIndex:index];
+    return [lineItemController lineItemAtIndex:index];
 }
 
 - (void)selectLineItemAtIndex:(int)index
 {
     [lineItemController selectLineItemAtIndex:index];
-}
-
-- (void)editSelectedLineItem
-{
-    [lineItemController editSelectedLineItem];
 }
 
 - (void)selectResourceAtIndex:(int)index
