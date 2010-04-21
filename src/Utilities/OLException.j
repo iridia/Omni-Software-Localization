@@ -2,8 +2,6 @@
 @import "OLURLConnectionFactory.j"
 @import "OLJSONKeyedArchiver.j"
 
-var __createURLConnectionFunction = nil;
-
 @implementation OLException : CPException
 {
 	CPString    classWithError      @accessors;
@@ -40,6 +38,7 @@ var __createURLConnectionFunction = nil;
 
 @end
 
+
 var OLExceptionClassKey = @"OLExceptionClassKey";
 var OLExceptionMethodKey = @"OLExceptionMethodKey";
 var OLExceptionUserMessageKey = @"OLExceptionUserMessageKey";
@@ -61,9 +60,9 @@ var OLExceptionUserMessageKey = @"OLExceptionUserMessageKey";
 {
     [super encodeWithCoder:aCoder];
     
-    [aCoder encodeObject:classWithError forKey:OLExceptionClassKey];
-    [aCoder encodeObject:methodWithError forKey:OLExceptionMethodKey];
-    [aCoder encodeObject:userMessage forKey:OLExceptionUserMessageKey];
+    [aCoder encodeObject:[self classWithError] forKey:OLExceptionClassKey];
+    [aCoder encodeObject:[self methodWithError] forKey:OLExceptionMethodKey];
+    [aCoder encodeObject:[self userMessage] forKey:OLExceptionUserMessageKey];
 }
 
 @end
