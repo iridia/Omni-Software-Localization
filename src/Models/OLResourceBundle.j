@@ -1,4 +1,4 @@
-@import "OLActiveRecord.j"
+@import <Foundation/CPObject.j>
 
 @import "OLResource.j"
 @import "OLLanguage.j"
@@ -6,12 +6,11 @@
 /*!
  * The OLResourceBundle represents a bundle of resources of a specific language.
  */
-@implementation OLResourceBundle : OLActiveRecord
+@implementation OLResourceBundle : CPObject
 {
 	OLLanguage  language   @accessors;
 	CPArray     resources  @accessors;
 }
-
 
 + (id)resourceBundleFromJSON:(JSON)json
 {
@@ -86,6 +85,7 @@
 
 @end
 
+
 var OLResourceBundleLanguageKey = @"OLResourceBundleLanguageKey";
 var OLResourceBundleResourcesKey = @"OLResourceBundleResourcesKey";
 
@@ -106,8 +106,8 @@ var OLResourceBundleResourcesKey = @"OLResourceBundleResourcesKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-    [aCoder encodeObject:language forKey:OLResourceBundleLanguageKey];
-    [aCoder encodeObject:resources forKey:OLResourceBundleResourcesKey];
+    [aCoder encodeObject:[self language] forKey:OLResourceBundleLanguageKey];
+    [aCoder encodeObject:[self resources] forKey:OLResourceBundleResourcesKey];
 }
 
 @end
