@@ -1,0 +1,60 @@
+@import <Foundation/CPObject.j>
+
+var GOOGLE_URL = "https://www.google.com/accounts/o8/id";
+var YAHOO_URL = "yahoo.com";
+
+@implementation OLOpenIDController : CPObject
+{
+    id      delegate        @accessors;
+}
+
+- (id)init
+{
+    self = [super init];
+    if(self)
+    {
+        window.handleOpenIDResponse = function(email) {
+            [OLUser findByEmail:email withCallback:function(user, isFinal)
+            {            
+                if (user && [[user email] isEqualToString:email])
+                {
+                    [delegate hasLoggedIn:user];
+                    return;
+                }
+            
+                if (isFinal)
+                {
+                    [delegate didSubmitRegistration:email];
+                }
+            }];
+        }
+    }
+    return self;
+}
+
+- (void)loginToGoogle:(id)sender
+{
+    [self loginTo:GOOGLE_URL];
+}
+
+- (void)loginToYahoo:(id)sender
+{
+    [self loginTo:YAHOO_URL];
+}
+
+- (void)loginTo:(CPString)aURL
+{
+<<<<<<< HEAD
+    window.open('/~cssembp01/osl/src/OpenID/try_auth.php?openid_identifier='+encodeURIComponent(aURL), 'openid_popup', 'width=790,height=580');
+}
+
+- (void)connection:(CPURLConnection)connection didReceiveData:(CPString)data
+{
+    alert(data);
+=======
+    window.open(MY_LOCATION + '/OpenID/try_auth.php?openid_identifier='+encodeURIComponent(aURL), 'openid_popup', 'width=790,height=580');
+>>>>>>> 5ec1f690eb3f85d11a2123155a3ce81a97c835e9
+}
+
+@end
+var MY_LOCATION = "/~hammerdr/osl/src/";
