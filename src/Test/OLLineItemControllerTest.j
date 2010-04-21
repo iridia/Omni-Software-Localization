@@ -75,6 +75,21 @@
     [self assert:lineItemOne equals:[target selectedLineItem]];
 }
 
+- (void)testThatOLLineItemControllerDoesGetLineItemAtIndex
+{
+    var lineItemOne = moq();
+    var lineItemTwo = moq();
+    var lineItemThree = moq();
+
+    var lineItems = [lineItemOne, lineItemTwo, lineItemThree];
+
+    var target = [[OLLineItemController alloc] init];
+
+    target.lineItems = lineItems;
+
+    [self assert:lineItemTwo equals:[target lineItemAtIndex:1]];
+}
+
 - (void)testThatOLLineItemControllerDoesGetValueForSelectedLineItem
 {
     [self assertGetFromSelectedLineItem:@selector(value)]

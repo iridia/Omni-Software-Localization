@@ -113,6 +113,135 @@
     [self assertTrue:[observer didObserve:@"OLProjectShouldImportNotification"]];
 }
 
+- (void)testThatOLMenuControllerDoesPostNewNotification
+{
+    var observer = [[Observer alloc] init];
+
+    var target = [[OLMenuController alloc] init];
+
+    [observer startObserving:@"OLUploadWindowShouldStartUploadNotification"];
+
+    [target new:self];
+
+    [self assertTrue:[observer didObserve:@"OLUploadWindowShouldStartUploadNotification"]];
+}
+
+- (void)testThatOLMenuControllerDoesPostDownloadNotification
+{
+    var observer = [[Observer alloc] init];
+
+    var target = [[OLMenuController alloc] init];
+
+    [observer startObserving:@"OLProjectShouldDownloadNotification"];
+
+    [target download:self];
+
+    [self assertTrue:[observer didObserve:@"OLProjectShouldDownloadNotification"]];
+}
+
+- (void)testThatOLMenuControllerDoesUndo
+{
+    var OGOLUndoManager = OLUndoManager;
+    
+    try {
+        OLUndoManager = moq(OLUndoManager);
+        
+        [OLUndoManager selector:@selector(undo) times:1];
+        
+        var target = [[OLMenuController alloc] init];
+        
+        [target undo:nil];
+        
+        [OLUndoManager verifyThatAllExpectationsHaveBeenMet];
+    } finally {
+        OLUndoManager = OGOLUndoManager;
+    }
+}
+
+- (void)testThatOLMenuControllerDoesRedo
+{
+    var OGOLUndoManager = OLUndoManager;
+
+    try {
+        OLUndoManager = moq(OLUndoManager);
+    
+        [OLUndoManager selector:@selector(redo) times:1];
+    
+        var target = [[OLMenuController alloc] init];
+    
+        [target redo:nil];
+    
+        [OLUndoManager verifyThatAllExpectationsHaveBeenMet];
+    } finally {
+        OLUndoManager = OGOLUndoManager;
+    }
+}
+
+- (void)testThatOLMenuControllerDoesShowFeedbackWindow
+{
+    var target = [[OLMenuController alloc] init];
+    
+    var feedbackController = target.feedbackController = moq(target.feedbackController);
+    
+    [feedbackController selector:@selector(showFeedbackWindow:) times:1];
+    
+    [target feedback:nil];
+    
+    [feedbackController verifyThatAllExpectationsHaveBeenMet];
+}
+
+- (void)testThatOLMenuControllerDoesPostLogin
+{
+    var observer = [[Observer alloc] init];
+
+    var target = [[OLMenuController alloc] init];
+
+    [observer startObserving:@"OLLoginControllerShouldLoginNotification"];
+
+    [target login:self];
+
+    [self assertTrue:[observer didObserve:@"OLLoginControllerShouldLoginNotification"]];
+}
+
+- (void)testThatOLMenuControllerDoesPostLogout
+{
+    var observer = [[Observer alloc] init];
+
+    var target = [[OLMenuController alloc] init];
+
+    [observer startObserving:@"OLLoginControllerShouldLogoutNotification"];
+
+    [target logout:self];
+
+    [self assertTrue:[observer didObserve:@"OLLoginControllerShouldLogoutNotification"]];
+}
+
+- (void)testThatOLMenuControllerDoesPostSendMessage
+{
+    var observer = [[Observer alloc] init];
+
+    var target = [[OLMenuController alloc] init];
+
+    [observer startObserving:@"OLMessageControllerShouldSendMessageNotification"];
+
+    [target sendMessage:self];
+
+    [self assertTrue:[observer didObserve:@"OLMessageControllerShouldSendMessageNotification"]];
+}
+
+- (void)testThatOLMenuControllerDoesPostBroadcastMessage
+{
+    var observer = [[Observer alloc] init];
+
+    var target = [[OLMenuController alloc] init];
+
+    [observer startObserving:@"OLProjectShouldBroadcastMessage"];
+
+    [target broadcastMessage:self];
+
+    [self assertTrue:[observer didObserve:@"OLProjectShouldBroadcastMessage"]];
+}
+
 - (void)assert:(id)target registered:(CPString)aNotification
 {
     var names = [[CPNotificationCenter defaultCenter]._namedRegistries keyEnumerator];
