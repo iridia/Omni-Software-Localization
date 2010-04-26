@@ -206,7 +206,6 @@
 
 - (void)back:(id)sender
 {
-    // tell content view controller to update view
 	[[CPNotificationCenter defaultCenter]
         postNotificationName:OLContentViewControllerShouldUpdateContentView
 	    object:self

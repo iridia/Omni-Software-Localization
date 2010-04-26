@@ -2,6 +2,13 @@
 
 @implementation OLHelpManagerTest : OJTestCase
 
+
+- (void)testThatOLHelpManagerDoesDoNothing
+{
+    [self assertTrue:YES];
+}
+
+
 // Can't test this because of Cappuccino stuff
 // - (void)testThatOLHelpManagerDoesInitialize
 // {
