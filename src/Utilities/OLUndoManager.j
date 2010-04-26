@@ -6,7 +6,7 @@
 
 + (void)registerUndoWithTarget:(id)target selector:(SEL)aSelector object:(id)object
 {
-    [[[[CPApp delegate] theWindow] undoManager] registerUndoWithTarget:target selector:aSelector object:object];
+    [[self _mainWindowUndoManager] registerUndoWithTarget:target selector:aSelector object:object];
     
     [[CPNotificationCenter defaultCenter] postNotificationName:OLMenuShouldEnableItemsNotification 
         object:[OLMenuItemUndo]];
@@ -14,12 +14,11 @@
 
 + (void)undo
 {
-    [[[[CPApp delegate] theWindow] undoManager] undo];
+    [[self _mainWindowUndoManager] undo];
     [[CPNotificationCenter defaultCenter] postNotificationName:OLMenuShouldEnableItemsNotification 
         object:[OLMenuItemRedo]];
-    
-    // if(![[[CPApp mainWindow] undoManager] canUndo])
-    if([[[CPApp delegate] theWindow] undoManager]._undoStack.length <= 0)
+
+    if(![[self _mainWindowUndoManager] canUndo])
     {
         [[CPNotificationCenter defaultCenter] postNotificationName:OLMenuShouldDisableItemsNotification
             object:[OLMenuItemUndo]];
@@ -28,17 +27,20 @@
 
 + (void)redo
 {
-    [[[[CPApp delegate] theWindow] undoManager] redo];
+    [[self _mainWindowUndoManager] redo];
     [[CPNotificationCenter defaultCenter] postNotificationName:OLMenuShouldEnableItemsNotification 
         object:[OLMenuItemUndo]];
 
-    console.log("HERE");
-
-    if(![[[[CPApp delegate] theWindow] undoManager] canRedo])
+    if(![[self _mainWindowUndoManager] canRedo])
     {
         [[CPNotificationCenter defaultCenter] postNotificationName:OLMenuShouldDisableItemsNotification
             object:[OLMenuItemRedo]];
     }
+}
+
++ (CPUndoManager)_mainWindowUndoManager
+{
+    return [[[CPApp delegate] theWindow] undoManager];
 }
 
 @end
