@@ -13,8 +13,6 @@ var OLJSONKeyedArchiverClassKey = @"$$CLASS$$";
     var archiver = [[self alloc] initForWritingWithMutableData:json];
     
     return [archiver _encodeObject:rootObject];
-    
-    //return json;
 }
 
 + (BOOL)allowsKeyedCoding
