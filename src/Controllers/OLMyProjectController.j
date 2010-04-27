@@ -2,14 +2,7 @@
 @import "OLUploadController.j"
 @import "../Views/OLProjectView.j"
 @import "../Views/OLLineItemEditWindow.j"
-
-// Notifications
-OLProjectShouldCreateBundleNotification = @"OLProjectShouldCreateBundleNotification";
-OLProjectShouldDeleteBundleNotification = @"OLProjectShouldDeleteBundleNotification";
-OLProjectShouldDownloadNotification = @"OLProjectShouldDownloadNotification";
-OLProjectShouldBroadcastMessage = @"OLProjectShouldBroadcastMessage";
-OLProjectShouldImportNotification = @"OLProjectShouldImportNotification";
-OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsNotification";
+@import "../Utilities/OLConstants.j"
 
 @implementation OLMyProjectController : OLProjectController
 {

@@ -7,10 +7,7 @@
 @import "OLResourceBundleController.j"
 @import "OLImportProjectController.j"
 @import "OLMenuController.j"
-
-// Notifications
-OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotification";
-OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
+@import "../Utilities/OLConstants.j"
 
 // Manages an array of projects
 @implementation OLProjectController : CPObject
@@ -49,10 +46,6 @@ OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
         selector:@selector(didReceiveLineItemSelectedIndexDidChangeNotification:)
         name:OLLineItemSelectedLineItemIndexDidChangeNotification
         object:[[resourceBundleController resourceController] lineItemController]];
-}
-
-- (void)loadProjects
-{
 }
 
 - (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index

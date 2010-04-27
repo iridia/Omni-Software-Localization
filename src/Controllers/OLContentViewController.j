@@ -1,7 +1,5 @@
 @import <Foundation/CPObject.j>
-
-// Notifications
-OLContentViewControllerShouldUpdateContentView = @"OLContentViewControllerShouldUpdateContentView";
+@import "../Utilities/OLConstants.j"
 
 @implementation OLContentViewController : CPObject
 {	

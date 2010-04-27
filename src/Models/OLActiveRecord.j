@@ -5,7 +5,6 @@
 @import "../Utilities/OLException.j"
 @import "../Utilities/OLURLConnectionFactory.j"
 
-var __createURLConnectionFunction = nil;
 var API_PREFIX = "api/";
 
 var SaveConnection = @"SaveConnection";
@@ -54,9 +53,10 @@ var OLActiveRecordRecordIDKey = @"_id";
 	{
         var exception = [OLException exceptionFromCPException:ex];
 
-        [exception setClassWithError:[self className]];
-        [exception setMethodWithError:_cmd];
-        [exception setUserMessage:@"Could not finish the request to the server"];
+        [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not finish the request to the server"];
+        //[exception setClassWithError:[self className]];
+        //[exception setMethodWithError:_cmd];
+        //[exception setUserMessage:@"Could not finish the request to the server"];
 
 		[exception raise];
         
@@ -89,10 +89,12 @@ var OLActiveRecordRecordIDKey = @"_id";
 	catch(ex)
 	{
         var exception = [OLException exceptionFromCPException:ex];
-
-        [exception setClassWithError:[self className]];
-        [exception setMethodWithError:_cmd];
-        [exception setUserMessage:@"Could not retrieve the requested data from the database"];
+        
+        [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not retrieve the requested data from the database"];
+        
+        //[exception setClassWithError:[self className]];
+        //[exception setMethodWithError:_cmd];
+        //[exception setUserMessage:@"Could not retrieve the requested data from the database"];
         
 		[exception raise];
         
@@ -129,10 +131,13 @@ var OLActiveRecordRecordIDKey = @"_id";
 		catch(ex)
 		{
             var exception = [OLException exceptionFromCPException:ex];
-
-            [exception setClassWithError:[self className]];
-            [exception setMethodWithError:_cmd];
-            [exception setUserMessage:@"Could not save the data to the database"];
+            
+            [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not save the data to the database"];
+            
+            //[exception setClassWithError:[self className]];
+            //[exception setMethodWithError:_cmd];
+            //[exception setUserMessage:@"Could not save the data to the database"];
+    		
     		[exception raise];
 		}
     }    
@@ -160,9 +165,11 @@ var OLActiveRecordRecordIDKey = @"_id";
 	{
         var exception = [OLException exceptionFromCPException:ex];
 
-        [exception setClassWithError:[self className]];
-        [exception setMethodWithError:_cmd];
-        [exception setUserMessage:@"Could not create the data on the server"];
+        [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not create the data on the server"];
+
+        //[exception setClassWithError:[self className]];
+        //[exception setMethodWithError:_cmd];
+        //[exception setUserMessage:@"Could not create the data on the server"];
 
 		[exception raise];
 	}
@@ -181,9 +188,11 @@ var OLActiveRecordRecordIDKey = @"_id";
 	{
         var exception = [OLException exceptionFromCPException:ex];
 
-        [exception setClassWithError:[self className]];
-        [exception setMethodWithError:_cmd];
-        [exception setUserMessage:@"Could not delete the data from the database"];
+        [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not delete the data from the database"];
+
+        //[exception setClassWithError:[self className]];
+        //[exception setMethodWithError:_cmd];
+        //[exception setUserMessage:@"Could not delete the data from the database"];
 
 		[exception raise];
 	}
@@ -345,9 +354,11 @@ var OLActiveRecordRecordIDKey = @"_id";
     		    {
             		var exception = [OLException exceptionFromCPException:ex];
 
-                    [exception setClassWithError:[self className]];
-                    [exception setMethodWithError:_cmd];
-                    [exception setUserMessage:@"Could not handle the response from the server"];
+                    [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not handle the response from the server"];
+
+                    //[exception setClassWithError:[self className]];
+                    //[exception setMethodWithError:_cmd];
+                    //[exception setUserMessage:@"Could not handle the response from the server"];
                     [exception addUserInfo:data forKey:@"response"];
                     [exception addUserInfo:decodedObject forKey:@"rootObject"];
                     [exception addUserInfo:@"get" forKey:@"connectionType"];
@@ -364,10 +375,12 @@ var OLActiveRecordRecordIDKey = @"_id";
 	catch(ex)
 	{
         var exception = [OLException exceptionFromCPException:ex];
+        
+        [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not handle response form server"];
          
-        [exception setClassWithError:[self className]];
-        [exception setMethodWithError:_cmd];
-        [exception setUserMessage:@"Could not handle response form server"];
+        //[exception setClassWithError:[self className]];
+        //[exception setMethodWithError:_cmd];
+        //[exception setUserMessage:@"Could not handle response form server"];
         [exception addUserInfo:data forKey:@"response"];
         
         [exception raise];

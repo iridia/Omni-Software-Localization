@@ -4,11 +4,9 @@
 @import "../Views/CPUploadButton.j"
 @import "OLLoginController.j"
 @import "OLUploadController.j"
+@import "../Utilities/OLConstants.j"
 
 var uploadURL = @"Upload/upload.php";
-
-// Notifications
-OLUploadWindowShouldStartUploadNotification = @"OLUploadWindowShouldStartUploadNotification";
 
 @implementation OLUploadWindowController : CPObject
 {

@@ -13,7 +13,7 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 
 @implementation OLToolbarController : CPObject
 {
-    OLFeedbackController feedbackController;
+    OLFeedbackController feedbackController     @accessors;
     CPMenuItem           logoutMenuItem;
     CPMenuItem           loginMenuItem;
     CPToolbar            toolbar                @accessors;
@@ -36,6 +36,12 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
             addObserver:self
             selector:@selector(updateLoginInfo:)
             name:OLUserSessionManagerUserDidChangeNotification
+            object:nil];
+        
+        [[CPNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(feedback:)
+            name:OLFeedbackControllerShouldShowWindowNotification
             object:nil];
     }
     
@@ -159,6 +165,11 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     [[CPNotificationCenter defaultCenter]
         postNotificationName:OLMessageControllerShouldCreateMessageNotification
         object:self];
+}
+
+- (void)feedback:(id)sender
+{
+    [[self feedbackController] showFeedbackWindow:self];
 }
 
 @end

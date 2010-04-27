@@ -2,19 +2,15 @@
 @import "../Views/OLMenu.j"
 @import "OLMyProjectController.j"
 @import "OLUploadWindowController.j"
+@import "../Utilities/OLConstants.j"
 
 OLMenuItemEnabled = YES;
 OLMenuItemDisabled = NO;
-
-// Notifications
-OLMenuShouldEnableItemsNotification = @"OLMenuShouldEnableItemsNotification";
-OLMenuShouldDisableItemsNotification = @"OLMenuShouldDisableItemsNotification";
 
 @implementation OLMenuController : CPObject
 {
     CPMenu                      menu;
     CPDictionary                items;
-    CPFeedbackController        feedbackController;
 }
 
 - (id)init
@@ -22,6 +18,7 @@ OLMenuShouldDisableItemsNotification = @"OLMenuShouldDisableItemsNotification";
     self = [super init];
     if(self)
     {
+        
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(enableItems:)
@@ -47,7 +44,6 @@ OLMenuShouldDisableItemsNotification = @"OLMenuShouldDisableItemsNotification";
         [[CPApplication sharedApplication] setMainMenu:menu];
         
         uploadWindowController = [[OLUploadWindowController alloc] init];
-        feedbackController = [[OLFeedbackController alloc] init];
     }
     return self;
 }
@@ -85,12 +81,12 @@ OLMenuShouldDisableItemsNotification = @"OLMenuShouldDisableItemsNotification";
 
 - (void)newLanguage:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:OLProjectShouldCreateBundleNotification object:self];
+    [self _postNotification:OLProjectShouldCreateBundleNotification];
 }
 
 - (void)deleteLanguage:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:OLProjectShouldDeleteBundleNotification object:self];
+    [self _postNotification:OLProjectShouldDeleteBundleNotification];
 }
 
 - (void)about:(id)sender
@@ -105,17 +101,42 @@ OLMenuShouldDisableItemsNotification = @"OLMenuShouldDisableItemsNotification";
 
 - (void)new:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:OLUploadWindowShouldStartUploadNotification object:self];
+    [self _postNotification:OLUploadWindowShouldStartUploadNotification];
 }
 
 - (void)download:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:OLProjectShouldDownloadNotification object:self];
+    [self _postNotification:OLProjectShouldDownloadNotification];
 }
 
 - (void)importItem:(id)sender
 {
-    [[CPNotificationCenter defaultCenter] postNotificationName:OLProjectShouldImportNotification object:self];
+    [self _postNotification:OLProjectShouldImportNotification];
+}
+
+- (void)feedback:(id)sender
+{
+    [self _postNotification:OLFeedbackControllerShouldShowWindowNotification];
+}
+
+- (void)login:(id)sender
+{
+    [self _postNotification:OLLoginControllerShouldLoginNotification];
+}
+
+- (void)logout:(id)sender
+{
+    [self _postNotification:OLLoginControllerShouldLogoutNotification];
+}
+
+- (void)sendMessage:(id)sender
+{
+    [self _postNotification:OLMessageControllerShouldCreateMessageNotification];
+}
+
+- (void)broadcastMessage:(id)sender
+{
+    [self _postNotification:OLProjectShouldBroadcastMessage];
 }
 
 - (void)undo:(id)sender
@@ -128,35 +149,9 @@ OLMenuShouldDisableItemsNotification = @"OLMenuShouldDisableItemsNotification";
     [OLUndoManager redo];
 }
 
-- (void)feedback:(id)sender
+- (void)_postNotification:(CPString)notificationName
 {
-    [feedbackController showFeedbackWindow:sender];
-}
-
-- (void)login:(id)sender
-{
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLLoginControllerShouldLoginNotification
-        object:self];
-}
-
-- (void)logout:(id)sender
-{
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLLoginControllerShouldLogoutNotification
-        object:self];
-}
-
-- (void)sendMessage:(id)sender
-{
-    [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLMessageControllerShouldCreateMessageNotification
-        object:self];
-}
-
-- (void)broadcastMessage:(id)sender
-{
-    [[CPNotificationCenter defaultCenter] postNotificationName:OLProjectShouldBroadcastMessage object:self];
+    [[CPNotificationCenter defaultCenter] postNotificationName:notificationName object:self];
 }
 
 @end

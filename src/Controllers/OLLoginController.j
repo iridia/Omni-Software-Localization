@@ -6,9 +6,7 @@
 @import "../Categories/CPArray+Find.j"
 @import "../Views/OLLoginAndRegisterWindow.j"
 @import "../Models/OLUser.j"
-
-OLLoginControllerShouldLoginNotification = @"OLLoginControllerShouldLoginNotification";
-OLLoginControllerShouldLogoutNotification = @"OLLoginControllerShouldLogoutNotification"; //need to distribute across app
+@import "../Utilities/OLConstants.j"
 
 @implementation OLLoginController : CPObject
 {

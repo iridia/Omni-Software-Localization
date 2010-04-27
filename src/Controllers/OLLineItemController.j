@@ -2,8 +2,7 @@
 
 @import "../Utilities/OLUserSessionManager.j"
 @import "../Models/OLLineItem.j"
-
-OLLineItemSelectedLineItemIndexDidChangeNotification = @"OLLineItemSelectedLineItemIndexDidChangeNotification";
+@import "../Utilities/OLConstants.j"
 
 @implementation OLLineItemController : CPObject
 {

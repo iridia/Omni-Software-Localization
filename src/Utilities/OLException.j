@@ -2,8 +2,6 @@
 @import "OLURLConnectionFactory.j"
 @import "OLJSONKeyedArchiver.j"
 
-var __createURLConnectionFunction = nil;
-
 @implementation OLException : CPException
 {
 	CPString    classWithError      @accessors;
@@ -19,6 +17,13 @@ var __createURLConnectionFunction = nil;
 + (id)exceptionFromCPException:(CPException)exception
 {
     return [[OLException alloc] initWithName:[exception name] reason:[exception reason] userInfo:[CPDictionary dictionary]];
+}
+
+- (void)setClass:(CPString)className WithMethod:(CPString)methodName AndUserMessage:(CPString)message
+{
+    classWithError = className;
+    methodWithError = methodName;
+    userMessage = message;
 }
 
 - (void)raise

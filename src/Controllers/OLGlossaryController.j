@@ -6,7 +6,6 @@
 @import "OLContentViewController.j"
 @import "OLUploadController.j"
 
-
 var OLGlossaryViewIdentifierColumnHeader = @"OLGlossaryViewIdentifierColumnHeader";
 var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 
