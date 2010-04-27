@@ -45,13 +45,22 @@
   
   var feedbackWindow = moq();
   var emailTextField = moq();
-  target._feedbackWindow = feedbackWindow;
-  [emailTextField selector:@selector(setStringValue:) times:1 arguments:[@""]];
+  target.feedbackWindow = feedbackWindow;
+  [emailTextField selector:@selector(setStringValue:) times:1];
   [feedbackWindow selector:@selector(emailTextField) returns:emailTextField];
   
   [target userDidChange:moq()];
   
   [emailTextField verifyThatAllExpectationsHaveBeenMet];
+}
+
+- (void)testThatOLFeedbackControllerDoesSetValueOfEmailTextField
+{
+    var target = [[OLFeedbackController alloc] init];
+    
+    [target setValueOfEmailTextField:@"Test"];
+
+    [self assert:"Test" equals:[[target.feedbackWindow emailTextField] stringValue]];
 }
 
 - (void)testThatOLFeedbackControllerDoesRespondToUserDidChangeWhenLoggedIn
@@ -62,7 +71,7 @@
     var emailTextField = moq();
     var user = moq();
     var email = @"derek@derek.com";
-    target._feedbackWindow = feedbackWindow;
+    target.feedbackWindow = feedbackWindow;
     [emailTextField selector:@selector(setStringValue:) times:1 arguments:[email]];
     [feedbackWindow selector:@selector(emailTextField) returns:emailTextField];
     [[OLUserSessionManager defaultSessionManager] setUser:user];

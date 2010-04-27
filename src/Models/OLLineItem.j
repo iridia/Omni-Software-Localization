@@ -39,7 +39,7 @@
 
 - (id)initWithIdentifier:(CPString)anIdentifier value:(CPObject)aValue
 {
-	[self initWithIdentifier:anIdentifier value:aValue comment:@"No Comment"];
+	return [self initWithIdentifier:anIdentifier value:aValue comment:@"No Comment"];
 }
 
 - (id)initWithIdentifier:(CPString)anIdentifier value:(CPObject)aValue comment:(CPString)aComment

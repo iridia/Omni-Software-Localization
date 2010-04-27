@@ -12,7 +12,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 // Manages an array of glossaries
 @implementation OLGlossaryController : CPObject
 {
-    CPArray             glossaries     	    @accessors;
+    CPArray             glossaries     	    @accessors(readonly);
 	OLGlossary	        selectedGlossary	@accessors;
 	OLGlossariesView    glossariesView;
 }
@@ -153,7 +153,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
     		
     		// tell content view controller to update view
     		[[CPNotificationCenter defaultCenter]
-    		  postNotificationName:OLContentViewControllerShouldUpdateContentViewByUserInfo
+    		  postNotificationName:OLContentViewControllerShouldUpdateContentView
     		  object:self
     		  userInfo:[CPDictionary dictionaryWithObject:glossariesView forKey:@"view"]];
     	}

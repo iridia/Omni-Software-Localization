@@ -14,7 +14,29 @@ _DOMElement.appendChild = function(){return moq();};
     
     [self assertNotNull:target];
 }
-// 
+
+- (void)testThatOLImportProjectControllerDoesHandleServerResponse
+{
+    var target = [[OLImportProjectController alloc] init];
+    
+    [target handleServerResponse:"{\"fileType\":\"test\"}"];
+}
+
+- (void)testThatOLImportProjectControllerDoesReturnTitlesOfLanguages
+{
+    var target = [[OLImportProjectController alloc] init];
+    
+    [self assert:0 equals:[[target titlesOfLanguages] count]];
+}
+
+- (void)testThatOLImportProjectControllerDoesReturnTitlesOfFiles
+{
+    var target = [[OLImportProjectController alloc] init];
+    
+    [self assert:0 equals:[[target titlesOfFiles] count]];
+}
+
+// runModalForWindow: throws error
 // - (void)testThatOLImportProjectControllerDoesStartImport
 // {
 //     var tempCPPlatformWindow = CPPlatformWindow;
@@ -35,14 +57,14 @@ _DOMElement.appendChild = function(){return moq();};
 // }
 // 
 // - (void)testThatOLImportProjectControllerDoesReturnTitlesOfLanguages
-// {
+// {   
 //     var target = [[OLImportProjectController alloc] init];
 //     
 //     var project = moq();
 //     var resourceBundle1 = moq();
 //     var resourceBundle2 = moq();
-//     var language1 = [OLLanguage english];
-//     var language2 = [OLLanguage french];
+//     var language1 = [[OLLanguage alloc] initWithName:@"English"];
+//     var language2 = [[OLLanguage alloc] initWithName:@"French"];
 //     
 //     [project selector:@selector(resourceBundles) returns:[resourceBundle1, resourceBundle2]];
 //     [resourceBundle1 selector:@selector(language) returns:language1];

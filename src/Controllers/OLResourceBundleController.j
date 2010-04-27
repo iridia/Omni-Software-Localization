@@ -69,11 +69,6 @@
     return [[[selectedResourceBundle resources] objectAtIndex:index] fileName];
 }
 
-- (void)editSelectedLineItem
-{
-    [resourceController editSelectedLineItem];
-}
-
 - (void)selectResourceBundleAtIndex:(int)index
 {
     if(index === 0)

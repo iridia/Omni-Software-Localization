@@ -3,6 +3,7 @@
 @import "../Utilities/OLUserSessionManager.j"
 @import "utilities/Observer.j"
 @import "utilities/CPNotificationCenter+MockDefaultCenter.j"
+@import "utilities/OLUserSessionManager+Testing.j"
 
 @implementation OLUserSessionManagerTest : OJTestCase
 {
@@ -110,6 +111,54 @@
     [self assertTrue:[target isUserLoggedIn]];
     [target setUser:nil];
     [self assertFalse:[target isUserLoggedIn]];
+}
+
+- (void)testThatOLUserSessionManagerDoesIdentifyLoggedInUserIdentifier
+{
+    var target = [OLUserSessionManager defaultSessionManager];
+    var user = moq();
+    
+    [user selector:@selector(userIdentifier) returns:"ID"];
+    
+    [target setUser:user];
+    
+    [self assertTrue:[target isUserTheLoggedInUser:"ID"]];
+}
+
+- (void)testThatOLUserSessionManagerDoesNotIdentifyOtherUserIdentifier
+{
+    var target = [OLUserSessionManager defaultSessionManager];
+    var user = moq();
+
+    [user selector:@selector(userIdentifier) returns:"ID"];
+    
+    [target setUser:user];
+
+    [self assertFalse:[target isUserTheLoggedInUser:"ID_WRONG"]];
+}
+
+- (void)testThatOLUserSessionManagerDoesIdentifyLoggedInUser
+{
+    var target = [OLUserSessionManager defaultSessionManager];
+    var user = moq();
+
+    [user selector:@selector(userIdentifier) returns:"ID"];
+    
+    [target setUser:user];
+
+    [self assertTrue:[target isUserTheLoggedInUser:user]];
+}
+
+- (void)testThatOLUserSessionManagerDoesNotIdentifyOtherUser
+{
+    var target = [OLUserSessionManager defaultSessionManager];
+    var user = moq();
+
+    [user selector:@selector(userIdentifier) returns:"ID"];
+    
+    [target setUser:user];
+
+    [self assertFalse:[target isUserTheLoggedInUser:moq()]];
 }
 
 - (void)tearDown

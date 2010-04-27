@@ -60,6 +60,30 @@
     [coder verifyThatAllExpectationsHaveBeenMet];
 }
 
+- (void)testThatOLMessageDoesHaveSubject
+{
+    var target = [[OLMessage alloc] init];
+    
+    [self assertSettersAndGettersFor:@"subject" on:target];
+}
+
+- (void)testThatOLMessageDoesHaveContent
+{
+    var target = [[OLMessage alloc] init];
+    
+    [self assertSettersAndGettersFor:@"content" on:target];
+}
+
+- (void)assertSettersAndGettersFor:(CPString)name on:(id)object
+{
+    var setter = "set" + [[name substringToIndex:1] capitalizedString] + [name substringFromIndex:1] + ":";
+    var value = "__test_value";
+
+    [object performSelector:setter withObject:value];
+
+    [self assert:value equals:[object performSelector:name]];
+}
+
 
 - (void)testThatOLMessageDoesEncodeWithCoder
 {

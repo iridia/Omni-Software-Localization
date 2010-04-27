@@ -41,11 +41,6 @@
     return self;
 }
 
-- (void)willLogin
-{
-    [loginAndRegisterWindow showLoggingIn];
-}
-
 - (void)hasLoggedIn:(OLUser)aUser
 {
     [loginAndRegisterWindow close];
@@ -63,7 +58,6 @@
 
 - (void)didSubmitLogin:(CPDictionary)userInfo
 {
-    [self willLogin];
     var email = [userInfo objectForKey:@"username"];
     [openIDController loginTo:email];
 }
