@@ -54,9 +54,6 @@ var OLActiveRecordRecordIDKey = @"_id";
         var exception = [OLException exceptionFromCPException:ex];
 
         [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not finish the request to the server"];
-        //[exception setClassWithError:[self className]];
-        //[exception setMethodWithError:_cmd];
-        //[exception setUserMessage:@"Could not finish the request to the server"];
 
 		[exception raise];
         
@@ -91,10 +88,6 @@ var OLActiveRecordRecordIDKey = @"_id";
         var exception = [OLException exceptionFromCPException:ex];
         
         [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not retrieve the requested data from the database"];
-        
-        //[exception setClassWithError:[self className]];
-        //[exception setMethodWithError:_cmd];
-        //[exception setUserMessage:@"Could not retrieve the requested data from the database"];
         
 		[exception raise];
         
@@ -133,10 +126,6 @@ var OLActiveRecordRecordIDKey = @"_id";
             var exception = [OLException exceptionFromCPException:ex];
             
             [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not save the data to the database"];
-            
-            //[exception setClassWithError:[self className]];
-            //[exception setMethodWithError:_cmd];
-            //[exception setUserMessage:@"Could not save the data to the database"];
     		
     		[exception raise];
 		}
@@ -167,10 +156,6 @@ var OLActiveRecordRecordIDKey = @"_id";
 
         [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not create the data on the server"];
 
-        //[exception setClassWithError:[self className]];
-        //[exception setMethodWithError:_cmd];
-        //[exception setUserMessage:@"Could not create the data on the server"];
-
 		[exception raise];
 	}
 }
@@ -189,10 +174,6 @@ var OLActiveRecordRecordIDKey = @"_id";
         var exception = [OLException exceptionFromCPException:ex];
 
         [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not delete the data from the database"];
-
-        //[exception setClassWithError:[self className]];
-        //[exception setMethodWithError:_cmd];
-        //[exception setUserMessage:@"Could not delete the data from the database"];
 
 		[exception raise];
 	}
@@ -274,99 +255,29 @@ var OLActiveRecordRecordIDKey = @"_id";
 	    switch (type)
 	    {
 	        case ListConnection:
-	            if (json.rows.length === 0)
-	            {
-	                callback(nil, YES);
-	            }
-	            
-        		for (var i = 0; i < json.rows.length; i++)
-        		{
-        		    var objectJSON = json.rows[i].value;
-        		    
-        		    var decodedObject = [self _objectFromJSON:objectJSON];
-            		
-            		callback(decodedObject, (i === json.rows.length - 1));
-        		}
+	            [self evaluateListConnection:json WithCallback:callback]; 
         		break;
 
 	        case SearchAllConnection:
-	            for(var i = 0; i < json.rows.length; i++)
-	            {
-	                var jsonRecord = json.rows[i].value;
-	                
-	                var record = [[[self class] alloc] init];
-	                for (var property in jsonRecord)
-	                {
-	                    var setter = CPSelectorFromString("set" + property.charAt(0).toUpperCase() + property.substring(1) + ":");
-
-	                    if ([record respondsToSelector:setter])
-	                    {
-	                        [record performSelector:setter withObject:jsonRecord[property]];
-                        }
-	                }
-                    
-	                callback(record, (i === json.rows.length - 1));
-	            }
-	            
-	            if(json.rows.length === 0)
-	            {
-	                callback(nil, true);
-	            }
+	            [self evaluateSearchAllConnection:json WithCallback:callback];
 	            break;
 
 	        case SearchConnection:
-            	for(var i = 0; i < json.rows.length; i++)
-            	{
-            		var decodedObject = [self _objectFromJSON:json.rows[i].value];
-            		callback(decodedObject, (i === json.rows.length - 1));
-            	}
-
-	            if(json.rows.length === 0)
-	            {
-	                callback(nil, true);
-	            }
+            	[self evaluateSearchConnection:json WithCallback:callback];
             	break;
 
 	        case CreateConnection:
-	            [self setRecordID:json["id"]];
-	            [self setRevision:json["rev"]];
-	            if ([[self delegate] respondsToSelector:@selector(didCreateRecord:)])
-	        	{
-	        	    [[self delegate] didCreateRecord:self];
-	        	}
-	        	callback(self, YES);
+	            [self evaluateCreateConnection:json WithCallback:callback];
 	            break;
 
 	        case SaveConnection:
-	            var newRev = json["rev"] || [self revision];
-	            [self setRevision:newRev];
-	            callback(self, YES);
+	            [self evaluateSaveConnection:json WithCallback:callback];
 	            break;
 
 	        case GetConnection:
-        		var decodedObject = [self _objectFromJSON:json];
-        		
-        		try
-        		{
-        		    callback(decodedObject, YES);
-    		    }
-    		    catch(ex)
-    		    {
-            		var exception = [OLException exceptionFromCPException:ex];
-
-                    [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not handle the response from the server"];
-
-                    //[exception setClassWithError:[self className]];
-                    //[exception setMethodWithError:_cmd];
-                    //[exception setUserMessage:@"Could not handle the response from the server"];
-                    [exception addUserInfo:data forKey:@"response"];
-                    [exception addUserInfo:decodedObject forKey:@"rootObject"];
-                    [exception addUserInfo:@"get" forKey:@"connectionType"];
-
-            		[exception raise];
-    		    }
+        		[self evaluateGetConnection:json WithCallback:callback];
 	            break;
-
+	            
 	        default:
 	            CPLog.warn("Unhandled case: %s in %s for class %s", type, _cmd, [self className]);
 	            break;
@@ -377,16 +288,109 @@ var OLActiveRecordRecordIDKey = @"_id";
         var exception = [OLException exceptionFromCPException:ex];
         
         [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not handle response form server"];
-         
-        //[exception setClassWithError:[self className]];
-        //[exception setMethodWithError:_cmd];
-        //[exception setUserMessage:@"Could not handle response form server"];
+        
         [exception addUserInfo:data forKey:@"response"];
         
         [exception raise];
 	}
 }
 
+- (void)evaluateListConnection:(JSON)someJSON WithCallback:(CPObject)callback
+{
+    if (someJSON.rows.length === 0)
+    {
+        callback(nil, YES);
+    }
+    
+	for (var i = 0; i < someJSON.rows.length; i++)
+	{
+	    var objectJSON = someJSON.rows[i].value;
+	    
+	    var decodedObject = [self _objectFromJSON:objectJSON];
+		
+		callback(decodedObject, (i === someJSON.rows.length - 1));
+	}
+}
+
+- (void)evaluateSearchAllConnection:(JSON)someJSON WithCallback:(CPObject)callback
+{
+    for(var i = 0; i < someJSON.rows.length; i++)
+    {
+        var jsonRecord = someJSON.rows[i].value;
+        
+        var record = [[[self class] alloc] init];
+        for (var property in jsonRecord)
+        {
+            var setter = CPSelectorFromString("set" + property.charAt(0).toUpperCase() + property.substring(1) + ":");
+
+            if ([record respondsToSelector:setter])
+            {
+                [record performSelector:setter withObject:jsonRecord[property]];
+            }
+        }
+        
+        callback(record, (i === someJSON.rows.length - 1));
+    }
+    
+    if(someJSON.rows.length === 0)
+    {
+        callback(nil, true);
+    }
+}
+
+- (void)evaluateSearchConnection:(JSON)someJSON WithCallback:(CPObject)callback
+{
+    for(var i = 0; i < someJSON.rows.length; i++)
+	{
+		var decodedObject = [self _objectFromJSON:someJSON.rows[i].value];
+		callback(decodedObject, (i === someJSON.rows.length - 1));
+	}
+
+    if(someJSON.rows.length === 0)
+    {
+        callback(nil, true);
+    }
+}
+
+- (void)evaluateCreateConnection:(JSON)someJSON WithCallback:(CPObject)callback
+{
+    [self setRecordID:someJSON["id"]];
+    [self setRevision:someJSON["rev"]];
+    if ([[self delegate] respondsToSelector:@selector(didCreateRecord:)])
+	{
+	    [[self delegate] didCreateRecord:self];
+	}
+	callback(self, YES);
+}
+
+- (void)evaluateSaveConnection:(JSON)someJSON WithCallback:(CPObject)callback
+{
+    var newRev = someJSON["rev"] || [self revision];
+    [self setRevision:newRev];
+    callback(self, YES);
+}
+
+- (void)evaluateGetConnection:(JSON)someJSON WithCallback:(CPObject)callback
+{
+    var decodedObject = [self _objectFromJSON:someJSON];
+	
+	try
+	{
+	    callback(decodedObject, YES);
+    }
+    catch(ex)
+    {
+		var exception = [OLException exceptionFromCPException:ex];
+
+        [exception setClass:[self className] WithMethod:_cmd AndUserMessage:@"Could not handle the response from the server"];
+
+        [exception addUserInfo:data forKey:@"response"];
+        [exception addUserInfo:decodedObject forKey:@"rootObject"];
+        [exception addUserInfo:@"get" forKey:@"connectionType"];
+
+		[exception raise];
+    }
+}
 
 // Properly unarchives an object.
 - (id)_objectFromJSON:(JSON)json
