@@ -33,3 +33,7 @@ OLUploadWindowShouldStartUploadNotification = @"OLUploadWindowShouldStartUploadN
 //OLTableView Notifications
 OLTableViewBecameFirstResponder = @"OLTableViewBecameFirstResponder";
 OLTableViewResignedFirstResponder = @"OLTableViewResignedFirstResponder";
+
+// User Default Keys. These are global so other places can access them, too
+OLUserDefaultsShouldShowWelcomeWindowOnStartupKey = @"OLUserDefaultsShouldShowWelcomeWindowOnStartupKey";
+OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifierKey";

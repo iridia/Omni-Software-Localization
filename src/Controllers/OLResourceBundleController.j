@@ -6,6 +6,8 @@
 @import "OLResourceController.j"
 @import "OLProjectController.j"
 
+var sortFunction = function(earlyLanguages,laterLanguages,context){return [earlyLanguages compare: laterLanguages];};
+
 @implementation OLResourceBundleController : CPObject
 {
     CPString                        projectName                     @accessors(readonly);
@@ -178,12 +180,7 @@
         [result addObject:[[[self availableLanguages] objectAtIndex:i] name]];
     }
     
-    return [result sortedArrayUsingFunction:
-        function(earlyLanguages,laterLanguages,context)
-        {
-            return [earlyLanguages compare: laterLanguages];
-        };
-    ];
+    return [result sortedArrayUsingFunction:sortFunction];
 }
 
 - (CPArray)titlesOfLocalizedLanguages
