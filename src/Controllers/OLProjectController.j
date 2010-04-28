@@ -83,7 +83,7 @@
 - (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
 {
     [selectedProject save];
-    [projectView reloadAllData];
+    [projectView reloadData];
 }
 
 - (void)didReceiveLineItemSelectedIndexDidChangeNotification:(CPNotification)notification
@@ -166,7 +166,7 @@
 {
     [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
     [resourceBundleController selectResourceBundleAtIndex:selectedIndex];
-    [projectView reloadAllData];
+    [projectView reloadData];
 }
 
 - (void)startDeleteBundle:(id)sender

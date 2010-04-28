@@ -177,7 +177,7 @@
 {
     [OLUndoManager registerUndoWithTarget:self selector:@selector(setValueForSelectedLineItem:) object:[resourceBundleController valueForSelectedLineItem]];
     [resourceBundleController setValueForSelectedLineItem:stringValue];
-    [selectedProject saveWithCallback:function(){[projectView reloadAllData];}];
+    [selectedProject saveWithCallback:function(){[projectView reloadData];}];
 }
 
 - (void)saveComment
@@ -353,7 +353,7 @@
     	    [self setSelectedProject:item];
             [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
             [projectView setTitle:[[self selectedProject] name]];
-            [projectView reloadAllData];
+            [projectView reloadData];
             
             // tell content view controller to update view
     		[[CPNotificationCenter defaultCenter]
