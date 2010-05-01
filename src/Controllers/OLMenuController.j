@@ -1,6 +1,5 @@
 @import <Foundation/CPObject.j>
 @import "../Views/OLMenu.j"
-@import "OLMyProjectController.j"
 @import "OLUploadWindowController.j"
 
 OLMenuItemEnabled = YES;

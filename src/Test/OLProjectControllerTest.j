@@ -2,6 +2,8 @@
 @import "utilities/CPNotificationCenter+MockDefaultCenter.j"
 @import "utilities/OLUserSessionManager+Testing.j"
 
+[CPApplication sharedApplication];
+
 @implementation OLProjectControllerTest : OJTestCase
 
 - (void)setUp
@@ -35,6 +37,17 @@
     [target addProject:project];
 
     [self assert:project equals:[[target projects] objectAtIndex:0]];
+}
+
+- (void)testThatOLProjectControllerDoesSetProjects
+{
+    var projects = [];
+    
+    var target = [[OLProjectController alloc] init];
+    
+    [target setProjects:projects];
+    
+    [self assert:projects equals:[target projects]];
 }
 
 - (void)tearDown
