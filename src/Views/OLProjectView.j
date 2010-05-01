@@ -228,7 +228,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
     [navigationBarView setTitle:aTitle];
 }
 
-- (void)reloadAllData
+- (void)reloadData
 {
     [resourcesTableView reloadData];
     [lineItemsTableView reloadData];

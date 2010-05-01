@@ -19,6 +19,13 @@
     return [[OLException alloc] initWithName:[exception name] reason:[exception reason] userInfo:[CPDictionary dictionary]];
 }
 
+- (void)setClass:(CPString)className WithMethod:(CPString)methodName AndUserMessage:(CPString)message
+{
+    classWithError = className;
+    methodWithError = methodName;
+    userMessage = message;
+}
+
 - (void)raise
 {
     var data = [OLJSONKeyedArchiver archivedDataWithRootObject:self];

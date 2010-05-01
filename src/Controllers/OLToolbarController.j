@@ -13,7 +13,6 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 
 @implementation OLToolbarController : CPObject
 {
-    OLFeedbackController feedbackController;
     CPMenuItem           logoutMenuItem;
     CPMenuItem           loginMenuItem;
     CPToolbar            toolbar                @accessors;
@@ -26,7 +25,6 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
     
     if (self)
     {
-        feedbackController = [[OLFeedbackController alloc] init];
         loginValue = "Login / Register";
         
         toolbar = [[CPToolbar alloc] initWithIdentifier:OLMainToolbarIdentifier];
@@ -68,8 +66,8 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
         [menuItem setMaxSize:CGSizeMake(32, 32)];
         [menuItem setLabel:"Send Feedback"];
         
-        [menuItem setTarget:feedbackController];
-        [menuItem setAction:@selector(showFeedbackWindow:)];
+        [menuItem setTarget:self];
+        [menuItem setAction:@selector(feedback:)];
     }
     else if(itemIdentifier === OLLogoutToolbarItemIdentifier)
     {
@@ -158,6 +156,13 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
 {
     [[CPNotificationCenter defaultCenter]
         postNotificationName:OLMessageControllerShouldCreateMessageNotification
+        object:self];
+}
+
+- (void)feedback:(id)sender
+{
+    [[CPNotificationCenter defaultCenter]
+        postNotificationName:OLFeedbackControllerShouldShowWindowNotification
         object:self];
 }
 

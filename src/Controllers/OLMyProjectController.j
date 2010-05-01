@@ -2,14 +2,7 @@
 @import "OLUploadController.j"
 @import "../Views/OLProjectView.j"
 @import "../Views/OLLineItemEditWindow.j"
-
-// Notifications
-OLProjectShouldCreateBundleNotification = @"OLProjectShouldCreateBundleNotification";
-OLProjectShouldDeleteBundleNotification = @"OLProjectShouldDeleteBundleNotification";
-OLProjectShouldDownloadNotification = @"OLProjectShouldDownloadNotification";
-OLProjectShouldBroadcastMessage = @"OLProjectShouldBroadcastMessage";
-OLProjectShouldImportNotification = @"OLProjectShouldImportNotification";
-OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsNotification";
+@import "../Utilities/OLConstants.j"
 
 @implementation OLMyProjectController : OLProjectController
 {
@@ -184,7 +177,7 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
 {
     [OLUndoManager registerUndoWithTarget:self selector:@selector(setValueForSelectedLineItem:) object:[resourceBundleController valueForSelectedLineItem]];
     [resourceBundleController setValueForSelectedLineItem:stringValue];
-    [selectedProject saveWithCallback:function(){[projectView reloadAllData];}];
+    [selectedProject saveWithCallback:function(){[projectView reloadData];}];
 }
 
 - (void)saveComment
@@ -360,7 +353,7 @@ OLProjectShouldReloadMyProjectsNotification = @"OLProjectShouldReloadMyProjectsN
     	    [self setSelectedProject:item];
             [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
             [projectView setTitle:[[self selectedProject] name]];
-            [projectView reloadAllData];
+            [projectView reloadData];
             
             // tell content view controller to update view
     		[[CPNotificationCenter defaultCenter]

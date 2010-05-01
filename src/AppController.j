@@ -70,6 +70,13 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 	
 	var loginController = [[OLLoginController alloc] init];
     var toolbarController = [[OLToolbarController alloc] init];
+    var feedbackController = [[OLFeedbackController alloc] init];
+    
+    [[CPNotificationCenter defaultCenter]
+        addObserver:feedbackController
+        selector:@selector(showFeedbackWindow:)
+        name:OLFeedbackControllerShouldShowWindowNotification
+        object:nil];
     
     var notification = [[OLNotification alloc] init];
  
