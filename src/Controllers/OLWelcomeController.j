@@ -1,7 +1,6 @@
 @import <Foundation/CPObject.j>
 
 @import "../Views/OLWelcomeView.j"
-@import "OLUploadWindowController.j"
 
 
 /*!
@@ -10,9 +9,8 @@
  */
 @implementation OLWelcomeController : CPObject
 {
-	CPWindow _welcomeWindow;
-	OLWelcomeView _welcomeView;
-	OLUploadController _uploadController @accessors(property=uploadController);
+	CPWindow            welcomeWindow;
+	OLWelcomeView       welcomeView;
 }
 
 - (id)init
@@ -21,16 +19,16 @@
     
 	if (self)
 	{
-        _welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 700, 325) styleMask:CPTitledWindowMask];
-        [_welcomeWindow setTitle:[CPString stringWithFormat:@"Welcome to %s", [[CPBundle mainBundle] objectForInfoDictionaryKey:@"CPBundleName"]]];
-        var welcomeWindowContentView = [_welcomeWindow contentView];
+        welcomeWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(0, 0, 700, 325) styleMask:CPTitledWindowMask];
+        [welcomeWindow setTitle:[CPString stringWithFormat:@"Welcome to %s", [[CPBundle mainBundle] objectForInfoDictionaryKey:@"CPBundleName"]]];
+        var welcomeWindowContentView = [welcomeWindow contentView];
 		
-		_welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0, 0, 700, 325)];
-		[_welcomeView setDelegate:self];
+		welcomeView = [[OLWelcomeView alloc] initWithFrame:CPRectMake(0, 0, 700, 325)];
+		[welcomeView setDelegate:self];
         
-		[welcomeWindowContentView addSubview:_welcomeView];
+		[welcomeWindowContentView addSubview:welcomeView];
 		
-        [[CPApplication sharedApplication] runModalForWindow:_welcomeWindow];
+        [[CPApplication sharedApplication] runModalForWindow:welcomeWindow];
 	}
 	
 	return self;
@@ -39,7 +37,7 @@
 - (void)closeWelcomeWindow:(id)sender
 {
     [[CPApplication sharedApplication] stopModal];
-	[_welcomeWindow orderOut:self];
+	[welcomeWindow orderOut:self];
 }
 
 - (void)showWindowOnLaunchDidChange:(BOOL)shouldShowWindowOnLaunch
