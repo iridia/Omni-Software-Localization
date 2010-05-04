@@ -8,8 +8,8 @@ OLMenuItemDisabled = NO;
 
 @implementation OLMenuController : CPObject
 {
-    CPMenu                      menu;
-    CPDictionary                items;
+    CPMenu          menu;
+    CPDictionary    items;
 }
 
 - (id)init
@@ -17,7 +17,6 @@ OLMenuItemDisabled = NO;
     self = [super init];
     if(self)
     {
-        
         [[CPNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(enableItems:)

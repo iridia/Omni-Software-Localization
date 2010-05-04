@@ -103,7 +103,7 @@ OLUserDefaultsLoggedInUserIdentifierKey = @"OLUserDefaultsLoggedInUserIdentifier
 	    [OLUser findByRecordID:[[CPUserDefaults standardUserDefaults] objectForKey:OLUserDefaultsLoggedInUserIdentifierKey] withCallback:callback];
 	}
 	
-	[[OLHelpManager alloc] init];
+	[OLHelpManager sharedHelpManager];
     
     [glossaryController loadGlossaries];
     
