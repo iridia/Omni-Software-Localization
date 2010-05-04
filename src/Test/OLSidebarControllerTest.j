@@ -11,7 +11,6 @@
     [self assertNotNull:target];
 }
 
-
 - (void)testThatOLSidebarControllerDoesAwakeFromCib
 {
     var target = [[OLSidebarController alloc] init];
@@ -25,6 +24,48 @@
     [target awakeFromCib];
     
     [self assertTrue:YES];
+}
+
+- (void)testThatOLSidebarControllerDoesDetermineIfWeShouldSelectARow
+{
+    var target = [[OLSidebarController alloc] init];
+    
+    [self assertFalse:[target outlineView:target.sidebarOutlineView shouldSelectRow:0]];
+}
+
+- (void)testThatOLSidebarControllerDoesAddItems
+{
+    var target = [[OLSidebarController alloc] init];
+    
+    target.sidebarScrollView = moq();
+    [target.sidebarScrollView selector:@selector(bounds) returns:CGRectMakeZero()];
+    
+    [target awakeFromCib];
+    [target addSidebarItem:@"Test"];
+    
+    [self assert:1 equals:[target.sidebarItems count]];
+}
+
+- (void)testThatOLSidebarControllerDoesGetChildrenOfItem
+{
+    var target = [[OLSidebarController alloc] init];
+    
+    var item = moq();
+    
+    [item selector:@selector(sidebarItems) returns:["Test"]];
+    
+    [self assert:[@"Test"] equals:[target childrenOfItem:item]];
+}
+
+- (void)testThatOLSidebarControllerDoesReturnGivenIndexOfChildForItem
+{
+    var target = [[OLSidebarController alloc] init];
+    
+    var item = moq();
+    
+    [item selector:@selector(sidebarItems) returns:[@"Test"]];
+    
+    [self assert:@"Test" equals:[target outlineView:nil child:0 ofItem:item]];
 }
 
 @end

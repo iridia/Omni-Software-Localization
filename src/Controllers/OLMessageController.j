@@ -6,9 +6,7 @@
 @import "../Views/OLMessageWindow.j"
 @import "../Views/OLMailView.j"
 @import "../Models/OLMessage.j"
-
-OLMessageControllerShouldCreateMessageNotification = @"OLMessageControllerShouldSendMessageNotification";
-OLMessageControllerShouldShowBroadcastViewNotification = @"OLMessageControllerShouldShowBroadcastViewNotification";
+@import "../Utilities/OLConstants.j"
 
 @implementation OLMessageController : CPObject
 {

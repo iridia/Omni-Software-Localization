@@ -1,8 +1,5 @@
 @import <AppKit/CPView.j>
-
-// Notifications
-OLTableViewBecameFirstResponder = @"OLTableViewBecameFirstResponder";
-OLTableViewResignedFirstResponder = @"OLTableViewResignedFirstResponder";
+@import "../Utilities/OLConstants.j"
 
 @implementation OLTableView : CPView
 {

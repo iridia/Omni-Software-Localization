@@ -186,7 +186,7 @@
             
                 [self setSelectedProject:project];
                 [projectView setBackButtonDelegate:self];
-                [projectView reloadAllData];
+                [projectView reloadData];
                 
                 // tell content view controller to update view
         		[[CPNotificationCenter defaultCenter]
@@ -206,7 +206,6 @@
 
 - (void)back:(id)sender
 {
-    // tell content view controller to update view
 	[[CPNotificationCenter defaultCenter]
         postNotificationName:OLContentViewControllerShouldUpdateContentView
 	    object:self

@@ -1,11 +1,12 @@
 @import <Foundation/CPObject.j>
-
 @import "../Utilities/OLUserSessionManager.j"
 @import "../Views/OLCreateBundleWindowController.j"
 @import "../Views/OLDeleteBundleWindowController.j"
 
 @import "OLResourceController.j"
 @import "OLProjectController.j"
+
+var sortFunction = function(earlyLanguages,laterLanguages,context){return [earlyLanguages compare: laterLanguages];};
 
 @implementation OLResourceBundleController : CPObject
 {
@@ -178,11 +179,6 @@
     {
         [result addObject:[[[self availableLanguages] objectAtIndex:i] name]];
     }
-    
-    var sortFunction = function(lhs,rhs,context)
-    {
-        return [lhs compare: rhs];
-    };
     
     return [result sortedArrayUsingFunction:sortFunction];
 }

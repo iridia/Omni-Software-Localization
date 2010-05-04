@@ -48,4 +48,4 @@ var YAHOO_URL = "yahoo.com";
 }
 
 @end
-var MY_LOCATION = "/~hammerdr/osl/src/";
+var MY_LOCATION = "/~cssembp01/osl/src/";

@@ -1,10 +1,15 @@
 @implementation OLWelcomeControllerTest : OJTestCase
 
+- (void)testThatOLWelcomeControllerDoesDoNothing
+{
+    [self assertTrue:YES];
+}
+// 
 // - (void)testThatOLWelcomeControllerDoesInitialize
 // {
 //     [self assertNotNull:[[OLWelcomeController alloc] init]];
 // }
-// 
+
 // - (void)testThatOLWelcomeControllerDoesHaveUploadController
 // {
 //     var target = [[OLWelcomeController alloc] init];

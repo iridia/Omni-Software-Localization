@@ -7,10 +7,7 @@
 @import "OLResourceBundleController.j"
 @import "OLImportProjectController.j"
 @import "OLMenuController.j"
-
-// Notifications
-OLProjectShouldCreateCommentNotification = @"OLProjectShouldCreateCommentNotification";
-OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
+@import "../Utilities/OLConstants.j"
 
 // Manages an array of projects
 @implementation OLProjectController : CPObject
@@ -51,10 +48,6 @@ OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
         object:[[resourceBundleController resourceController] lineItemController]];
 }
 
-- (void)loadProjects
-{
-}
-
 - (void)insertObject:(OLProject)project inProjectsAtIndex:(int)index
 {
     [projects insertObject:project atIndex:index];
@@ -90,7 +83,7 @@ OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
 - (void)didReceiveProjectDidChangeNotification:(CPNotification)notification
 {
     [selectedProject save];
-    [projectView reloadAllData];
+    [projectView reloadData];
 }
 
 - (void)didReceiveLineItemSelectedIndexDidChangeNotification:(CPNotification)notification
@@ -173,7 +166,7 @@ OLProjectDidChangeNotification = @"OLProjectDidChangeNotification";
 {
     [projectView selectResourcesTableViewRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
     [resourceBundleController selectResourceBundleAtIndex:selectedIndex];
-    [projectView reloadAllData];
+    [projectView reloadData];
 }
 
 - (void)startDeleteBundle:(id)sender

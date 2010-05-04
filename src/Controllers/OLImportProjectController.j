@@ -1,7 +1,5 @@
 @import <Foundation/CPObject.j>
 @import "../Views/OLImportProjectWindow.j"
-@import "OLMyProjectController.j"
-
 
 @implementation OLImportProjectController : CPObject
 {
