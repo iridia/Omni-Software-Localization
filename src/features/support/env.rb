@@ -1,4 +1,4 @@
-$: << File.join(File.dirname(__FILE__), '..', '..' ,'..')
+$: << File.join('/', 'Users', 'hammerdr', 'Projects', 'Personal', 'cucapp')
 
 require 'cucapp.rb'
 

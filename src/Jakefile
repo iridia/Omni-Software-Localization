@@ -19,7 +19,7 @@ var COUCH_URL = "http://localhost:5984";
     
 app ("build-only", function(task)
 {
-    task.setBuildIntermediatesPath(FILE.join("Build", "test.build", configuration));
+    task.setBuildIntermediatesPath(FILE.join("Build", "Localize.build", configuration));
     task.setBuildPath(FILE.join("Build", configuration));
 
     task.setProductName("Localize");
