@@ -8,7 +8,6 @@
 @implementation OLWelcomeView : CPView
 {
     CPCheckBox      showWindowOnLaunch;
-    
 	id              delegate            @accessors;
 }
 
