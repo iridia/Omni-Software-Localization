@@ -1,8 +1,8 @@
 @import <Foundation/CPObject.j>
-@import "../Utilities/OLUserSessionManager.j"
-@import "../Views/OLCreateBundleWindowController.j"
-@import "../Views/OLDeleteBundleWindowController.j"
 
+@import "../Utilities/OLUserSessionManager.j"
+@import "../Views/OLCreateBundleView.j"
+@import "../Views/OLDeleteBundleView.j"
 @import "OLResourceController.j"
 @import "OLProjectController.j"
 
@@ -10,24 +10,37 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
 
 @implementation OLResourceBundleController : CPObject
 {
-    CPString                        projectName                     @accessors(readonly);
-    CPArray                         resourceBundles                 @accessors(readonly);
-    CPResourceBundle                selectedResourceBundle          @accessors;
-    OLCreateBundleWindowController  createBundleWindowController    @accessors;
-    OLDeleteBundleWindowController  deleteBundleWindowController    @accessors;
+    OLResourceBundle        selectedResourceBundle          @accessors;
     
-    OLResourceController            resourceController              @accessors(readonly);
+    CPString                projectName                     @accessors(readonly);
+    CPArray                 resourceBundles                 @accessors(readonly);
+    OLResourceController    resourceController              @accessors(readonly);
+    
+    CPWindow                createBundleWindow;
+    CPWindow                deleteBundleWindow;
 }
 
 - (id)init
 {
     if(self = [super init])
     {
-        createBundleWindowController = [[OLCreateBundleWindowController alloc] init];
-        [createBundleWindowController setDelegate:self];
+        var sheetSize = CGRectMake(0.0, 0.0, 200.0, 100.0);
         
-        deleteBundleWindowController = [[OLDeleteBundleWindowController alloc] init];
-        [deleteBundleWindowController setDelegate:self];
+        createBundleWindow = [[CPWindow alloc] initWithContentRect:sheetSize styleMask:CPDocModalWindowMask];
+        [createBundleWindow setTitle:@"Add a Language..."];
+        // [createBundleWindow setDelegate:self];
+
+        var createBundleView = [[OLCreateBundleView alloc] initWithFrame:sheetSize];
+        [createBundleView setDelegate:self];
+        [createBundleWindow setContentView:createBundleView];
+        
+        deleteBundleWindow = [[CPWindow alloc] initWithContentRect:sheetSize styleMask:CPDocModalWindowMask];
+        [deleteBundleWindow setTitle:@"Delete a Language..."];
+        // [deleteBundleWindow setDelegate:self];
+        
+        var deleteBundleView = [[OLDeleteBundleView alloc] initWithFrame:sheetSize];
+        [deleteBundleView setDelegate:self];
+        [deleteBundleWindow setContentView:deleteBundleView];
         
         resourceController = [[OLResourceController alloc] init];
         [self addObserver:resourceController forKeyPath:@"selectedResourceBundle" options:CPKeyValueObservingOptionNew context:nil];
@@ -139,14 +152,14 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
 {
     if([[self availableLanguages] count] > 0)
     {
-        [createBundleWindowController reloadData];
-        [createBundleWindowController showWindowAsSheet:self];
+        [createBundleView reloadData];
+        // [createBundleWindowController showWindowAsSheet:self];
     }
     else
     {
         var alert = [[CPAlert alloc] init];
-        [alert setTitle:@"No languages available!"];
-        [alert setMessageText:@"You cannot add a language to this project because all possible languages are already added!"];
+        [alert setTitle:@"No languages available."];
+        [alert setMessageText:@"You cannot add a language to this project because all possible languages are already added."];
         [alert setAlertStyle:CPWarningAlertStyle];
         [alert addButtonWithTitle:@"OK"];
         [alert runModal];
@@ -157,14 +170,14 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
 {
     if([resourceBundles count] > 1)
     {
-        [deleteBundleWindowController reloadData];
-        [deleteBundleWindowController showWindowAsSheet:self];
+        [deleteBundleView reloadData];
+        // [deleteBundleWindowController showWindowAsSheet:self];
     }
     else
     {
         var alert = [[CPAlert alloc] init];
-        [alert setTitle:@"No languages available!"];
-        [alert setMessageText:@"You cannot delete a language from this project because there are no languages to delete!"];
+        [alert setTitle:@"No languages available."];
+        [alert setMessageText:@"You cannot delete a language from this project because there are no languages to delete."];
         [alert setAlertStyle:CPWarningAlertStyle];
         [alert addButtonWithTitle:@"OK"];
         [alert runModal];
