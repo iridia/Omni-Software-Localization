@@ -10,10 +10,8 @@ var OLSharedHelpManager = nil;
 
 + (id)sharedHelpManager
 {
-    if (!OLSharedHelpManager) {
-        CPLog("allocating first time");
+    if (!OLSharedHelpManager)
         OLSharedHelpManager = [[OLHelpManager alloc] init];
-    }
     
     return OLSharedHelpManager;
 }

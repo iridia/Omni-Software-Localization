@@ -44,8 +44,7 @@ var YAHOO_URL = "yahoo.com";
 
 - (void)loginTo:(CPString)aURL
 {
-    window.open(MY_LOCATION + '/OpenID/try_auth.php?openid_identifier='+encodeURIComponent(aURL), 'openid_popup', 'width=790,height=580');
+    window.open('OpenID/try_auth.php?openid_identifier='+encodeURIComponent(aURL), 'openid_popup', 'width=790,height=580');
 }
 
 @end
-var MY_LOCATION = "/~cssembp01/osl/src/";
