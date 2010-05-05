@@ -18852,7 +18852,7 @@ currentRow = newValue;
 },["void","CGRect"])]);
 }
 
-p;11;CPTabView.jt;8550;@STATIC;1.0;i;15;CPTabViewItem.ji;8;CPView.jt;8499;objj_executeFile("CPTabViewItem.j", YES);
+p;11;CPTabView.jt;8652;@STATIC;1.0;i;15;CPTabViewItem.ji;8;CPView.jt;8601;objj_executeFile("CPTabViewItem.j", YES);
 objj_executeFile("CPView.j", YES);
 CPTopTabsBezelBorder = 0;
 CPLeftTabsBezelBorder = 1;
@@ -18972,7 +18972,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         }
     }
 }
-},["void","CPTabViewItem"]), new objj_method(sel_getUid("selectTabViewItemAtIndex:"), function $CPTabView__selectTabViewItemAtIndex_(self, _cmd, anIndex)
+},["void","CPTabViewItem"]), new objj_method(sel_getUid("delegate"), function $CPTabView__delegate(self, _cmd)
+{ with(self)
+{
+    return _delegate;
+}
+},["id"]), new objj_method(sel_getUid("setDelegate:"), function $CPTabView__setDelegate_(self, _cmd, aDelegate)
 { with(self)
 {
     if(anIndex === selectedIndex)
@@ -18980,7 +18985,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
     objj_msgSend(tabs, "selectSegmentWithTag:", anIndex);
     objj_msgSend(self, "_setSelectedIndex:", anIndex);
 }
-},["void","CPNumber"]), new objj_method(sel_getUid("segmentSelectionDidChange:"), function $CPTabView__segmentSelectionDidChange_(self, _cmd, sender)
+},["void","id"]), new objj_method(sel_getUid("segmentSelectionDidChange:"), function $CPTabView__segmentSelectionDidChange_(self, _cmd, sender)
 { with(self)
 {
     var index = objj_msgSend(sender, "tagForSegment:", objj_msgSend(sender, "selectedSegment"));
@@ -34370,7 +34375,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithLevel:"), funct
 },["CPArray"])]);
 }
 
-p;22;CPPlatformWindow+DOM.jt;50000;@STATIC;1.0;I;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.ji;26;CPPlatformWindow+DOMKeys.jt;49798;objj_executeFile("Foundation/CPObject.j", NO);
+p;22;CPPlatformWindow+DOM.jt;49450;@STATIC;1.0;I;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.ji;26;CPPlatformWindow+DOMKeys.jt;49248;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("Foundation/CPRunLoop.j", NO);
 objj_executeFile("CPEvent.j", YES);
 objj_executeFile("CPCompatibility.j", YES);
@@ -34383,7 +34388,6 @@ var CPDOMEventGetClickCount,
     CPDOMEventStop,
     StopDOMEventPropagation,
     StopContextMenuDOMEventPropagation;
-var _DOMEventGuard;
 var KeyCodesToPrevent = {},
     CharacterKeysToPrevent = {},
     MozKeyCodeToKeyCodeMap = {
@@ -34475,16 +34479,6 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     _DOMPasteboardElement.className = "cpdontremove";
     _DOMBodyElement.appendChild(_DOMPasteboardElement);
     _DOMPasteboardElement.blur();
-    _DOMEventGuard = theDocument.createElement("div");
-    _DOMEventGuard.style.position = "absolute";
-    _DOMEventGuard.style.top = "0px";
-    _DOMEventGuard.style.left = "0px";
-    _DOMEventGuard.style.width = "100%";
-    _DOMEventGuard.style.height = "100%";
-    _DOMEventGuard.style.zIndex = "999";
-    _DOMEventGuard.style.display = "none";
-    _DOMEventGuard.className = "cpdontremove";
-    _DOMBodyElement.appendChild(_DOMEventGuard);
 }
 },["void"]), new objj_method(sel_getUid("registerDOMWindow"), function $CPPlatformWindow__registerDOMWindow(self, _cmd)
 { with(self)
@@ -35099,7 +35093,6 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     }
     if (StopDOMEventPropagation && (!supportsNativeDragAndDrop || type !== "mousedown" && !isDragging))
         CPDOMEventStop(aDOMEvent, self);
-    _DOMEventGuard.style.display = (CPApp._eventListeners.length === 0) ? "none" : "";
     objj_msgSend(objj_msgSend(CPRunLoop, "currentRunLoop"), "limitDateForMode:", CPDefaultRunLoopMode);
 }
 },["void","DOMEvent"]), new objj_method(sel_getUid("contextMenuEvent:"), function $CPPlatformWindow__contextMenuEvent_(self, _cmd, aDOMEvent)
