@@ -17,7 +17,9 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
     OLResourceController    resourceController              @accessors(readonly);
     
     CPWindow                createBundleWindow;
+    CPView                  createBundleView;
     CPWindow                deleteBundleWindow;
+    CPView                  deleteBundleView;
 }
 
 - (id)init
@@ -28,17 +30,15 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
         
         createBundleWindow = [[CPWindow alloc] initWithContentRect:sheetSize styleMask:CPDocModalWindowMask];
         [createBundleWindow setTitle:@"Add a Language..."];
-        // [createBundleWindow setDelegate:self];
 
-        var createBundleView = [[OLCreateBundleView alloc] initWithFrame:sheetSize];
+        createBundleView = [[OLCreateBundleView alloc] initWithFrame:sheetSize];
         [createBundleView setDelegate:self];
         [createBundleWindow setContentView:createBundleView];
         
         deleteBundleWindow = [[CPWindow alloc] initWithContentRect:sheetSize styleMask:CPDocModalWindowMask];
         [deleteBundleWindow setTitle:@"Delete a Language..."];
-        // [deleteBundleWindow setDelegate:self];
         
-        var deleteBundleView = [[OLDeleteBundleView alloc] initWithFrame:sheetSize];
+        deleteBundleView = [[OLDeleteBundleView alloc] initWithFrame:sheetSize];
         [deleteBundleView setDelegate:self];
         [deleteBundleWindow setContentView:deleteBundleView];
         
@@ -153,7 +153,11 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
     if([[self availableLanguages] count] > 0)
     {
         [createBundleView reloadData];
-        // [createBundleWindowController showWindowAsSheet:self];
+        [CPApp beginSheet:createBundleWindow
+            modalForWindow:[[CPApp delegate] theWindow]
+            modalDelegate:self
+            didEndSelector:@selector(didEndSheet:returnCode:contextInfo:)
+            contextInfo:nil];
     }
     else
     {
@@ -171,7 +175,11 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
     if([resourceBundles count] > 1)
     {
         [deleteBundleView reloadData];
-        // [deleteBundleWindowController showWindowAsSheet:self];
+        [CPApp beginSheet:deleteBundleWindow
+            modalForWindow:[[CPApp delegate] theWindow]
+            modalDelegate:self
+            didEndSelector:@selector(didEndSheet:returnCode:contextInfo:)
+            contextInfo:nil];
     }
     else
     {
@@ -276,6 +284,8 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
     
     [self setSelectedResourceBundle:clone];
     
+    [CPApp endSheet:createBundleWindow];
+    
     [[CPNotificationCenter defaultCenter]
         postNotificationName:OLProjectDidChangeNotification
         object:nil];
@@ -291,6 +301,8 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
         [self resetCurrentBundle];
     }
     
+    [CPApp endSheet:deleteBundleWindow];
+    
     [[CPNotificationCenter defaultCenter]
         postNotificationName:OLProjectDidChangeNotification
         object:nil];
@@ -298,6 +310,7 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
 
 - (void)didEndSheet:(CPWindow)sheet returnCode:(int)returnCode contextInfo:(id)contextInfo
 {
+    console.log(sheet);
     [sheet orderOut:self];
 }
 
