@@ -25,8 +25,8 @@
         [projectView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
    		
         [projectView setResourcesTableViewDataSource:self];
-        [projectView setLineItemsTableViewDataSource:self];
         [projectView setResourcesTableViewDelegate:self];
+        [projectView setLineItemsTableViewDataSource:self];
         [projectView setLineItemsTableViewDelegate:self];
         [projectView setLineItemsTarget:self doubleAction:@selector(lineItemsTableViewDoubleClick:)];
         [projectView setResourceBundleDelegate:self];
@@ -47,7 +47,10 @@
     projects = [CPArray array];
     [OLProject findAllProjectsByNameWithCallback:function(project, isFinal)
     {
-        [self addProject:project];
+        if(project !== nil)
+        {
+            [self addProject:project];
+        }
 
         if(isFinal)
         {
@@ -59,9 +62,9 @@
 
 - (void)sortProjects
 {
-    var sortFunction = function(lhs, rhs, context)
+    var sortFunction = function(oneProject, anotherProject, context)
     {  
-        return [[rhs totalOfAllVotes] compare:[lhs totalOfAllVotes]];
+        return [[oneProject totalOfAllVotes] compare:[anotherProject totalOfAllVotes]];
     };
     
     projects = [projects sortedArrayUsingFunction:sortFunction];
@@ -149,12 +152,12 @@
         }
     }
     
-    if (tableView === [projectView resourcesTableView])
+   else if (tableView === [projectView resourcesTableView])
     {
         return [resourceBundleController resourceNameAtIndex:row];
     }
 
-    if (tableView === [projectView lineItemsTableView])
+    else if (tableView === [projectView lineItemsTableView])
     {
         var lineItem = [resourceBundleController lineItemAtIndex:row];
 

@@ -15,7 +15,7 @@
     var target = [[OLMessageController alloc] init];
     var notification = [[CPNotification alloc] initWithName:@"Test" object:moq() userInfo:moq()];
     
-    [target createBroadcastMessage:notification];
+    [target createMessage:notification];
     
     [self assertTrue:[target.messageWindow.emailLabel isHidden]];
 }
@@ -23,7 +23,7 @@
 - (void)testThatOLMessageControllerDoesCreateMessage
 {
     var target = [[OLMessageController alloc] init];
-    var notification = [[CPNotification alloc] initWithName:@"Test" object:moq() userInfo:moq()];
+    var notification = [[CPNotification alloc] initWithName:@"Test" object:moq() userInfo:nil];
     
     [target createMessage:notification];
     

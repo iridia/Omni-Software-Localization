@@ -159,7 +159,7 @@
 	}
 }
 
-- (void)isBeingShown
+- (void)hasBeenShown:(id)aDelegate
 {
     [self makeFirstResponder:emailTextField];
 }
