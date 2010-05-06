@@ -111,7 +111,7 @@
 - (void)createBroadcastMessage:(CPNotification)notification
 {
     [[CPNotificationCenter defaultCenter]
-        postNotificationName:OLMessageControllerShouldShowBroadcastViewNotification
+        postNotificationName:OLMessageControllerShouldCreateMessageNotification
         object:self
         userInfo:[CPDictionary dictionaryWithObjects:[selectedProject] forKeys:[@"project"]]];
 }

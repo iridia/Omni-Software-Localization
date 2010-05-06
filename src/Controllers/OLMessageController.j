@@ -43,39 +43,51 @@
     	   name:OLMessageControllerShouldCreateMessageNotification
     	   object:nil];
         
-        [[CPNotificationCenter defaultCenter]
-            addObserver:self
-            selector:@selector(createBroadcastMessage:)
-            name:OLMessageControllerShouldShowBroadcastViewNotification
-            object:nil];
+        // [[CPNotificationCenter defaultCenter]
+        //      addObserver:self
+        //      selector:@selector(createBroadcastMessage:)
+        //      name:OLMessageControllerShouldShowBroadcastViewNotification
+        //      object:nil];
     }
     
     return self;
 }
 
-- (void)createBroadcastMessage:(CPNotification)notification
-{
-    var project = [[notification userInfo] objectForKey:@"project"];
-    [messageWindow setIsBroadcastMessage:YES forProject:project];
-    [self showMessageWindow:self];
-}
+// - (void)createBroadcastMessage:(CPNotification)notification
+// {
+//     var project = [[notification userInfo] objectForKey:@"project"];
+//     [messageWindow setIsBroadcastMessage:YES forProject:project];
+//     [self showMessageWindow:self];
+// }
 
 - (void)createMessage:(CPNotification)notification
 {
-    [messageWindow setIsBroadcastMessage:NO forProject:nil];
+    var project = [[notification userInfo] objectForKey:@"project"];
+    
+    if (project === nil)
+    {
+        [messageWindow setIsBroadcastMessage:NO forProject:nil];
+    }
+    else
+    {
+        [messageWindow setIsBroadcastMessage:YES forProject:project];
+    }
     [self showMessageWindow:self];
 }
 
 - (void)loadMessages
 {
-    messages = [CPArray array]; // Clear the current messages
+    messages = [CPArray array]; //Clears the messages
 
     if ([[OLUserSessionManager defaultSessionManager] isUserLoggedIn])
     {
         var userLoggedIn = [[OLUserSessionManager defaultSessionManager] userIdentifier];
         [OLMessage findByReceivers:userLoggedIn withCallback:function(message, isFinal)
     	{
-            [self addMessage:message];
+            if (message !== nil)
+            {
+                [self addMessage:message];
+            }
             if(isFinal)
             {
                 [self sortMessages];
@@ -86,8 +98,8 @@
 
 - (void)sortMessages
 {
-    messages = [messages sortedArrayUsingFunction:function(lhs, rhs, context){  
-               return [[rhs dateSent] compare:[lhs dateSent]];
+    messages = [messages sortedArrayUsingFunction:function(message, anotherMessage){  
+               return [[message dateSent] compare:[anotherMessage dateSent]];
            }];
 }
 
@@ -133,7 +145,7 @@
         return;
     }
     [[CPApplication sharedApplication] runModalForWindow:messageWindow];
-    [messageWindow isBeingShown];
+    [messageWindow hasBeenShown:self];
 }
 
 - (void)didSendMessage:(CPDictionary)messageDictionary

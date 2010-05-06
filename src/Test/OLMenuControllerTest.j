@@ -177,17 +177,17 @@
     }
 }
 
-- (void)testThatOLMenuControllerDoesShowFeedbackWindow
+- (void)testThatOLMenuControllerDoesPostShowFeedbackWindow
 {
+    var observer = [[Observer alloc] init];
+    
     var target = [[OLMenuController alloc] init];
     
-    var feedbackController = target.feedbackController = moq(target.feedbackController);
-    
-    [feedbackController selector:@selector(showFeedbackWindow:) times:1];
+    [observer startObserving:@"OLFeedbackControllerShouldShowWindowNotification"];
     
     [target feedback:nil];
     
-    [feedbackController verifyThatAllExpectationsHaveBeenMet];
+    [self assertTrue:[observer didObserve:@"OLFeedbackControllerShouldShowWindowNotification"]];
 }
 
 - (void)testThatOLMenuControllerDoesPostLogin
