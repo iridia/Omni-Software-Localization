@@ -26,6 +26,7 @@
         searchField = [[CPSearchField alloc] initWithFrame:CGRectMake(0.0, 0.0, 200.0, 30.0)];
         [titleView setAccessoryView:searchField];
         [searchField setTarget:self];
+        [searchField setTag:@"search"];
         [searchField setAction:@selector(searchDidUpdate:)];
     
     	var column = [[CPTableColumn alloc] initWithIdentifier:@"ProjectName"];
@@ -42,6 +43,7 @@
     	
 		allProjectsTableView = [[OLTableView alloc] initWithFrame:CGRectMake(0.0, 42.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame)-42.0) columns:[column,votesColumn]];
 		[allProjectsTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+		[[allProjectsTableView tableView] setTag:@"search_results"];
 		
 		[self addSubview:allProjectsTableView];
     }

@@ -10,7 +10,7 @@ Feature: The OSL application shall allow a developer to up-vote specific localiz
       |resource1|
       |resource2|
       |resource3|
-    When I select "Calculator.app" in the sidebar
+    When I select "Time Machine.app" in the sidebar
     And I select "resource1" from the selected project
     And I upvote the selected resource
     Then "resource1" should have a vote total of 1
@@ -32,11 +32,10 @@ Feature: The OSL application shall allow a developer to up-vote specific localiz
       |name|votes|
       |resource1|2|
     When I select "Search" in the sidebar
-    And I search for "Ca"
+    And I search for "C"
     Then the search results should be:
       |name|
-      |CaTest.app|
-      |CaDashboard.app|
+      |Chess.app|
       |Calculator.app|
   
   

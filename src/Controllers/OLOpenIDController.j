@@ -48,3 +48,9 @@ var YAHOO_URL = "yahoo.com";
 }
 
 @end
+
+var MY_LOCATION = "/";
+
+var MY_LOCATION = ".";
+
+var MY_LOCATION = "/~hammerdr/osl/src/";

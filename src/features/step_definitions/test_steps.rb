@@ -24,7 +24,8 @@ When /^I select "([^\"]*)" in the sidebar$/ do |arg1|
 end
 
 When /^I search for "([^\"]*)"$/ do |arg1|
-  app.gui.fill_in arg1, "//CPTextField[tag='search']"
+  app.gui.fill_in arg1, "//CPSearchField[tag='search']"
+  sleep 2
 end
 
 When /^I double\-click "([^\"]*)" in the search results$/ do |arg1|
@@ -165,6 +166,6 @@ end
 
 Then /^the search results should be:$/ do |table|
   table.hashes.each do |hash|
-    assert_true app.gui.find_in hash.name, "//CPTableView[tag='search_results']"
+    throw "Search results not found" unless app.gui.find_in hash[:name], "//CPTableView[tag='search_results']"
   end
 end
