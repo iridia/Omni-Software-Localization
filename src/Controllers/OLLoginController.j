@@ -1,19 +1,20 @@
 @import <Foundation/CPObject.j>
 
-@import "OLToolbarController.j"
 @import "OLOpenIDController.j"
 @import "../Utilities/OLUserSessionManager.j"
 @import "../Categories/CPArray+Find.j"
-@import "../Views/OLLoginAndRegisterWindow.j"
+@import "../Views/OLLoginAndRegisterView.j"
 @import "../Models/OLUser.j"
 @import "../Utilities/OLConstants.j"
 
 @implementation OLLoginController : CPObject
 {
-    CPWindow            loginAndRegisterWindow;
     id                  delegate                @accessors;
     id                  successfulLoginTarget   @accessors;
     SEL                 successfulLoginAction   @accessors;
+
+    CPWindow            loginAndRegisterWindow;
+    CPView              loginAndRegisterView;
     OLOpenIDController  openIDController;
 }
 
@@ -21,10 +22,16 @@
 {
     if(self = [super init])
     {
-        loginAndRegisterWindow = [[OLLoginAndRegisterWindow alloc] initWithContentRect:CGRectMake(0.0, 0.0, 300.0, 160.0) styleMask:CPTitledWindowMask | CPClosableWindowMask];
         openIDController = [[OLOpenIDController alloc] init];
-        [loginAndRegisterWindow setDelegate:openIDController];
         [openIDController setDelegate:self];
+        
+        var frameRect = CGRectMake(0.0, 0.0, 300.0, 160.0);
+        loginAndRegisterWindow = [[CPWindow alloc] initWithContentRect:frameRect styleMask:CPTitledWindowMask | CPClosableWindowMask];
+        [loginAndRegisterWindow setTitle:@"Login/Register"];
+        [loginAndRegisterWindow setDelegate:openIDController];
+        
+        loginAndRegisterView = [[OLLoginAndRegisterView alloc] initWithFrame:frameRect];
+        [loginAndRegisterWindow setContentView:loginAndRegisterView];
         
         [[CPNotificationCenter defaultCenter]
             addObserver:self
@@ -53,7 +60,7 @@
 
 - (void)loginFailed
 {
-    [loginAndRegisterWindow loginFailed];
+    [loginAndRegisterView loginFailed];
 }
 
 - (void)didSubmitLogin:(CPDictionary)userInfo
@@ -66,16 +73,17 @@
 {
     [[OLUserSessionManager defaultSessionManager] setStatus:OLUserSessionLoggedOutStatus];
 }
+
 - (void)showLoginAndRegisterWindow:(CPNotification)notification
 {   
     successfulLoginTarget = nil;
     successfulLoginAction = nil;
-    [loginAndRegisterWindow reset];
+    
     [[CPApplication sharedApplication] runModalForWindow:loginAndRegisterWindow];
     
     if([[notification userInfo] hasKey:@"StatusMessageText"])
     {
-        [loginAndRegisterWindow setStatus:[[notification userInfo] objectForKey:@"StatusMessageText"]];
+        [loginAndRegisterView setStatus:[[notification userInfo] objectForKey:@"StatusMessageText"]];
     }
     
     if([[notification userInfo] hasKey:@"SuccessfulLoginAction"] &&
@@ -109,7 +117,7 @@
 
 - (void)registrationFailed
 {
-    [loginAndRegisterWindow registrationFailed]
+    [loginAndRegisterView registrationFailed]
 }
 
 @end
