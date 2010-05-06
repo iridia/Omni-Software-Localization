@@ -10,6 +10,7 @@ Feature: The OSL application shall allow a developer to up-vote specific localiz
       |resource1|
       |resource2|
       |resource3|
+    And the application has loaded
     When I select "Time Machine.app" in the sidebar
     And I select "resource1" from the selected project
     And I upvote the selected resource

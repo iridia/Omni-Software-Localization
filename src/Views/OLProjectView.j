@@ -65,6 +65,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
         resourcesTableView = [[OLTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)
                                 columns:[resourceColumn]];
         [resourcesTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [[resourcesTableView tableView] setTag:@"resources"];
         
         [splitView addSubview:resourcesTableView];
     

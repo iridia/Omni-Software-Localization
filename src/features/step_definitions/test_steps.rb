@@ -21,6 +21,7 @@ end
 
 When /^I select "([^\"]*)" in the sidebar$/ do |arg1|
   app.gui.select_from arg1, "//CPOutlineView[tag='sidebar']"
+  sleep 2
 end
 
 When /^I search for "([^\"]*)"$/ do |arg1|
@@ -168,4 +169,10 @@ Then /^the search results should be:$/ do |table|
   table.hashes.each do |hash|
     throw "Search results not found" unless app.gui.find_in hash[:name], "//CPTableView[tag='search_results']"
   end
+end
+
+Given /^the application has loaded$/ do
+  # we just wanna wait for stuff to load here. Only use when necessary (is slow!)
+  app.gui.login
+  sleep 5
 end
