@@ -35,6 +35,7 @@ var OLGlossaryViewValueColumnHeader = @"OLGlossaryViewValueColumnHeader";
 		
 		tableView = [[OLTableView alloc] initWithFrame:CGRectMake(0.0, 42.0, CGRectGetWidth(frame), CGRectGetHeight(frame)-42) columns:[columnOne, columnTwo]];
     	[tableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    	[[tableView tableView] setTag:@"glossaries"];
 		
 		[self addSubview:tableView];
 	}

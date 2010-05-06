@@ -102,7 +102,7 @@ Given /^"([^\"]*)" exists as a glossary$/ do |arg1|
 end
 
 Then /^the glossary "([^\"]*)" should display$/ do |arg1|
-  assert_true app.gui.find "//CPTableView[tag='glossary']"
+  raise "ERROR" unless app.gui.find "//CPTableView[tag='glossary']"
 end
 
 When /^I create a new message$/ do
