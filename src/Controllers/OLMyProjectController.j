@@ -173,10 +173,22 @@
     }
 }
 
--(void)setValueForSelectedLineItem:(CPString)stringValue
+- (void)setValueForSelectedLineItem:(CPString)stringValue
 {
-    [OLUndoManager registerUndoWithTarget:self selector:@selector(setValueForSelectedLineItem:) object:[resourceBundleController valueForSelectedLineItem]];
-    [resourceBundleController setValueForSelectedLineItem:stringValue];
+    var lineItemInfo = [CPDictionary dictionaryWithObjects:[[resourceBundleController selectedLineItem], stringValue] forKeys:[@"lineItem", @"value"]];
+    
+    [self setValueForLineItem:lineItemInfo];
+}
+
+- (void)setValueForLineItem:(CPDictionary)lineItemInfo
+{
+    var lineItem = [lineItemInfo objectForKey:@"lineItem"];
+    var value = [lineItemInfo objectForKey:@"value"];
+    
+    [lineItemInfo setObject:[lineItem value] forKey:@"value"];
+    [lineItem setValue:value];
+    
+    [OLUndoManager registerUndoWithTarget:self selector:@selector(setValueForLineItem:) object:lineItemInfo];
     [selectedProject saveWithCallback:function(){[projectView reloadData];}];
 }
 

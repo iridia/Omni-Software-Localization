@@ -354,6 +354,11 @@ var sortFunction = function(earlyLanguages,laterLanguages,context){return [early
     return [resourceController valueForSelectedLineItem];
 }
 
+- (OLLineItem)selectedLineItem 
+{
+    return [resourceController selectedLineItem];
+}
+
 - (CPString)englishValueForSelectedLineItem
 {
     var identifier = [resourceController identifierForSelectedLineItem];

@@ -91,6 +91,11 @@ var OLResourcesViewFileNameColumn = @"OLResourcesViewFileNameColumn";
     return [lineItemController identifierForSelectedLineItem];
 }
 
+- (OLLineItem)selectedLineItem
+{
+    return [lineItemController selectedLineItem];
+}
+
 - (CPArray)commentsForSelectedLineItem
 {
     return [lineItemController commentsForSelectedLineItem];
