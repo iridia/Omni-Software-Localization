@@ -65,6 +65,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
         resourcesTableView = [[OLTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), CGRectGetHeight(aFrame) / 2.0)
                                 columns:[resourceColumn]];
         [resourcesTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [[resourcesTableView tableView] setTag:@"resources"];
         
         [splitView addSubview:resourcesTableView];
     
@@ -77,6 +78,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 		voteUpButton = [CPButton buttonWithTitle:@"Vote Up"];
 		[voteUpButton setAutoresizingMask:CPViewMaxXMargin];
         [voteUpButton setAction:@selector(voteUp:)];
+        [voteUpButton setTag:@"upvote"];
         [votingView addSubview:voteUpButton positioned:CPViewLeftAligned | CPViewHeightCentered relativeTo:votingView withPadding:5.0];
         
         voteDownButton = [CPButton buttonWithTitle:@"Vote Down"];
@@ -87,6 +89,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
         votes = [CPTextField labelWithTitle:@""];
         [votes setFont:[CPFont systemFontOfSize:14.0]];
         [votes sizeToFit];
+        [votes setTag:@"vote_total"];
         [votes setAutoresizingMask:CPViewMaxXMargin];
         [votingView addSubview:votes positioned:CPViewOnTheRight | CPViewHeightSame relativeTo:voteDownButton withPadding:5.0];
         
@@ -103,6 +106,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
         lineItemsTableView = [[OLTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), (CGRectGetHeight([bottomView bounds]) - CGRectGetHeight([votingView bounds])))
                                 columns:[lineItemIdentifierColumn, lineItemValueColumn]];
         [lineItemsTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [[lineItemsTableView tableView] setTag:@"line_items"];
         
         [bottomView addSubview:lineItemsTableView positioned:CPViewTopAligned relativeTo:bottomView withPadding:0.0];
         

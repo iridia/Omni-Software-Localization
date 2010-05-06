@@ -13,10 +13,10 @@ var YAHOO_URL = "yahoo.com";
     self = [super init];
     if(self)
     {
-        window.handleOpenIDResponse = function(email) {
-            [OLUser findByEmail:email withCallback:function(user, isFinal)
+        window.handleOpenIDResponse = function(openID) {
+            [OLUser findByOpenID:openID withCallback:function(user, isFinal)
             {            
-                if (user && [[user email] isEqualToString:email])
+                if (user && [[user openID] isEqualToString:openID])
                 {
                     [delegate hasLoggedIn:user];
                     return;
@@ -24,7 +24,7 @@ var YAHOO_URL = "yahoo.com";
             
                 if (isFinal)
                 {
-                    [delegate didSubmitRegistration:email];
+                    [delegate didSubmitRegistration:openID];
                 }
             }];
         }
@@ -44,8 +44,13 @@ var YAHOO_URL = "yahoo.com";
 
 - (void)loginTo:(CPString)aURL
 {
-    window.open(MY_LOCATION + '/OpenID/try_auth.php?openid_identifier='+encodeURIComponent(aURL), 'openid_popup', 'width=790,height=580');
+    window.open('OpenID/try_auth.php?openid_identifier='+encodeURIComponent(aURL), 'openid_popup', 'width=790,height=580');
 }
 
 @end
-var MY_LOCATION = "/~cssembp01/osl/src/";
+
+var MY_LOCATION = "/";
+
+var MY_LOCATION = ".";
+
+var MY_LOCATION = "/~hammerdr/osl/src/";

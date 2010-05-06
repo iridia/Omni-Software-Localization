@@ -3,8 +3,11 @@
         "all" : {
            "map": "function(doc) { emit(doc._id, doc); }"
         },
-        "email": {
-           "map": "function(doc) { emit(doc.OLUserEmailKey, doc); }"
+        "openID": {
+           "map": "function(doc) { emit(doc.OLUserOpenIDKey, doc); }"
+        },
+        "username": {
+            "map": "function(doc) { emit(doc.OLUserNameKey, doc); }"
         }
     }
 }

@@ -4,10 +4,12 @@ Feature: The OSL application shall allow a developer to report bugs as fixed.
   I want to send messages to everyone that cares
 
   Scenario: Does the message get broadcast to all subscribers?
-    Given "Calculator.app" exists as a project
-    And 
-    When event
-    Then outcome
+    Given the application has loaded
+    And I select "Time Machine.app" in the sidebar
+    When I select "New Broadcast.." from the menu
+    And I fill in the broadcast message form with subject "Test" and body "Test Message"
+    And I submit the broadcast message
+    Then the subscribers of "Time Machine.app" should receive a new message
   
   
   

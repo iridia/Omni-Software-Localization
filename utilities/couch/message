@@ -3,7 +3,7 @@
         "all" : {
            "map": "function(doc) { emit(doc._id, doc); }"
         },
-        "toUsers": {
+        "receivers": {
            "map": "function(doc) {
                 for (var i = 0; i < doc.OLMessageReceiversKey.length; i++)
                 {

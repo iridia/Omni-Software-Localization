@@ -18,7 +18,8 @@
     [[CPNotificationCenter defaultCenter] postNotificationName:OLMenuShouldEnableItemsNotification 
         object:[OLMenuItemRedo]];
 
-    if(![[self _mainWindowUndoManager] canUndo])
+    // if (![[self _mainWindowUndoManager] canUndo]) <-- This is what we would like to do, but it throws an exception.
+    if([self _mainWindowUndoManager]._undoStack.length <= 0)
     {
         [[CPNotificationCenter defaultCenter] postNotificationName:OLMenuShouldDisableItemsNotification
             object:[OLMenuItemUndo]];

@@ -19,7 +19,7 @@ var COUCH_URL = "http://localhost:5984";
     
 app ("build-only", function(task)
 {
-    task.setBuildIntermediatesPath(FILE.join("Build", "test.build", configuration));
+    task.setBuildIntermediatesPath(FILE.join("Build", "Localize.build", configuration));
     task.setBuildPath(FILE.join("Build", configuration));
 
     task.setProductName("Localize");
@@ -101,6 +101,7 @@ task("metrics", function()
        "4/14": "d33c52314f8",
        "4/21": "d63ac36bfae",
        "4/28": "868422d6d20b42",
+       "5/5": "4791f12c0533b4280b9a",
    };
    
    var checkout = "git checkout -f ";
