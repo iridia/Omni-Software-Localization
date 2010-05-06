@@ -189,8 +189,10 @@ task("genconfig", function()
     var openIDConfig = FILE.read("Controllers/OLOpenIDController.j");
     openIDConfig += "\nvar MY_LOCATION = \"" + baseURL + "\";\n";
     
-    FILE.remove("api/.htaccess");
-    FILE.remove("api/REST-config.php");
+    if(FILE.exists("api/.htaccess"))
+        FILE.remove("api/.htaccess");
+    if(FILE.exists("api/REST-config.php"))
+        FILE.remove("api/REST-config.php");
     
     FILE.write("api/.htaccess", htaccess);
     FILE.write("api/REST-config.php", phpConfig);
