@@ -9,10 +9,11 @@
 @implementation OLLoginAndRegisterView : CPView
 {
 	CPButton    loginButton;
-	
+	CPButton    googleButton;
+	CPButton    yahooButton;
+
 	CPTextField statusTextField;
 	CPTextField openIdTextField;
-	CGRect      originalSize;
 	
 	id          delegate        @accessors;
 }
@@ -40,7 +41,6 @@
         [loginButton setTarget:self];
         [loginButton setAction:@selector(loginWithGivenURL:)];
         [loginButton setWidth:60.0];
-        // [self setDefaultButton:loginButton];
         
         openIdTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"user.myopenid.com" width:CGRectGetWidth([self bounds])-[loginButton frame].size.width-36.0];
         [openIdTextField setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin];
@@ -54,19 +54,17 @@
 
         [loginButton setCenter:CGPointMake([loginButton center].x, [openIdTextField center].y)];
 
-        var googleButton = [[CPButton alloc] initWithFrame:CGRectMake(0, 0, 120, 32)];
+        googleButton = [[CPButton alloc] initWithFrame:CGRectMake(0, 0, 120, 32)];
         [googleButton setImage:[[CPImage alloc] initWithContentsOfFile:@"Resources/Images/googleB.png"]];
         [googleButton setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin];
         [googleButton setBordered:NO];
-        [googleButton setTarget:delegate];
         [googleButton setAction:@selector(loginToGoogle:)];
         [self addSubview:googleButton positioned:CPViewLeftAligned | CPViewBottomAligned relativeTo:self withPadding:12.0];
         
-        var yahooButton = [[CPButton alloc] initWithFrame:CGRectMake(0, 0, 120, 32)];
+        yahooButton = [[CPButton alloc] initWithFrame:CGRectMake(0, 0, 120, 32)];
         [yahooButton setImage:[[CPImage alloc] initWithContentsOfFile:@"Resources/Images/yahooB.png"]];
         [yahooButton setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMaxYMargin];
         [yahooButton setBordered:NO];
-        [yahooButton setTarget:delegate];
         [yahooButton setAction:@selector(loginToYahoo:)];
         [self addSubview:yahooButton positioned:CPViewRightAligned | CPViewBottomAligned relativeTo:self withPadding:12.0];
 	}
@@ -81,13 +79,6 @@
 - (void)loginWithGivenURL:(id)sender
 {
     [delegate loginTo:[openIdTextField stringValue]];
-}
-
-- (void)close
-{
-    [super close];
-    
-    [[CPApplication sharedApplication] stopModal];
 }
 
 - (void)loginFailed
@@ -112,6 +103,16 @@
 {
     [statusTextField setStringValue:statusMessage];
     [self centerStatusTextField];
+}
+
+- (void)setDelegate:(id)aDelegate
+{
+    if (aDelegate === delegate)
+        return;
+    
+    delegate = aDelegate;
+    [googleButton setTarget:delegate];
+    [yahooButton setTarget:delegate];
 }
 
 @end

@@ -28,9 +28,9 @@
         var frameRect = CGRectMake(0.0, 0.0, 300.0, 160.0);
         loginAndRegisterWindow = [[CPWindow alloc] initWithContentRect:frameRect styleMask:CPTitledWindowMask | CPClosableWindowMask];
         [loginAndRegisterWindow setTitle:@"Login/Register"];
-        [loginAndRegisterWindow setDelegate:openIDController];
         
         loginAndRegisterView = [[OLLoginAndRegisterView alloc] initWithFrame:frameRect];
+        [loginAndRegisterView setDelegate:openIDController];
         [loginAndRegisterWindow setContentView:loginAndRegisterView];
         
         [[CPNotificationCenter defaultCenter]
@@ -50,7 +50,7 @@
 
 - (void)hasLoggedIn:(OLUser)aUser
 {
-    [loginAndRegisterWindow close];
+    [self closeLoginAndRegisterWindow];
     
     var sessionManager = [OLUserSessionManager defaultSessionManager];
     [sessionManager setUser:aUser];
@@ -94,17 +94,40 @@
     }
 }
 
-- (void)didSubmitRegistration:(CPString)email
+- (void)didSubmitRegistration:(CPString)openID
 {
-    var user = [[OLUser alloc] initWithEmail:email];
-    if([user email])
-    {
-        [self hasRegistered:user];
+    var username = prompt("Detected this is your first login. Please input a username:");
+    
+    if (!username) {
+        [self didSubmitRegistration:openID];
     }
-    else
-    {
-        [self registrationFailed];
-    }
+    
+    [self finishRegistrationWithOpenID:openID username:username];
+}
+
+- (CPString)finishRegistrationWithOpenID:(CPString)openID username:(CPString)username
+{
+    var duplicateName = false;
+    [OLUser findByUsername:username withCallback:function(user, isFinal) {
+        if (user && [[user username] isEqualToString:username])
+        {
+            duplicateName = true;
+        }
+        
+        if (isFinal)
+        {
+            if (duplicateName)
+            {
+                username = prompt("Username already in use. Please try again:");
+                [self finishRegistrationWithOpenID:openID username:username];
+            }
+            else
+            {
+                var user = [[OLUser alloc] initWithOpenID:openID username:username];
+                [self hasRegistered:user];
+            }
+        }
+    }];
 }
 
 - (void)hasRegistered:(OLUser)aUser
@@ -118,6 +141,12 @@
 - (void)registrationFailed
 {
     [loginAndRegisterView registrationFailed]
+}
+
+- (void)closeLoginAndRegisterWindow
+{
+    [loginAndRegisterWindow close];
+    [[CPApplication sharedApplication] stopModal];
 }
 
 @end
