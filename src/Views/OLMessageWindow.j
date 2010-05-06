@@ -42,6 +42,7 @@
         emailTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"email@example.com" width:CGRectGetWidth([messageView bounds])];
         [emailTextField setFont:inputFont];
         [emailTextField sizeToFit];
+        [emailTextField setTag:@"to"];
         [messageView addSubview:emailTextField positioned:CPViewBelow relativeTo:emailLabel withPadding:0.0];
                         
         var subjectLabel = [CPTextField labelWithTitle:@"Subject"];
@@ -50,12 +51,14 @@
         subjectTextField = [CPTextField textFieldWithStringValue:@"" placeholder:@"Urgent" width:CGRectGetWidth([messageView bounds])];
         [subjectTextField setFont:inputFont];
         [subjectTextField sizeToFit];
+        [subjectTextField setTag:@"subject"];
         [messageView addSubview:subjectTextField positioned:CPViewBelow relativeTo:subjectLabel withPadding:0.0];
                         
         messageTextView = [[CPTextField alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([messageView bounds]), 130)];
         [messageTextView setFont:inputFont];
         [messageTextView setEditable:YES];
         [messageTextView setBezeled:YES];
+        [messageTextView setTag:@"message_body"];
         [messageTextView setLineBreakMode:CPLineBreakByWordWrapping];
         [messageTextView setTarget:self];
         [messageTextView setAction:@selector(sendMessage:)];

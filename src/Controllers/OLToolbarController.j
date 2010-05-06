@@ -111,6 +111,7 @@ var OLMessageToolbarItemIdentifier = @"OLMessageToolbarItemIdentifier";
         [menuItem setMinSize:CGSizeMake(32, 32)];
         [menuItem setMaxSize:CGSizeMake(32, 32)];
         [menuItem setLabel:"New Message"];
+        [menuItem setTag:@"new_message"];
 
         [menuItem setTarget:self];
         [menuItem setAction:@selector(newMessage:)];
