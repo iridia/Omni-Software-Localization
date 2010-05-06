@@ -73,7 +73,7 @@ end
 Then /^"([^\"]*)" should have the line items:$/ do |arg1, table|
   app.gui.select_from arg1, "//CPTableView[tag='resources']"
   table.hashes.each do |hash|
-    assert_true app.gui.find_in hash.name, "//CPTableView[tag='line_items']"
+    raise "ERROR" unless app.gui.find_in hash.name, "//CPTableView[tag='line_items']"
   end
 end
 
@@ -94,11 +94,11 @@ When /^I upload "([^\"]*)"$/ do |arg1|
 end
 
 Then /^the sidebar should contain "([^\"]*)"$/ do |arg1|
-  assert_true app.gui.find_in arg1, "//CPOutliveView[tag='sidebar']"
+  raise "ERROR" unless app.gui.find_in arg1, "//CPOutlineView[tag='sidebar']"
 end
 
 Given /^"([^\"]*)" exists as a glossary$/ do |arg1|
-  assert_true app.gui.find_in arg1, "//CPOutlineView[tag='sidebar']"
+  raise "ERROR" unless app.gui.find_in arg1, "//CPOutlineView[tag='sidebar']"
 end
 
 Then /^the glossary "([^\"]*)" should display$/ do |arg1|
@@ -130,7 +130,7 @@ end
 Then /^"([^\"]*)" should have the resources:$/ do |arg1, table|
   app.gui.select_from arg1, "//CPOutlineView[tag='sidebar']"
   table.hashes.each do |hash|
-    assert_true app.gui.find_in hash.name, "//CPTableView[tag='resources']"
+    raise "ERROR" unless app.gui.find_in hash[:name], "//CPTableView[tag='resources']"
   end
 end
 
@@ -142,18 +142,18 @@ Then /^"([^\"]*)" of "([^\"]*)" should have line items:$/ do |arg1, arg2, table|
   app.gui.select_from arg2, "//CPOutlineView[tag='sidebar']"
   app.gui.select_from arg1, "//CPTableView[tag='resources']"
   table.hashes.each do |hash|
-    assert_true app.gui.find_in hash.name, "//CPTableView[tag='line_items']"
+    raise "ERROR" unless app.gui.find_in hash[:name], "//CPTableView[tag='line_items']"
   end
 end
 
 Then /^the project "([^\"]*)" should display$/ do |arg1|
-  assert_true app.gui.find_in arg1, "//CPOutlineView[tag='line_items']"
+  raise "ERROR" unless app.gui.find "//CPTableView[tag='resources']"
 end
 
 Then /^the project "([^\"]*)" should display resources:$/ do |arg1, table|
   app.gui.select_from arg1, "//CPOutlineView[tag='sidebar']"
   table.hashes.each do |hash|
-    assert_true app.gui.find_in hash.name, "//CPTableView[tag='resources']"
+    raise "ERROR" unless app.gui.find_in hash[:name], "//CPTableView[tag='resources']"
   end
 end
 

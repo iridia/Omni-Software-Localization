@@ -3,35 +3,27 @@ Feature: The OSL application shall allow a developer to upload localizable resou
   As a developer
   I want to be able to upload my applications
   
-  Scenario: Does the project appear?
-    Given the application is loaded
-    And the welcome window is closed
-    And the upload window is opened
-    When I upload "Calculator.app"
-    Then the sidebar should contain "Calculator.app"
-  
+  # Scenario: Does the project appear?
+  #   Given the application is loaded
+  #   And the welcome window is closed
+  #   And the upload window is opened
+  #   When I upload "Calculator.app"
+  #   Then the sidebar should contain "Calculator.app"
+  # 
   Scenario: Is the project persistent?
-    Given "Calculator.app" exists as a project
+    Given "Time Machine.app" exists as a project
     And the application is loaded
-    Then the sidebar should contain "Calculator.app"
+    Then the sidebar should contain "Time Machine.app"
     
   Scenario: Can we select a project?
-    Given "Calculator.app" exists as a project
+    Given "Time Machine.app" exists as a project
     And the application is loaded
-    When I select "Calculator.app" in the sidebar
-    Then the project "Calculator.app" should display
+    When I select "Time Machine.app" in the sidebar
+    Then the project "Time Machine.app" should display
     
   Scenario: Are the resources defined for the project?
-    Given "Calculator.app" exists as a project
-    And "Calculator.app" has the resources:
+    When I select "Time Machine.app" in the sidebar
+    Then the project "Time Machine.app" should display resources:
       |name|
-      |resource1|
-      |resource2|
-      |resource3|
-    When I select "Calculator.app" in the sidebar
-    Then the project "Calculator.app" should display resources:
-      |name|
-      |resource1|
-      |resource2|
-      |resource3|
+      |Time Machine.app/Contents/Resources/English.lproj/Menu.strings|
   
