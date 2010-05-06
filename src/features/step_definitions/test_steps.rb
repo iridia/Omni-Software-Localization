@@ -29,20 +29,16 @@ When /^I search for "([^\"]*)"$/ do |arg1|
   sleep 2
 end
 
-When /^I double\-click "([^\"]*)" in the search results$/ do |arg1|
-  app.gui.double_click arg1, "//CPTableView[tag='search_results']"
-end
-
 When /^I download the selected project$/ do
   # do nothing
 end
 
 Then /^"([^\"]*)" exists in the search results$/ do |arg1|
-  assert_true app.gui.find_in(arg1, "//CPTableView[tag='search_results']")
+  raise "ERROR" unless app.gui.find_in(arg1, "//CPTableView[tag='search_results']")
 end
 
-When /^I double\-click "([^\"]*)"  in the search results$/ do |arg1|
-  app.gui.double_click arg1, "//CPTableView[tag='search']"
+When /^I double\-click "([^\"]*)" in the search results$/ do |arg1|
+  app.gui.double_click arg1, "//CPTableView[tag='search_results']"
 end
 
 Then /^the downloaded project is a zip file$/ do
