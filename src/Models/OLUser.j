@@ -2,22 +2,32 @@
 
 @implementation OLUser : OLActiveRecord
 {
-	CPString    email   @accessors(readonly);
+	CPString    openID      @accessors(readonly);
+	CPString    username    @accessors(readonly);
 }
 
-- (id)initWithEmail:(CPString)emailAddress
+- (id)initWithOpenID:(CPString)anOpenID username:(CPString)anUsername
 {
 	if (self = [super init])
 	{
-	    email = emailAddress;
+	    openID = anOpenID;
+	    username = anUsername;
 	}
 	return self;
+}
+
+- (CPString)email
+{
+    CPLog(@"email is depecrated. use username.");
+    
+    return [self username];
 }
 
 @end
 
 
-var OLUserEmailKey = @"OLUserEmailKey";
+var OLUserOpenIDKey = @"OLUserOpenIDKey";
+var OLUserNameKey = @"OLUserNameKey";
 
 @implementation OLUser (CPCoding)
 
@@ -27,7 +37,8 @@ var OLUserEmailKey = @"OLUserEmailKey";
 
 	if (self)
 	{
-		email = [aCoder decodeObjectForKey:OLUserEmailKey];
+		openID = [aCoder decodeObjectForKey:OLUserOpenIDKey];
+		username = [aCoder decodeObjectForKey:OLUserNameKey];
 	}
 
 	return self;
@@ -35,7 +46,8 @@ var OLUserEmailKey = @"OLUserEmailKey";
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
-	[aCoder encodeObject:[self email] forKey:OLUserEmailKey];
+	[aCoder encodeObject:[self openID] forKey:OLUserOpenIDKey];
+	[aCoder encodeObject:[self username] forKey:OLUserNameKey];
 }
 
 @end
