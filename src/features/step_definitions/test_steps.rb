@@ -2,10 +2,6 @@ Given /^"([^\"]*)" exists as a project$/ do |arg1|
   # do nothing
 end
 
-Given /^I select "([^\"]*)" in the sidebar$/ do |arg1|
-  app.gui.select_from arg1, "//CPOutlineView[tag='sidebar']"
-end
-
 When /^I select "([^\"]*)" from the menu$/ do |arg1|
   app.gui.select_menu arg1
 end
@@ -108,7 +104,7 @@ Then /^the glossary "([^\"]*)" should display$/ do |arg1|
 end
 
 When /^I create a new message$/ do
-  app.gui.press "//CPToolberItem[tag='new_message']"
+  app.gui.press "//CPToolbarItem[tag='new_message']"
 end
 
 When /^I fill in the message form with subject "([^\"]*)" and body "([^\"]*)" to "([^\"]*)"$/ do |arg1, arg2, arg3|

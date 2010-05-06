@@ -13,7 +13,7 @@ Feature: The OSL application shall allow a developer to up-vote specific localiz
     When I select "Calculator.app" in the sidebar
     And I select "resource1" from the selected project
     And I upvote the selected resource
-    Then "resourvce1" should have a vote total of 1
+    Then "resource1" should have a vote total of 1
   
   Scenario: Does the project get more visibility because of the upvote?
     Given "Calculator.app" exists as a project
