@@ -106,6 +106,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
         lineItemsTableView = [[OLTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(aFrame), (CGRectGetHeight([bottomView bounds]) - CGRectGetHeight([votingView bounds])))
                                 columns:[lineItemIdentifierColumn, lineItemValueColumn]];
         [lineItemsTableView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [[lineItemsTableView tableView] setTag:@"line_items"];
         
         [bottomView addSubview:lineItemsTableView positioned:CPViewTopAligned relativeTo:bottomView withPadding:0.0];
         
