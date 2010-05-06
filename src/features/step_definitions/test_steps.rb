@@ -162,7 +162,8 @@ When /^I upvote the selected resource$/ do
 end
 
 Then /^"([^\"]*)" should have a vote total of 1$/ do |arg1|
-  assert_equal 1, app.gui.text_for("//CPTextField[tag='vote_total']")
+  text = app.gui.text_for("//CPTextField[tag='vote_total']")
+  raise "ERROR: Expected 1, Got " + text unless "Votes: 1" == text
 end
 
 Then /^the search results should be:$/ do |table|

@@ -261,7 +261,7 @@
 
 - (int)usersCurrentVoteValue:(OLUser)user
 {
-    return [[[[resourceBundleController resourceController] selectedResource] votes] objectForKey:[user recordID]];
+    return [[[resourceBundleController resourceController] selectedResource].votes objectForKey:[user recordID]];
 }
 
 @end

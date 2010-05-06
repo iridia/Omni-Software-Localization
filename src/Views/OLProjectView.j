@@ -78,6 +78,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
 		voteUpButton = [CPButton buttonWithTitle:@"Vote Up"];
 		[voteUpButton setAutoresizingMask:CPViewMaxXMargin];
         [voteUpButton setAction:@selector(voteUp:)];
+        [voteUpButton setTag:@"upvote"];
         [votingView addSubview:voteUpButton positioned:CPViewLeftAligned | CPViewHeightCentered relativeTo:votingView withPadding:5.0];
         
         voteDownButton = [CPButton buttonWithTitle:@"Vote Down"];
@@ -88,6 +89,7 @@ OLLineItemTableColumnValueIdentifier = @"OLLineItemTableColumnValueIdentifier";
         votes = [CPTextField labelWithTitle:@""];
         [votes setFont:[CPFont systemFontOfSize:14.0]];
         [votes sizeToFit];
+        [votes setTag:@"vote_total"];
         [votes setAutoresizingMask:CPViewMaxXMargin];
         [votingView addSubview:votes positioned:CPViewOnTheRight | CPViewHeightSame relativeTo:voteDownButton withPadding:5.0];
         
